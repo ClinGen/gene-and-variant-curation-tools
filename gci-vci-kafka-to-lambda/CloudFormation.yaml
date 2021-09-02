@@ -1,0 +1,216 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  KeyId:
+    Type: String
+    Description: Key id used to encrypt ssm parameter
+  KafkaBootstrapServers:
+    Type: String
+    Description: Kafka bootstrap servers
+    Default: pkc-4yyd6.us-east1.gcp.confluent.cloud:9092
+  LambdaFunctionName:
+    Type: String
+    Description: Lambda function name (not ARN) to call
+  KafkaTopicName:
+    Type: String
+    Description: Kafka topic name
+    Default: ldh-vp
+  KafkaGroupId:
+    Type: String
+    Description: Kafka group id. In testing, only this groupid can be used on the topic, otherwise topic reads will be denied
+    Default: stanford_dev_sl1
+  SsmParameter:
+    Type: String
+    Description: Jaas Config SSM Parameter store parameter name
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Select a VPC that allows instances access to the Internet.
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Select at two subnets in your selected VPC.
+  DesiredCapacity:
+    Type: Number
+    Default: '20'
+    Description: Number of tasks to run in the service
+Resources:
+  #####################################################################
+  # The ECS Service configures the high level aspects of our container(s)
+  # What should run, how many containers should be running and
+  # where they should run
+  #####################################################################
+  ECSService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      DesiredCount: !Ref DesiredCapacity
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED # Required to be able to pull the image from ECR
+          SecurityGroups:
+            - !Ref TaskSecurityGroup
+          Subnets: !Ref Subnets
+      TaskDefinition: !Ref TaskDefinition
+  #####################################################################
+  # This security group defines the network capabilities of the
+  # container. Return traffic is allowed and we're not accepting inbound
+  # connections, so we only need to worry about what should be allowed
+  # outbound.
+  #####################################################################
+  TaskSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows outbound access for Kafka consumption
+      SecurityGroupEgress:
+        # We'll open this up for all outbound access. This is not least priv,
+        # but allows the ability to connect wherever the configuration may
+        # allow. Below I have commented the ports that should be needed in a
+        # standard Kafka setup, but the hosted Kafka option uses different ports
+        - IpProtocol: TCP
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+        # - IpProtocol: TCP
+        #   FromPort: 2181
+        #   ToPort: 2181
+        #   CidrIp: 0.0.0.0/0
+        # - IpProtocol: TCP
+        #   FromPort: 9092
+        #   ToPort: 9092
+        #   CidrIp: 0.0.0.0/0
+        # - IpProtocol: TCP
+        #   FromPort: 9094
+        #   ToPort: 9094
+        #   CidrIp: 0.0.0.0/0
+      VpcId: !Ref VpcId
+  #####################################################################
+  # ECS Cluster. This is a holding area for the service(s) within it.
+  # For a Fargate cluster there is nothing really needed. If this were
+  # an EC2 cluster (potentially less AWS cost, but you have to manage it),
+  # we would see EC2 configuration in here.
+  #####################################################################
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+  #####################################################################
+  # The task definition is the meat of this template. This is where
+  # nearly everything about our container will be defined
+  #####################################################################
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Join ['', [!Ref 'AWS::StackName', -kafka-lambda]]
+      TaskRoleArn: !Ref TaskRole
+      ExecutionRoleArn: !Ref ExecutionRole
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: '512'  # These may not need to be this high. Estimated costs $20/month/container
+      Memory: '1024'
+      NetworkMode: awsvpc # Only network mode available for Fargate (default is bridge)
+      ContainerDefinitions:
+      - Name: kafka-to-lambda
+        Cpu: '0'
+        Essential: 'true'
+        Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.${AWS::URLSuffix}/${Repository}
+        Environment: # Environment variables for the service. Any kafka-specific
+                     # tweaking may need changes in this area
+          - Name: KAFKA_BOOTSTRAP_SERVERS
+            Value: !Ref KafkaBootstrapServers
+          - Name: KAFKA_SASL_MECHANISM
+            Value: PLAIN
+          - Name: LAMBDA_FUNCTION_NAME
+            Value: !Ref LambdaFunctionName
+          - Name: KAFKA_SECURITY_PROTOCOL
+            Value: SASL_SSL
+          - Name: KAFKA_TOPIC_NAME
+            Value: !Ref KafkaTopicName
+          - Name: KAFKA_GROUP_ID
+            Value: !Ref KafkaGroupId
+          - Name: KAFKA_FETCH_MIN_BYTES
+            Value: "100000"
+        Secrets:
+          # We'll pull our password from parameter store through this mechanism
+          # This turns into an environment variable from the containers perspective
+          - Name: KAFKA_SASL_JAAS_CONFIG
+            ValueFrom: !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${SsmParameter}
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group: !Ref CloudwatchLogsGroup
+            awslogs-region: !Ref 'AWS::Region'
+            awslogs-stream-prefix: ecs
+  # SecureString is not a supported type. TODO: Determine if we should work around this with
+  # a custom resource.
+  # JaasConfig:
+  #   Type: AWS::SSM::Parameter
+  #   Properties:
+  #     AllowedPattern: '^org\.apache\.kafka\.common\.security\.plain\.PlainLoginModule required username=\".*\" password=\".*\";'
+  #     Description: 'Jaas config for the kafka module. Includes username/password. Example: org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
+  #     Name: !Sub ${AWS::StackName}-jaasConfig
+  #     Type: SecureString
+  #####################################################################
+  # Cloudwatch logs group will store the container logs for our service
+  #####################################################################
+  CloudwatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['-', [ECSLogGroup, !Ref 'AWS::StackName']]
+      RetentionInDays: 14
+  #####################################################################
+  # Repository. This is where the images will be stored for use
+  #####################################################################
+  Repository:
+     Type: AWS::ECR::Repository
+     Properties:
+       RepositoryName: !Sub ${AWS::StackName}-kafka
+  #####################################################################
+  # ExecutionRole. This is the role that will be used by the ECS agent
+  # when it starts your container. Here we need access to ECR to pull
+  # the container image.
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
+  #####################################################################
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [ecs-tasks.amazonaws.com]
+          Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      Policies:
+      - PolicyName: secrets
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action: ['kms:Decrypt']
+            Resource: !Sub arn:${AWS::Partition}:kms:${AWS::Region}:${AWS::AccountId}:key/${KeyId}
+          - Effect: Allow
+            Action: ['ssm:GetParameters']
+            Resource: !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${SsmParameter}
+  #####################################################################
+  # Task Role. This is the role that will be used by the container
+  # when it runs. https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html
+  #####################################################################
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [ecs-tasks.amazonaws.com]
+          Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+      - PolicyName: invoke-function
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action: ['lambda:InvokeFunction']
+            Resource: !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}
+Outputs:
+  # We will want the url for the image. Output here
+  RepositoryName:
+    Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.${AWS::URLSuffix}/${Repository}

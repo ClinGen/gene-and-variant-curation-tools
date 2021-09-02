@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "CaseControlModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["caseControl"]
+        },
+        "PK": { "type": "string" },
+        "submitted_by":{
+            "type":"string",
+            "$schema": "user"
+        },
+        "date_created": { "type": "string" },
+        "modified_by": {
+            "type":"string",
+            "$schema": "user"
+        },
+        "last_modified": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "label": { "type": "string" },
+        "caseCohort": {
+            "type": "string",
+            "$schema": "group"
+        },
+        "controlCohort": {
+            "type": "string",
+            "$schema": "group"
+        },
+        "studyType": { "type": "string" },
+        "detectionMethod": { "type": "string" },
+        "statisticalValues": { "type": "array" },
+        "pValue": { "type": "number" },
+        "confidenceIntervalFrom": { "type": "number" },
+        "confidenceIntervalTo": { "type": "number" },
+        "demographicInfoMatched": { "type": "string" },
+        "factorOfDemographicInfoMatched": { "type": "string" },
+        "explanationForDemographicMatched": { "type": "string" },
+        "geneticAncestryMatched": { "type": "string" },
+        "factorOfGeneticAncestryNotMatched": { "type": "string" },
+        "explanationForGeneticAncestryNotMatched": { "type": "string" },
+        "diseaseHistoryEvaluated": { "type": "string" },
+        "explanationForDiseaseHistoryEvaluation": { "type": "string" },
+        "differInVariables": { "type": "string" },
+        "explanationForDifference": { "type": "string" },
+        "comments": { "type": "string" },
+        "scores": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "evidenceScore"
+            }
+        }
+    }
+}

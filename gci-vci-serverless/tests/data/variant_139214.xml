@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ClinVarResult-Set>
+    <VariationArchive VariationID="139214" VariationName="NM_005902.4(SMAD3):c.-28C&gt;T" VariationType="single nucleotide variant" DateCreated="2014-06-19" DateLastUpdated="2020-02-12" Accession="VCV000139214" Version="1" RecordType="interpreted" NumberOfSubmissions="3" NumberOfSubmitters="2">
+        <RecordStatus>current</RecordStatus>
+        <Species>Homo sapiens</Species>
+        <InterpretedRecord>
+            <SimpleAllele AlleleID="142917" VariationID="139214">
+                <GeneList>
+                    <Gene Symbol="SMAD3" FullName="SMAD family member 3" GeneID="4088" HGNC_ID="HGNC:6769" Source="submitted" RelationshipType="within single gene">
+                        <Location>
+                            <CytogeneticLocation>15q22.33</CytogeneticLocation>
+                            <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="15" Accession="NC_000015.10" start="67065602" stop="67195195" display_start="67065602" display_stop="67195195" Strand="+"/>
+                            <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="15" Accession="NC_000015.9" start="67358194" stop="67487532" display_start="67358194" display_stop="67487532" Strand="+"/>
+                        </Location>
+                        <OMIM>603109</OMIM>
+                        <Haploinsufficiency last_evaluated="2013-03-14" ClinGen="https://www.ncbi.nlm.nih.gov/projects/dbvar/ISCA/isca_gene.cgi?sym=SMAD3">Sufficient evidence for dosage pathogenicity</Haploinsufficiency>
+                        <Triplosensitivity last_evaluated="2013-03-14" ClinGen="https://www.ncbi.nlm.nih.gov/projects/dbvar/ISCA/isca_gene.cgi?sym=SMAD3">No evidence available</Triplosensitivity>
+                        <Property>gene_acmg_incidental_2013</Property>
+                    </Gene>
+                </GeneList>
+                <Name>NM_005902.4(SMAD3):c.-28C&gt;T</Name>
+                <CanonicalSPDI>NC_000015.10:67066126:C:T</CanonicalSPDI>
+                <VariantType>single nucleotide variant</VariantType>
+                <Location>
+                    <CytogeneticLocation>15q22.33</CytogeneticLocation>
+                    <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" forDisplay="true" AssemblyStatus="current" Chr="15" Accession="NC_000015.10" start="67066127" stop="67066127" display_start="67066127" display_stop="67066127" variantLength="1" positionVCF="67066127" referenceAlleleVCF="C" alternateAlleleVCF="T"/>
+                    <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="15" Accession="NC_000015.9" start="67358465" stop="67358465" display_start="67358465" display_stop="67358465" variantLength="1" positionVCF="67358465" referenceAlleleVCF="C" alternateAlleleVCF="T"/>
+                </Location>
+                <HGVSlist>
+                    <HGVS Assembly="GRCh38" Type="genomic, top-level">
+                        <NucleotideExpression sequenceAccessionVersion="NC_000015.10" sequenceAccession="NC_000015" sequenceVersion="10" change="g.67066127C&gt;T" Assembly="GRCh38">
+                            <Expression>NC_000015.10:g.67066127C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                    <HGVS Assembly="GRCh37" Type="genomic, top-level">
+                        <NucleotideExpression sequenceAccessionVersion="NC_000015.9" sequenceAccession="NC_000015" sequenceVersion="9" change="g.67358465C&gt;T" Assembly="GRCh37">
+                            <Expression>NC_000015.9:g.67358465C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                    <HGVS Type="coding">
+                        <NucleotideExpression sequenceAccessionVersion="NM_005902.4" sequenceAccession="NM_005902" sequenceVersion="4" change="c.-28C&gt;T">
+                            <Expression>NM_005902.4:c.-28C&gt;T</Expression>
+                        </NucleotideExpression>
+                        <MolecularConsequence ID="SO:0001623" Type="5 prime UTR variant" DB="SO"/>
+                    </HGVS>
+                    <HGVS Type="genomic">
+                        <NucleotideExpression sequenceAccessionVersion="NG_011990.1" sequenceAccession="NG_011990" sequenceVersion="1" change="g.5271C&gt;T">
+                            <Expression>NG_011990.1:g.5271C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                </HGVSlist>
+                <XRefList>
+                    <XRef ID="CA020063" DB="ClinGen"/>
+                    <XRef Type="rs" ID="144374592" DB="dbSNP"/>
+                </XRefList>
+                <AlleleFrequencyList>
+                    <AlleleFrequency Value="0.00334" Source="The Genome Aggregation Database (gnomAD), exomes"/>
+                    <AlleleFrequency Value="0.01534" Source="NHLBI Exome Sequencing Project (ESP) Exome Variant Server"/>
+                    <AlleleFrequency Value="0.01632" Source="The Genome Aggregation Database (gnomAD)"/>
+                    <AlleleFrequency Value="0.00870" Source="Exome Aggregation Consortium (ExAC)"/>
+                    <AlleleFrequency Value="0.01498" Source="1000 Genomes Project"/>
+                    <AlleleFrequency Value="0.01698" Source="Trans-Omics for Precision Medicine (TOPMed)"/>
+                </AlleleFrequencyList>
+                <GlobalMinorAlleleFrequency Value="0.01498" Source="1000 Genomes Project" MinorAllele="T"/>
+            </SimpleAllele>
+            <ReviewStatus>criteria provided, multiple submitters, no conflicts</ReviewStatus>
+            <RCVList>
+                <RCVAccession Title="NM_005902.4(SMAD3):c.-28C&gt;T AND not specified" DateLastEvaluated="2013-10-21" ReviewStatus="criteria provided, single submitter" Interpretation="Benign" SubmissionCount="1" Accession="RCV000128166" Version="3">
+                    <InterpretedConditionList>
+                        <InterpretedCondition DB="MedGen" ID="CN169374">not specified</InterpretedCondition>
+                    </InterpretedConditionList>
+                </RCVAccession>
+                <RCVAccession Title="NM_005902.4(SMAD3):c.-28C&gt;T AND Loeys-Dietz syndrome" DateLastEvaluated="2016-06-14" ReviewStatus="criteria provided, single submitter" Interpretation="Benign" SubmissionCount="1" Accession="RCV000318849" Version="1">
+                    <InterpretedConditionList>
+                        <InterpretedCondition DB="MedGen" ID="C2697932">Loeys-Dietz syndrome</InterpretedCondition>
+                    </InterpretedConditionList>
+                </RCVAccession>
+                <RCVAccession Title="NM_005902.4(SMAD3):c.-28C&gt;T AND Thoracic aortic aneurysm and aortic dissection" DateLastEvaluated="2016-06-14" ReviewStatus="criteria provided, single submitter" Interpretation="Benign" SubmissionCount="1" Accession="RCV000359576" Version="1">
+                    <InterpretedConditionList>
+                        <InterpretedCondition DB="MedGen" ID="C4707243">Thoracic aortic aneurysm and aortic dissection</InterpretedCondition>
+                    </InterpretedConditionList>
+                </RCVAccession>
+            </RCVList>
+            <Interpretations>
+                <Interpretation DateLastEvaluated="2016-06-14" NumberOfSubmissions="3" NumberOfSubmitters="2" Type="Clinical significance">
+                    <Description>Benign</Description>
+                    <ConditionList>
+                        <TraitSet ID="9590" Type="Disease">
+                            <Trait ID="16789" Type="Disease">
+                                <Name>
+                                    <ElementValue Type="Alternate">AllHighlyPenetrant</ElementValue>
+                                </Name>
+                                <Name>
+                                    <ElementValue Type="Preferred">not specified</ElementValue>
+                                </Name>
+                                <AttributeSet>
+                                    <Attribute Type="public definition">The term 'not specified' was created for use in ClinVar so that submitters can convey the concept that a variant is benign, likely benign, or of uncertain significance for an unspecified set of disorders.  This usage was introduced in 2014 to replace AllHighlyPenetrant.</Attribute>
+                                </AttributeSet>
+                                <XRef ID="CN169374" DB="MedGen"/>
+                            </Trait>
+                        </TraitSet>
+                        <TraitSet ID="8782" Type="Disease">
+                            <Trait ID="16504" Type="Disease">
+                                <Name>
+                                    <ElementValue Type="Preferred">Loeys-Dietz syndrome</ElementValue>
+                                    <XRef ID="Loeys-Dietz+Syndrome/4288" DB="Genetic Alliance"/>
+                                    <XRef ID="loeys-dietz-syndrome" DB="Genetics Home Reference"/>
+                                    <XRef Type="Phenotypic series" ID="PS609192" DB="OMIM"/>
+                                    <XRef ID="446263001" DB="SNOMED CT"/>
+                                </Name>
+                                <Symbol>
+                                    <ElementValue Type="Preferred">LDS</ElementValue>
+                                </Symbol>
+                                <AttributeSet>
+                                    <Attribute Type="public definition">Loeys-Dietz syndrome (LDS) is characterized by vascular findings (cerebral, thoracic, and abdominal arterial aneurysms and/or dissections), skeletal manifestations (pectus excavatum or pectus carinatum, scoliosis, joint laxity, arachnodactyly, talipes equinovarus, cervical spine malformation and/or instability), craniofacial features (widely spaced eyes, strabismus, bifid uvula / cleft palate, and craniosynostosis that can involve any sutures), and cutaneous findings (velvety and translucent skin, easy bruising, and dystrophic scars). Individuals with LDS are predisposed to widespread and aggressive arterial aneurysms and pregnancy-related complications including uterine rupture and death. Individuals with LDS can show a strong predisposition for allergic/inflammatory disease including asthma, eczema, and reactions to food or environmental allergens. There is also an increased incidence of gastrointestinal inflammation including eosinophilic esophagitis and gastritis or inflammatory bowel disease. Wide variation in the distribution and severity of clinical features can be seen in individuals with LDS, even among affected individuals within a family who have the same pathogenic variant.</Attribute>
+                                    <XRef ID="NBK1133" DB="GeneReviews"/>
+                                </AttributeSet>
+                                <Citation Type="review" Abbrev="GeneReviews">
+                                    <ID Source="PubMed">20301312</ID>
+                                    <ID Source="BookShelf">NBK1133</ID>
+                                </Citation>
+                                <Citation Type="practice guideline" Abbrev="CCS, 2014">
+                                    <ID Source="PubMed">24882528</ID>
+                                </Citation>
+                                <Citation Type="practice guideline" Abbrev="ESC, 2014">
+                                    <ID Source="PubMed">25173340</ID>
+                                </Citation>
+                                <XRef ID="60030" DB="Orphanet"/>
+                                <XRef ID="C2697932" DB="MedGen"/>
+                                <XRef Type="Phenotypic series" ID="PS609192" DB="OMIM"/>
+                            </Trait>
+                        </TraitSet>
+                        <TraitSet ID="7840" Type="Disease">
+                            <Trait ID="16634" Type="Disease">
+                                <Name>
+                                    <ElementValue Type="Preferred">Thoracic aortic aneurysm and aortic dissection</ElementValue>
+                                    <XRef ID="3358" DB="GeneTests"/>
+                                    <XRef ID="Thoracic+Aortic+Aneurysms+and+Aortic+Dissections/9386" DB="Genetic Alliance"/>
+                                </Name>
+                                <Name>
+                                    <ElementValue Type="Alternate">Familial thoracic aortic aneurysm and aortic dissection</ElementValue>
+                                    <XRef ID="91387" DB="Orphanet"/>
+                                </Name>
+                                <Name>
+                                    <ElementValue Type="Alternate">Thoracic aortic aneurysms and dissections</ElementValue>
+                                    <XRef ID="UWMG_7008129" DB="CSER _CC_NCGL, University of Washington"/>
+                                </Name>
+                                <Symbol>
+                                    <ElementValue Type="Preferred">TAAD</ElementValue>
+                                </Symbol>
+                                <Symbol>
+                                    <ElementValue Type="Alternate">EDS</ElementValue>
+                                </Symbol>
+                                <AttributeSet>
+                                    <Attribute Type="public definition">Familial thoracic aortic aneurysm and dissection (familial TAAD) involves problems with the aorta, which is the large blood vessel that distributes blood from the heart to the rest of the body. Familial TAAD affects the upper part of the aorta, near the heart. This part of the aorta is called the thoracic aorta because it is located in the chest (thorax). Other vessels that carry blood from the heart to the rest of the body (arteries) can also be affected.In familial TAAD, the aorta can become weakened and stretched (aortic dilatation), which can lead to a bulge in the blood vessel wall (an aneurysm). Aortic dilatation may also lead to a sudden tearing of the layers in the aorta wall (aortic dissection), allowing blood to flow abnormally between the layers. These aortic abnormalities are potentially life-threatening because they can decrease blood flow to other parts of the body such as the brain or other vital organs, or cause the aorta to break open (rupture).The occurrence and timing of these aortic abnormalities vary, even within the same affected family. They can begin in childhood or not occur until late in life. Aortic dilatation is generally the first feature of familial TAAD to develop, although in some affected individuals dissection occurs with little or no aortic dilatation.Aortic aneurysms usually have no symptoms. However, depending on the size, growth rate, and location of these abnormalities, they can cause pain in the jaw, neck, chest, or back; swelling in the arms, neck, or head; difficult or painful swallowing; hoarseness; shortness of breath; wheezing; a chronic cough; or coughing up blood. Aortic dissections usually cause severe, sudden chest or back pain, and may also result in unusually pale skin (pallor), a very faint pulse, numbness or tingling (paresthesias) in one or more limbs, or paralysis.Familial TAAD may not be associated with other signs and symptoms. However, some individuals in affected families show mild features of related conditions called Marfan syndrome or Loeys-Dietz syndrome. These features include tall stature, stretch marks on the skin, an unusually large range of joint movement (joint hypermobility), and either a sunken or protruding chest. Occasionally, people with familial TAAD develop aneurysms in the brain or in the section of the aorta located in the abdomen (abdominal aorta). Some people with familial TAAD have heart abnormalities that are present from birth (congenital). Affected individuals may also have a soft out-pouching in the lower abdomen (inguinal hernia), an abnormal curvature of the spine (scoliosis), or a purplish skin discoloration (livedo reticularis) caused by abnormalities in the tiny blood vessels of the skin (dermal capillaries). However, these conditions are also common in the general population. Depending on the genetic cause of familial TAAD in particular families, they may have an increased risk of developing blockages in smaller arteries, which can lead to heart attack and stroke.</Attribute>
+                                    <XRef ID="familial-thoracic-aortic-aneurysm-and-dissection" DB="Genetics Home Reference"/>
+                                </AttributeSet>
+                                <Citation Type="review" Abbrev="GeneReviews">
+                                    <ID Source="PubMed">20301299</ID>
+                                    <ID Source="BookShelf">NBK1120</ID>
+                                </Citation>
+                                <Citation Type="practice guideline" Abbrev="CCS, 2014">
+                                    <ID Source="PubMed">24882528</ID>
+                                </Citation>
+                                <Citation Type="practice guideline" Abbrev="ESC, 2014">
+                                    <ID Source="PubMed">25173340</ID>
+                                </Citation>
+                                <XRef ID="91387" DB="Orphanet"/>
+                                <XRef ID="C4707243" DB="MedGen"/>
+                                <XRef Type="Phenotypic series" ID="PS607086" DB="OMIM"/>
+                            </Trait>
+                        </TraitSet>
+                    </ConditionList>
+                </Interpretation>
+            </Interpretations>
+            <ClinicalAssertionList>
+                <ClinicalAssertion ID="295748" DateCreated="2014-06-19" DateLastUpdated="2019-03-31" SubmissionDate="2018-03-26">
+                    <ClinVarSubmissionID localKey="GDX:58544|Not Provided" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000171758" Type="SCV" Version="12" SubmitterName="GeneDx" OrgID="26957" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2013-10-21">
+                        <Description>Benign</Description>
+                        <Comment Type="public">This variant is considered likely benign or benign based on one or more of the following criteria: it is a conservative change, it occurs at a poorly conserved position in the protein, it is predicted to be benign by multiple in silico algorithms, and/or has population frequency not consistent with disease.</Comment>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">GeneDX Variant Classification (06012015)</Attribute>
+                        <Citation>
+                            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/7oynscmk/mdi-5616_26957_genedx_interprules_final_061215.pdf</URL>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>yes</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="SMAD3"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <Location>
+                            <SequenceLocation Assembly="GRCh37" Chr="15" alternateAllele="T" referenceAllele="C" start="67358465" stop="67358465" variantLength="1"/>
+                        </Location>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_005902.3:c.-28C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <Name>
+                                <ElementValue Type="Preferred">not specified</ElementValue>
+                            </Name>
+                        </Trait>
+                    </TraitSet>
+                    <SubmissionNameList>
+                        <SubmissionName>SUB3839901</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="706991" DateCreated="2016-12-02" DateLastUpdated="2019-03-31" SubmissionDate="2016-10-18">
+                    <ClinVarSubmissionID localKey="575446|Thoracic Aortic Aneurysms and Aortic Dissections" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000393470" Type="SCV" Version="2" SubmitterName="Illumina Clinical Services Laboratory,Illumina" OrgID="504895" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2016-06-14">
+                        <Description>Benign</Description>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">ICSL Variant Classification 20161018</Attribute>
+                        <Citation Type="general">
+                            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/4jQgNGYk/ICSL_Variant_Classification_20161018.pdf</URL>
+                            <CitationText>ICSL_Variant_Classification_20161018.pdf</CitationText>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="SMAD3"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_005902.3:c.-28C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <Name>
+                                <ElementValue Type="Preferred">Thoracic Aortic Aneurysms and Aortic Dissections</ElementValue>
+                            </Name>
+                        </Trait>
+                    </TraitSet>
+                    <SubmissionNameList>
+                        <SubmissionName>ICSL_2016Q4</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="706990" DateCreated="2016-12-02" DateLastUpdated="2019-03-31" SubmissionDate="2016-10-18">
+                    <ClinVarSubmissionID localKey="575446|Loeys-Dietz Syndrome" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000393469" Type="SCV" Version="2" SubmitterName="Illumina Clinical Services Laboratory,Illumina" OrgID="504895" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2016-06-14">
+                        <Description>Benign</Description>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">ICSL Variant Classification 20161018</Attribute>
+                        <Citation Type="general">
+                            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/4jQgNGYk/ICSL_Variant_Classification_20161018.pdf</URL>
+                            <CitationText>ICSL_Variant_Classification_20161018.pdf</CitationText>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="SMAD3"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_005902.3:c.-28C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <Name>
+                                <ElementValue Type="Preferred">Loeys-Dietz Syndrome</ElementValue>
+                            </Name>
+                        </Trait>
+                    </TraitSet>
+                    <SubmissionNameList>
+                        <SubmissionName>ICSL_2016Q4</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+            </ClinicalAssertionList>
+            <TraitMappingList>
+                <TraitMapping ClinicalAssertionID="295748" TraitType="Disease" MappingType="Name" MappingValue="not specified" MappingRef="Preferred">
+                    <MedGen CUI="CN169374" Name="not specified"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="706991" TraitType="Disease" MappingType="Name" MappingValue="Thoracic Aortic Aneurysms and Aortic Dissections" MappingRef="Preferred">
+                    <MedGen CUI="C4707243" Name="Thoracic aortic aneurysm and aortic dissection"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="706990" TraitType="Disease" MappingType="Name" MappingValue="Loeys-Dietz Syndrome" MappingRef="Preferred">
+                    <MedGen CUI="C2697932" Name="Loeys-Dietz syndrome"/>
+                </TraitMapping>
+            </TraitMappingList>
+        </InterpretedRecord>
+    </VariationArchive>
+</ClinVarResult-Set>

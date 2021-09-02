@@ -1,0 +1,162 @@
+.border-bottom-nav{
+    border-bottom:1px solid #f1f1f1;
+    .nav-item {
+        .nav-link{
+            padding-top:.5rem;
+            padding-bottom:.5rem;
+            border-right:1px solid #f1f1f1;
+        }
+        &:last-of-type{
+            .nav-link{border-right:none;}
+        }
+    }
+}
+
+.table td {
+  padding: 0.75rem 0.9rem 0.75rem 0.9rem;
+}
+
+.publish-background {
+  background-color: #b6238a;
+  color: #f5f5f5;
+}
+
+.badge-new {
+  padding: 0 4px 0 4px;
+  border-radius: 10px;
+  background-color: #ff7700;
+  font-size: 90%;
+  margin-right: 2px;
+}
+
+.affiliated-records-container {
+    margin-top: 25px;
+    margin-bottom: 25px;
+
+    .number-of-entries {
+        color: inherit;
+        font-size: 80%;
+    }
+
+    .filter-by {
+        background-color: #f5f5f5;
+        padding: 5px;
+
+        .filter-term {
+            padding-bottom: 4px;
+        }
+
+        .multi-select {
+            z-index: 3;
+        }
+    }
+
+    .download-button button {
+        border-radius: 4px;
+        margin-top: -6px;
+    }
+
+    .panel {
+        border-radius: 4px;
+
+        h3 {
+            font-weight: 500;
+            line-height: 1.1;
+        }
+
+        .list-group {
+            padding-left: 0;
+            
+            .list-group-item {
+                position: relative;
+                display: block;
+                padding: 10px 15px;
+                margin-bottom: -1px;
+                border-bottom: 1px solid #ddd;
+                word-break: break-word;
+
+                &:last-child {
+                    border-bottom: 0;
+                }
+
+                a.help-doc {
+                    margin-left: 8px;
+            
+                    .icon {
+                        font-size: 16px;
+                        vertical-align: text-top;
+                    }
+
+                    &:after {
+                        content: '';
+                    }
+                }
+            }
+        }
+
+        .panel-body {
+            p {
+                margin: 0;
+            }
+        }
+    }
+
+    .affiliated-evidence-list {
+        margin-bottom: 0;
+
+        .item-name {
+            width: 70%;
+            word-break: break-word;
+        }
+
+        .item-status,
+        .item-timestamp {
+            width: 15%;
+        }
+    }
+
+    .affiliated-interpretation-list {
+        margin-bottom: 0;
+
+        .item-variant {
+            width: 35%;
+            word-break: break-word;
+        }
+
+        .item-attribute {
+            width: 35%;
+        }
+
+        .item-status,
+        .item-timestamp {
+            width: 15%;
+        }
+    }
+}
+
+.item-status {
+    .classification-status-wrapper {
+        font-size: 1.1em;
+
+        .label {
+            margin-right: 8px;
+            padding-top: .3em;
+
+            .badge {
+                background-color: #ff7700;
+                font-size: 85%;
+                margin-right: 2px;
+            }
+        }
+
+        .publish-warning {
+            color: #b6238a;
+            margin-left: -4px;
+
+            i.icon-exclamation-triangle {
+                color: #666;
+                vertical-align: middle;
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "DiseaseModel",
+  "type": "object",
+  "properties": {
+    "item_type": {
+      "type": "string",
+      "enum": ["disease"]
+    },
+    "pk": {"type": "string"},
+    "last_modified": {"type": "string"}
+  }
+}

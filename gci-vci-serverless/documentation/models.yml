@@ -1,0 +1,141 @@
+models:
+  -
+      name: Variant
+      description: 'Post Variant Model'
+      contentType: application/json
+      schema: '${file(src/models/variant.json)}'
+  -
+      name: Interpretation
+      description: 'Post interpretation model'
+      contentType: application/json
+      schema: '${file(src/models/interpretation.json)}'
+  -
+      name: Evaluation
+      description: 'Post Variant Model'
+      contentType: application/json
+      schema: '${file(src/models/evaluation.json)}'
+  -
+      name: CuratedEvidence
+      description: 'Post curated evidence model'
+      contentType: application/json
+      schema: '${file(src/models/curated_evidence.json)}'
+  -
+      name: Article
+      description: 'Post article model'
+      contentType: application/json
+      schema: '${file(src/models/article.json)}'
+  -
+      name: GDM
+      description: 'Post GDM model'
+      contentType: application/json
+      schema: '${file(src/models/gdm.json)}'
+  -
+      name: Disease
+      description: 'Post disease model'
+      contentType: application/json
+      schema: '${file(src/models/disease.json)}'
+  -
+      name: ProvisionalClassification
+      description: 'Post Provisional Classification model'
+      contentType: application/json
+      schema: '${file(src/models/provisionalClassification.json)}'
+  -
+      name: Annotation
+      description: 'Post annotation model'
+      contentType: application/json
+      schema: '${file(src/models/annotation.json)}'
+  -
+      name: Population
+      description: 'Post population model'
+      contentType: application/json
+      schema: '${file(src/models/population.json)}'
+  -
+      name: ProvisionalVariant
+      description: 'Post provisional_variant model'
+      contentType: application/json
+      schema: '${file(src/models/provisional_variant.json)}'
+  -
+      name: Functional
+      description: 'Post functional model'
+      contentType: application/json
+      schema: '${file(src/models/functional.json)}'
+  -
+      name: Computational
+      description: 'Post computational Model'
+      contentType: application/json
+      schema: '${file(src/models/computational.json)}'
+  -
+      name: Group
+      description: 'Post group model'
+      contentType: application/json
+      schema: '${file(src/models/group.json)}'
+  -
+      name: Family
+      description: 'Post family model'
+      contentType: application/json
+      schema: '${file(src/models/family.json)}'
+  -
+      name: Individual
+      description: 'Post individual model'
+      contentType: application/json
+      schema: '${file(src/models/individual.json)}'
+  -
+      name: Experimental
+      description: 'Post experimental model'
+      contentType: application/json
+      schema: '${file(src/models/experimental.json)}'
+  -
+      name: EvidenceScore
+      description: 'Post EvidenceScore Model'
+      contentType: application/json
+      schema: '${file(src/models/evidenceScore.json)}'
+  -
+      name: VariantScore
+      description: 'Post VariantScore Model'
+      contentType: application/json
+      schema: '${file(src/models/variantScore.json)}'
+  -
+      name: CaseControl
+      description: 'Post casecontrol'
+      contentType: application/json
+      schema: '${file(src/models/caseControl.json)}'
+  -
+      name: User
+      description: 'Post user'
+      contentType: application/json
+      schema: '${file(src/models/user.json)}'
+  -
+      name: Affiliation
+      description: 'Post affiliation'
+      contentType: application/json
+      schema: '${file(src/models/affiliation.json)}'
+  -
+      name: Gene
+      description: 'Post Gene'
+      contentType: application/json
+      schema: '${file(src/models/gene.json)}'
+  -
+      name: Pathogenicity
+      description: 'Post pathogenicity'
+      contentType: application/json
+      schema: '${file(src/models/pathogenicity.json)}'
+  -
+      name: Assessment
+      description: 'Post assessment'
+      contentType: application/json
+      schema: '${file(src/models/assessment.json)}'
+  -
+      name: Vpt
+      description: 'Post vpt'
+      contentType: application/json
+      schema: '${file(src/models/vpt.json)}'
+  -
+      name: VpSave
+      description: 'Post vp save'
+      contentType: application/json
+      schema: '${file(src/models/vp_save.json)}'
+  -
+      name: VpExport
+      description: 'Post vp export'
+      contentType: application/json
+      schema: '${file(src/models/vp_export.json)}'

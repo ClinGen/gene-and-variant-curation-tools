@@ -1,0 +1,74 @@
+{
+  "caId": "CA345983559",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_000384.3:c.11092A>T"
+  ],
+  "clingenPreferredTitle": "NM_000384.3(APOB):c.11092A>T (p.Arg3698Trp)",
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:33.349Z",
+  "hgnc": [
+    "APOB"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000002.11:g.21228648T>A",
+    "GRCh38": "NC_000002.12:g.21005776T>A",
+    "NCBI36": "NC_000002.10:g.21082153T>A",
+    "others": [
+      "CM000664.2:g.21005776T>A",
+      "CM000664.1:g.21228648T>A",
+      "NG_011793.1:g.43298A>T"
+    ]
+  },
+  "ldh": {
+    "id": "37004163",
+    "last_modified_date": "2019-10-03T14:58:30.255Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/37004163"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001583",
+          "term": "missense_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000375.3:p.Arg3698Trp"
+      ],
+      "system": "RefSeq",
+      "title": "NM_000384.3:c.11092A>T"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001583",
+          "term": "missense_variant"
+        }
+      ],
+      "proteinEffects": [
+        "ENSP00000233242.1:p.Arg3698Trp"
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000233242.5:c.11092A>T"
+    }
+  ],
+  "proteinEffects": [
+    "NP_000375.2:p.Arg3698Trp",
+    "XP_011531111.1:p.=",
+    "NP_000375.3:p.Arg3698Trp",
+    "ENSP00000233242.1:p.Arg3698Trp",
+    "ENSP00000477990.1:p.Arg3698Trp"
+  ],
+  "revel": 0.262,
+  "transcriptHGVS": [
+    "NM_000384.2:c.11092A>T",
+    "XM_011532809.1:c.5869+4957A>T",
+    "NM_000384.3:c.11092A>T",
+    "ENST00000233242.5:c.11092A>T",
+    "ENST00000616098.4:n.11092A>T"
+  ]
+}

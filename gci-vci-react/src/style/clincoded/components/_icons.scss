@@ -1,0 +1,18 @@
+.card .credit-vep {
+  background: url(../../img/vep-logo.png) 0 1px no-repeat;
+
+  // background-size: 18px 18px;
+  display: inline-block;
+  // height: 19px;
+  // width: 18px;
+  margin-left: 10px;
+  vertical-align: bottom;
+
+  span {
+    display: none;
+  }
+
+  background-size: 38px 16px;
+  height: 17px;
+  width: 38px;
+}

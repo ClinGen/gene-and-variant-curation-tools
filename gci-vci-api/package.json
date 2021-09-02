@@ -1,0 +1,26 @@
+{
+  "name": "gci-vci-serverless",
+  "version": "0.1.0",
+  "description": "This project contains the source for basic features of the CCI VCI serverless API. This project is built with the Serverless framework which makes for simple deployments and code organization.",
+  "dependencies": {
+    "serverless-add-api-key": "^4.2.0",
+    "serverless-wsgi": "^1.7.5"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "nodemon": "^2.0.6",
+    "serverless": "^1.64.0",
+    "serverless-aws-documentation": "^1.1.0",
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-offline": "^6.9.0",
+    "serverless-plugin-split-stacks": "^1.9.3",
+    "serverless-python-requirements": "^5.1.0",
+    "serverless-reqvalidator-plugin": "^1.0.3",
+    "serverless-s3-local": "^0.6.7"
+  },
+  "scripts": {
+    "test": "python3 -m pytest tests/unit/"
+  },
+  "author": "",
+  "license": "ISC"
+}

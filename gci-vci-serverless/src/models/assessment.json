@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "AssessmentModel",
+  "type": "object",
+  "properties": {
+    "item_type": {
+      "type":"string",
+      "enum":["assessment"]
+      },
+    "PK": { "type": "string" },
+    "submitted_by": {
+      "type": "string",
+      "$schema": "user"
+    },
+    "date_created": { "type": "string" },
+    "last_modified": { "type": "string" },
+    "value": {
+      "title": "Value",
+      "description": "Value of assessment",
+      "type": "string",
+      "enum": [
+        "Not Assessed",
+        "Supports",
+        "Review",
+        "Contradicts"
+      ]
+    },
+    "evidence_type": {
+      "description": "Object type of assessed evidence",
+      "type": "string"
+    },
+    "evidence_id": {
+      "description": "uuid of assessed evidence",
+      "type": "string"
+    },
+    "evidence_gdm": {
+      "description": "uuid of GDM the assessed evidence belonging to",
+      "type": "string"
+    },
+    "active": {
+      "title": "Active",
+      "description": "Boolean switch for activation of the assessment",
+      "type": "boolean"
+    }
+  }
+}

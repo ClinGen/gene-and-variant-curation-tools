@@ -1,0 +1,24 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "VariantModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["variant"]
+        },
+        "pk":{"type":"string"},
+        "last_modified":{
+            "type":"string"
+        },
+        "submitted_by":{
+            "type":"string",
+            "$schema": "user"
+        },
+        "modified_by": {
+            "type":"string",
+            "$schema": "user"
+        },
+        "date_created":{"type":"string"}
+    }
+}

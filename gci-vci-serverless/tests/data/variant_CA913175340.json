@@ -1,0 +1,24 @@
+{
+  "@context": "http://reg.genome.network/schema/allele.jsonld",
+  "@id": "http://reg.genome.network/allele/CA913175340",
+  "genomicAlleles": [
+    {
+      "chromosome": "MT",
+      "coordinates": [
+        {
+          "allele": "G",
+          "end": 15974,
+          "referenceAllele": "A",
+          "start": 15973
+        }
+      ],
+      "hgvs": [
+        "NC_012920.1:m.15974A>G",
+        "J01415.2:m.15974A>G"
+      ],
+      "referenceGenome": "GRCh38",
+      "referenceSequence": "http://reg.genome.network/refseq/RS000433"
+    }
+  ],
+  "type": "nucleotide"
+}

@@ -1,0 +1,153 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: gci-vci-serverless
+# app and org for use with dashboard.serverless.com
+app: gci-vci-serverless-app
+#org: tchramzn
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  timeout: 30
+  apiGateway:
+    minimumCompressionSize: 0
+
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.py
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.py
+#    - exclude-me-dir/**
+package:
+  individually: true
+  exclude:
+    - venv/**
+    - node_modules/**
+    - .dynamodb/**
+    - .s3-buckets/**
+    - utilities/**
+
+functions:
+  - ${file(./functions/gci-vci-serverless.yml)}
+  - ${file(./functions/gci-vci-post-confirmation-trigger.yml)}
+  # - ${file(./functions/gci-vci-vp-count-trigger.yml)}
+  - ${file(./functions/gci-vci-history-trigger.yml)}
+  - ${file(./functions/gci-vci-kafka-cspec.yml)}
+  - ${file(./functions/gci-vci-kafka-ldh.yml)}
+            
+plugins:
+  - serverless-dynamodb-local
+  #- serverless-dynamodb-autoscaling
+  - serverless-s3-local
+  - serverless-offline
+  - serverless-wsgi
+  - serverless-python-requirements
+  - serverless-aws-documentation
+  - serverless-reqvalidator-plugin
+  - serverless-plugin-split-stacks
+
+custom:
+  serverless-offline:
+    host: 0.0.0.0
+    noPrependStageInUrl: true
+  splitStacks:
+    nestedStackCount: 7
+    perFunction: false
+    perGroupFunction: true
+  
+  resources:
+    approved-bucket-name: gci-vci-approved-${self:provider.stage}
+    provisional-bucket-name: gci-vci-provisional-${self:provider.stage}
+    snapshot-bucket-name: gci-vci-snapshots-${self:provider.stage}
+    vp-bucket-name: gci-vci-vp-${self:provider.stage}
+    history-table-name: GeneVariant-history-${self:provider.stage}
+    gci-vci-table-name: GeneVariantCuration-${self:provider.stage}
+    vpt-table-name: GeneVariantVPT-${self:provider.stage}
+    vpf-table-name: GeneVariantVPF-${self:provider.stage}
+    gci-vpthistory-table-name: GeneVariantVPT-history-${self:provider.stage}
+
+  documentation:
+    api: ${file(./documentation/api.yml):api}
+    models: ${file(./documentation/models.yml):models}
+            
+  dynamodb:
+    stages:
+      - dev
+  s3:
+    host: 0.0.0.0
+    port: 4569
+    directory: ./.s3-buckets
+  
+  wsgi:
+    app: app.app
+    packRequirements: false
+
+  pythonRequirements:
+    dockerizePip: non-linux
+    
+  functions:
+  app:
+    handler: wsgi.handler
+
+resources:
+  - ${file(./resources/s3-buckets.yml)}
+  - ${file(./resources/cognito.yml)}
+  - ${file(./resources/api-validation.yml)}
+  - ${file(./resources/vpt-table.yml)}
+  - ${file(./resources/vpf-table.yml)}
+  - ${file(./resources/gci-vci-table.yml)}
+  - ${file(./resources/api-gate-way-errors.yml)}
+  - ${file(./resources/history-table.yml)}
+  - ${file(./resources/iam.yml)}  
+       
+  # Despite resources being defined in separate files Outputs are overwritten if not specified here.
+  - Outputs:
+
+      ClinGenTableName:
+        Description: "The name of the DynamoDB table."
+        Value: !Ref ClinGenTable
+      ClinGenTableArn:
+        Description: "The Arn of the DynamoDB table."
+        Value: !GetAtt ClinGenTable.Arn
+      ClinGenVPTTableName:
+        Description: "The name of the DynamoDB table."
+        Value: !Ref ClinGenVPTTable
+      ClinGenVPTTableArn:
+        Description: "The Arn of the DynamoDB table."
+        Value: !GetAtt ClinGenVPTTable.Arn
+      ClinGenVPFTableName:
+        Description: "The name of the DynamoDB table."
+        Value: !Ref ClinGenVPFTable
+      ClinGenVPFTableArn:
+        Description: "The Arn of the DynamoDB table."
+        Value: !GetAtt ClinGenVPFTable.Arn
+
+      UserPoolId:
+        Value:
+          Ref: CognitoUserPool
+      UserPoolClientId:
+        Value:
+          Ref: CognitoUserPoolClient
+      IdentityPoolId:
+        Value:
+          Ref: CognitoIdentityPool

@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2019//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_190101.dtd">
+<PubmedArticleSet>
+    <PubmedArticle>
+        <MedlineCitation Status="MEDLINE" Owner="NLM">
+            <PMID Version="1">55555</PMID>
+            <DateCompleted>
+                <Year>1976</Year>
+                <Month>04</Month>
+                <Day>10</Day>
+            </DateCompleted>
+            <DateRevised>
+                <Year>2019</Year>
+                <Month>06</Month>
+                <Day>10</Day>
+            </DateRevised>
+            <Article PubModel="Print">
+                <Journal>
+                    <ISSN IssnType="Print">0140-6736</ISSN>
+                    <JournalIssue CitedMedium="Print">
+                        <Volume>1</Volume>
+                        <Issue>7953</Issue>
+                        <PubDate>
+                            <Year>1976</Year>
+                            <Month>Jan</Month>
+                            <Day>31</Day>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>Lancet (London, England)</Title>
+                    <ISOAbbreviation>Lancet</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>Letter: Buffer therapy and intraventricular haemorrhage.</ArticleTitle>
+                <Pagination>
+                    <MedlinePgn>249</MedlinePgn>
+                </Pagination>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Wigglesworth</LastName>
+                        <ForeName>J S</ForeName>
+                        <Initials>JS</Initials>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <PublicationTypeList>
+                    <PublicationType UI="D016428">Journal Article</PublicationType>
+                </PublicationTypeList>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>England</Country>
+                <MedlineTA>Lancet</MedlineTA>
+                <NlmUniqueID>2985213R</NlmUniqueID>
+                <ISSNLinking>0140-6736</ISSNLinking>
+            </MedlineJournalInfo>
+            <ChemicalList>
+                <Chemical>
+                    <RegistryNumber>0</RegistryNumber>
+                    <NameOfSubstance UI="D001639">Bicarbonates</NameOfSubstance>
+                </Chemical>
+                <Chemical>
+                    <RegistryNumber>0</RegistryNumber>
+                    <NameOfSubstance UI="D002021">Buffers</NameOfSubstance>
+                </Chemical>
+            </ChemicalList>
+            <CitationSubset>AIM</CitationSubset>
+            <CitationSubset>IM</CitationSubset>
+            <MeshHeadingList>
+                <MeshHeading>
+                    <DescriptorName UI="D001639" MajorTopicYN="N">Bicarbonates</DescriptorName>
+                    <QualifierName UI="Q000009" MajorTopicYN="Y">adverse effects</QualifierName>
+                    <QualifierName UI="Q000627" MajorTopicYN="N">therapeutic use</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D001724" MajorTopicYN="N">Birth Weight</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D002021" MajorTopicYN="N">Buffers</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D005865" MajorTopicYN="N">Gestational Age</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006470" MajorTopicYN="N">Hemorrhage</DescriptorName>
+                    <QualifierName UI="Q000139" MajorTopicYN="Y">chemically induced</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006801" MajorTopicYN="N">Humans</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006819" MajorTopicYN="Y">Hyaline Membrane Disease</DescriptorName>
+                    <QualifierName UI="Q000188" MajorTopicYN="N">drug therapy</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D007231" MajorTopicYN="N">Infant, Newborn</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006475" MajorTopicYN="N">Vitamin K Deficiency Bleeding</DescriptorName>
+                    <QualifierName UI="Q000139" MajorTopicYN="N">chemically induced</QualifierName>
+                </MeshHeading>
+            </MeshHeadingList>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>1976</Year>
+                    <Month>1</Month>
+                    <Day>31</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="medline">
+                    <Year>1976</Year>
+                    <Month>1</Month>
+                    <Day>31</Day>
+                    <Hour>0</Hour>
+                    <Minute>1</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="entrez">
+                    <Year>1976</Year>
+                    <Month>1</Month>
+                    <Day>31</Day>
+                    <Hour>0</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>ppublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">55555</ArticleId>
+                <ArticleId IdType="doi">10.1016/s0140-6736(76)91368-4</ArticleId>
+            </ArticleIdList>
+        </PubmedData>
+    </PubmedArticle>
+</PubmedArticleSet>

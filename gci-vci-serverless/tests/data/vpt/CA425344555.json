@@ -1,0 +1,73 @@
+{
+  "caId": "CA425344555",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_000384.3:c.8676A>G"
+  ],
+  "clingenPreferredTitle": "NM_000384.3(APOB):c.8676A>G (p.Lys2892=)",
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:53.836Z",
+  "hgnc": [
+    "APOB"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000002.11:g.21231064T>C",
+    "GRCh38": "NC_000002.12:g.21008192T>C",
+    "NCBI36": "NC_000002.10:g.21084569T>C",
+    "others": [
+      "CM000664.2:g.21008192T>C",
+      "CM000664.1:g.21231064T>C",
+      "NG_011793.1:g.40882A>G"
+    ]
+  },
+  "ldh": {
+    "id": "37011463",
+    "last_modified_date": "2019-10-03T15:01:56.534Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/37011463"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001819",
+          "term": "synonymous_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000375.3:p.Lys2892="
+      ],
+      "system": "RefSeq",
+      "title": "NM_000384.3:c.8676A>G"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001819",
+          "term": "synonymous_variant"
+        }
+      ],
+      "proteinEffects": [
+        "ENSP00000233242.1:p.Lys2892="
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000233242.5:c.8676A>G"
+    }
+  ],
+  "proteinEffects": [
+    "NP_000375.2:p.Lys2892=",
+    "XP_011531111.1:p.=",
+    "NP_000375.3:p.Lys2892=",
+    "ENSP00000233242.1:p.Lys2892=",
+    "ENSP00000477990.1:p.Lys2892="
+  ],
+  "transcriptHGVS": [
+    "NM_000384.2:c.8676A>G",
+    "XM_011532809.1:c.5869+2541A>G",
+    "NM_000384.3:c.8676A>G",
+    "ENST00000233242.5:c.8676A>G",
+    "ENST00000616098.4:n.8676A>G"
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "caId": "CA000052",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_000546.6:c.125A>G"
+  ],
+  "clinVarSignificanceCounts": {
+    "benign": 0,
+    "likelyBenign": 0,
+    "likelyPathogenic": 0,
+    "notProvided": 0,
+    "pathogenic": 0,
+    "uncertain": 2
+  },
+  "clinVarVariantId": "141464",
+  "clinVarVariantTitle": "NM_000546.5(TP53):c.125A>G (p.Asp42Gly)",
+  "clingenPreferredTitle": "NM_000546.6(TP53):c.125A>G (p.Asp42Gly)",
+  "clinicalSignificanceSummary": {
+    "clinVarLastEvaluatedDate": "2018-09-13T00:00:00.000Z",
+    "clinVarMostRecentSubmissionDate": "2020-11-30T00:00:00.000Z",
+    "clinVarReviewStatus": "criteria provided, multiple submitters, no conflicts",
+    "clinicalSignificance": "Uncertain significance"
+  },
+  "dbSNPId": 587781767,
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:30.617Z",
+  "hgnc": [
+    "TP53"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000017.10:g.7579562T>C",
+    "GRCh38": "NC_000017.11:g.7676244T>C",
+    "NCBI36": "NC_000017.9:g.7520287T>C",
+    "others": [
+      "CM000679.2:g.7676244T>C",
+      "CM000679.1:g.7579562T>C",
+      "NG_017013.2:g.16307A>G",
+      "LRG_321:g.16307A>G"
+    ]
+  },
+  "ldh": {
+    "id": "49046445",
+    "last_modified_date": "2019-10-03T20:27:48.271Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/49046445"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001583",
+          "term": "missense_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000537.3:p.Asp42Gly"
+      ],
+      "system": "RefSeq",
+      "title": "NM_000546.6:c.125A>G"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001583",
+          "term": "missense_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000537.3:p.Asp42Gly"
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000269305.9:c.125A>G",
+      "transcriptNotInCAR": true
+    }
+  ],
+  "proteinEffects": [
+    "NP_000537.3:p.Asp42Gly",
+    "NP_001119584.1:p.Asp42Gly",
+    "NP_001119585.1:p.Asp42Gly",
+    "NP_001119586.1:p.Asp42Gly",
+    "NP_001119590.1:p.Asp3Gly",
+    "NP_001263624.1:p.Asp3Gly",
+    "NP_001263625.1:p.Asp3Gly",
+    "NP_001263689.1:p.Asp3Gly",
+    "NP_001263690.1:p.Asp3Gly",
+    "NP_001263624.1:p.Asp3Gly",
+    "NP_001263625.1:p.Asp3Gly",
+    "NP_001263689.1:p.Asp3Gly",
+    "NP_001263690.1:p.Asp3Gly",
+    "NP_000537.3:p.Asp42Gly",
+    "NP_001119584.1:p.Asp42Gly",
+    "NP_001119585.1:p.Asp42Gly",
+    "NP_001119586.1:p.Asp42Gly",
+    "NP_001119590.1:p.Asp3Gly",
+    "NP_001263624.1:p.Asp3Gly",
+    "NP_001263625.1:p.Asp3Gly",
+    "NP_001263689.1:p.Asp3Gly",
+    "NP_001263690.1:p.Asp3Gly",
+    "ENSP00000269305.4:p.Asp42Gly",
+    "ENSP00000352610.4:p.Asp42Gly",
+    "ENSP00000410739.2:p.Asp42Gly",
+    "ENSP00000391127.2:p.Asp42Gly",
+    "ENSP00000391478.2:p.Asp42Gly",
+    "ENSP00000398846.2:p.Asp42Gly",
+    "ENSP00000426252.1:p.Asp42Gly",
+    "ENSP00000424104.1:p.Asp42Gly",
+    "ENSP00000425104.1:p.=",
+    "ENSP00000423862.1:p.=",
+    "ENSP00000473895.1:p.Asp42Gly",
+    "ENSP00000478219.1:p.Asp3Gly",
+    "ENSP00000480868.1:p.Asp3Gly",
+    "ENSP00000482903.1:p.Asp42Gly",
+    "ENSP00000482258.1:p.Asp42Gly",
+    "ENSP00000482537.1:p.Asp3Gly",
+    "ENSP00000481638.1:p.Asp3Gly",
+    "ENSP00000482222.1:p.Asp3Gly",
+    "ENSP00000488924.1:p.Asp3Gly"
+  ],
+  "revel": 0.292,
+  "transcriptHGVS": [
+    "NM_000546.5:c.125A>G",
+    "LRG_321t1:c.125A>G",
+    "NM_001126112.2:c.125A>G",
+    "LRG_321t2:c.125A>G",
+    "NM_001126113.2:c.125A>G",
+    "LRG_321t4:c.125A>G",
+    "NM_001126114.2:c.125A>G",
+    "LRG_321t3:c.125A>G",
+    "NM_001126118.1:c.8A>G",
+    "LRG_321t8:c.8A>G",
+    "NM_001276695.1:c.8A>G",
+    "NM_001276696.1:c.8A>G",
+    "NM_001276760.1:c.8A>G",
+    "NM_001276761.1:c.8A>G",
+    "NM_001276695.2:c.8A>G",
+    "NM_001276696.2:c.8A>G",
+    "NM_001276760.2:c.8A>G",
+    "NM_001276761.2:c.8A>G",
+    "NM_000546.6:c.125A>G",
+    "NM_001126112.3:c.125A>G",
+    "NM_001126113.3:c.125A>G",
+    "NM_001126114.3:c.125A>G",
+    "NM_001126118.2:c.8A>G",
+    "NM_001276695.3:c.8A>G",
+    "NM_001276696.3:c.8A>G",
+    "NM_001276760.3:c.8A>G",
+    "NM_001276761.3:c.8A>G",
+    "ENST00000269305.8:c.125A>G",
+    "ENST00000359597.8:n.125A>G",
+    "ENST00000413465.6:n.125A>G",
+    "ENST00000420246.6:c.125A>G",
+    "ENST00000445888.6:c.125A>G",
+    "ENST00000455263.6:c.125A>G",
+    "ENST00000503591.1:c.125A>G",
+    "ENST00000505014.5:n.381A>G",
+    "ENST00000508793.5:c.125A>G",
+    "ENST00000509690.5:c.-21-1008A>G",
+    "ENST00000514944.5:c.96+138A>G",
+    "ENST00000604348.5:c.125A>G",
+    "ENST00000610292.4:c.8A>G",
+    "ENST00000610538.4:c.8A>G",
+    "ENST00000615910.4:n.125A>G",
+    "ENST00000617185.4:c.125A>G",
+    "ENST00000619485.4:c.8A>G",
+    "ENST00000620739.4:c.8A>G",
+    "ENST00000622645.4:c.8A>G",
+    "ENST00000635293.1:c.8A>G"
+  ]
+}

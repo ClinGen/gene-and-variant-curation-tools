@@ -1,0 +1,34 @@
+{
+  "clinvarInterpretationSummary": {
+    "ReviewStatus": "no assertion criteria provided",
+    "ClinicalSignificance": "Likely pathogenic",
+    "Explanation": "",
+    "DateLastEvaluated": "",
+    "SubmissionCount": "1"
+  },
+  "clinvarInterpretationSCVs": [
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "214700"
+            },
+            {
+              "db": "MedGen",
+              "id": "C0267662"
+            }
+          ],
+          "name": "Congenital secretory diarrhea, chloride type"
+        }
+      ],
+      "accession": "SCV000081804",
+      "version": "1",
+      "submitterName": "Juha Muilu Group; Institute for Molecular Medicine Finland (FIMM)",
+      "orgID": "500116",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "probable-pathogenic"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+.gene-centric-table {
+  .card-header {
+    color: $panel-heading-text;
+    background-color: $panel-heading-bg;
+    border-color: $panel-heading-border;
+  }
+
+  .table {
+    margin-bottom: 0;
+    border-top: none;
+  }
+
+  a.credit-mygene {
+    background: url(../../img/mygene-logo.png) 0 1px no-repeat;
+  }
+
+  a.credit-mygene {
+    background-size: 18px 18px;
+    display: inline-block;
+    height: 19px;
+    width: 18px;
+    margin-left: 10px;
+    vertical-align: bottom;
+
+    span {
+      display: none;
+    }
+  }
+
+  .table thead td,
+  .table tbody td {
+    width: 16.66667%;
+  }
+
+  .table tfoot td {
+    font-size: 90%;
+  }
+
+  .gene-linkout-span {
+    margin: 4px;
+  }
+}

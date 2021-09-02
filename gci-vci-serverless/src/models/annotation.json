@@ -1,0 +1,60 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "AnnotationModel",
+    "type": "object",
+    "properties": {
+        "item_type": {
+            "type":"string",
+            "enum":["annotation"]
+            },
+        "PK": { "type": "string" },
+        "associatedGdm": { "type": "string" },
+        "submitted_by": { "type": "string", "$schema": "user" },
+        "date_created": { "type": "string" },
+        "modified_by": { "type": "string", "$schema": "user" },
+        "last_modified": { "type": "string" },
+        "schema_version": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "article": {
+            "$schema": "article",
+            "description": "PMID of article from where evidence is picked",
+            "type": "string"
+        },
+        "groups": {
+            "type": "array", 
+            "items": {
+                "type": "string",
+                "$schema": "group"
+            }
+        },
+        "families": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "family"
+            }
+        },
+        "individuals": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "individual"
+            }
+        },
+        "experimentalData": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "experimental"
+            }
+        },
+        "caseControlStudies": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "caseControl"
+            }
+        },
+        "articleNotes": { "type": "object" }
+    }
+} 

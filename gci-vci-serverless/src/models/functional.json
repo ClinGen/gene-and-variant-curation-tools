@@ -1,0 +1,24 @@
+{   
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "FunctionalModel",
+  "type": "object",
+  "properties": {
+    "variant": {
+      "type": "string"
+    },
+    "functionalData": {
+      "type": "object"
+    },
+    "item_type": {
+        "type": "string",
+        "enum": ["functional"]
+        },
+    "pk": {
+      "type": "string"
+    },
+    "last_modified": {
+      "type":"string"
+    }
+  },
+  "required": ["item_type"]
+}

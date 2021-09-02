@@ -1,0 +1,75 @@
+{
+  "caId": "CA229834305",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_005422.4:c.791-1395T>A"
+  ],
+  "clingenPreferredTitle": "NM_005422.4(TECTA):c.791-1395T>A (p.=)",
+  "dbSNPId": 746719334,
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:58.455Z",
+  "hgnc": [
+    "TECTA"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000011.9:g.120987620T>A",
+    "GRCh38": "NC_000011.10:g.121116911T>A",
+    "NCBI36": "NC_000011.8:g.120492830T>A",
+    "others": [
+      "CM000673.2:g.121116911T>A",
+      "CM000673.1:g.120987620T>A",
+      "NG_011633.1:g.19246T>A"
+    ]
+  },
+  "ldh": {
+    "id": "48640608",
+    "last_modified_date": "2019-10-03T20:13:06.697Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/48640608"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_005413.2:p.="
+      ],
+      "system": "RefSeq",
+      "title": "NM_005422.4:c.791-1395T>A"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_005413.2:p.="
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000392793.6:c.791-1395T>A",
+      "transcriptNotInCAR": true
+    }
+  ],
+  "proteinEffects": [
+    "NP_005413.2:p.=",
+    "NP_001365690.1:p.=",
+    "NP_005413.2:p.=",
+    "ENSP00000264037.2:p.=",
+    "ENSP00000376543.1:p.="
+  ],
+  "transcriptHGVS": [
+    "NM_005422.2:n.791-1395T>A",
+    "NM_001378761.1:c.1748-1395T>A",
+    "NM_005422.4:c.791-1395T>A",
+    "ENST00000264037.2:n.791-1395T>A",
+    "ENST00000392793.5:c.791-1395T>A"
+  ]
+}

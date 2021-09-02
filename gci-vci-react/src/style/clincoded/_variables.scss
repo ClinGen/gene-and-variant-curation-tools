@@ -1,0 +1,105 @@
+$color-trim: #2697d1;
+$color-trim-dark: #293894;
+$color-link: #1b75bc;
+$color-btn: #1b75bc;
+$color-btn-hover: #293894;
+$color-hover: lighten($color-trim, 40%);
+$color-neutral-bg: #e8e8e8;
+$color-selected: #e9f4d0;
+
+$font-size-base: 1rem;
+$font-size-large: 1.25rem;
+$font-size-small: 0.85rem;
+
+$font-size-h1: 2.6rem;
+$font-size-h2: 2.15rem;
+$font-size-h3: 1.7rem;
+$font-size-h4: 1.25rem;
+$font-size-h5: 1rem;
+$font-size-h6: 0.85rem;
+
+$group-curation: #FFFF00;
+$group-curation-bg: desaturate(lighten($group-curation,45%),50%);
+$group-curation-trim: darken($group-curation,10%);
+
+$label-color: #fff !default;
+$label-note: #606060;
+
+$table-header-fg: #fff;
+$table-header-bg: $color-trim;
+$table-header-highlight-bg: darken($table-header-bg, 10%);
+$table-row-odd-bg: #f0f0f8;
+$table-row-even-bg: #fcfcff;
+
+$panel-heading-bg: #d9edf7;
+$panel-heading-text: #31708f;
+$panel-heading-border: #bce8f1; 
+$panel-body-bg: #f0f0f0;
+
+$benign-strong: #62387e;
+$benign-supporting: #2b67a0;
+$pathogenic-supporting: #728b42;
+$pathogenic-moderate: #d36735;
+$pathogenic-strong: #d33535;
+$pathogenic-very-strong: #d33535;
+$stand-alone: #62387e;
+
+// from old bootstrap version
+$gray-base:              #000 !default;
+$gray-darker:            lighten($gray-base, 13.5%) !default; // #222
+$gray-dark:              lighten($gray-base, 20%) !default;   // #333
+$gray:                   lighten($gray-base, 33.5%) !default; // #555
+$gray-light:             lighten($gray-base, 46.7%) !default; // #777
+$gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
+
+$brand-primary:         darken(#428bca, 6.5%) !default; // #337ab7
+$brand-success:         #5cb85c !default;
+$brand-info:            #5bc0de !default;
+$brand-warning:         #f0ad4e !default;
+$brand-danger:          #d9534f !default;
+
+
+$brand-primary-dark: darken($brand-primary, 10%);
+$fa-font-path: '../font' !default;
+
+// Subtle box-shadows
+$box-shadow-light: 1px 2px 8px rgba(0,0,0,0.05);
+$box-shadow-medium: 1px 3px 12px rgba(0,0,0,0.1);
+
+//== Media queries breakpoints
+//
+//## Define the breakpoints at which your layout will change, adapting to different screen sizes.
+
+// Extra small screen / phone
+//** Deprecated `$screen-xs` as of v3.0.1
+$screen-xs:                  480px !default;
+//** Deprecated `$screen-xs-min` as of v3.2.0
+$screen-xs-min:              $screen-xs !default;
+//** Deprecated `$screen-phone` as of v3.0.1
+$screen-phone:               $screen-xs-min !default;
+
+// Small screen / tablet
+//** Deprecated `$screen-sm` as of v3.0.1
+$screen-sm:                  768px !default;
+$screen-sm-min:              $screen-sm !default;
+//** Deprecated `$screen-tablet` as of v3.0.1
+$screen-tablet:              $screen-sm-min !default;
+
+// Medium screen / desktop
+//** Deprecated `$screen-md` as of v3.0.1
+$screen-md:                  992px !default;
+$screen-md-min:              $screen-md !default;
+//** Deprecated `$screen-desktop` as of v3.0.1
+$screen-desktop:             $screen-md-min !default;
+
+// Large screen / wide desktop
+//** Deprecated `$screen-lg` as of v3.0.1
+$screen-lg:                  1200px !default;
+$screen-lg-min:              $screen-lg !default;
+//** Deprecated `$screen-lg-desktop` as of v3.0.1
+$screen-lg-desktop:          $screen-lg-min !default;
+
+// So media queries don't overlap when required, provide a maximum
+$screen-xs-max:              ($screen-sm-min - 1) !default;
+$screen-sm-max:              ($screen-md-min - 1) !default;
+$screen-md-max:              ($screen-lg-min - 1) !default;

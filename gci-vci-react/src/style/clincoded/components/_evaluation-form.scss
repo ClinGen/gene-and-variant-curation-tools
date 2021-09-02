@@ -1,0 +1,20 @@
+.or-separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size:1.5rem;
+    color:$gray-light;
+    width:50%;
+    margin:1.5rem auto;
+}
+.or-separator::before, .or-separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid $gray-lighter;
+}
+.or-separator::before {
+    margin-right: 1em;
+}
+.or-separator::after {
+    margin-left: 1em;
+}

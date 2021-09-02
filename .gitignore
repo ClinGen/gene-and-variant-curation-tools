@@ -1,0 +1,15 @@
+# Ignore migration temp files
+migration_prod/src/variant/log/**
+
+# Ignore VSCode files
+.vscode
+venv
+gci-vci-serverless-samplePolicy.json
+
+# vim
+.swp
+
+# Java project files
+dependency-reduced-pom.xml
+target/
+stanford.env

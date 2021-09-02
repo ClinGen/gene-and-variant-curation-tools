@@ -1,0 +1,1253 @@
+[
+    {
+        "affiliation_id": "10000",
+        "affiliation_fullname": "Interface Admin",
+        "subgroups": {
+            "gcep": {
+                "id": "40000",
+                "fullname": "GCI Admin"
+            },
+            "vcep": {
+                "id": "50000",
+                "fullname": "VCI Admin"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10001",
+        "affiliation_fullname": "KCNQ1",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50001",
+                "fullname": "KCNQ1 VCEP"
+            }
+        },
+        "approver": [
+            "Melanie Care",
+            "Michael Gollob",
+            "Liz Kearns"
+        ]
+    },
+    {
+        "affiliation_id": "10002",
+        "affiliation_fullname": "Cardiomyopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50002",
+                "fullname": "Cardiomyopathy VCEP",
+                "guidelines_name": "ClinGen Cardiomyopathy Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50002/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Birgit Funke",
+            "Lisa Kurtz",
+            "Melissa Kelly"
+        ]
+    },
+    {
+        "affiliation_id": "10003",
+        "affiliation_fullname": "Arrhythmogenic Right Ventricular Cardiomyopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40003",
+                "fullname": "Arrhythmogenic Right Ventricular Cardiomyopathy GCEP"
+            }
+        },
+        "approver": [
+            "Cindy James",
+            "Jan Jongbloed",
+            "Courtney Thaxton",
+            "Peter van Tintelen",
+            "Ray Hershberger"
+        ]
+    },
+    {
+        "affiliation_id": "10004",
+        "affiliation_fullname": "Familial Hypercholesterolemia",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50004",
+                "fullname": "Familial Hypercholesterolemia VCEP",
+                "guidelines_name": "ClinGen Familial Hypercholesterolemia Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50004/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Mafalda Bourbon"
+        ]
+    },
+    {
+        "affiliation_id": "10005",
+        "affiliation_fullname": "Epilepsy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40005",
+                "fullname": "Epilepsy GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10006",
+        "affiliation_fullname": "Intellectual Disability and Autism",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40006",
+                "fullname": "Intellectual Disability and Autism GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10007",
+        "affiliation_fullname": "Hearing Loss",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40007",
+                "fullname": "Hearing Loss GCEP"
+            },
+            "vcep": {
+                "id": "50007",
+                "fullname": "Hearing Loss VCEP",
+                "guidelines_name": "ClinGen Hearing Loss Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50007/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Ahmad Tayoun",
+            "Heidi Rehm",
+            "Sami Amr"
+        ]
+    },
+    {
+        "affiliation_id": "10008",
+        "affiliation_fullname": "Hypertrophic Cardiomyopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40008",
+                "fullname": "Hypertrophic Cardiomyopathy GCEP"
+            }
+        },
+        "approver": [
+            "Courtney Thaxton",
+            "Jen McGlaughon",
+            "Jenny Goldstein"
+        ]
+    },
+    {
+        "affiliation_id": "10009",
+        "affiliation_fullname": "Lysosomal Storage Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50009",
+                "fullname": "Lysosomal Storage Disorders VCEP",
+                "guidelines_name": "ClinGen Lysosomal Storage Disorders Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50009/docs/assertion-criteria"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10010",
+        "affiliation_fullname": "Fatty Acid Oxidation Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40010",
+                "fullname": "Fatty Acid Oxidation Disorders GCEP"
+            },
+            "vcep": {
+                "id": "50010",
+                "fullname": "Fatty Acid Oxidation Disorders VCEP"
+            }
+        },
+        "approver": [
+            "Heather Baudet",
+            "Justyne Ross"
+        ]
+    },
+    {
+        "affiliation_id": "10011",
+        "affiliation_fullname": "Aminoacidopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40011",
+                "fullname": "Aminoacidopathy GCEP"
+            },
+            "vcep": {
+                "id": "50011",
+                "fullname": "Aminoacidopathy VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10012",
+        "affiliation_fullname": "PTEN",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40012",
+                "fullname": "PTEN GCEP"
+            },
+            "vcep": {
+                "id": "50012",
+                "fullname": "PTEN VCEP",
+                "guidelines_name": "ClinGen PTEN Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 2",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50012/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Jessica Mester"
+        ]
+    },
+    {
+        "affiliation_id": "10013",
+        "affiliation_fullname": "TP53",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50013",
+                "fullname": "TP53 VCEP",
+                "guidelines_name": "ClinGen TP53 Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50013/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Jessica Mester",
+            "Kristy Lee",
+            "Tina Pesaran"
+        ]
+    },
+    {
+        "affiliation_id": "10014",
+        "affiliation_fullname": "CDH1",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50014",
+                "fullname": "CDH1 VCEP",
+                "guidelines_name": "ClinGen CDH1 Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 2",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50014/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Intan Schrader",
+            "Kristy Lee",
+            "Rachid Karam",
+            "Tina Pesaran",
+            "Xi Luo"
+        ]
+    },
+    {
+        "affiliation_id": "10015",
+        "affiliation_fullname": "Phenylketonuria",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50015",
+                "fullname": "Phenylketonuria VCEP",
+                "guidelines_name": "ClinGen PAH Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50015/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Amanda Thomas",
+            "Diane Zastrow",
+            "Emily Groopman",
+            "Justyne Ross"
+        ]
+    },
+    {
+        "affiliation_id": "10016",
+        "affiliation_fullname": "Monogenic Diabetes",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40016",
+                "fullname": "Monogenic Diabetes GCEP"
+            },
+            "vcep": {
+                "id": "50016",
+                "fullname": "Monogenic Diabetes VCEP",
+                "guidelines_name": "ClinGen Monogenic Diabetes Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50016/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Kristin Maloney",
+            "Linda Jeng",
+            "Toni Pollin"
+        ]
+    },
+    {
+        "affiliation_id": "10017",
+        "affiliation_fullname": "Sequence Variant Discrepancy Resolution",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50017",
+                "fullname": "Sequence Variant Discrepancy Resolution WG"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10018",
+        "affiliation_fullname": "UNC Biocuration Core",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40018",
+                "fullname": "UNC Biocuration Core GCEP"
+            }
+        },
+        "approver": [
+            "Jenny Goldstein",
+            "Shruthi Mohan",
+            "Justyne Ross",
+            "Courtney Thaxton"
+        ]
+    },
+    {
+        "affiliation_id": "10019",
+        "affiliation_fullname": "Harvard/Geisinger Biocuration Core",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40019",
+                "fullname": "Harvard/Geisinger Biocuration Core GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10020",
+        "affiliation_fullname": "Brain Malformations",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40020",
+                "fullname": "Brain Malformations GCEP"
+            },
+            "vcep": {
+                "id": "50020",
+                "fullname": "Brain Malformations VCEP",
+                "guidelines_name": "ClinGen Brain Malformations Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50020/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Annapurna Poduri",
+            "Tim Yu"
+        ]
+    },
+    {
+        "affiliation_id": "10021",
+        "affiliation_fullname": "RASopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40021",
+                "fullname": "RASopathy GCEP"
+            },
+            "vcep": {
+                "id": "50021",
+                "fullname": "RASopathy VCEP",
+                "guidelines_name": "ClinGen RASopathy Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50021/docs/assertion-criteria"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10022",
+        "affiliation_fullname": "Rett and Angelman-like Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40022",
+                "fullname": "Rett and Angelman-like Disorders GCEP"
+            },
+            "vcep": {
+                "id": "50022",
+                "fullname": "Rett and Angelman-like Disorders VCEP",
+                "guidelines_name": "ClinGen Rett and Angelman-like Disorders Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50022/docs/assertion-criteria"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10023",
+        "affiliation_fullname": "Hereditary Cancer",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40023",
+                "fullname": "Hereditary Cancer GCEP"
+            }
+        },
+        "approver": [
+            "Sharon Plon",
+            "Katherine Nathanson",
+            "Karen Gripp"
+        ]
+    },
+    {
+        "affiliation_id": "10024",
+        "affiliation_fullname": "BCM Education",
+        "approver": [
+            "Deb Ritter"
+        ]
+    },
+    {
+        "affiliation_id": "10025",
+        "affiliation_fullname": "Long QT Syndrome",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40025",
+                "fullname": "Long QT Syndrome GCEP"
+            }
+        },
+        "approver": [
+            "Amy Sturm",
+            "Arthur Wilde",
+            "Liz Kearns",
+            "Melanie Care",
+            "Michael Gollob",
+            "Valeria Novelli"
+        ]
+    },
+    {
+        "affiliation_id": "10026",
+        "affiliation_fullname": "General Gene Curation",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40026",
+                "fullname": "General GCEP"
+            }
+        },
+        "approver": [
+            "Christa Martin",
+            "Heidi Rehm",
+            "Jonathan Berg",
+            "Ozge Birsoy",
+            "Sharon Plon"
+        ]
+    },
+    {
+        "affiliation_id": "10027",
+        "affiliation_fullname": "Mitochondrial Diseases",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40027",
+                "fullname": "Mitochondrial Diseases GCEP"
+            },
+            "vcep": {
+                "id": "50027",
+                "fullname": "Mitochondrial Diseases VCEP",
+                "guidelines_name": "ClinGen Mitochondrial Disease Nuclear and Mitochondrial Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50027/docs/assertion-criteria"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10028",
+        "affiliation_fullname": "Hemostasis Thrombosis",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40028",
+                "fullname": "Hemostasis Thrombosis GCEP"
+            }
+        },
+        "approver": [
+            "Kristy Lee",
+            "Justyne Ross",
+            "Shruthi Mohan",
+            "Kathleen Freson",
+            "Michele Lambert"
+        ]
+    },
+    {
+        "affiliation_id": "10029",
+        "affiliation_fullname": "Broad Institute Rare Disease Group",
+        "approver": [
+            "Samantha Baxter"
+        ]
+    },
+    {
+        "affiliation_id": "10031",
+        "affiliation_fullname": "Congenital Myopathies",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50031",
+                "fullname": "Congenital Myopathies VCEP"
+            },
+            "gcep": {
+                "id": "40031",
+                "fullname": "Congenital Myopathies GCEP"
+            }
+        },
+        "approver": [
+            "Ozge Birsoy",
+            "Carsten Bonnemann",
+            "May Flowers",
+            "Liz Kearns",
+            "Shannon McNulty",
+            "Brooke Palus",
+            "Mayher Patel",
+            "Justyne Ross"
+        ]
+    },
+    {
+        "affiliation_id": "10032",
+        "affiliation_fullname": "Stanford Center for Inherited Cardiovascular Disease"
+    },
+    {
+        "affiliation_id": "10033",
+        "affiliation_fullname": "Germline/Somatic Variant Subcommittee",
+        "publish_approval": true
+    },
+    {
+        "affiliation_id": "10034",
+        "affiliation_fullname": "Myeloid Malignancy",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50034",
+                "fullname": "Myeloid Malignancy VCEP",
+                "guidelines_name": "ClinGen Myeloid Malignancy Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50034/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "David Wu",
+            "Lucy Godley",
+            "Sharon Plon",
+            "Xi Luo",
+            "Shruthi Mohan",
+            "Simone Feurstein"
+        ]
+    },
+    {
+        "affiliation_id": "10035",
+        "affiliation_fullname": "Dilated Cardiomyopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40035",
+                "fullname": "Dilated Cardiomyopathy GCEP"
+            }
+        },
+        "approver": [
+            "Tomohiko Ai",
+            "Babken Asatryan",
+            "Rudy Celeghin",
+            "Judith Fan",
+            "Elizabeth Jordan",
+            "Liz Kearns",
+            "Ronald Lekanne dit Deprez",
+            "Argelia Medeiros",
+            "Laiken Peterson",
+            "Alexandros Protonotarios",
+            "Petros Syrris",
+            "Courtney Thaxton"
+        ]
+    },
+    {
+        "affiliation_id": "10036",
+        "affiliation_fullname": "VHL",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50036",
+                "fullname": "VHL VCEP"
+            }
+        },
+        "approver": [
+            "Sharon Plon",
+            "Raymond Kim"
+        ]
+    },
+    {
+        "affiliation_id": "10037",
+        "affiliation_fullname": "Hereditary Hemorrhagic Telangiectasia",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50037",
+                "fullname": "Hereditary Hemorrhagic Telangiectasia VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10038",
+        "affiliation_fullname": "Malignant Hyperthermia Susceptibility",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50038",
+                "fullname": "Malignant Hyperthermia Susceptibility VCEP",
+                "guidelines_name": "ClinGen Malignant Hyperthermia Susceptibility Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50038/docs/assertion-criteria"
+            }
+        },
+        "approver": [
+            "Jennifer Johnston"
+        ]
+    },
+    {
+        "affiliation_id": "10039",
+        "affiliation_fullname": "Hereditary Breast, Ovarian and Pancreatic Cancer",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50039",
+                "fullname": "Hereditary Breast, Ovarian and Pancreatic Cancer VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10040",
+        "affiliation_fullname": "Platelet Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50040",
+                "fullname": "Platelet Disorders VCEP",
+                "guidelines_name": "ClinGen Platelet Disorders Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50040/docs/assertion-criteria"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10041",
+        "affiliation_fullname": "Coagulation Factor Deficiency",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50041",
+                "fullname": "Coagulation Factor Deficiency VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10042",
+        "affiliation_fullname": "Breast/Ovarian Cancer",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40042",
+                "fullname": "Breast/Ovarian Cancer GCEP"
+            }
+        },
+        "approver": [
+            "Sharon Plon"
+        ]
+    },
+    {
+        "affiliation_id": "10043",
+        "affiliation_fullname": "Colon Cancer",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40043",
+                "fullname": "Colon Cancer GCEP"
+            }
+        },
+        "approver": [
+            "Sharon Plon",
+            "Matthew Ferber",
+            "Marc Greenblat"
+        ]
+    },
+    {
+        "affiliation_id": "10044",
+        "affiliation_fullname": "Heritable Thoracic Aortic Aneurysm and Dissection",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40044",
+                "fullname": "Heritable Thoracic Aortic Aneurysm and Dissection GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10045",
+        "affiliation_fullname": "Brugada Syndrome",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40045",
+                "fullname": "Brugada Syndrome GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10046",
+        "affiliation_fullname": "FBN1",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50046",
+                "fullname": "FBN1 VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10047",
+        "affiliation_fullname": "Cerebral Creatine Deficiency Syndromes",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50047",
+                "fullname": "Cerebral Creatine Deficiency Syndromes VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10048",
+        "affiliation_fullname": "ACADVL",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50048",
+                "fullname": "ACADVL VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10049",
+        "affiliation_fullname": "Peroxisomal Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40049",
+                "fullname": "Peroxisomal Disorders GCEP"
+            },
+            "vcep": {
+                "id": "50049",
+                "fullname": "Peroxisomal Disorders VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10050",
+        "affiliation_fullname": "DICER1 and miRNA-Processing Gene",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50050",
+                "fullname": "DICER1 and miRNA-Processing Gene VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10051",
+        "affiliation_fullname": "von Willebrand Disease",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50051",
+                "fullname": "von Willebrand Disease VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10052",
+        "affiliation_fullname": "Hemoglobinopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50052",
+                "fullname": "Hemoglobinopathy VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10053",
+        "affiliation_fullname": "Glaucoma",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40053",
+                "fullname": "Glaucoma GCEP"
+            },
+            "vcep": {
+                "id": "50053",
+                "fullname": "Glaucoma VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10054",
+        "affiliation_fullname": "Myopathies"
+    },
+    {
+        "affiliation_id": "10055",
+        "affiliation_fullname": "Dosage Sensitivity"
+    },
+    {
+        "affiliation_id": "10056",
+        "affiliation_fullname": "Actionability"
+    },
+    {
+        "affiliation_id": "10057",
+        "affiliation_fullname": "Somatic Cancer"
+    },
+    {
+        "affiliation_id": "10058",
+        "affiliation_fullname": "ABCD1",
+        "publish_approval": true
+    },
+    {
+        "affiliation_id": "10059",
+        "affiliation_fullname": "Craniofacial Malformations",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40059",
+                "fullname": "Craniofacial Malformations GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10060",
+        "affiliation_fullname": "Syndromic Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40060",
+                "fullname": "Syndromic Disorders GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10061",
+        "affiliation_fullname": "Limb Girdle Muscular Dystrophy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40061",
+                "fullname": "Limb Girdle Muscular Dystrophy GCEP"
+            }
+        },
+        "approver": [
+            "Chris Weihl",
+            "Elizabeth Kearns",
+            "Courtney Thaxton",
+            "Shruthi Mohan",
+            "May Flowers"
+        ]
+    },
+    {
+        "affiliation_id": "10062",
+        "affiliation_fullname": "InSiGHT_Dev"
+    },
+    {
+        "affiliation_id": "10063",
+        "affiliation_fullname": "Charcot-Marie-Tooth",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40063",
+                "fullname": "Charcot-Marie-Tooth GCEP"
+            }
+        },
+        "approver": [
+            "Stephan Zuchner",
+            "Dana Bis-Brewer",
+            "Courtney Thaxton",
+            "Megan Mayers",
+            "May Flowers",
+            "Elizabeth Kearns"
+        ]
+    },
+    {
+        "affiliation_id": "10064",
+        "affiliation_fullname": "Thrombosis",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50064",
+                "fullname": "Thrombosis VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10065",
+        "affiliation_fullname": "Skeletal Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40065",
+                "fullname": "Skeletal Disorders GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10066",
+        "affiliation_fullname": "Kidney Cystic and Ciliopathy Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40066",
+                "fullname": "Kidney Cystic and Ciliopathy Disorders GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10067",
+        "affiliation_fullname": "Tubulopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40067",
+                "fullname": "Tubulopathy GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10068",
+        "affiliation_fullname": "Glomerulopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40068",
+                "fullname": "Glomerulopathy GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10069",
+        "affiliation_fullname": "Kidney Complement",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40069",
+                "fullname": "Kidney Complement GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10070",
+        "affiliation_fullname": "CAKUT/Obstructive uropathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40070",
+                "fullname": "CAKUT/Obstructive uropathy GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10071",
+        "affiliation_fullname": "Pulmonary Hypertension",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40071",
+                "fullname": "Pulmonary Hypertension GCEP"
+            },
+            "vcep": {
+                "id": "50071",
+                "fullname": "Pulmonary Hypertension VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10072",
+        "affiliation_fullname": "Retina",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40072",
+                "fullname": "Retina GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10073",
+        "affiliation_fullname": "Reproduction and Infertility",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40073",
+                "fullname": "Reproduction and Infertility GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10074",
+        "affiliation_fullname": "Catecholaminergic Polymorphic Ventricular Tachycardia",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40074",
+                "fullname": "Catecholaminergic Polymorphic Ventricular Tachycardia GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10075",
+        "affiliation_fullname": "Short QT Syndrome",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40075",
+                "fullname": "Short QT Syndrome GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10076",
+        "affiliation_fullname": "Centre for Translational Genomics - Memorial University of Newfoundland/Eastern Health"
+    },
+    {
+        "affiliation_id": "10077",
+        "affiliation_fullname": "Glaucoma/Neuro",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40077",
+                "fullname": "Glaucoma/Neuro GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10078",
+        "affiliation_fullname": "GRIN Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50078",
+                "fullname": "GRIN Disorders VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10079",
+        "affiliation_fullname": "Parkinson's disease",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40079",
+                "fullname": "Parkinson's disease GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10080",
+        "affiliation_fullname": "Antibody Deficiencies GCEP",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40080",
+                "fullname": "Antibody Deficiencies GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10081",
+        "affiliation_fullname": "SCID-CID",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40081",
+                "fullname": "SCID-CID GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10082",
+        "affiliation_fullname": "Leber Congenital Amaurosis/early onset Retinal Dystrophy",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50082",
+                "fullname": "Leber Congenital Amaurosis/early onset Retinal Dystrophy VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10083",
+        "affiliation_fullname": "Plon-Cancer Research"
+    },
+    {
+        "affiliation_id": "10084",
+        "affiliation_fullname": "Myriad Women's Health"
+    },
+    {
+        "affiliation_id": "10085",
+        "affiliation_fullname": "Illumina"
+    },
+    {
+        "affiliation_id": "10086",
+        "affiliation_fullname": "X-linked Inherited Retinal Disease",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50086",
+                "fullname": "X-linked Inherited Retinal Disease VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10087",
+        "affiliation_fullname": "BRCA1/BRCA2",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50087",
+                "fullname": "BRCA1/BRCA2 VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10088",
+        "affiliation_fullname": "National Institute of Cardiology - Brazil"
+    },
+    {
+        "affiliation_id": "10089",
+        "affiliation_fullname": "NTRK Fusions"
+    },
+    {
+        "affiliation_id": "10090",
+        "affiliation_fullname": "Optic Nerve Atrophy",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50090",
+                "fullname": "Optic Nerve Atrophy VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10091",
+        "affiliation_fullname": "SCID",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50091",
+                "fullname": "SCID VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10092",
+        "affiliation_fullname": "H3Africa Rare Disease Working Group"
+    },
+    {
+        "affiliation_id": "10093",
+        "affiliation_fullname": "Grenoble-Alpes University Hospital"
+    },
+    {
+        "affiliation_id": "10094",
+        "affiliation_fullname": "Auragen"
+    },
+    {
+        "affiliation_id": "10095",
+        "affiliation_fullname": "Antibody Deficiencies VCEP",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50095",
+                "fullname": "Antibody Deficiencies VCEP"
+            }
+        }
+    },
+    {
+      "affiliation_id": "10096",
+      "affiliation_fullname": "Amyotrophic Lateral Sclerosis Spectrum Disorders",
+      "publish_approval": true,
+      "subgroups": {
+          "gcep": {
+              "id": "40096",
+              "fullname": "Amyotrophic Lateral Sclerosis Spectrum Disorders GCEP"
+          }
+      }
+    },
+    {
+        "affiliation_id": "10097",
+        "affiliation_fullname": "General Inborn Errors of Metabolism",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40097",
+                "fullname": "General Inborn Errors of Metabolism GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10098",
+        "affiliation_fullname": "Fibroblast Growth Factor Receptor Mutations"
+    },
+    {
+        "affiliation_id": "10099",
+        "affiliation_fullname": "InSiGHT Hereditary Colorectal Cancer/Polyposis",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50099",
+                "fullname": "InSiGHT Hereditary Colorectal Cancer/Polyposis VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10100",
+        "affiliation_fullname": "Urea Cycle Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50100",
+                "fullname": "Urea Cycle Disorders VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10101",
+        "affiliation_fullname": "KCNQ Channel Brain Disorders",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50101",
+                "fullname": "KCNQ Channel Brain Disorders VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10102",
+        "affiliation_fullname": "Motile Ciliopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40102",
+                "fullname": "Motile Ciliopathy GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10103",
+        "affiliation_fullname": "UCT Neurology Research Group"
+    },
+    {
+        "affiliation_id": "10104",
+        "affiliation_fullname": "Hereditary Cardiovascular Disease",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40104",
+                "fullname": "Hereditary Cardiovascular Disease GCEP"
+            }
+        }
+    }
+]

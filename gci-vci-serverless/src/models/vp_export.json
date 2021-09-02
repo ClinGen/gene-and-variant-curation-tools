@@ -1,0 +1,16 @@
+{   
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "VpExportModel",
+  "type":"object",
+  "properties": {
+    "item_type": {
+      "type": "string",
+      "enum": ["vp_export"]
+    },
+    "pk":{"type":"string"},
+    "last_modified":{
+      "type":"string"
+    },
+    "date_created":{"type":"string"}
+  }
+}

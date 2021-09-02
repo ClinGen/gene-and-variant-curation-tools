@@ -1,0 +1,261 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "ExperimentalModel",
+    "type": "object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["experimental"]
+        },
+        "PK": { "type": "string" },
+        "submitted_by": { "type": "string", "$schema": "user" },
+        "date_created": { "type": "string" },
+        "modified_by": { "type": "string", "$schema": "user" },
+        "last_modified": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "label": { "type": "string" },
+        "evidenceType": {
+            "type": "string",
+            "enum": [
+                "Biochemical Function",
+                "Protein Interactions",
+                "Expression",
+                "Functional Alteration",
+                "Model Systems",
+                "Rescue"
+            ]
+        },
+        "biochemicalFunction": {
+            "type": "object",
+            "properties": {
+                "identifiedFunction": { "type": "string" },
+                "identifiedFunctionFreeText": { "type": "string" },
+                "evidenceForFunction": { "type": "string" },
+                "evidenceForFunctionInPaper": { "type": "string" },
+                "geneWithSameFunctionSameDisease": {
+                    "type": "object",
+                    "properties": {
+                        "genes": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "$schema": "gene"
+                            }
+                        },
+                        "evidenceForOtherGenesWithSameFunction": { "type": "string" },
+                        "geneImplicatedWithDisease": { "type": "boolean" },
+                        "explanationOfOtherGenes": { "type": "string" },
+                        "evidenceInPaper": { "type": "string" }
+                    }
+                },
+                "geneFunctionConsistentWithPhenotype": {
+                    "type": "object",
+                    "properties": {
+                        "phenotypeHPO": { "type": "array" },
+                        "phenotypeFreeText": { "type": "string" },
+                        "explanation": { "type": "string" },
+                        "evidenceInPaper": { "type": "string" }
+                    }
+                }
+            }
+        },
+        "proteinInteractions": {
+            "type": "object",
+            "properties": {
+                "interactingGenes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "$schema": "gene"
+                    }
+                },
+                "interactionType": {
+                    "type": "string",
+                    "enum": [
+                        "physical association (MI:0915)",
+                        "genetic interaction (MI:0208)",
+                        "negative genetic interaction (MI:0933)",
+                        "positive genetic interaction (MI:0935)"
+                    ]
+                },
+                "experimentalInteractionDetection": {
+                    "type": "string",
+                    "enum": [
+                        "affinity chromatography technology (MI:0004)",
+                        "coimmunoprecipitation (MI:0019)",
+                        "comigration in gel electrophoresis (MI:0807)",
+                        "electron microscopy (MI:0040)",
+                        "protein cross-linking with a bifunctional reagent (MI:0031)",
+                        "pull down (MI:0096)",
+                        "synthetic genetic analysis (MI:0441)",
+                        "two hybrid (MI:0018)",
+                        "x-ray crystallography (MI:0114)"
+                    ]
+                },
+                "geneImplicatedInDisease": { "type": "boolean" },
+                "relationshipOfOtherGenesToDisese": { "type": "string" },
+                "evidenceInPaper": { "type": "string" }
+            }
+        },
+        "expression": {
+            "type": "object",
+            "properties": {
+                "organOfTissue": { "type": "array" },
+                "organOfTissueFreeText": { "type": "string" },
+                "normalExpression": {
+                    "type": "object",
+                    "properties": {
+                        "expressedInTissue": { "type": "boolean" },
+                        "evidence": { "type": "string" },
+                        "evidenceInPaper": { "type": "string" }
+                    }
+                },
+                "alteredExpression": {
+                    "type": "object",
+                    "properties": {
+                        "expressedInPatients": { "type": "boolean" },
+                        "evidence": { "type": "string" },
+                        "evidenceInPaper": { "type": "string" }
+                    }
+                }
+            }
+        },
+        "functionalAlteration": {
+            "type": "object",
+            "properties": {
+                "functionalAlterationType": {
+                    "type": "string",
+                    "enum": [ "Patient cells", "Non-patient cells" ]
+                },
+                "patientCells": { "type": "string" },
+                "patientCellsFreeText": { "type": "string" },
+                "nonPatientCells": { "type": "string" },
+                "nonPatientCellsFreeText": { "type": "string" },
+                "descriptionOfGeneAlteration": { "type": "string" },
+                "normalFunctionOfGene": { "type": "string" },
+                "normalFunctionOfGeneFreeText": { "type": "string" },
+                "evidenceForNormalFunction": { "type": "string" },
+                "evidenceInPaper": { "type": "string" }
+            }
+        },
+        "modelSystems": {
+            "type": "object",
+            "properties": {
+                "modelSystemsType": {
+                    "type": "string",
+                    "enum": [ "Non-human model organism", "Cell culture model" ]
+                },
+                "nonHumanModel": {
+                    "type": "string",
+                    "enum": [
+                        "",
+                        "Budding yeast (Saccharomyces cerevisiae) 4932",
+                        "Cat (Felis catus) 9685",
+                        "Chicken (Gallus gallus) 9031",
+                        "Chimpanzee (Pan troglodytes) 9598",
+                        "Chlamydomonas (Chlamydomonas reinhardtii) 3055",
+                        "Cow (Bos taurus) 9913",
+                        "Dog (Canis lupus familiaris) 9615",
+                        "Fission yeast (Schizosaccharomyces pombe) 4896",
+                        "Frog (Xenopus) 262014",
+                        "Fruit fly (Drosophila) 7215",
+                        "Gerbil (Gerbillinae) 10045",
+                        "Guinea pig (Cavia porcellus) 10141",
+                        "Hamster (Cricetinae) 10026",
+                        "Macaque (Macaca) 9539",
+                        "Mouse (Mus musculus) 10090",
+                        "Pig (Sus scrofa) 9823",
+                        "Rabbit (Oryctolagus cuniculus) 9986",
+                        "Rat (Rattus norvegicus) 10116",
+                        "Round worm (Caenorhabditis elegans) 6239",
+                        "Sheep (Ovis aries) 9940",
+                        "Zebra finch (Taeniopygia guttata) 59729",
+                        "Zebrafish (Danio rerio) 7955"
+                    ]
+                },
+                "cellCulture": { "type": "string" },
+                "cellCultureFreeText": { "type": "string" },
+                "descriptionOfGeneAlteration": { "type": "string" },
+                "phenotypeHPO": { "type": "string" },
+                "phenotypeFreeText": { "type": "string" },
+                "phenotypeHPOObserved": { "type": "string" },
+                "phenotypeFreetextObserved": { "type": "string" },
+                "explanation": { "type": "string" },
+                "evidenceInPaper": { "type": "string" }
+            }
+        },
+        "rescue": {
+            "type": "object",
+            "properties": {
+                "rescueType": {
+                    "type": "string",
+                    "enum": [
+                        "Human",
+                        "Non-human model organism",
+                        "Cell culture model",
+                        "Patient cells"
+                    ]
+                },
+                "humanModel": { "type": "string" },
+                "nonHumanModel": {
+                    "type": "string",
+                    "enum": [
+                        "",
+                        "Budding yeast (Saccharomyces cerevisiae) 4932",
+                        "Cat (Felis catus) 9685",
+                        "Chicken (Gallus gallus) 9031",
+                        "Chimpanzee (Pan troglodytes) 9598",
+                        "Chlamydomonas (Chlamydomonas reinhardtii) 3055",
+                        "Cow (Bos taurus) 9913",
+                        "Dog (Canis lupus familiaris) 9615",
+                        "Fission yeast (Schizosaccharomyces pombe) 4896",
+                        "Frog (Xenopus) 262014",
+                        "Fruit fly (Drosophila) 7215",
+                        "Gerbil (Gerbillinae) 10045",
+                        "Guinea pig (Cavia porcellus) 10141",
+                        "Hamster (Cricetinae) 10026",
+                        "Macaque (Macaca) 9539",
+                        "Mouse (Mus musculus) 10090",
+                        "Pig (Sus scrofa) 9823",
+                        "Rabbit (Oryctolagus cuniculus) 9986",
+                        "Rat (Rattus norvegicus) 10116",
+                        "Round worm (Caenorhabditis elegans) 6239",
+                        "Sheep (Ovis aries) 9940",
+                        "Zebra finch (Taeniopygia guttata) 59729",
+                        "Zebrafish (Danio rerio) 7955"
+                    ]
+                },
+                "cellCulture": { "type": "string" },
+                "cellCultureFreeText": { "type": "string" },
+                "patientCells": { "type": "string" },
+                "patientCellsFreeText": { "type": "string" },
+                "descriptionOfGeneAlteration": { "type": "string" },
+                "phenotypeHPO": { "type": "string" },
+                "phenotypeFreeText": { "type": "string" },
+                "rescueMethod": { "type": "string" },
+                "wildTypeRescuePhenotype": { "type": "boolean" },
+                "patientVariantRescue": { "type": "boolean" },
+                "explanation": { "type": "string" },
+                "evidenceInPaper": { "type": "string" }
+            }
+        },
+        "variants": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "variant"
+            }
+        },
+        "scores": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "evidenceScore"
+            }
+        },
+        "associatedParent": {
+          "type": "string"
+        }
+    },
+    "required": ["label", "evidenceType"]
+}

@@ -1,0 +1,97 @@
+// Panel uses Bootstrap .card as a base
+.card-panel{
+    box-shadow:1px 3px 14px rgba(0,0,0,0.05);
+    .card-header{
+        h4{
+            margin:0;
+            display:flex;
+            align-items: center;
+            .badge{align-self: center;}
+            .align-end{
+                margin-left:auto;
+            }         
+        }
+    }
+}
+
+.card-header {
+    a.credit-myvariant {
+        background: url(../../img/myvariant-logo.png) 0 1px no-repeat;
+        background-size: 18px 18px;
+        display: inline-block;
+        height: 19px;
+        width: 18px;
+        margin-left: 10px;
+        vertical-align: bottom;
+    
+        span {
+            display: none;
+        }
+    }
+}
+
+.panel-footer {
+    background-color: #eaf8ff;
+    color: #8c8c8c;
+
+    p {
+        margin: 2px 0;
+    }
+}
+
+// Badge colors for individual panels to match code strip colors
+.badge-pathogenic-moderate{
+    background:$pathogenic-moderate;
+    color:#fff;
+}
+
+.badge-benign-strong{
+    background: $benign-strong;
+    color:#fff;
+}
+
+.badge-benign-supporting{
+    background:$benign-supporting;
+    color:#fff;
+}
+
+.badge-pathogenic-supporting{
+    background:$pathogenic-supporting;
+    color:#fff;
+}
+
+.badge-pathogenic-supporting{
+    background:$pathogenic-supporting;
+    color:#fff;
+}
+
+.badge-pathogenic-strong{
+    background:$pathogenic-strong;
+    color:#fff;
+}
+
+.badge-pathogenic-very-strong{
+    background:$pathogenic-very-strong;
+    color:#fff;
+}
+
+.badge-stand-alone{
+    background:$stand-alone;
+    color:#fff;
+}
+
+.badge-published {
+    background: #b6238a;
+    color:#fff;
+}
+
+.badge-unpublished {
+   background-color: #fff;
+   border: 1px solid #b6238a;
+   color: #b6238a;
+}
+
+.badge-new-saved-summary {
+    background-color: #917bc4;
+    color:#fff;
+}

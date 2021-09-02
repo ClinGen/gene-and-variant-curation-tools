@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+  echo "usage: delete-kafka-to-lambda <stackname>" >&2
+  return 1
+fi
+
+stackname=${1}
+echo "Finding repo for manual deletion. Any docker images in the repo will be deleted"
+# shellcheck disable=SC2016
+repo="$(aws cloudformation describe-stack-resources --stack-name "$stackname" \
+        --query 'StackResources[?LogicalResourceId==`Repository`].PhysicalResourceId' \
+        --output text)"
+printf "Deleting repo %s. Proceed with deletion? [y/N] " "$repo"
+read -r prompt
+if [ "$prompt" != "y" ]; then
+  echo "Aborting"
+  return 0
+fi
+aws ecr delete-repository --force --repository-name "$repo"
+echo "Deleting stack: ${stackname}"
+aws cloudformation describe-stacks --stack-name "${stackname}" >/dev/null 2>&1 && \
+  aws cloudformation delete-stack --stack-name "${stackname}" &&
+  aws cloudformation wait stack-delete-complete --stack-name "${stackname}"
+echo "Stack delete complete."
+
+echo 'Removing parameter from Systems Manager Parameter Store'
+aws ssm delete-parameter \
+  --name "/${stackname}/jaasconfig" || true
+

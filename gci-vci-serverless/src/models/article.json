@@ -1,0 +1,20 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://curation.clinicalgenome.org/model#article",
+    "title": "ArticleModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type":"string",
+            "enum":["article"]
+            },
+        "pk":{"type":"string"},
+        "last_modified":{"type":"string"},
+        "date": {
+            "type": "string",
+            "description": "Date of the article literature published"
+        },
+        "pmid":{"type":"string"}
+    },
+    "required": ["item_type"]
+}

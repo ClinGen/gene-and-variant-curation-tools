@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2019//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_190101.dtd">
+<PubmedArticleSet>
+    <PubmedArticle>
+        <MedlineCitation Status="MEDLINE" Owner="NLM">
+            <PMID Version="1">44444</PMID>
+            <DateCompleted>
+                <Year>1980</Year>
+                <Month>06</Month>
+                <Day>25</Day>
+            </DateCompleted>
+            <DateRevised>
+                <Year>2018</Year>
+                <Month>11</Month>
+                <Day>13</Day>
+            </DateRevised>
+            <Article PubModel="Print">
+                <Journal>
+                    <ISSN IssnType="Print">0099-2240</ISSN>
+                    <JournalIssue CitedMedium="Print">
+                        <Volume>38</Volume>
+                        <Issue>5</Issue>
+                        <PubDate>
+                            <Year>1979</Year>
+                            <Month>Nov</Month>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>Applied and environmental microbiology</Title>
+                    <ISOAbbreviation>Appl. Environ. Microbiol.</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>Heat inactivation of Mycobacterium avium-Mycobacterium intracellulare complex organisms in aqueous suspension.</ArticleTitle>
+                <Pagination>
+                    <MedlinePgn>827-30</MedlinePgn>
+                </Pagination>
+                <Abstract>
+                    <AbstractText>Isolants from swine and from humans representing serotypes 1, 2, 4, 8, and 10 of the Mycobacterium avium-Mycobacterium intracellulare complex were compared for heat tolerance in aqueous suspension. The most heat-resistant isolant found was a serovar 10 isolated from a human. This isolant was examined further to determine the rate of kill at various temperatures and pH's, the effect of meat protein and fat, and the effect of nitrite. Kill rates were not significant at 60 degrees C or below. Decimal reduction values were 4 min or less at 65 degrees C and 1.5 min or less at 70 degrees C. Kill rates were slightly higher at pH values of 6.5 and 7.0 than at 5.5 or 6.0. the water-soluble fraction of wiener emulsion did not alter kill rates, but the saline-soluble fraction protected the organism somewhat. Fat did not affect the survival of the organisms except to eliminate the protective effect of saline extract when the suspension contained 50% fat. The addition of sodium nitrite to the suspension did not alter the heat sensitivity of the organisms.</AbstractText>
+                </Abstract>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Merkal</LastName>
+                        <ForeName>R S</ForeName>
+                        <Initials>RS</Initials>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Crawford</LastName>
+                        <ForeName>J A</ForeName>
+                        <Initials>JA</Initials>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <PublicationTypeList>
+                    <PublicationType UI="D016428">Journal Article</PublicationType>
+                    <PublicationType UI="D013486">Research Support, U.S. Gov't, Non-P.H.S.</PublicationType>
+                </PublicationTypeList>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>United States</Country>
+                <MedlineTA>Appl Environ Microbiol</MedlineTA>
+                <NlmUniqueID>7605801</NlmUniqueID>
+                <ISSNLinking>0099-2240</ISSNLinking>
+            </MedlineJournalInfo>
+            <ChemicalList>
+                <Chemical>
+                    <RegistryNumber>451W47IQ8X</RegistryNumber>
+                    <NameOfSubstance UI="D012965">Sodium Chloride</NameOfSubstance>
+                </Chemical>
+                <Chemical>
+                    <RegistryNumber>M0KG633D4F</RegistryNumber>
+                    <NameOfSubstance UI="D012977">Sodium Nitrite</NameOfSubstance>
+                </Chemical>
+            </ChemicalList>
+            <CitationSubset>IM</CitationSubset>
+            <MeshHeadingList>
+                <MeshHeading>
+                    <DescriptorName UI="D000818" MajorTopicYN="N">Animals</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006358" MajorTopicYN="Y">Hot Temperature</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006801" MajorTopicYN="N">Humans</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006863" MajorTopicYN="N">Hydrogen-Ion Concentration</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D009161" MajorTopicYN="N">Mycobacterium</DescriptorName>
+                    <QualifierName UI="Q000502" MajorTopicYN="Y">physiology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D009165" MajorTopicYN="N">Mycobacterium Infections, Nontuberculous</DescriptorName>
+                    <QualifierName UI="Q000382" MajorTopicYN="N">microbiology</QualifierName>
+                    <QualifierName UI="Q000662" MajorTopicYN="N">veterinary</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D009170" MajorTopicYN="N">Nontuberculous Mycobacteria</DescriptorName>
+                    <QualifierName UI="Q000187" MajorTopicYN="N">drug effects</QualifierName>
+                    <QualifierName UI="Q000502" MajorTopicYN="Y">physiology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D012965" MajorTopicYN="N">Sodium Chloride</DescriptorName>
+                    <QualifierName UI="Q000494" MajorTopicYN="N">pharmacology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D012977" MajorTopicYN="N">Sodium Nitrite</DescriptorName>
+                    <QualifierName UI="Q000494" MajorTopicYN="N">pharmacology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D013552" MajorTopicYN="N">Swine</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D013553" MajorTopicYN="N">Swine Diseases</DescriptorName>
+                    <QualifierName UI="Q000382" MajorTopicYN="N">microbiology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D013696" MajorTopicYN="N">Temperature</DescriptorName>
+                </MeshHeading>
+            </MeshHeadingList>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>1979</Year>
+                    <Month>11</Month>
+                    <Day>1</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="medline">
+                    <Year>1979</Year>
+                    <Month>11</Month>
+                    <Day>1</Day>
+                    <Hour>0</Hour>
+                    <Minute>1</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="entrez">
+                    <Year>1979</Year>
+                    <Month>11</Month>
+                    <Day>1</Day>
+                    <Hour>0</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>ppublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">44444</ArticleId>
+                <ArticleId IdType="pmc">PMC243594</ArticleId>
+            </ArticleIdList>
+            <ReferenceList>
+                <Reference>
+                    <Citation>J Pathol Bacteriol. 1954 Oct;68(2):367-72</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">14354541</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Appl Microbiol. 1974 Aug;28(2):276-9</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">4859342</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Zentralbl Bakteriol Orig. 1969;210(4):517-24</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">5386762</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Appl Environ Microbiol. 1979 Nov;38(5):831-5</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">575610</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+            </ReferenceList>
+        </PubmedData>
+    </PubmedArticle>
+</PubmedArticleSet>

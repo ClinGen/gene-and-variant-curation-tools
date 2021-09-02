@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "VariantScoreModel",
+  "type":"object",
+  "properties": {
+    "item_type": {
+      "type": "string",
+      "enum": ["variantScore"]
+    },
+    "PK": { "type": "string" },
+    "submitted_by": { "type": "string", "$schema": "user" },
+    "date_created": { "type": "string" },
+    "modified_by": { "type": "string", "$schema": "user" },
+    "last_modified": { "type": "string" },
+    "affiliation": { "type": "string" },
+    "variantScored": { "type": "string", "$schema": "variant" },
+    "evidenceScored": { "type": "string" },
+    "evidenceType": { "type": "string" },
+    "variantType": { "type": "string" },
+    "deNovo": { "type": "string" },
+    "maternityPaternityConfirmed": { "type": "string" },
+    "functionalDataSupport": { "type": "string" },
+    "functionalDataExplanation": { "type": "string" },
+    "scoreStatus": { "type": "string" },
+    "calculatedScore": { "type": "number" },
+    "score": { "type": "number" },
+    "scoreExplanation": { "type": "string" }
+  }
+}

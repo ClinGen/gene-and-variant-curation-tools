@@ -1,0 +1,60 @@
+
+.table.summary-table{
+    th, td{
+        vertical-align: middle;
+    }
+}
+
+.criteria-class {
+    font-size: 2rem;
+
+    .benign {
+        color: $stand-alone;
+    }
+
+    .pathogenic {
+        color: $pathogenic-very-strong;
+    }
+}
+
+.criteria-code {
+    font-weight: bold;
+
+    &.benign-strong {
+        color: #62387e;
+    }
+
+    &.benign-supporting {
+        color: #2b67a0;
+    }
+
+    &.pathogenic-supporting  {
+        color: #728b42;
+    }
+
+    &.pathogenic-moderate {
+        color: #d36735;
+    }
+
+    &.pathogenic-strong {
+        color: #d33535;
+    }
+
+    &.pathogenic-very-strong {
+        color: #d33535;
+    }
+}
+
+.print-info-note {
+    color: #878787;
+    text-align: right;
+}
+
+.pdf-download-wrapper {
+    text-align: right;
+    margin-bottom: 30px;
+}
+
+.preview-only-overlay {
+    background: url(../../img/preview-bg.svg) 0px 40px;
+}

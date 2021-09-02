@@ -1,0 +1,125 @@
+{
+  "caId": "CA023679",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_000527.5:c.2483A>G"
+  ],
+  "clinVarSignificanceCounts": {
+    "benign": 0,
+    "likelyBenign": 0,
+    "likelyPathogenic": 1,
+    "notProvided": 1,
+    "pathogenic": 3,
+    "uncertain": 0
+  },
+  "clinVarVariantId": "3704",
+  "clinVarVariantTitle": "NM_000527.5(LDLR):c.2483A>G (p.Tyr828Cys)",
+  "clingenPreferredTitle": "NM_000527.5(LDLR):c.2483A>G (p.Tyr828Cys)",
+  "clinicalSignificanceSummary": {
+    "clinVarLastEvaluatedDate": "2016-03-25T00:00:00.000Z",
+    "clinVarMostRecentSubmissionDate": "2017-08-04T00:00:00.000Z",
+    "clinVarReviewStatus": "criteria provided, multiple submitters, no conflicts",
+    "clinicalSignificance": "Pathogenic/Likely pathogenic"
+  },
+  "dbSNPId": 28942085,
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:21.481Z",
+  "hgnc": [
+    "LDLR"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000019.9:g.11240282A>G",
+    "GRCh38": "NC_000019.10:g.11129606A>G",
+    "NCBI36": "NC_000019.8:g.11101282A>G",
+    "others": [
+      "CM000681.2:g.11129606A>G",
+      "CM000681.1:g.11240282A>G",
+      "NG_009060.1:g.45226A>G",
+      "LRG_274:g.45226A>G"
+    ]
+  },
+  "ldh": {
+    "id": "40207686",
+    "last_modified_date": "2019-10-03T16:18:52.924Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/40207686"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001583",
+          "term": "missense_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000518.1:p.Tyr828Cys"
+      ],
+      "system": "RefSeq",
+      "title": "NM_000527.5:c.2483A>G"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001583",
+          "term": "missense_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000518.1:p.Tyr828Cys"
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000558518.6:c.2483A>G",
+      "transcriptNotInCAR": true
+    }
+  ],
+  "proteinEffects": [
+    "NP_000518.1:p.Tyr828Cys",
+    "NP_001182727.1:p.Tyr828Cys",
+    "NP_001182728.1:p.Tyr787Cys",
+    "NP_001182729.1:p.Tyr660Cys",
+    "NP_001182732.1:p.Tyr650Cys",
+    "XP_011526312.1:p.Tyr802Cys",
+    "XP_011526313.1:p.Tyr701Cys",
+    "XP_011526312.1:p.Tyr802Cys",
+    "NP_000518.1:p.Tyr828Cys",
+    "NP_001182727.1:p.Tyr828Cys",
+    "NP_001182728.1:p.Tyr787Cys",
+    "NP_001182729.1:p.Tyr660Cys",
+    "NP_001182732.1:p.Tyr650Cys",
+    "ENSP00000397829.2:p.Tyr660Cys",
+    "ENSP00000440520.1:p.Tyr787Cys",
+    "ENSP00000437639.1:p.Tyr650Cys",
+    "ENSP00000453557.1:p.Ile849Val",
+    "ENSP00000453346.1:p.Tyr828Cys",
+    "ENSP00000454071.1:p.Tyr828Cys"
+  ],
+  "transcriptHGVS": [
+    "NM_000527.4:c.2483A>G",
+    "LRG_274t1:c.2483A>G",
+    "NM_001195798.1:c.2483A>G",
+    "NM_001195799.1:c.2360A>G",
+    "NM_001195800.1:c.1979A>G",
+    "NM_001195803.1:c.1949A>G",
+    "XM_011528010.1:c.2405A>G",
+    "XM_011528011.1:c.2102A>G",
+    "XM_011528010.2:c.2405A>G",
+    "XR_001753685.2:n.2817A>G",
+    "XR_001753686.2:n.2460A>G",
+    "NM_000527.5:c.2483A>G",
+    "NM_001195798.2:c.2483A>G",
+    "NM_001195799.2:c.2360A>G",
+    "NM_001195800.2:c.1979A>G",
+    "NM_001195803.2:c.1949A>G",
+    "ENST00000252444.9:n.2737A>G",
+    "ENST00000455727.6:c.1979A>G",
+    "ENST00000535915.5:c.2360A>G",
+    "ENST00000545707.5:c.1949A>G",
+    "ENST00000557933.5:c.2545A>G",
+    "ENST00000558013.5:c.2483A>G",
+    "ENST00000558518.5:c.2483A>G",
+    "ENST00000560628.1:n.108+1952A>G"
+  ]
+}

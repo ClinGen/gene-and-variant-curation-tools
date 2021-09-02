@@ -1,0 +1,25 @@
+# This file describes AWS Resources and is specifically written in a way to be included in
+# a serverless.yml file. By itself it is not a valid CloudFormation template.
+
+Resources:
+  
+  ApprovedBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.resources.approved-bucket-name}
+
+  ProvisionalBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.resources.provisional-bucket-name}
+
+  SnapshotBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.resources.snapshot-bucket-name}
+      
+  VpBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.resources.vp-bucket-name}
+

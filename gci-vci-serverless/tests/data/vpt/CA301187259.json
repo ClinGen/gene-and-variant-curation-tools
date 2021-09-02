@@ -1,0 +1,144 @@
+{
+  "caId": "CA301187259",
+  "clingenPreferredTitle": "NC_000018.10:g.55635728G>A",
+  "dbSNPId": 918244741,
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:51.983Z",
+  "hgnc": [
+    "TCF4"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000018.9:g.53302959G>A",
+    "GRCh38": "NC_000018.10:g.55635728G>A",
+    "NCBI36": "NC_000018.8:g.51453957G>A",
+    "others": [
+      "CM000680.2:g.55635728G>A",
+      "CM000680.1:g.53302959G>A",
+      "NG_011716.2:g.5266C>T"
+    ]
+  },
+  "ldh": {
+    "id": "47597736",
+    "last_modified_date": "2019-10-03T20:11:37.812Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/47597736"
+  },
+  "populationAlleleFrequencyMetadata": [
+    {
+      "filters": [
+        "PASS"
+      ],
+      "method": "gnomad-exomes",
+      "popmax": 0.0000176566
+    }
+  ],
+  "populationAlleleFrequencyStatements": [
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 22478,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "sas"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 10824,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "eas"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 6888,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "afr"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 16792,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "fin"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 24548,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "amr"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 8418,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "asj"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 4338,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "oth"
+    },
+    {
+      "alleleCount": 1,
+      "alleleFrequency": 0.0000123649,
+      "alleleNumber": 80874,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "male"
+    },
+    {
+      "alleleCount": 1,
+      "alleleFrequency": 0.0000176566,
+      "alleleNumber": 56636,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "nfe"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 70048,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-exomes",
+      "population": "female"
+    }
+  ],
+  "proteinEffects": [
+    "NP_001230155.2:p.Ser57Leu",
+    "XP_011524456.1:p.Ser57Leu",
+    "XP_011524457.1:p.Ser57Leu",
+    "XP_011524458.1:p.Ser57Leu",
+    "XP_011524459.1:p.Ser57Leu",
+    "NP_001230155.2:p.Ser57Leu",
+    "ENSP00000381382.1:p.Ser57Leu",
+    "ENSP00000457082.2:p.Ser57Leu",
+    "ENSP00000457392.1:p.=",
+    "ENSP00000487557.1:p.Ser57Leu",
+    "ENSP00000487134.1:p.Ser57Leu"
+  ],
+  "revel": 0.017,
+  "transcriptHGVS": [
+    "NM_001243226.2:c.170C>T",
+    "XM_011526154.1:c.170C>T",
+    "XM_011526155.1:c.170C>T",
+    "XM_011526156.1:c.170C>T",
+    "XM_011526157.1:c.170C>T",
+    "NM_001243226.3:c.170C>T",
+    "ENST00000398339.5:c.170C>T",
+    "ENST00000565124.4:c.170C>T",
+    "ENST00000568169.5:c.84+28947C>T",
+    "ENST00000569357.4:n.165C>T",
+    "ENST00000627320.2:c.170C>T",
+    "ENST00000630224.2:c.170C>T"
+  ]
+}

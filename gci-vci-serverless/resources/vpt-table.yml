@@ -1,0 +1,94 @@
+# This file describes AWS Resources and is specifically written in a way to be included in
+# a serverless.yml file. By itself it is not a valid CloudFormation template.
+
+Resources:
+    
+  ClinGenVPTTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: 'PK'
+          AttributeType: 'S'
+        #- AttributeName: 'item_type'
+        #  AttributeType: 'S'
+        #- AttributeName: 'clinvarVariantId'
+        #  AttributeType: 'S'
+        - AttributeName: 'carId'
+          AttributeType: 'S'
+        - AttributeName: 'last_modified'
+          AttributeType: 'S'
+        #- AttributeName: 'hgnc'
+        #  AttributeType: 'S'
+        - AttributeName: 'gr'
+          AttributeType: 'S'
+      # BillingMode: PROVISIONED
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        -
+          AttributeName: 'PK'
+          KeyType: HASH
+      TableName: ${self:custom.resources.vpt-table-name}
+      # ProvisionedThroughput:
+      #   ReadCapacityUnits: 20000
+      #   WriteCapacityUnits: 20000
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      GlobalSecondaryIndexes:
+      #- IndexName: item_type_index
+      #  ProvisionedThroughput:
+      #    ReadCapacityUnits: 6500
+      #    WriteCapacityUnits: 6500
+      #  KeySchema:
+      #  - AttributeName: item_type
+      #    KeyType: HASH
+      #  - AttributeName: last_modified
+      #    KeyType: RANGE
+      #  Projection:
+      #    ProjectionType: ALL
+      #- IndexName: hgnc_type_index
+      #  ProvisionedThroughput:
+      #    ReadCapacityUnits: 6500
+      #    WriteCapacityUnits: 6500
+      #  KeySchema:
+      #  - AttributeName: hgnc
+      #    KeyType: HASH
+      #  - AttributeName: last_modified
+      #    KeyType: RANGE
+      #  Projection:
+      #    ProjectionType: ALL
+      - IndexName: hgnc_group_index
+        # ProvisionedThroughput:
+        #   ReadCapacityUnits: 15000
+        #   WriteCapacityUnits: 15000
+        KeySchema:
+        - AttributeName: gr
+          KeyType: HASH
+        - AttributeName: last_modified
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      #- IndexName: clinvarVariantId_index
+      #  ProvisionedThroughput:
+      #    ReadCapacityUnits: 100
+      #    WriteCapacityUnits: 100
+      #  KeySchema:
+      #  - AttributeName: clinvarVariantId
+      #    KeyType: HASH
+      #  Projection:
+      #    NonKeyAttributes:
+      #    - rid
+      #    - carId
+      #    ProjectionType: INCLUDE
+      - IndexName: carId_index
+        # ProvisionedThroughput:
+        #     ReadCapacityUnits: 3500
+        #     WriteCapacityUnits: 3500
+        KeySchema:
+        - AttributeName: carId
+          KeyType: HASH
+        Projection:
+          NonKeyAttributes:
+          - rid
+          - clinvarVariantId
+          ProjectionType: INCLUDE
+          

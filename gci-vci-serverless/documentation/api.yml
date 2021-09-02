@@ -1,0 +1,5 @@
+api:
+  info:
+    version: "1"
+    title: "ClinGen Serverless API"
+    description: "Resources for variant lookup and interpretation curation"

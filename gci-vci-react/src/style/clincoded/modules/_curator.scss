@@ -1,0 +1,3736 @@
+.curation-content {
+    margin-top: 10px;
+    min-height: 50vh;
+}
+
+.pmid-doi-btns {
+    margin: 10px 0;
+
+    .btn {
+        margin-right: 10px;
+    }
+}
+
+.pmid-overview-abstract {
+    margin: 30px 0;
+}
+
+.curation-data {
+    dl {
+        margin: 0;
+
+        @include media-breakpoint-up(sm) {
+            margin-bottom: 10px;
+        }
+    }
+}
+
+.curation-data-title {
+    margin-bottom: 2px;
+    color: #000;
+    background-color: #c0c0c0;
+
+    .gene-disease-record-header,
+    .variant-interpretation-header {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0.5em 0;
+
+        .button-box {
+            .btn .icon {
+                color: #fff;
+            }
+        }
+    }
+
+    h1 {
+        margin: 5px 0 2px;
+        font-size: 1.5rem;
+        font-weight: bold;
+
+        span {
+            word-break: break-all;
+        }
+
+        .add-disease-group {
+            display: inline-block;
+            font-weight: normal;
+            margin-bottom: 0;
+            text-align: left;
+            vertical-align: text-bottom;
+
+            &> label.col-sm-5 {
+                display: none;
+                float: none;
+            }
+
+            .add-disease {
+                padding: 0 3px 0 7px;
+                width: auto;
+
+                .disease-name {
+                    display: none;
+                }
+
+                .input-group-btn-disease-term {
+                    padding: 3px 8px;
+
+                    .icon {
+                        color: #fff;
+                        font-size: 16px;
+                        margin-top: 2px;
+                        margin-left: 5px;
+                        vertical-align: text-bottom;
+                    }
+                }
+            }
+        }
+    }
+
+    h2 {
+        margin: 2px 0 5px;
+        font-size: 1.1rem;
+        font-weight: 300;
+        line-height: 1.2;
+
+        .subtitle-mode-of-inheritance {
+            display: block;
+            font-style: italic;
+        }
+    }
+
+    a i {
+        color: #245A88;
+    }
+}
+
+.curation-data-disease {
+    dt {
+        word-break: break-word;
+    }
+
+    .popover-component {
+        font-weight: normal;
+
+        .popover-actuator:before {
+            content: '[';
+        }
+
+        .popover-actuator:after {
+            content: ']';
+        }
+
+        .popover-wrapper {
+            position: fixed;
+            max-width: 300px;
+            z-index: 9999;
+        }
+    }
+}
+
+.curation-data-gene,
+.curation-data-disease {
+    margin-bottom: 2px;
+}
+
+.curation-data-disease,
+.curation-data-gene,
+.curation-data-curator {
+    padding: 10px;
+    background-color: $color-neutral-bg;
+
+    @include media-breakpoint-up(sm) {
+        margin-bottom: -99999px;
+        padding-bottom: 99999px;
+    }
+
+    h4 {
+        border-bottom: 1px solid #c9c9c9;
+        margin-top: 0;
+        padding-bottom: 10px;
+    }
+
+    .modal h4 {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    dl.inline-dl {
+        dt, dd {
+            line-height: 1.42857;
+        }
+    }
+}
+
+.equal-height {
+    overflow: hidden;
+}
+
+@include media-breakpoint-up(sm) {
+    .gutter-exc:not(:last-child),
+    .gutter-exc:not(:first-child) {
+        padding-right: 1px;
+        padding-left: 1px;
+    }
+
+    .gutter-exc:first-child {
+        padding-left: $grid-gutter-width / 2;
+
+    }
+
+    .gutter-exc:last-child {
+        padding-right: $grid-gutter-width / 2;
+
+    }
+}
+
+.pmid-selection-trigger {
+    background-color: $color-neutral-bg;
+}
+
+.pmid-selection-curr-id {
+    position: relative;
+    margin-left: 10px;
+    top: 2px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.pmid-selection-trigger {
+    padding: 5px;
+}
+
+.pmid-selection-selected {
+    float: none;
+
+    @include media-breakpoint-up(md) {
+        float: left;
+    }
+}
+
+.btn-add-new-pmid {
+    display: block;
+    margin-top: 2px;
+
+    @include media-breakpoint-up(md) {
+        float: right;
+        margin-top: 0;
+    }
+}
+
+.pmid-selection-wrapper {
+    margin-bottom: 50px;
+}
+
+.pmid-selection-add {
+    padding: 5px;
+    border-top: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+    background-color: #e0e0e0;
+}
+
+.pmid-selection-add-btn {
+    width: 100%;
+}
+
+.pmid-selection-list {
+    max-height: 250px;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+    border: 1px solid #dddddd;
+
+    @include media-breakpoint-up(md) {
+        max-height: 700px;
+    }
+}
+
+.pmid-selection-list-item {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid darken(#dddddd, 10%);
+    background-color: #ffffff;
+    @include border-radius(3px);
+
+    div {
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity .25s ease-in-out;
+        -moz-transition: opacity .25s ease-in-out;
+        -webkit-transition: opacity .25s ease-in-out;
+    }
+
+    &.curr-pmid {
+        border: 4px solid $color-trim;
+        @include border-radius(4px);
+    }
+
+    &:hover div,
+    &.curr-pmid div {
+        opacity: 1;
+    }
+
+    div.no-add {
+        cursor: default;
+        opacity: 1;
+    }
+}
+
+
+.pmid-selection-list-pmid {
+    font-weight: bold;
+}
+
+.pmid-selection-help {
+    margin-top: 20px;
+}
+
+.curation-content .col-md-6 {
+    padding: 0;
+
+    .placeholder-pmid-overview {
+        min-height: 25vh;
+        opacity: .5;
+    }
+
+    .curr-pmid-overview {
+        background-color: #ffffff;
+    }
+}
+
+.panel-curator {
+    margin: 2px 0;
+    padding: 15px;
+    background-color: darken($color-neutral-bg, 10%);
+    @include border-radius(0);
+
+    p {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+}
+
+.panel-evidence-groups {
+    > .panel-heading {
+        padding: 0;
+
+        h4 {
+            text-align: center;
+            font-weight: bold;
+        }
+    }
+
+    > .panel-body {
+        padding: 10px 10px 0 10px;
+
+        h5 {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .genetic-evidence-group {
+            border: none;
+
+            > .panel-heading {
+                background-color: #f0f0f0;
+                border-bottom: solid 1px #c0c0c0;
+                padding-bottom: 4px;
+
+                h4 {
+                    font-size: 1.25em;
+
+                    span {
+                        background-color: #f0f0f0;
+                        color: #000;
+                        font-weight: 500;
+                        padding: 5px 0 0 0;
+                    }
+                }
+            }
+
+            > .panel-body {
+                padding: 0;
+
+                .group-separator {
+                    margin: 2px 0 5px 1px;
+
+                    .subhead {
+                        color: #777;
+                        font-size: 0.9em;
+                        font-weight: bold;
+                    }
+                }
+
+                .group-separator:first-child {
+                    margin-top: 12px;
+                }
+            }
+        }
+
+        .experimental-group {
+            border: none;
+
+            > .panel-heading {
+                background-color: #f0f0f0;
+                border-bottom: solid 1px #c0c0c0;
+                padding-bottom: 4px;
+
+                h4 {
+                    font-size: 1.25em;
+
+                    span {
+                        background-color: #f0f0f0;
+                        color: #000;
+                        font-weight: 500;
+                        padding: 0 0 0 0;
+                    }
+                }
+            }
+
+            > .panel-body {
+                padding: 10px 0 0 0;
+            }
+        }
+    }
+}
+
+
+.panel-evidence-group {
+    margin: 5px 0;
+
+    h5 {
+        display: block;
+    }
+
+    .variant-preferred-title {
+        border-bottom: 1px dotted #337ab7;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: none;
+    }
+}
+
+.panel-evidence {
+    .panel-heading {
+        padding: 0;
+
+        h4 {
+            font-size: 1.1rem;
+            text-align: left;
+        }
+
+        a {
+            padding: 5px 10px;
+        }
+    }
+
+    .panel-body {
+        padding: 10px;
+        background-color: #fff;
+    }
+
+    .icon {
+        font-size: 1.3rem;
+    }
+}
+
+.evidence-curation-info {
+    font-style: italic;
+    margin: 2px 0 0 0;
+
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+}
+
+.panel-create-gene-disease, .panel-select-variant {
+    .panel-std {
+        padding-bottom: 40px;
+
+        .add-disease-group {
+            margin-bottom: 30px;
+
+            .control-label {
+                padding-top: 0;
+
+                .control-label-note {
+                    font-weight: normal;
+                    display: block;
+                    margin-right: 15px;
+                }
+            }
+
+            .add-disease {
+                .disease-name {
+                    padding-left: 0px;
+
+                    .data-view {
+                        display: block;
+                        font-weight: normal;
+                        word-break: break-word;
+
+                        &.disease-name {
+                            font-weight: bold;
+                        }
+
+                        &.disease-desc,
+                        &.disease-phenotypes {
+                            padding-top: 8px;
+                        }
+                    }
+                }
+
+                .btn {
+                    .icon {
+                        font-size: 16px;
+                        margin-top: 2px;
+                        margin-left: 5px;
+                        vertical-align: text-bottom;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.panel-dashboard {
+    .panel-std {
+        padding: 10px 0 15px 0;
+
+        h3 {
+            margin: 10px 25px 15px 25px;
+        }
+
+        ul {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            padding: 8px 20px 8px 25px;
+            border-top: 1px solid #ddd;
+            list-style: none;
+            word-wrap: break-word;
+        }
+
+        li:nth-last-child(1) {
+            border-bottom: 1px solid #ddd;
+        }
+
+        a.block-link:hover {
+            text-decoration: none;
+
+            li {
+                background-color: #cde8f6;
+            }
+
+            .block-link-color {
+                text-decoration: underline;
+            }
+        }
+
+        a.block-link .block-link-no-color {
+            color: #000;
+        }
+    }
+
+    a.help-doc {
+        margin-left: 8px;
+
+        .icon {
+            font-size: 16px;
+            vertical-align: text-top;
+        }
+    }
+}
+
+.edit-omim-modal {
+    display: inline;
+
+    a.btn.btn-default {
+        border: none;
+        background: transparent;
+        color: #337ab7;
+        padding: 0;
+        text-decoration: none;
+        vertical-align: text-bottom;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        &:before {
+            color: #000;
+            content: '[';
+        }
+
+        &:after {
+            color: #000;
+            content: ']';
+        }
+    }
+}
+
+.curation-pmid-summary {
+    margin-top: 5px;
+    padding: 10px 20px 0 20px;
+    background-color: $group-curation-bg;
+    border: 1px solid $group-curation-trim;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.curation-content-viewer {
+    padding-bottom: 40px;
+}
+
+.variant-panel {
+    padding-top: 40px;
+    border-top: 1px solid #c0c0c0;
+    padding-bottom: 15px;
+
+    .mutalyzer-link {
+        float: none;
+        margin-bottom: 0;
+    }
+
+    .other-variant-desc {
+        margin-bottom: 0;
+    }
+
+    .clinvar-preferred-title {
+        word-break:break-all;
+        word-wrap: break-word;
+    }
+
+    &:first-child {
+        padding-top: 0;
+        border-top: none;
+    }
+
+    .btn-last {
+        margin-top: 5px;
+        margin-bottom: 30px;
+    }
+
+    .variant-curation {
+        margin-bottom: 10px;
+    }
+}
+
+.variant-view-panel {
+    h5 {
+        margin-bottom: 0;
+        margin-top: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #c0c0c0;
+        font-size: 1.3rem;
+    }
+
+    @include media-breakpoint-up(sm) {
+        &.variant-view-panel-edit {
+            margin-bottom: 40px;
+        }
+    }
+}
+
+.variant-individual {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid #c0c0c0;
+}
+
+.viewer-titles {
+    h1 {
+        display: inline-block;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 100%;
+        font-weight: 300;
+    }
+
+    h2 {
+        margin-top: 0;
+        font-size: 1.3rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .pmid-association-header {
+        padding: 2px 0;
+    }
+
+    .variant-association-header {
+        padding-left: 15px;
+
+        .term-name {
+            font-weight: 400;
+        }
+
+        .term-value {
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+    }
+}
+
+.submit-titles {
+    margin-bottom: -40px;
+
+    h1 {
+        max-width: 90%;
+    }
+
+    a {
+        margin: 0 0 55px 10px;
+    }
+}
+
+.title-ellipsis {
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    vertical-align: bottom;
+
+    a {
+        border-bottom: 1px dotted #337ab7;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+.title-ellipsis-short {
+    max-width: 91%;
+
+    @include media-breakpoint-up(sm) {
+        max-width: 89%;
+    }
+}
+
+.title-ellipsis-shorter {
+    max-width: 80%;
+
+    @include media-breakpoint-up(sm) {
+        max-width: 77%;
+    }
+}
+
+.dotted {
+    border-bottom: 1px dotted #000;
+}
+
+.curation-submit {
+    margin-bottom: 20px;
+
+    @include media-breakpoint-up(sm) {
+        margin-bottom: 40px;
+    }
+}
+
+.no-entry {
+    color: #c0c0c0;
+}
+
+.disabled-gray {
+    color: $gray-light;
+}
+
+.btn-individual-submit {
+    width: 100%;
+}
+
+.input-note-below {
+    margin-top: -20px;
+    margin-bottom: 40px;
+}
+
+.input-note-below-no-bottom {
+    margin-top: -20px;
+}
+
+.input-note-top {
+    margin-top: 20px;
+    margin-bottom: -5px;
+}
+
+.orphanet-copy {
+    margin-top: -15px;
+
+    input[type=button] {
+        margin-left: -3px;
+    }
+}
+
+// Functional tab, spacing for eval form
+section #PP2 {
+  margin-bottom: 7rem;
+}
+
+.demographics-copy,
+.methods-copy {
+    margin-bottom: 15px;
+
+    input[type=button] {
+        margin-left: -3px;
+    }
+}
+
+.btn-copy {
+    background-color: #5bc0de;
+    border-color: darken(#5bc0de, 5%);
+    color: #fff;
+
+    &:active, &:focus, &:hover {
+        background-color: darken(#5bc0de, 10%);
+        border-color: darken(darken(#5bc0de, 5%), 12%);
+        color: #fff;
+    }
+
+    &:active {
+        background-image: none;
+    }
+}
+
+.form-row-helper {
+    input[type=checkbox] {
+        margin-top: 11px;
+    }
+
+    .hug-top {
+        margin-top: -20px;
+        padding-bottom: 20px;
+    }
+
+    .no-resize {
+        resize: none;
+        overflow-x: hidden;
+    }
+}
+
+.variant-interpretation {
+    input[type=checkbox] {
+        margin-top: 11px;
+    }
+
+    .section-complete-bar {
+        margin: 0 -15px 0 -15px;
+        padding-top: 3px;
+        padding-bottom: 9px;
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+    }
+}
+
+.palette-not-curated {
+    color: #909090;
+}
+
+// Variant Header Styles
+.variant-header {
+    margin-top: 2px;
+    padding: 5px 0;
+    background-color: #c0c0c0;
+
+    h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    p {
+        margin-bottom: 0;
+        text-align: center;
+    }
+
+    .btn {
+        position: relative;
+        margin: 5px 0;
+        width: 100%;
+
+        i {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            font-size: 1rem;
+        }
+    }
+
+    .assessed {
+        padding-right: 15px;
+    }
+}
+
+// Display inline icon for proband. Change @extend to change icon site-wide.
+.icon-proband {
+    @extend .icon-user-md !optional;
+    margin-left: 3px;
+    margin-right: 3px;
+    color: #ce1d1d;
+    font-size: 1.1em !important; // To make its size relative to the surrounding text.
+}
+
+.icon-proband-white {
+    @extend .icon-proband;
+    color: #fff;
+}
+
+// Summary and Provisional data in GDM title panel
+.all-existing-classifications {
+    margin-top: 12px;
+
+    .list-group {
+        padding-left: 0;
+
+        .list-group-item {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            line-height: 180%;
+            list-style: none;
+            padding: 10px 15px;
+            position: relative;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    h5 {
+        font-size: 110%;
+        margin-top: 3px;
+        margin-bottom: 6px;
+    }
+
+    .gene-disease-record-classification {
+        text-align: left;
+
+        .classification-status {
+            .status-wrapper {
+                margin-left: 12px;
+            }
+
+            .status-wrapper:first-child {
+                margin-left: 8px;
+            }
+
+            .label {
+                font-size: 0.825em;
+                padding-top: .3em;
+
+                .badge {
+                    background-color: #ff7700;
+                    font-size: 85%;
+                    margin-right: 2px;
+                }
+            }
+
+            .no-classification {
+                display: inline-block;
+                position: relative;
+                top: 1px;
+            }
+
+            .classification-link-item {
+                font-size: 105%;
+                margin-left: 5px;
+                position: relative;
+                top: 3px;
+
+                .icon-link {
+                    font-size: 1.2em;
+                    -moz-transform: scaleX(-1);
+                    -o-transform: scaleX(-1);
+                    -webkit-transform: scaleX(-1);
+                    transform: scaleX(-1);
+                    filter: FlipH;
+                    -ms-filter: "FlipH";
+                }
+            }
+
+            .publish-warning {
+                color: #b6238a;
+                margin-left: 4px;
+
+                i.icon-exclamation-triangle {
+                    color: #666;
+                    vertical-align: middle;
+                }
+            }
+        }
+
+        .new-summary {
+            .label.label-info {
+                background-color: #917bc4;
+            }
+        }
+    }
+}
+
+.assessment-counting {
+    td {
+        text-align: center;
+        width: 150px;
+    }
+    .values {
+        text-align: right;
+    }
+}
+
+.summary-scoring {
+
+    .td-title {
+        width: 420px;
+        padding-left: 10px;
+    }
+
+    .td-score {
+        width: 80px;
+        text-align: right;
+        vertical-align: top;
+        padding-right: 10px;
+    }
+}
+
+.inline-button-wrapper {
+    display: inline-block;
+}
+
+.inline-button-wrapper-fullwidth {
+    display: inline-block;
+    width: 100%;
+}
+
+.delete-button-push {
+    margin-right: 20px;
+}
+
+.delete-notice {
+    font-size: 0.8rem;
+    color: #d9534f;
+    font-weight: bold;
+    line-height: 2.5;
+    padding-right: 10px;
+}
+
+.summary-provisional-classification-wrapper {
+  .card-header {
+    color: $table-header-fg;
+    background-color: $table-header-bg;
+    border-color: $table-header-highlight-bg;
+  }
+
+  .card-body {
+    background-color: #f0f0f0;
+  }
+
+  .form-std {
+    .alert-warning {
+    color: #8a6d3b;
+  }
+
+  .alert-info {
+      color: #31708f;
+    }
+  }
+
+  .panel-std {
+    padding-top:20px;
+  }
+
+  .modal-footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.summary-matrix-wrapper, 
+.provisional-classification-wrapper {
+    margin-bottom: 15px;
+}
+
+.summary-matrix {
+    background-color: #f0f0f0;
+    border: solid 3px #000;
+    border-collapse: collapse;
+    font-size: 14px;
+    position: relative;
+    width: 100%;
+
+    td {
+        padding: 3px 4px 3px 4px;
+        text-align: center;
+        vertical-align: middle;
+        border: solid 1px #000;
+
+        .form-error {
+            text-align: left;
+        }
+    }
+
+    .bg-gray {
+        background-color: #ccc;
+    }
+
+    .bg-emphasis {
+        background-color: rgba(38, 151, 209, 0.5);
+    }
+
+    .large {
+        font-size: 16px;
+    }
+
+    .emphasis {
+        color: red;
+    }
+
+    .header {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 16px;
+    }
+
+    .num-col {
+        width: 100px;
+    }
+
+    .checkbox {
+        margin: 0 auto;
+        font-size: 30px;
+    }
+
+    .rotate-text {
+        white-space: nowrap;
+        display: inline-block;
+        width: 30px;
+    }
+
+    .rotate-text > div {
+        display: inline-block;
+        padding-top: 6px;
+        transform: (rotate(-90deg) translateX(-55%));
+        transform-origin: 0 0;
+    }
+
+    .separator-below {
+        border-bottom: solid 3px #000;
+    }
+
+    .total-row {
+        font-size: 18px;
+        line-height: 25px;
+    }
+
+    .classification-form-content-wrapper {
+        padding: 15px;
+
+        .control-label {
+            padding-top: 0;
+        }
+
+        .altered-classification,
+        .altered-classification-reasons {
+            .form-control-info {
+                border-color: #51aad8;
+                -webkit-box-shadow: 0px 0px 5px 0px rgba(81,162,206,0.75);
+                -moz-box-shadow: 0px 0px 5px 0px rgba(81,162,206,0.75);
+                box-shadow: 0px 0px 5px 0px rgba(81,162,206,0.75);
+            }
+
+            .altered-classification-reset-warning {
+                margin-top: -10px;
+                text-align: left;
+            }
+        }
+
+        .altered-classification-reasons,
+        .classification-evidence-summary {
+            textarea {
+                /* placeholder text color */
+                &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                    color: #b6238a;
+                }
+                &::-moz-placeholder { /* Firefox 19+ */
+                    color: #b6238a;
+                }
+                &::-ms-input-placeholder { /* IE 10+ */
+                    color: #b6238a;
+                }
+                &::-moz-placeholder { /* Firefox 18- */
+                    color: #b6238a;
+                }
+                /* placeholder text color on focus */
+                &:focus::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                    color: transparent;
+                }
+                &:focus::-moz-placeholder { /* Firefox 19+ */
+                    color: transparent;
+                }
+                &:focus::-ms-input-placeholder { /* IE 10+ */
+                    color: transparent;
+                }
+                &:focus::-moz-placeholder { /* Firefox 18- */
+                    color: transparent;
+                }
+            }
+
+            .label-note {
+                display: block;
+                font-weight: normal;
+            }
+        }
+
+        .classification-status {
+            margin-top: 3px;
+            margin-bottom: 38px;
+
+            .form-group {
+                display: inline-block;
+                margin: 0 0 0 10px;
+
+                .col-sm-7 {
+                    margin-left: 0;
+                }
+
+                .form-error {
+                    display: none;
+                }
+            }
+
+            input[type="checkbox"] {
+                font-size: 30px;
+                margin-top: 0;
+                position: relative;
+                top: 5px;
+                left: -15px;
+            }
+        }
+
+        &.view-only {
+            .classification-status {
+                margin-bottom: 0;
+            }
+
+            .altered-classification-reasons, 
+            .classification-evidence-summary {
+                text-align: left;
+            }
+        }
+    }
+}
+
+.exp-matrix {
+    padding: none;
+    margin: none;
+    width: 100%;
+    font-size: 14px;
+    border: none;
+
+    .top-row {
+        background-color: #47b;
+        td {
+            color: #fff;
+            font-weight: bold;
+        }
+    }
+
+    td {
+        padding: 5px 10px 5px 10px;
+    }
+
+    .exp-evidence-category-cells {
+        width: 100px;
+    }
+
+    .exp-vertical-title-cells {
+        height: 110px;
+        width: 50px;
+        border-bottom: solid 2px #000;
+        text-align: center;
+        vertical-align: middle;
+    }
+}
+
+.narrow-line {
+    height: 3px;
+}
+.narrow-line-2 {
+    height: 10px;
+}
+.classification-cell {
+    border-bottom: 10px;
+}
+.classificationTable {
+    table {
+        border: 3px solid #000;
+        border-collapse: collapse;
+        border-spacing: 5px;
+        font-size: 16px;
+    }
+    td {
+        border-top: 1px solid #000;
+        border-bottom: 3px solid #000;
+        border-left: 3px solid #000;
+        padding: 5px 10px 5px 10px;
+    }
+    ul {
+        margin-top: 10px;
+    }
+    .greyRow {
+        background-color: #eee;
+    }
+
+    .titleCell {
+        text-align: center;
+        vertical-align: middle;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .levelCell {
+        text-align: center;
+        vertical-align: middle;
+        font-weight: bold;
+    }
+    .verticalCell {
+        width: 40px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .verticalContent {
+        display: inline-block;
+        white-space: nowrap;
+        font-size: 20px;
+        font-weight: bold;
+        width: 30px;
+    }
+    .spptEvd {
+        transform: (rotate(270deg) translate(-90px, 0));
+    }
+    .cntrdctEvd {
+        transform: (rotate(270deg) translate(-100px, 0));
+    }
+    .olTitle {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .olContent {
+        font-weight: normal;
+    }
+}
+
+.word-break {
+    display: block;
+    word-wrap: break-word;
+}
+
+.word-break-all {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-word;
+}
+
+.p-break {
+    display: block;
+    width: 95%;
+    margin: 10px auto 10px auto;
+    font-weight: bold;
+    word-wrap: break-word;
+}
+
+.form-group {
+    .control-label {
+        .normal {
+            font-weight: normal;
+        }
+        .emphasis {
+            color: red;
+        }
+    }
+}
+
+.evaluation {
+    .form-group {
+        background-color: #fff;
+        margin: 0;
+    }
+    .form-group:after {
+        clear: none;
+    }
+    .pad-top {
+        padding: 20px 0 0 0;
+
+    }
+    .pad-bottom {
+        padding-bottom: 15px;
+    }
+    .center {
+        text-align: center;
+    }
+    .input-right input {
+        text-align: right;
+    }
+    .after-input {
+        padding: 7px 0 0 0;
+    }
+    .clear {
+        clear: both;
+    }
+    .divider {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .criteria-evaluation-divider {
+        margin: 20px 0;
+        border-bottom: 1px solid #bce8f1;
+    }
+
+    .evaluation-form-section-wrapper {
+        .evalation-form-item {
+            .panel-heading {
+                .label {
+                    position: relative;
+                    margin-left: 12px;
+                    top: -1px;
+                }
+            }
+        }
+        .eval-form-criteria-dropdown {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .eval-form-criteria-explanation {
+            padding-right: 0;
+        }
+
+        .eval-form-or-divider {
+            font-weight: 600;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    }
+
+    .maf-cutoff-input-label {
+        text-align: left;
+        white-space: nowrap;
+        padding-left: 0;
+    }
+
+    .maf-cutoff-input {
+        padding-left: 0;
+        padding-right: 8px;
+        width: 6%;
+
+        .form-error {
+            display: none;
+        }
+    }
+}
+
+.panel-data {
+    .variant-view-panel {
+        dt {
+            text-align: left;
+            width: 300px;
+
+            &.variant-title-row {
+                display: table-cell;
+            }
+        }
+
+        dd {
+            word-break: break-all;
+            word-wrap: break-word;
+
+            &.variant-title-row {
+                display: table-cell;
+            }
+        }
+    }
+
+    .variant-view-panel.family-associated {
+        margin-top: 10px;
+
+        dt {
+            overflow: auto;
+            white-space: normal;
+        }
+    }
+}
+
+.curation-variant-tab-group {
+    margin-bottom: 20px;
+
+    &.vci-tabs, .vci-tabs {
+        ul.vci-tabs-header[role=tablist] {
+            border: none;
+            margin: 0;
+            padding: 0;
+
+            li[role=tab] {
+                background-color: #1b75bc;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid 1px #fff;
+                border-right: solid 1px #fff;
+                bottom: -1px;
+                color: #fff;
+                cursor: pointer;
+                display: inline-block;
+                list-style: none;
+                padding: 8px 2px;
+                position: relative;
+                text-align: center;
+            }
+
+            li[role=tab][aria-selected=true] {
+                background-color: #fff;
+                border: solid 1px #1b75bc;
+                border-bottom: solid 1px #fff;
+                color: #000;
+            }
+
+            li[role=tab][aria-selected=true] ~ li {
+                border-right: none;
+                border-left: solid 1px #fff;
+            }
+
+            li[role=tab][aria-disabled=true] {
+                color: GrayText;
+                cursor: default;
+            }
+
+            li[role=tab]:focus {
+                box-shadow: 0 0 5px hsl(208, 99%, 50%);
+                border-color: hsl(208, 99%, 50%);
+                outline: none;
+            }
+
+            li[role=tab]:focus:after {
+                background: #fff;
+                content: "";
+                position: absolute;
+                height: 5px;
+                left: -4px;
+                right: -4px;
+                bottom: -5px;
+            }
+        }
+
+        ul.vci-tabs-header[role=tablist].vci-subtabs {
+            li[role=tab] {
+                background-color: #fff;
+                color: #1b75bc;
+            }
+        }
+
+        .tab-panel {
+            border: solid 1px #1b75bc;
+            padding: 15px;
+            margin-bottom: 10px;
+            clear: both;
+
+            ul, li {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            dl {
+                margin-bottom: 0;
+
+                dd {
+                    margin-right: 20px;
+
+                    &.pull-right {
+                        margin-right: 0;
+                    }
+                }
+            }
+
+            .panel-content-wrapper .table {
+                margin-bottom: 0;
+            }
+
+            .basic-info .table th,
+            .basic-info .table td {
+                width: 25%;
+
+                .title-ellipsis {
+                    max-width: 250px;
+                }
+            }
+
+            .basic-info .all-existing-interpretaions .table th,
+            .basic-info .all-existing-interpretaions .table td {
+                width: 20%;
+            }
+
+            .basic-info .all-existing-interpretaions {
+                margin-bottom: 20px;
+
+                .classification-status {
+                    font-size: 1.1em;
+
+                    .status-wrapper {
+                        display: inline-block;
+                        margin-bottom: 5px;
+                    }
+        
+                    .label {
+                        margin-left: 14px;
+                        padding-top: .3em;
+        
+                        .badge {
+                            background-color: #ff7700;
+                            font-size: 85%;
+                            margin-right: 2px;
+                        }
+                    }
+        
+                    .label:first-child {
+                        margin-left: 0;
+                    }
+
+                    .classification-link-item {
+                        font-size: 95%;
+                        margin: 0 5px;
+                        position: relative;
+                        top: 3px;
+        
+                        .icon-link {
+                            font-size: 1.2em;
+                            -moz-transform: scaleX(-1);
+                            -o-transform: scaleX(-1);
+                            -webkit-transform: scaleX(-1);
+                            transform: scaleX(-1);
+                            filter: FlipH;
+                            -ms-filter: "FlipH";
+                        }
+                    }
+        
+                    .publish-warning {
+                        color: #b6238a;
+                        margin-left: 4px;
+        
+                        i.icon-exclamation-triangle {
+                            color: #666;
+                            vertical-align: middle;
+                        }
+                    }
+                }
+            }
+
+            .basic-info .datasource-clinvar-interpretaions {
+                .clinvar-interpretation-summary {
+                    padding-left: 0;
+
+                    dl dt:first-child {
+                        margin-bottom: 6px;
+                    }
+
+                    dl:nth-child(odd) dt {
+                        width: 150px;
+                    }
+
+                    dl:nth-child(even) dt {
+                        width: 180px;
+                    }
+
+                    .reviewStatus:first-letter {
+                        text-transform: capitalize;
+                    }
+                }
+            }
+
+            .basic-info .datasource-clinvar-interpretaions {
+                margin-bottom: 20px;
+            }
+
+            .basic-info .clinvar-interpretation .review-status:first-letter,
+            .basic-info .clinvar-interpretation .clinical-significance:first-letter {
+                text-transform: capitalize;
+            }
+
+            .basic-info .clinvar-interpretation .disease {
+                .condition {
+                    padding-bottom: 5px;
+                }
+
+                .identifiers {
+                    display: inline-block;
+
+                    ul {
+                        display: inline-block;
+                        list-style: none;
+                        margin: 0;
+                        padding: 0;
+                        vertical-align: bottom;
+                    }
+                }
+            }
+
+            .basic-info .clinical-assertion .disease {
+                .condition:not(:last-of-type) {
+                    padding-bottom: .7rem;
+                }
+
+                .identifiers {
+                    display: block;
+
+                    ul {
+                        display: inline;
+                        list-style: none;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    li {
+                        display: inline;
+                    }
+
+                    li + li:before {
+                        content: "|";
+                        margin: 0 4px;
+                    }
+                }
+            }
+
+            .basic-info .clinvar-interpretation .disease .identifiers li {
+                float: left;
+            }
+
+            .basic-info .clinvar-interpretation .disease .identifiers li + li:before {
+                content: "-";
+                margin: 0 4px;
+            }
+
+            .basic-info .table .primary-transcript td:last-child:after {
+                content: "\f069";
+                font-family: 'FontAwesome';
+                color: #31708f;
+                float: right;
+                position: relative;
+                right: 0;
+            }
+
+            .population .table tfoot .count:first-child td {
+                border-top: 2px solid #333;
+                color: #333;
+            }
+
+            .population .datasource-ExAC,
+            .population .datasource-gnomAD {
+                .table tfoot td {
+                    font-weight: bold;
+                }
+            }
+
+            .population .datasource-ExAC,
+            .population .datasource-gnomAD {
+                .table tbody td,
+                .table tfoot td {
+                    width: 20%;
+                }
+
+                table.additional-info {
+                    background-color: #eff7fb;
+
+                    tbody td.included-data {
+                        border-top: none;
+                        white-space: nowrap;
+                        width: 10%;
+
+                        .icon-times-circle {
+                            color: #888;
+                        }
+
+                        span {
+                            font-weight: bold;
+                            margin-left: 4px;
+                        }
+                    }
+
+                    tbody td.filter {
+                        border-top: none;
+                        width: 90%;
+
+                        span {
+                            font-weight: bold;
+                            margin-right: 4px;
+                        }
+
+                        ul {
+                            display: inline;
+                            word-break: break-word;
+
+                            li {
+                                margin: 0px 3px;
+                                padding: 3px 6px;
+                                white-space: normal;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .population .datasource-1000G .table tbody td,
+            .population .datasource-1000G .table tfoot td,
+            .population .datasource-ESP .table tbody td,
+            .population .datasource-ESP .table tfoot td {
+                width: 16.66%;
+            }
+
+            .computational .datasource-clingen .table th,
+            .computational .datasource-clingen .table td,
+            .computational .datasource-other .table th,
+            .computational .datasource-other .table td {
+                width: 20%;
+            }
+
+            .computational .datasource-other .popover-predictors-prediction-help {
+                display: inline-block;
+                margin-left: 8px;
+
+                .prediction-help-window {
+                    font-size: 80%;
+                    font-weight: normal;
+                    left: -500px;
+                    line-height: 80%;
+                    top: -60px;
+                    width: 400px;
+                    z-index: 999;
+
+                    .closePopOver {
+                        font-size: 125%;
+                        top: 4px;
+                    }
+
+                    .table th,
+                    .table td {
+                        line-height: 80%;
+                    }
+
+                    .predictor-column {
+                        width: 25%;
+                    }
+
+                    .letter-code-column {
+                        width: 25%;
+                    }
+
+                    .prediction-column {
+                        width: 50%;
+                    }
+                }
+            }
+
+            .computational .datasource-conservation .table th,
+            .computational .datasource-conservation .table td,
+            .computational .datasource-additional .table th {
+                width: 50%;
+            }
+
+            .computational .datasource-clinvar dt {
+                margin-right: 15px;
+            }
+
+            .computational .page-header:first-child {
+                margin-top: 20px;
+            }
+
+            .computational .datasource-splice {
+                .panel-body a {
+                    display: inline-block;
+                    margin-right: 20px;
+                }
+            }
+
+            .gene-specific .datasource-constraint-scores .table thead td,
+            .gene-specific .datasource-constraint-scores .table tbody td {
+                width: 16.665%;
+            }
+
+            .gene-specific .datasource-constraint-scores .table tfoot td {
+                font-size: 90%;
+            }
+        }
+    }
+}
+
+.clinical-significance {
+  word-break: normal;
+}
+
+.wip {
+    background-color: #ccc;
+    border-radius: 4px;
+    color: white;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: normal;
+    padding: 3px 8px;
+}
+
+/* variant curation interface - interpretation action bar */
+.curation-actions {
+    .evidence-only {
+        padding: 20px 0;
+    }
+
+    .interpretation-record {
+        padding: 20px 0;
+
+        h2 {
+            left: 0;
+            margin: 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-group {
+            left: 0;
+            padding: 0 15px;
+            position: absolute;
+            top: 20px;
+            width: 100%;
+        }
+    }
+
+    .modal-associate-disease {
+        .modal-box {
+            .alert-warning {
+                margin: 0 30px 20px 30px;
+            }
+        }
+    }
+}
+
+.curation-data-curator .current-user-interpretations {
+    margin-bottom: 10px;
+
+    dl.inline-dl dt {
+        float: none;
+    }
+
+    .associated-disease {
+        word-break: break-word;
+
+        .popover-component {
+            display: inline-block;
+            font-weight: normal;
+
+            .popover-wrapper {
+                position: fixed;
+                max-width: 300px;
+                z-index: 9999;
+            }
+        }
+    }
+
+    .header-classification {
+        margin-bottom: 3px;
+
+        strong {
+            vertical-align: bottom;
+        }
+
+        .classification-status {
+            font-size: 1.1em;
+            margin-left: 8px;
+
+            .label {
+                margin-right: 8px;
+                padding-top: .3em;
+
+                .badge {
+                    background-color: #ff7700;
+                    font-size: 85%;
+                    margin-right: 2px;
+                }
+            }
+        }
+    }
+}
+
+.curation-data-curator .current-user-interpretations,
+.curation-data-curator .login-users-interpretations,
+.curation-data-curator .other-users-interpretations {
+    .header-classification {
+        strong {
+            vertical-align: bottom;
+        }
+
+        .classification-status {
+            font-size: 1.1em;
+            margin-left: 8px;
+
+            .label {
+                margin-right: 8px;
+                padding-top: .3em;
+
+                .badge {
+                    background-color: #ff7700;
+                    font-size: 85%;
+                    margin-right: 2px;
+                }
+            }
+        }
+    }
+}
+
+.curation-variant  {
+    .curation-data-disease,
+    .curation-data-gene,
+    .curation-data-curator {
+        padding: 10px;
+        background-color: rgb(215, 236, 215);
+
+        @include media-breakpoint-up(sm) {
+            margin-bottom: -99999px;
+            padding-bottom: 99999px;
+        }
+
+        h4 {
+            border-bottom: 1px solid #c9c9c9;
+            margin-top: 0;
+            padding-bottom: 5px;
+        }
+    }
+
+    .curation-data-disease,
+    .curation-data-gene {
+        dd {
+            float: none;
+        }
+    }
+
+    .curation-data-curator {
+        .btn-link {
+            border: none;
+            padding: 0;
+        }
+
+        .current-user-interpretations {
+            .new-summary {
+                font-size: 1.1em;
+                margin-left: 8px;
+
+                .label.label-info {
+                    background-color: #917bc4;
+                    padding-top: .3em;
+                }
+            }
+        }
+    }
+
+    .alert {
+        margin-top: 20px;
+        margin-bottom: 0;
+    }
+}
+
+/* bootstrap callout component styles */
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+    background: #fff;
+
+    h4 {
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+}
+
+.bs-callout-info {
+    border-left-color: #1b809e;
+
+    h4 {
+        color: #1b809e;
+    }
+
+    .header-note {
+        color: #1b809e;
+        font-size: 110%;
+        font-weight: normal;
+    }
+
+    .exac-pop-note {
+        color: #1b809e;
+        font-size: 110%;
+        font-weight: normal;
+    }
+
+    .bs-callout-content-container {
+        float: left;
+        margin-right: 10%;
+    }
+
+    .bs-callout-content-container-fullwidth {
+        float: left;
+        margin-right: 10%;
+        width: 100%;
+    }
+}
+
+.bs-callout+.bs-callout {
+    margin-top: -5px;
+}
+
+.panel.panel-info {
+    .panel-title {
+        font-weight: bold;
+
+        a, .help-note {
+            font-size: 85%;
+            font-weight: normal;
+            line-height: 17.5px;
+            margin-left: 20px;
+        }
+
+        .help-note span {
+            font-style: italic;
+        }
+
+        a.label-primary {
+            color: #fff;
+            font-size: 55%;
+            font-weight: bold;
+            margin-left: 10px;
+            vertical-align: top;
+        }
+
+        a.credit-mygene {
+            background: url(../../img/mygene-logo.png) 0 1px no-repeat;
+        }
+
+        a.credit-myvariant {
+            background: url(../../img/myvariant-logo.png) 0 1px no-repeat;
+        }
+
+        a.credit-vep {
+            background: url(../../img/vep-logo.png) 0 1px no-repeat;
+        }
+
+        a.credit-mygene,
+        a.credit-myvariant,
+        a.credit-vep {
+            background-size: 18px 18px;
+            display: inline-block;
+            height: 19px;
+            width: 18px;
+            margin-left: 10px;
+            vertical-align: bottom;
+
+            span {
+                display: none;
+            }
+        }
+
+        a.credit-vep {
+            background-size: 38px 16px;
+            height: 17px;
+            width: 38px;
+        }
+
+        a.credit-pagestudy {
+            font-size: 85%;
+            margin-left: 12px;
+        }
+    }
+
+    .panel-subtitle {
+        a {
+            font-weight: normal;
+        }
+    }
+
+    .pull-right {
+        float: right;
+    }
+
+    .panel-body {
+        padding-bottom: 12px;
+
+        .pull-right a {
+            display: inline-block;
+
+            &:not(:last-child) {
+                margin-right: 20px;
+            }
+        }
+    }
+}
+
+/* variant curation interface - criteria bar */
+/* temp styles for note below criteria bar */
+.curation-criteria {
+    .criteria-usage-note {
+        color: #aaa;
+        font-size: 95%;
+        line-height: normal;
+        margin-bottom: 0;
+        position: relative;
+        top: -6px;
+    }
+}
+
+.criteria-group.btn-group-sm {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.criteria-group.btn-group-sm .btn {
+    background-color: #fff;
+    cursor: pointer;
+    padding: 5px 0.665em;
+    font-size: 12px;
+    font-weight: bold;
+
+    /*
+     * Suppress form element outline if criteria button is clicked.
+     * FIXME: Assessibility concern. Will address when implementing
+     * 'clicking on any given criteria button activates the
+     * corresponding tab' functionality.
+     */
+    &:focus {
+        outline: none;
+    }
+
+    /* Keep for future version
+    &.onCurrentTab span:after {
+        position: absolute;
+        margin-left: -38%;
+        content: "\f111";
+        font-family: 'FontAwesome';
+        font-size: 50%;
+        color: #ccc;
+        top: 32px;
+    }
+    */
+
+    &[data-status='not-met'] {
+        background-color: #ccc;
+    }
+}
+
+.criteria-group.btn-group-sm {
+    .benign-strong {
+        color: $benign-strong;
+
+        &:active {
+            color: $benign-strong;
+        }
+
+        &[data-status='met'] {
+            background-color: $benign-strong;
+            border-color: darken(#ccc, 15%);
+            color: #fff;
+        }
+    }
+
+    .benign-supporting {
+        color: $benign-supporting;
+
+        &:active {
+            color: $benign-supporting;
+        }
+
+        &[data-status='met'] {
+            background-color: $benign-supporting;
+            border-color: darken(#ccc, 15%);
+            color: #fff;
+        }
+    }
+
+    .pathogenic-supporting {
+        color: $pathogenic-supporting;
+
+        &:active {
+            color: $pathogenic-supporting;
+        }
+
+        &[data-status='met'] {
+            background-color: $pathogenic-supporting;
+            border-color: darken(#ccc, 15%);
+            color: #fff;
+        }
+    }
+
+    .pathogenic-moderate {
+        color: $pathogenic-moderate;
+
+        &:active {
+            color: $pathogenic-moderate;
+        }
+
+        &[data-status='met'] {
+            background-color: $pathogenic-moderate;
+            border-color: darken(#ccc, 15%);
+            color: #fff;
+        }
+    }
+
+    .pathogenic-strong {
+        color: $pathogenic-strong;
+
+        &:active {
+            color: $pathogenic-strong;
+        }
+
+        &[data-status='met'] {
+            background-color: $pathogenic-strong;
+            border-color: darken(#ccc, 15%);
+            color: #fff;
+        }
+    }
+
+    .pathogenic-very-strong {
+        color: $pathogenic-very-strong;
+
+        &:active {
+            color: $pathogenic-very-strong;
+        }
+
+        &[data-status='met'] {
+            background-color: $pathogenic-very-strong;
+            border-color: darken(#ccc, 15%);
+            color: #fff;
+        }
+    }
+
+    .stand-alone {
+        color: $stand-alone;
+
+        &:active {
+            color: $stand-alone;
+        }
+
+        &[data-status='met'] {
+            background-color: $stand-alone;
+            border-color: darken(#ccc, 15%);
+            color: #fff;
+        }
+    }
+}
+
+/**
+ * Criteria code colors
+ */
+.benign-strong {
+    color: $benign-strong;
+}
+
+.benign-supporting {
+    color: $benign-supporting;
+}
+
+.pathogenic-supporting {
+    color: $pathogenic-supporting;
+}
+
+.pathogenic-moderate {
+    color: $pathogenic-moderate;
+}
+
+.pathogenic-strong {
+    color: $pathogenic-strong;
+}
+
+.pathogenic-very-strong {
+    color: $pathogenic-very-strong;
+}
+
+.stand-alone {
+    color: $stand-alone;
+}
+
+/* Vertical padding for div */
+.btn-vertical-space {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.feature-in-development {
+    border: none;
+    border-left: 5px solid #fed84d;
+    border-radius: 2px;
+}
+
+.feature-in-development:hover {
+    border: none;
+    border-left: 5px solid #fed84d;
+    border-radius: 2px;
+}
+
+dl.inline-dl {
+    dd.fullWidth {
+        width: 100%;
+    }
+
+    dt.dtFormLabel {
+        line-height: 4.5;
+    }
+
+    dd.ddFormInput {
+        margin-top: 15px;
+    }
+}
+
+.panel-wide-content {
+    padding: 20px 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Credits at the bottom of tabs */
+.credits {
+    font-size: 12px;
+    margin: 20px 0 0 0;
+
+    .label-primary {
+        vertical-align: text-top;
+    }
+
+    span.credit-mygene {
+        background: url(../../img/mygene-logo.png) 0 0 no-repeat;
+    }
+
+    span.credit-myvariant {
+        background: url(../../img/myvariant-logo.png) 0 0 no-repeat;
+    }
+
+    span.credit-vep {
+        background: url(../../img/vep-logo.png) 0 0 no-repeat;
+    }
+
+    span.credit-mygene,
+    span.credit-myvariant,
+    span.credit-vep {
+        background-size: 18px 18px;
+        display: inline-block;
+        height: 18px;
+        width: 18px;
+        vertical-align: bottom;
+
+        span {
+            display: none;
+        }
+    }
+
+    span.credit-vep {
+        background-size: 38px 16px;
+        height: 16px;
+        width: 38px;
+    }
+}
+
+.progress-bar-area {
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 10px 0;
+    border: solid 1px #dddddd;
+    background-color: #f5f5f5;
+
+    div {
+        margin: 0;
+        padding: 0;
+
+        dl {
+            margin: 0;
+            padding-left: 30px;
+            position:  relative;
+
+            &:before  {
+                content: "\f058";
+                font-family: 'FontAwesome';
+                font-size: 18pt;
+                position: absolute;
+                left: 0;
+                padding: 0px;
+            }
+
+            &.benign-result:before {
+                color: $stand-alone;
+            }
+
+            &.path-result:before {
+                color: $pathogenic-very-strong;
+            }
+
+            &.calculate-result:before {
+                content: "\f1ec";
+                font-family: 'FontAwesome';
+                font-size: 15pt;
+                color: #666;
+                top: 8px;
+            }
+
+            dd {
+                font-size: 12px;
+                line-height: 22px;
+            }
+
+            .criteria-strength {
+                border: none;
+                margin-left: 0;
+                padding-left: 0;
+                background-color: #f5f5f5;
+                color: #000;
+                cursor: text;
+            }
+
+            .badge {
+                background-color: #b7b7b7;
+                display: inline-block;
+                min-width: 10px;
+                padding: 3px 7px;
+                font-size: 12px;
+                font-weight: 700;
+                line-height: 1;
+                color: #fff;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: middle;
+                border-radius: 10px;
+            }
+        }
+    }
+
+    .benign-box {
+        padding-left: 1em;
+    }
+
+    .assertion-box {
+        padding-left: 0;
+        line-height: 20px;
+    }
+
+    @media not screen and (min-width: 992px) {
+        .benign-box {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+
+        .path-box {
+            padding-left: 1em;
+        }
+
+        .assertion-box {
+            padding-left: 4em;
+        }
+    }
+
+    @media not screen and (min-width: 768px) {
+        .benign-box {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+
+        .path-box {
+            padding-left: 1em;
+        }
+
+        .assertion-box {
+            padding-left: 2em;
+        }
+    }
+
+    @media not screen and (min-width: 576px) {
+        padding-left: 20px;
+
+        .assertion-box {
+            padding-left: 20px;
+        }
+
+        .path-box {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+    }
+}
+
+.criteria-description {
+    text-overflow: clip;
+}
+
+.criteria-eval-note {
+    color: #1b809e;
+    font-weight: normal;
+    padding: 8px 0 0 15px; 
+}
+
+/* View Summary button */
+.view-summary {
+    &:focus,
+    &:active {
+        border: 1px solid #1b75bc;
+        background-color: #1b75bc;
+        outline: none;
+    }
+}
+
+/* Evaluation summary table UIs */
+.evaluation-summary {
+    h2 {
+        text-align: center;
+    }
+
+    .table tbody td {
+        vertical-align: inherit;
+
+        &.criteria-code,
+        &.criteria-modified,
+        &.evaluation-status {
+            line-height: 0;
+        }
+    }
+
+    .criteria-class {
+        font-size: 20px;
+
+        .benign {
+            color: $stand-alone;
+        }
+
+        .pathogenic {
+            color: $pathogenic-very-strong;
+        }
+    }
+
+    .criteria-code {
+        font-weight: bold;
+
+        &.benign-strong {
+            color: #62387e;
+        }
+
+        &.benign-supporting {
+            color: #2b67a0;
+        }
+
+        &.pathogenic-supporting  {
+            color: #728b42;
+        }
+
+        &.pathogenic-moderate {
+            color: #d36735;
+        }
+
+        &.pathogenic-strong {
+            color: #d33535;
+        }
+
+        &.pathogenic-very-strong {
+            color: #d33535;
+        }
+    }
+
+    .evaluation-status {
+        &:first-letter {
+            text-transform: capitalize;
+        }
+    }
+
+    .criteria-modified {
+        position: relative;
+
+        &:after {
+            font-family: 'FontAwesome';
+            float: left;
+            position: absolute;
+            left: 35px;
+            font-size: 135%;
+        }
+    }
+
+    [data-modlevel='1-up']:after {
+        content: "\f176";
+    }
+
+    [data-modlevel='2-up']:after {
+        content: "\f176 \f176";
+    }
+
+    [data-modlevel='3-up']:after {
+        content: "\f176 \f176 \f176";
+    }
+
+    [data-modlevel='1-down']:after {
+        content: "\f175";
+    }
+
+    [data-modlevel='2-down']:after {
+        content: "\f175 \f175";
+    }
+
+    [data-modlevel='3-down']:after {
+        content: "\f175 \f175 \f175";
+    }
+
+    [data-evaltype='benign'] {
+        .criteria-modified:after {
+            color: $stand-alone;
+        }
+    }
+
+    [data-evaltype='pathogenic'] {
+        .criteria-modified:after {
+            color: $pathogenic-very-strong;
+        }
+    }
+
+    .datasource-evaluation-summary-provision {
+        dl {
+            margin-bottom: 5px;
+
+            .provisional-interpretation-status:first-letter {
+                text-transform: capitalize;
+            }
+        }
+    }
+
+    .provisional-static-content-wrapper {
+        margin-bottom: 10px;
+        padding: 0;
+
+        .provisional-interpretation-status {
+            line-height: 1.8;
+            margin-left: 3px;
+            position: relative;
+            top: -3px;
+
+            .label {
+                margin-right: 8px;
+                padding-top: .3em;
+
+                .badge {
+                    background-color: #ff7700;
+                    font-size: 85%;
+                    margin-right: 2px;
+                }
+            }
+        }
+    }
+
+    .provisional-form-content-wrapper {
+        border: solid 1px #dfdfdf;
+        padding: 15px 0;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+    }
+
+    .classification-submit, .classification-edit {
+        margin-top: 10px;
+    }
+
+    .evaluation-provision {
+        margin-bottom: 5px;
+        margin-right: 0;
+
+        label {
+            padding-left: 0;
+        }
+
+        .col-sm-6 {
+            padding-left: 0;
+        }
+
+        &.provisional-pathogenicity {
+            .form-group {
+                margin-bottom: 0;
+            }
+
+            label {
+                padding-top: 0;
+            }
+
+            label i {
+                display: block;
+                font-weight: normal;
+            }
+
+            textarea:required {
+                background-color: #fde8e8;
+                border-color: #ffb2b2;
+            }
+        }
+
+        &.provisional-interpretation {
+            margin-top: 0;
+
+            .col-sm-7 {
+                margin-left: -15px;
+            }
+
+            .popover-provisional-status-help {
+                display: inline-block;
+                z-index: 999;
+            }
+
+            .icon-question-circle {
+                cursor: pointer;
+                color: #2697d1;
+                font-size: 120%;
+                margin-right: 8px;
+                position: relative;
+                /*
+                &:after {
+                    content: "Editing interpretation is permitted after selecting this option";
+                    background-color: #000;
+                    background-color: hsla(0, 0%, 20%, 0.9);
+                    color: #fff;
+                    text-align: center;
+                    border-radius: 3px;
+                    padding: 7px 0;
+                    position: absolute;
+                    visibility: hidden;
+                    width: 370px;
+                    font-size: 12px;
+                    font-family: "Helvetica";
+                    font-weight: bold;
+                    z-index: 1;
+                    top: 22px;
+                    left: 0;
+                }
+
+                &:hover:after {
+                    visibility: visible;
+                }
+                */
+            }
+
+            .form-group {
+                display: inline-block;
+                margin: 0 0 0 10px;
+
+                .col-sm-7 {
+                    margin-left: 0;
+                }
+
+                .form-error {
+                    display: none;
+                }
+            }
+
+            input[type="checkbox"] {
+                margin-top: 0;
+                position: relative;
+                top: 3px;
+                left: 0px;
+                visibility: hidden;
+
+                &:after,
+                &:checked:after {
+                    font-family: FontAwesome;
+                    font-size: 120%;
+                    display: inline-block;
+                    visibility: visible;
+                }
+
+                &:after {
+                    content: "\f096";
+                }
+
+                &:checked:after {
+                    content: "\f14a";
+                }
+
+                &[disabled] {
+                    color: #bbb;
+                }
+            }
+        }
+
+        &.evidence-summary {
+            label {
+                padding-right: 0;
+                padding-top: 0;
+            }
+
+            .form-error {
+                display: none;
+            }
+        }
+    }
+}
+
+.homepage-main-box {
+    h1, h2 {
+        font-weight: 500;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 3.0em;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+
+    .lead {
+        font-size: 19px;
+    }
+
+    .project-info {
+        background-color: #eee;
+        border-radius: 6px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding: 25px 60px;
+    }
+
+    h3 {
+        border-top: solid 1px #eee;
+        border-bottom: solid 1px #eee;
+        font-style: italic;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    h4 {
+        margin-bottom: 20px;
+    }
+
+    .help-document {
+        margin-top: 20px;
+
+        .btn {
+            border-radius: 4px;
+        }
+    }
+
+    .col-sm-6 {
+        margin-bottom: 30px;
+
+        .promo {
+            border: solid 1px #ddd;
+            border-radius: 4px;
+            padding: 10px 35px 20px 35px;
+
+            @include media-breakpoint-up(lg) {
+                min-height: 325px;
+            }
+
+            @include media-breakpoint-only(md) {
+                min-height: 395px;
+            }
+
+            @include media-breakpoint-only(sm) {
+                min-height: 416px;
+            }
+        }
+    }
+
+    .demo-access-note div {
+        background-color: #d9edf7;
+        border: 1px solid #bce8f1;
+        border-radius: 4px;
+        color: #31708f;
+        font-size: 140%;
+        line-height: 1.5;
+        margin: 0 15px 30px 15px;
+        padding: 15px 18px;
+        text-align: center;
+    }
+}
+
+table.login-users-interpretations {
+    td {
+        span.no-broken-item {
+            display: inline-block;
+        }
+    }
+
+    td.icon-box {
+        vertical-align: text-top;
+
+        a.continue-interpretation {
+            padding-left: 5px;
+
+            i.large-icon {
+                font-size: 1.75em;
+            }
+        }
+    }
+}
+
+.curation-data-curator .login-users-interpretations,
+.curation-data-curator .other-users-interpretations {
+    dl {
+        margin-bottom: 16px;
+    }
+}
+
+.other-users-interpretations {
+    padding-left: 0;
+    padding-top: 5px;
+
+    dl {
+        dd {
+            width: 100%;
+
+            span.no-broken-item {
+                display: inline-block;
+            }
+        }
+
+        &:last-child {
+            margin-bottom: 6px;
+        }
+    }
+}
+
+.form-variant-select {
+    .resource-metadata {
+        &>.row {
+            margin-left: 12px;
+            margin-right: 12px;
+
+            .row {
+                margin-bottom: 5px;
+
+                .control-label {
+                    padding-right: 10px;
+                }
+
+                .text-no-input {
+                    padding-left: 10px;
+                }
+
+                @include media-breakpoint-down(sm) {
+                    .text-no-input {
+                        padding-top: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* case-cohort, control-cohort panels */
+.panel.case-cohort,
+.panel.control-cohort,
+.panel.case-control-eval-score,
+.panel.case-control-label-panel {
+    .panel-std {
+        padding: 30px 45px 20px 45px;
+    }
+
+    .section {
+        h3 {
+            border-bottom: solid 1px lighten(#486e82, 35%);
+            color: #486e82;
+            font-size: 1.45em;
+            font-weight: 500;
+            margin: 0 0 30px 0;
+            padding: 5px 0;
+
+            .label {
+                font-size: 50%;
+                margin-left: 5px;
+                position: relative;
+                top: 4px;
+                vertical-align: super;
+            }
+        }
+
+        h4 {
+            font-size: 1.25em;
+
+            @include media-breakpoint-down(xs) {
+                font-style: italic;
+                margin-bottom: 20px;
+                padding-left: 0;
+            }
+        }
+
+        label {
+            padding-right: 0;
+        }
+
+        .invisible-placeholder {
+            visibility: hidden;
+
+            @include media-breakpoint-down(xs) {
+                display: none;
+            }
+        }
+
+        &.section-power .form-group.allele-frequency {
+            .col-sm-5 {
+                padding-right: 0;
+                text-align: right;
+
+                span {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .section:first-child {
+        border-top: none;
+    }
+
+    .section-label {
+        .input-note-below {
+            margin-bottom: 30px;
+        }
+    }
+}
+
+.panel.case-cohort {
+    .label-group {
+        background-color: #f0ad4e;
+    }
+
+    .section-disease {
+        .add-disease-group .add-disease {
+            .add-disease-button-group {
+                li {
+                    display: inherit;
+
+                    &:nth-child(even) {
+                        margin: 4px 0;
+                    }
+
+                    .gdm-disease-copy>.btn,
+                    .evidence-disease>.btn {
+                        font-size: 13px;
+                        padding: 6px 8px;
+                    }
+                }
+            }
+
+            .delete-disease-button {
+                .btn.pull-right {
+                    float: left !important;
+                    margin-top: 10px;
+                }
+            }
+        }
+    }
+}
+
+.panel.control-cohort {
+    .section-disease {
+        visibility: hidden;
+
+        @include media-breakpoint-down(xs) {
+            display: none;
+        }
+
+        .add-disease-group .add-disease {
+            .add-disease-button-group {
+                li {
+                    display: inherit;
+
+                    &:nth-child(even) {
+                        height: 8px;
+                        visibility: hidden;
+                    }
+
+                    .gdm-disease-copy>.btn,
+                    .evidence-disease>.btn {
+                        font-size: 13px;
+                        opacity: 0.5;
+                        padding: 6px 8px;
+                        pointer-events: none;
+                    }
+                }
+            }
+
+            .delete-disease-button.pull-right {
+                float: left !important;
+                padding-top: 10px;
+            }
+        }
+    }
+
+    .section-additional-info .other-genes {
+        visibility: hidden;
+
+        @include media-breakpoint-down(xs) {
+            display: none;
+        }
+    }
+
+    .label-group {
+        background-color: #91b6ca;
+    }
+}
+
+.panel.case-control-eval-score {
+    .section-statistics {
+        position: relative;
+
+        h4 {
+            @include media-breakpoint-up(sm) {
+                position: absolute;
+                margin-left: 0;
+            }
+
+            @include media-breakpoint-down(xs) {
+                font-style: italic;
+                margin-bottom: 20px;
+                padding-left: 0;
+            }
+        }
+    }
+
+    .statistic-other-type.expanded {
+        display: block;
+    }
+
+    .statistic-other-type.collapsed {
+        display: none;
+    }
+}
+
+.panel.case-control-label-panel {
+    .panel-std {
+        padding-bottom: 10px;
+
+        .form-group {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.case-cohort-view,
+.control-cohort-view {
+    @include media-breakpoint-down(xs) {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .panel-std {
+        dt {
+            width: auto;
+            text-align: left;
+            white-space: normal;
+            vertical-align: top;
+
+            @include media-breakpoint-up(lg) {
+                min-width: 300px;
+            }
+
+            @include media-breakpoint-only(md) {
+                min-width: 250px;
+            }
+
+            @include media-breakpoint-only(sm) {
+                min-width: 135px;
+            }
+        }
+
+        dd {
+            width: 40%;
+            vertical-align: top;
+        }
+    }
+}
+
+.case-control-evaluation {
+    .panel-std {
+        dt {
+            width: auto;
+            text-align: left;
+            white-space: normal;
+            vertical-align: top;
+
+            @include media-breakpoint-up(lg) {
+                min-width: 400px;
+            }
+
+            @include media-breakpoint-only(md) {
+                min-width: 350px;
+            }
+
+            @include media-breakpoint-only(sm) {
+                min-width: 300px;
+            }
+        }
+
+        dd {
+            width: 45%;
+            vertical-align: top;
+        }
+    }
+}
+
+.case-cohort-view {
+    padding-left: 0;
+}
+
+.control-cohort-view {
+    padding-right: 0;
+}
+
+//.panel-body.panel-std {
+.card-closed{
+    display: none;
+}
+
+.card-body {
+    .section {
+        h3 {
+            border-bottom: solid 1px lighten(#486e82, 35%);
+            color: #486e82;
+            font-size: 1.45em;
+            font-weight: 500;
+            margin: 0 0 30px 0;
+            padding: 5px 0;
+        }
+
+        .alert-warning {
+            color: #8a6d3b;
+        }
+
+        .lod-score-inclusion-note {
+            margin-top: -15px;
+        }
+    }
+
+    .variant-assessment {
+        .alert {
+            padding: 8px 15px;
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+    }
+
+    .proband-label-note {
+        .alert {
+            padding: 8px 15px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+    }
+
+    .score-status-note {
+        .alert {
+            padding: 8px 15px;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+    }
+
+    .sex-field-note {
+        .alert {
+            margin-top: -15px;
+        }
+    }
+
+    .variant-panel .mutalyzer-link {
+        margin-bottom: 10px;
+    }
+
+    .gene-ontology.help-text.style-list {
+        padding-left: 14px;
+    }
+
+    dl.calculated-score {
+        width: 100%;
+        margin-bottom: 15px;
+        padding-left: 4px;
+
+        dt {
+            width: 41.66667%;
+        }
+
+        dd {
+            width: 58.33333%;
+            padding-left: 15px;
+        }
+    }
+
+    .evidence-score-list-viewer {
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        h5 {
+            margin-top: 0;
+            padding-bottom: 5px;
+            font-size: 1.25rem;
+            border-bottom: 1px solid #ddd;
+
+        }
+    }
+
+    .variant-view-panel-edit {
+        dt.no-label:after {
+            content: " ";
+        }
+
+        dd .alert {
+            display: block;
+            padding: 8px 15px;
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+    }
+
+    .rescue-observed-group {
+        div {
+            display: block;
+            position: relative;
+
+            dd {
+                left: 275px;
+                position: relative;
+            }
+        }
+
+        div:last-child {
+            dd {
+                left: 208px;
+            }
+        }
+    }
+}
+
+.proband-evidence-score {
+  .card-body {
+    label i {
+      display: block;
+      font-weight: normal;
+    }
+  }
+}
+
+// .panel.case-control-evidence-score,
+// .panel.experimental-evidence-score,
+// .panel.proband-evidence-score {
+//     .panel-body.panel-std {
+//         padding-top: 25px;
+
+//         .variant-gene-impact-curation-link-item {
+//             margin-left: 15px;
+//         }
+
+//         label i {
+//             display: block;
+//             font-weight: normal;
+//         }
+
+//         label>span {
+//             position: relative;
+
+//             .required-field {
+//                 position: absolute;
+//                 top: -38px;
+//                 left: 4px;
+//             }
+//         }
+
+//         .score-alert-message {
+//             margin-top: -18px;
+//             padding-left: 12px;
+//             padding-right: 0;
+
+//             .alert-warning {
+//                 color: #8a6d3b;
+//                 padding: 10px 15px;
+//             }
+//         }
+//     }
+// }
+
+// .panel.proband-evidence-score-viewer {
+.experimental-evidence-score-viewer,
+.card-panel.proband-evidence-score-viewer {
+  label {
+    font-weight: bold;
+
+    i {
+      display: block;
+      font-weight: normal;
+    }
+  }
+}
+
+// .panel.case-control-evidence-score-viewer,
+// .panel.experimental-evidence-score-viewer,
+// .panel.proband-evidence-score-viewer {
+//     .panel-body.panel-std {
+//         padding-top: 25px;
+
+//         .variant-gene-impact-curation-link-item {
+//             margin-left: 15px;
+//         }
+
+//         label i {
+//             display: block;
+//             font-weight: normal;
+//         }
+
+//         label>span {
+//             position: relative;
+
+//             .required-field {
+//                 position: absolute;
+//                 top: -38px;
+//                 left: 198px;
+//             }
+//         }
+
+//         dl.calculated-score {
+//             dt {
+//                 padding-left: 10px;
+//                 text-align: left;
+//             }
+//         }
+
+//         .creator-score-status-note {
+//             color: #606060;
+//         }
+//     }
+// }
+
+.non-bold-font {
+    font-weight: normal;
+}
+
+.link-button {
+    padding: 0;
+    border: none;
+    line-height: 1;
+
+    box-shadow: none !important;
+}
+
+.link-to-vci-box {
+    border-bottom: solid 1px #ddd;
+    margin: 20px 0;
+    padding: 0 0 20px 0;
+    text-align: center;
+}
+
+.group-curation-content {
+    .add-disease-group {
+        margin-bottom: 20px;
+
+        .control-label {
+            padding-top: 0;
+
+            .control-label-note {
+                font-weight: normal;
+                display: block;
+                margin-right: 15px;
+            }
+        }
+
+        .add-disease {
+            .disease-name {
+                padding-left: 0px;
+
+                .data-view {
+                    display: block;
+                    font-weight: normal;
+                    word-break: break-word;
+
+                    &.disease-name {
+                        font-weight: bold;
+                    }
+
+                    &.disease-desc,
+                    &.disease-phenotypes {
+                        padding-top: 8px;
+                    }
+                }
+
+                &.error .form-error {
+                    font-size: 14px;
+                }
+            }
+
+            .add-disease-button-group {
+                list-style: none;
+                padding-left: 0;
+
+                li {
+                    display: table-cell;
+
+                    &:nth-child(even) {
+                        padding: 0 10px;
+                    }
+                }
+            }
+
+            .btn {
+                .icon {
+                    font-size: 16px;
+                    margin-top: 2px;
+                    margin-left: 5px;
+                    vertical-align: text-bottom;
+                }
+            }
+        }
+    }
+
+    .form-group.parent-evidence {
+        .col-sm-5 {
+            text-align: right;
+
+            span {
+                font-weight: bold;
+            }
+        }
+
+        .col-sm-7 {
+            padding-top: 1px;
+        }
+    }
+}
+
+.curation-actions.curation-variant {
+    .add-disease-interpretation {
+        .btn {
+            .icon {
+                font-size: 14px;
+                margin-top: 2px;
+                margin-left: 5px;
+                vertical-align: text-bottom;
+            }
+        }
+    }
+
+    .modal-content {
+        .alert {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+    }
+}
+
+/**
+ * Styles alerts to fade in and out
+ */
+.feedback-message {
+    -webkit-transition: opacity 2s ease 0.25s, visibility 2s ease 0.25s;
+    -moz-transition: opacity 2s ease 0.25s, visibility 2s ease 0.25s;
+    -ms-transition: opacity 2s ease 0.25s, visibility 2s ease 0.25s;
+    -o-transition: opacity 2s ease 0.25s, visibility 2s ease 0.25s;
+    transition: opacity 2s ease 0.25s, visibility 2s ease 0.25s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.feedback-message.alert {
+    margin: 0 10px;
+    padding: 6px 15px;
+}
+
+.feedback-message.isVisible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.feedback-message.isHidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/**
+ * Styles for error pages
+ */
+.type-error {
+    &.type-LoginDenied, &.type-LoginNotVerified {
+        h1 {
+            .icon {
+                font-size: 95%;
+            }
+        }
+
+        .alert {
+            font-size: 1.05rem;
+            line-height: 160%;
+        }
+
+        .panel {
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+
+            .panel-body {
+                font-size: 1.05rem;
+                line-height: 160%;
+
+                .section-header {
+                    display: block;
+                    font-size: 1.15rem;
+                    font-weight: bold;
+                }
+
+                ol ol {
+                    list-style-type: lower-alpha;
+                }
+            }
+        }
+    }
+
+    &.type-HTTPForbidden, &.type-HTTPNotFound {
+        .alert {
+            margin-top: 2rem;
+
+            h3 {
+                font-size: 1.5rem;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+/* Styles for hovering tool tip upon mouseover variant title "i" icon */
+.variant-title-explanation,
+.interpretation-status-explanation {
+    font-size: 85%;
+    margin-left: 5px;
+
+    /* Overriding tool tip width */
+    [data-tooltip]:before {
+        margin-left: -180px;
+        width: 360px;
+    }
+}
+
+.variant-panel .variant-title-explanation {
+    font-size: 100%;
+}
+
+.pmid-evidence-form {
+    .pmid-evidence-form-item.criteria-selection {
+        label {
+            text-align: left;
+        }
+    }
+}

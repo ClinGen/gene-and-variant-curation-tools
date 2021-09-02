@@ -1,0 +1,359 @@
+
+.form-std {
+    p {
+        color: #606060;
+    }
+}
+
+.form-create-gene-disease {
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.form-variant-select {
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+    .modal-buttons-wrapper {
+        margin: 15px 0 15px 0;
+    }
+
+    .submit-buttons-wrapper {
+        margin-top: 20px;
+    }
+
+    ol.instructions{
+        li {
+            padding-bottom: 10px;
+        }
+
+        ol {
+            padding-top: 10px;
+
+            li:last-child {
+                padding-bottom: 0;
+            }
+        }
+    }
+}
+
+.form-error {
+    color: red;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+input[type=text],
+textarea.form-control,
+input[type=password],
+input[type=email],
+input[type=search],
+select {
+    &.error {
+        border: 1px solid red;
+        background-color: #f0d8d0;
+    }
+}
+
+.uppercase-input {
+    text-transform: uppercase;
+}
+
+.form-group-inline {
+    display: inline-block;
+}
+
+.group-age-fromto {
+    display: block;
+    padding-right: 0;
+}
+
+.group-age-input {
+    display: inline-block;
+    width: 45%;
+}
+
+.group-age-inter {
+    display: inline-block;
+    position: relative;
+    top: 9px;
+    width: 10%;
+    vertical-align: top;
+    text-align: center;
+}
+
+.submit-err {
+    margin-right: 10px;
+    line-height: 32px;
+    font-weight: bold;
+    color: #f22;
+    font-size: 0.9rem;
+
+    &.hidden {
+        display: none;
+    }
+}
+
+.submit-info {
+    @extend .submit-err;
+    color: #2a2;
+}
+
+// Group and Family Submit Result page styles
+.submit-results-panel {
+    margin: 40px 0;
+    padding: 15px;
+    background-color: #d9edf7;
+
+    &.submit-results-response {
+        margin: -40px 0 40px;
+        padding: 40px 50px;
+        border-top: none;
+        background-color: #f0f0f0;
+    }
+}
+
+.submit-results-panel-info {
+    margin: 0;
+    padding-bottom: 0;
+
+    @include media-breakpoint-up(sm) {
+        padding-bottom: 40px;
+    }
+}
+
+.submit-results-wrapper {
+    display: block;
+    margin: 0 0 20px;
+
+    @include media-breakpoint-up(sm) {
+        display: table;
+        padding: 5px 0;
+    }
+
+    .form-error {
+        display: none;
+    }
+}
+
+@mixin submit-results-label($width) {
+    display: block;
+    font-size: 1.2rem;
+
+    @include media-breakpoint-up(sm) {
+        display: table-cell;
+        padding-right: 20px;
+        width: $width;
+        vertical-align: top;
+    }
+}
+
+@mixin submit-results-switch($width) {
+    display: block;
+
+    @include media-breakpoint-up(sm) {
+        display: table-cell;
+        width: $width;
+        vertical-align: top;
+    }
+}
+
+.group-submit-results-label {
+    @include submit-results-label(60%);
+}
+
+.group-submit-results-switch {
+    @include submit-results-switch(40%);
+}
+
+.family-submit-results-label {
+    @include submit-results-label(60%);
+}
+
+.family-submit-results-switch {
+    @include submit-results-switch(40%);
+}
+
+.group-submit-results-choices {
+    padding-bottom: 0;
+
+    @include media-breakpoint-up(md) {
+        display: table;
+        padding-bottom: 40px;
+        width: 100%;
+    }
+}
+
+.submit-results-choices-sep {
+    display: block;
+    font-weight: bold;
+    text-align: center;
+
+    @include media-breakpoint-up(md) {
+        position: relative;
+        top: 5px;
+        display: table-cell;
+        width: 10%;
+        padding: 12px 15px;
+        vertical-align: bottom;
+    }
+}
+
+.family-submit-results-choices {
+    padding-bottom: 0;
+
+    @include media-breakpoint-up(md) {
+        padding-bottom: 40px;
+    }
+}
+
+.family-submit-results-btn {
+    a {
+        width: 100%;
+    }
+}
+
+
+.group-submit-results-btn {
+    display: block;
+
+    @include media-breakpoint-up(md) {
+        display: table-cell;
+        width: 45%;
+        vertical-align: bottom;
+    }
+
+    a {
+        width: 100%;
+    }
+}
+
+.submit-results-note {
+    margin: 5px 0;
+    font-size: 0.9;
+    font-style: italic;
+}
+
+.submit-results-buttons {
+    margin-top: -40px;
+    margin-bottom: 40px;
+
+    @media screen and (max-width: 767px) {
+        margin-top: 0;
+    }
+
+    @media screen and (max-width: 1199px) and (min-width: 992px) {
+        .row:last-child .col-md-6 {
+            float: none;
+            margin: 0 auto;
+            text-align: center;
+            width: 55%;
+        }
+    }
+
+    .row {
+        margin: 20px 0;
+    }
+
+    .btn {
+      width: 100%;
+    }
+}
+
+.submit-spinner {
+    display: inline-block;
+    opacity: 0;
+    width: 0;
+}
+
+.btn.submit-busy .submit-spinner {
+    opacity: 1;
+    width: auto;
+    padding-right: 5px;
+}
+
+.submit-spinner i {
+    font-size: 15px;
+}
+
+.label-box-match-middle {
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+.text-no-input {
+    margin-bottom: 0;
+    padding-top: 7px;
+}
+
+.hidden {
+    display: none;
+}
+
+// population tab - VCI
+.desired-ci-input {
+    display: inline-block;
+    margin-top: 5px;
+    width: 35%;
+}
+
+.input-group {
+    .input-group-btn {
+        .btn {
+            .icon {
+                font-size: 16px;
+                margin-top: 2px;
+                margin-left: 5px;
+                vertical-align: text-bottom;
+            }
+        }
+    }
+}
+
+// Issue #1926
+// Remove spinners from input number fields
+// Webkit browsers like Safari and Chrome
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+// For Firefox
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.form-horizontal {
+  // Consistent vertical alignment of radios and checkboxes
+  //
+  // Labels also get some reset styles, but that is scoped to a media query below.
+  .radio,
+  .checkbox,
+  .radio-inline,
+  .checkbox-inline {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 5px; // Default padding plus a border
+  }
+
+  // Reset spacing and right align labels, but scope to media queries so that
+  // labels on narrow viewports stack the same as a default form example.
+  @media (min-width: 768px) {
+    .control-label {
+      text-align: right;
+      font-weight: bold;
+      margin-bottom: 0;
+      padding-top: 5px; // Default padding plus a border
+    }
+  }
+
+  .control-label {
+    .normal {
+      font-weight: normal;
+    }
+    .emphasis {
+      color: red;
+    }
+  }
+}
+

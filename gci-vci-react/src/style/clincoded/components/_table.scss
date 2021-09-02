@@ -1,0 +1,44 @@
+.table {
+  tr th:first-of-type,
+  tr td:first-of-type {
+    word-break: break-all;
+  }
+}
+
+.border-top-hidden {
+  border-top: hidden;
+}
+
+.functional-data-table {
+  .scrollable {
+    max-height: 750px;
+    overflow-y: scroll;
+  }
+}
+
+.bg-transparent {
+  background: transparent;
+}
+
+.bordered {
+  margin-bottom: 0;
+  th,
+  td {
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+  }
+
+  th:last-child {
+    border-right: 0;
+  }
+
+  td:last-child {
+    border-right: 0;
+  }
+}
+
+.vertical-align-center {
+  vertical-align: middle !important;
+}

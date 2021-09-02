@@ -1,0 +1,299 @@
+{
+    "data": [
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 14,
+            "count_ref": 32474,
+            "count_total": 32488,
+            "freq": [
+                0.004309,
+                0.995691
+            ],
+            "freq_alt": 0.0004309283427727161,
+            "freq_ref": 0.9995690716572273,
+            "freqscale": 0.1,
+            "nobs": 32488,
+            "pop": "AfricanAmerican",
+            "pos": [
+                -77.0368707,
+                38.9071923
+            ],
+            "rawfreq": 0.0004309,
+            "rsID": "rs79826315",
+            "xobs": 14
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 208,
+            "count_ref": 8108,
+            "count_total": 8316,
+            "freq": [
+                0.2501,
+                0.7499
+            ],
+            "freq_alt": 0.025012025012025013,
+            "freq_ref": 0.974987974987975,
+            "freqscale": 0.1,
+            "nobs": 8316,
+            "pop": "Asian",
+            "pos": [
+                -77.0368707,
+                38.9071923
+            ],
+            "rawfreq": 0.02501,
+            "rsID": "rs79826315",
+            "xobs": 208
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 0,
+            "count_ref": 2450,
+            "count_total": 2450,
+            "freq": [
+                0.0,
+                1.0
+            ],
+            "freq_alt": 0.0,
+            "freq_ref": 1.0,
+            "freqscale": 0.1,
+            "nobs": 2450,
+            "pop": "CentralAmerican",
+            "pos": [
+                -85.6023643,
+                12.7690126
+            ],
+            "rawfreq": 0.0,
+            "rsID": "rs79826315",
+            "xobs": 0
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 0,
+            "count_ref": 4230,
+            "count_total": 4230,
+            "freq": [
+                0.0,
+                1.0
+            ],
+            "freq_alt": 0.0,
+            "freq_ref": 1.0,
+            "freqscale": 0.1,
+            "nobs": 4230,
+            "pop": "Cuban",
+            "pos": [
+                -77.781167,
+                21.521757
+            ],
+            "rawfreq": 0.0,
+            "rsID": "rs79826315",
+            "xobs": 0
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 0,
+            "count_ref": 3828,
+            "count_total": 3828,
+            "freq": [
+                0.0,
+                1.0
+            ],
+            "freq_alt": 0.0,
+            "freq_ref": 1.0,
+            "freqscale": 0.1,
+            "nobs": 3828,
+            "pop": "Dominican",
+            "pos": [
+                -70.162651,
+                18.735693
+            ],
+            "rawfreq": 0.0,
+            "rsID": "rs79826315",
+            "xobs": 0
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 3,
+            "count_ref": 10807,
+            "count_total": 10810,
+            "freq": [
+                0.002775,
+                0.997225
+            ],
+            "freq_alt": 0.0002775208140610546,
+            "freq_ref": 0.9997224791859389,
+            "freqscale": 0.1,
+            "nobs": 10810,
+            "pop": "Mexican",
+            "pos": [
+                -102.552784,
+                23.634501
+            ],
+            "rawfreq": 0.0002775,
+            "rsID": "rs79826315",
+            "xobs": 3
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 0,
+            "count_ref": 1260,
+            "count_total": 1260,
+            "freq": [
+                0.0,
+                1.0
+            ],
+            "freq_alt": 0.0,
+            "freq_ref": 1.0,
+            "freqscale": 0.1,
+            "nobs": 1260,
+            "pop": "NativeAmerican",
+            "pos": [
+                -77.0368707,
+                38.9071923
+            ],
+            "rawfreq": 0.0,
+            "rsID": "rs79826315",
+            "xobs": 0
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 34,
+            "count_ref": 4496,
+            "count_total": 4530,
+            "freq": [
+                0.07506,
+                0.92494
+            ],
+            "freq_alt": 0.0075055187637969095,
+            "freq_ref": 0.9924944812362031,
+            "freqscale": 0.1,
+            "nobs": 4530,
+            "pop": "NativeHawaiian",
+            "pos": [
+                -157.818603,
+                21.30042
+            ],
+            "rawfreq": 0.007506,
+            "rsID": "rs79826315",
+            "xobs": 34
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 0,
+            "count_ref": 7918,
+            "count_total": 7918,
+            "freq": [
+                0.0,
+                1.0
+            ],
+            "freq_alt": 0.0,
+            "freq_ref": 1.0,
+            "freqscale": 0.1,
+            "nobs": 7918,
+            "pop": "PuertoRican",
+            "pos": [
+                -66.590149,
+                18.220833
+            ],
+            "rawfreq": 0.0,
+            "rsID": "rs79826315",
+            "xobs": 0
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 1,
+            "count_ref": 1981,
+            "count_total": 1982,
+            "freq": [
+                0.005044999999999999,
+                0.994955
+            ],
+            "freq_alt": 0.0005045408678102926,
+            "freq_ref": 0.9994954591321897,
+            "freqscale": 0.1,
+            "nobs": 1982,
+            "pop": "SouthAmerican",
+            "pos": [
+                -55.491477,
+                -8.783195
+            ],
+            "rawfreq": 0.0005045,
+            "rsID": "rs79826315",
+            "xobs": 1
+        },
+        {
+            "alleles": [
+                "T",
+                "G"
+            ],
+            "chrom_pos": "4:619560",
+            "count_alt": 1,
+            "count_ref": 855,
+            "count_total": 856,
+            "freq": [
+                0.01168,
+                0.98832
+            ],
+            "freq_alt": 0.0011682242990654205,
+            "freq_ref": 0.9988317757009346,
+            "freqscale": 0.1,
+            "nobs": 856,
+            "pop": "SouthAsian",
+            "pos": [
+                76.4563087,
+                25.03764
+            ],
+            "rawfreq": 0.001168,
+            "rsID": "rs79826315",
+            "xobs": 1
+        }
+    ],
+    "variant": {
+        "alleles": [
+            "T",
+            "G"
+        ],
+        "chrom": "4",
+        "name": "rs79826315",
+        "pos": 619560
+    }
+}

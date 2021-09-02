@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "GdmModel",
+    "type": "object",
+    "properties": {
+        "item_type": {
+            "type":"string",
+            "enum":["gdm"]
+            },
+        "PK": { "type": "string" },
+        "submitted_by": {
+            "type": "string",
+            "$schema": "user"
+        },
+        "date_created": { "type": "string" },
+        "last_modified": { "type": "string" },
+        "schema_version": { "type": "string" },
+        "affiliation": {
+            "title": "Affiliation",
+            "description": "The affiliation this gene-disease record is associated with.",
+            "type": "string"
+        },
+        "gene": {
+            "$schema": "gene",
+            "description": "HGNC Symbol of gene.",
+            "type": "string"
+        },
+        "disease": {
+            "$schema": "disease",
+            "description": "Unique ID of disease term. Unique id (Orphanet, DOID, OMIM or NCIt) or free text.",
+            "type": "string"
+        },
+        "modeInheritance": {
+            "type": "string",
+            "enum": [
+                "Autosomal dominant inheritance (HP:0000006)",
+                "Autosomal recessive inheritance (HP:0000007)",
+                "Undetermined mode of inheritance (HP:0000005)",
+                "Mitochondrial inheritance (HP:0001427)",
+                "Multifactorial inheritance (HP:0001426)",
+                "Semidominant inheritance (HP:0032113)",
+                "Somatic mutation (HP:0001428)",
+                "X-linked inheritance (HP:0001417)",
+                "Y-linked inheritance (HP:0001450)",
+                "Other"
+            ]
+        },
+        "omimId": { "type": "string" },
+        "status": {
+            "type": "string",
+            "enum": [
+                "in progress",
+                "In progress",
+                "deleted",
+                "submitted",
+                "approved"
+            ]
+        },
+        "annotations": {
+            "title": "Annotations",
+            "description": "List of PKs of evidence (annotation) for the gdm",
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "contributors": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "user"
+            }
+        },
+        "modified_by": {
+            "type": "string",
+            "$schema": "user"
+        },
+        "variantPathogenicity": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "provisionalClassifications": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "provisionalClassification"
+            }
+        },
+        "finalClassification": { "type": "string" },
+        "modeInheritanceAdjective": { "type": "string" },
+        "earliestPublications": {
+          "description": "PK of evidence (annotations) which article is selected as earliest publication",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+    }
+}

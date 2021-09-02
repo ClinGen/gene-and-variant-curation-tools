@@ -1,0 +1,64 @@
+@import "node_modules/bootstrap/scss/variables";
+
+.card.card-panel{
+    &.body-p-0{
+        .card-body{
+            padding:0;
+
+            .list-group-item{
+                border:none;
+                border-top:1px solid $gray-lighter;
+                border-left:3px solid $gray-lighter;
+                &.border-success{
+                    border:none;
+                    border-top:1px solid $gray-lighter !important;
+                    border-left:3px solid #28a745;
+                }
+            }
+        }
+        
+    }
+    
+}
+
+/* Handle the border radius for the list head, middle and last item */
+$card-list-group-border-radius: .4rem;
+.card.gdm-evidence__card-list-group-head {
+    @extend .text-light;
+    &:not(:hover) {
+        background-color: $primary;
+    }
+    &:hover {
+        background-color: darken($color: $primary, $amount: 15%);
+    }
+    transition-property: background-color;
+    transition-duration: .15s;
+
+    // rounded border
+    border-radius: $card-list-group-border-radius $card-list-group-border-radius 0px 0px;
+}
+.card.gdm-evidence__card-list-group-head.no-add {
+    &:hover {
+        background-color: $primary;
+    }
+}
+.card.gdm-associated-variant__card-list-group-head {
+    border-radius: $card-list-group-border-radius $card-list-group-border-radius 0px 0px;
+}
+.card.gdm-curation-palette__card-list-group-head__empty-list {
+    border-radius: $card-list-group-border-radius;
+}
+.gdm-curation-palette__card-list-group-item {
+    &:not(:last-child) {
+        @extend .rounded-0;
+    }
+    &:last-child {
+        border-radius: 0px 0px $card-list-group-border-radius $card-list-group-border-radius;
+    }
+}
+
+
+.gdm-evidence-curation-container {
+    // keep some space at the botom so it's easier for user to scroll to the bottom
+    margin-bottom: 10vmin;
+}

@@ -1,0 +1,123 @@
+#!/bin/sh
+
+if [ $# -lt 4 ]; then
+  echo "usage: create-kafka-to-lambda <stackname> <username> <dockerimage> <lambda function name> [key-id or alias] [vpc-id]" >&2
+  echo "       where key-id, if specified, is the name of the key (not an ARN or guid)" >&2
+  echo "for additional cloudformation params, define EXTRAPARAMS env variable" >&2
+  return 1
+fi
+command -v docker || alias docker=podman
+awsversion=$(aws --version)
+awsmajorversion=$(echo "$awsversion" | awk '{ string=substr($0, 9, 1); print string; }' )
+stackname=${1}
+username=${2}
+dockerimage=${3}
+functionname=${4}
+keyid=${5:-"alias/aws/ssm"}
+vpcid=${6:-"default"}
+######################################################################
+# Deal with the keyid. The default service key is aliased as
+# alias/aws/ssm, but the command line could have had a real key id
+# or another alias. If its any alias, we need to look up the real
+# keyid as cloudformation will need the keyid for its IAM policy
+######################################################################
+keydisplay=$keyid
+if [ "${keyid#*alias}" != "${keyid}" ]; then
+  # shellcheck disable=SC2016
+  keyidtmp="$(aws kms list-aliases --query 'Aliases[?AliasName==`'"${keyid}"'`].TargetKeyId' --output text)"
+  if [ -z "${keyidtmp}" ]; then
+    echo "FATAL: could not find target key id for alias ${keyid}" >&2
+    return 2
+  fi
+  keydisplay="${keyid} ($keyidtmp)"
+  keyid=$keyidtmp
+fi
+
+######################################################################
+# Deal with the vpc. We'll use it if provided, otherwise we can grab
+# the default. If there is no default, we'll error out
+######################################################################
+if [ "${vpcid}" = "default" ]; then
+  # shellcheck disable=SC2016
+  vpcid=$(aws ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId' --output text)
+  if [ -z "${vpcid}" ]; then
+    echo "FATAL: no vpc id was specified and no default vpc exists" >&2
+    return 3
+  fi
+fi
+subnets="$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${vpcid}" --query 'Subnets[].SubnetId' --output text|tr '\t' ',')"
+echo "stackname: ${stackname}"
+echo "username: ${username}"
+echo "dockerimage: ${dockerimage}"
+echo "function name: ${functionname}"
+echo "key-id: ${keydisplay}"
+echo "vpc-id: ${vpcid}"
+echo "subnets: ${subnets}"
+echo
+
+printf "Enter kakfa password: "
+stty -echo
+trap 'stty echo' EXIT
+read -r password
+stty echo
+trap - EXIT
+printf "\n"
+
+echo 'Setting up parameter in Systems Manager Parameter Store'
+aws ssm put-parameter \
+  --type SecureString \
+  --value "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${username}\" password=\"${password}\";" \
+  --allowed-pattern '^org\.apache\.kafka\.common\.security\.plain\.PlainLoginModule required username=\".*\" password=\".*\";$' \
+  --description "Jaas configuration/username and password for Kafka topic" \
+  --name "/${stackname}/jaasconfig"
+rc=$?
+[ $rc -ne 0 ] && echo "error adding parameter: exiting" >&2 && return 1
+
+echo 'Creating stack'
+# We want to allow wordsplitting here for $EXTRAPARAMS
+# shellcheck disable=SC2086
+stackid=$(aws cloudformation create-stack \
+  --stack-name "$stackname" \
+  --template-body file://CloudFormation.yaml \
+  --capabilities CAPABILITY_IAM \
+  --output text \
+  --query "StackId" \
+  --parameters \
+    ParameterKey=KeyId,ParameterValue="${keyid}" \
+    ParameterKey=LambdaFunctionName,ParameterValue="${functionname}" \
+    ParameterKey=SsmParameter,ParameterValue="/${stackname}/jaasconfig" \
+    ParameterKey=Subnets,ParameterValue=\'"${subnets}"\' \
+    ParameterKey=VpcId,ParameterValue="${vpcid}" $EXTRAPARAMS)
+rc=$?
+[ $rc -ne 0 ] && echo "error creating stack: exiting" >&2 && return $rc
+echo "Stack create initiated. Stack id: ${stackid}"
+aws cloudformation wait stack-exists --stack-name "$stackname"
+echo "Waiting for repository to be created"
+while
+  # shellcheck disable=SC2016
+  repo="$(aws cloudformation describe-stack-resources --stack-name "$stackname" \
+          --query 'StackResources[?LogicalResourceId==`Repository`].PhysicalResourceId' \
+          --output text)"
+  [ -z "$repo" ]; do
+  sleep 10
+done
+repo="$(echo "$stackid" |cut -d: -f5).dkr.ecr.$(echo "$stackid" | cut -d: -f4).amazonaws.com/${repo}:latest"
+echo "Got repo: $repo"
+echo "Pushing image"
+docker tag "${dockerimage}" "${repo}"
+echo "Logging into docker/ECR"
+if [ "$awsmajorversion" = "1" ]; then
+  eval "$(aws ecr get-login --no-include-email)"
+else
+  # AWS CLI v2 does a great job with 'Invent and Simplify'...
+  accountid=$(aws sts get-caller-identity --output text --query 'Account')
+  region=$(aws configure list |grep region |awk '{print $2}')
+  aws ecr get-login-password | docker login --username AWS \
+    --password-stdin "$accountid".dkr.ecr."$region".amazonaws.com
+fi
+echo "Pushing image"
+docker push "${repo}"
+
+echo 'Waiting for stack create complete'
+aws cloudformation wait stack-create-complete --stack-name "$stackname"
+

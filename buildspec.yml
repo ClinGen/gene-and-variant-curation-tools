@@ -1,0 +1,16 @@
+version: 0.1
+
+phases:
+  install:
+    # runtime-versions:
+    #   python: 3.7.7
+    commands:
+      - npm install --no-progress --silent -g serverless
+  pre_build:
+    commands:
+      - cd gci-vci-serverless && npm install --no-progress --silent
+  build:
+    commands:
+      # - npm run-script lint - linting can be done here
+      # - npm run test - run tests here
+      - cd gci-vci-serverless && serverless deploy --stage dev

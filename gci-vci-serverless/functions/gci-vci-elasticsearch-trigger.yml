@@ -1,0 +1,19 @@
+gci-vci-elasticsearch-trigger:
+  handler: ddb_stream_to_es/app.handler
+  role: !GetAtt ClinGenElasticsearchTriggerRole.Arn
+  package:
+    exclude:
+      - '**'
+    include:
+      - 'ddb_stream_to_es/**'
+  runtime: python3.8
+  environment:
+    ES_DOMAIN_ENDPOINT: !GetAtt ElasticsearchDomain.DomainEndpoint
+  events:
+    - stream:
+        type: dynamodb
+        arn: !GetAtt ClinGenTable.StreamArn
+        batchWindow: 10
+        maximumRetryAttempts: 3
+
+        

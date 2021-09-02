@@ -1,0 +1,30 @@
+{   
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "UserModel",
+  "type": "object",
+  "properties": {
+    "item_type": {
+      "type": "string",
+      "enum": ["user"]
+    },
+    "email": {
+      "type": "string"
+    },
+    "PK": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "family_name": {
+      "type": "string"
+    },
+    "user_status": {
+      "type": "string",
+      "enum": ["requested activation", "active", "inactive"]
+    },
+    "last_modified": {
+      "type": "string"
+    }
+  }
+}

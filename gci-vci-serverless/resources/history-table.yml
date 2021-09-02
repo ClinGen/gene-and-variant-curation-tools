@@ -1,0 +1,49 @@
+# This file describes AWS Resources and is specifically written in a way to be included in
+# a serverless.yml file. By itself it is not a valid CloudFormation template.
+
+Resources:
+  ClinGenTableHistory:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'PK'
+            AttributeType: 'S'
+          - AttributeName: 'last_modified'
+            AttributeType: 'S'
+          - AttributeName: 'item_type'
+            AttributeType: 'S'
+          - AttributeName: 'status'
+            AttributeType: 'S'
+          # Other attributes that are used by the trigger
+          # - AttributeName: 'change'
+          #   AttributeType: 'S'
+          # - AttributeName: 'change_type'
+          #   AttributeType: 'S'
+          # - AttributeName: 'modified_by'
+          #   AttributeType: 'S'
+        BillingMode: PAY_PER_REQUEST # Note this is more expensive, but automatically scales and is the internal default at Amazon
+        KeySchema:
+          - AttributeName: 'PK'
+            KeyType: HASH
+          - AttributeName: 'last_modified'
+            KeyType: RANGE
+        TableName: GeneVariant-history-${self:provider.stage}
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        GlobalSecondaryIndexes:
+        - IndexName: item_type_index
+          KeySchema:
+          - AttributeName: item_type
+            KeyType: HASH
+          - AttributeName: last_modified
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: status_index
+          KeySchema:
+          - AttributeName: status
+            KeyType: HASH
+          - AttributeName: last_modified
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL

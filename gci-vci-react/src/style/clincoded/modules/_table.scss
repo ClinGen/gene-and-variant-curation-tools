@@ -1,0 +1,322 @@
+.table-meta {
+    background-color: $color-trim;
+    color: #fff;
+}
+
+.table-count {
+    line-height: $input-height-base;
+}
+
+.table-summary {
+    padding: 0;
+
+    @include media-breakpoint-up(sm) {
+        padding: 10px 0;
+    }
+}
+
+.table-filter {
+    @include media-breakpoint-up(sm) {
+        text-align: right;
+
+        label {
+            margin-right: 10px;
+        }
+    }
+
+    input {
+        position: relative;
+    }
+}
+
+.table-filter-input {
+    position: relative;
+}
+
+.clear-input-icon {
+    position: absolute;
+    cursor: pointer;
+    top: 38px;
+    right: 5px;
+    color: #a0a0a0;
+
+    @include media-breakpoint-up(sm) {
+        top: 10px;
+    }
+}
+
+.col-headers {
+    background-color: lighten($color-trim, 40%);
+
+    th {
+        position: relative;
+        padding-right: 20px !important;
+        cursor: pointer;
+    }
+}
+
+
+//**************************************************************************************************
+// GDM table styles (might need to expand this to cover more types of tables, but just GDMs for now)
+
+.gdm-header {
+    margin-top: 30px;
+    margin-bottom: 10px;
+
+    h1 {
+        margin: 0;
+    }
+}
+
+.gdm-filter-form {
+    .form-error {
+        display: none;
+    }
+}
+
+@media screen and (max-width: $screen-xs-max) {
+    .table-responsive {
+        border: none;
+    }
+}
+
+
+// Entire GDM table
+.table-gdm {
+    display: table;
+    width: 100%;
+    margin-bottom: 50px;
+    border: 1px solid #e0e0e0;
+}
+
+// Table header
+.table-header-gdm {
+    display: table-row;
+    color: $table-header-fg;
+    background-color: $table-header-bg;
+}
+
+// Table row
+.table-row-gdm {
+    display: table-row;
+    color: #000;
+
+    &:nth-child(even) {
+        background-color: $table-row-even-bg;
+    }
+
+    &:nth-child(odd) {
+        background-color: $table-row-odd-bg;
+    }
+
+    &:hover {
+        background-color: #e0e0f0;
+        text-decoration: none;
+        color: #000;
+    }
+}
+
+// Table cell
+.table-cell-gdm {
+    display: table-cell;
+    padding: 10px 10px;
+    border-left: 1px solid #fff;
+
+    &:first-child {
+        border-left: none;
+    }
+
+    // Table cells in the header
+    .table-header-gdm & {
+        padding: 5px 5px 5px 12px;
+        vertical-align: bottom;
+    }
+}
+
+// "Main" column table cell
+.table-cell-gdm-main {
+    @extend .table-cell-gdm;
+
+    div:nth-child(1) {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    div:nth-child(2) {
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+}
+
+// Status table column
+.table-cell-gdm-status {
+    @extend .table-cell-gdm;
+    vertical-align: middle;
+    text-align: center;
+
+    .table-header-gdm & {
+        vertical-align: middle;
+    }
+}
+
+
+// The following style the status icons
+
+// Non-specific status icon styles
+%status-icon {
+    display: inline-block;
+    line-height: 28px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+}
+
+// Connect status types to fontawesome icon suffixes and colors. GDM status need to be converted to these suffixes
+// by converting to lower case and converting any non-letters to dashes. Icon names are for font-awesome and are
+// suffixed to 'icon-'. One suffix, 'header', is just for the table header status icon.
+$status-types:
+//   GDM status   FontAwesome suffix    Icon color
+    (header,      circle,               $table-header-fg),
+    (final,       check-circle,         #00c000),
+    (draft,       check-circle-o,       #f09000),
+    (provisional, adjust,               #f09000),
+    (in-progress, dot-circle-o,         #f09000),
+    (created,     circle-o,             #f09000);
+
+// Generate the audit icon classes for each of the audit types
+@each $status-type, $suffix, $color in $status-types {
+    // Status icons
+    .gdm-status-icon-#{$status-type} {
+        @extend .icon-#{$suffix}; // FontAwesome icon
+        @extend %status-icon;
+        color: $color;
+    }
+}
+
+
+// The following styles handle the sorting icons in the column headers.
+// tcell-sort for unsorted
+// tcell-asc for ascending sort
+// tcell-desc for descending sort
+%tcell-template {
+    @extend .icon;
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.9rem;
+}
+
+.tcell-sort {
+    @extend %tcell-template;
+    @extend .icon-sort;
+}
+
+.tcell-asc {
+    @extend %tcell-template;
+    @extend .icon-sort-asc;
+}
+
+.tcell-desc {
+    @extend %tcell-template;
+    @extend .icon-sort-desc;
+}
+
+.tcell-sortable {
+    cursor: pointer;
+
+    &:hover {
+        background-color: $table-header-highlight-bg;
+    }
+}
+
+
+// Styles for the GDM status legend
+.gdm-status-legend {
+    margin-bottom: 10px;
+}
+
+.gdm-status-text {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.9rem;
+}
+
+// For variant interpretation Case/Segregation tab master/tally table
+.masterTable {
+    width: 100%;
+    display: block;
+    overflow-x: scroll;
+
+    .evidence-detail {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .evidence-links {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn.master-icon {
+        padding: 2px 6px;
+    }
+
+    .more-text {
+        color: #337ab7;
+        font-weight: bold;
+        text-align: center;
+    }
+}
+.masterTable tbody tr td:nth-child(2) > div {
+    width: 230px;
+    min-height:37px;
+    max-height:77px;
+}
+.masterTable thead tr th:nth-child(n+2),
+.masterTable tbody tr td:nth-child(n+2) {
+    min-width: 100px;
+    max-width: 250px;
+}
+.masterTable thead tr:nth-child(n+1) th:nth-child(n+3),
+.masterTable tbody tr td:nth-child(n+3) {
+    background-color: $table-row-odd-bg;
+}
+.masterTable thead tr:nth-child(n+1) th:nth-child(2n+3),
+.masterTable tbody tr td:nth-child(2n+3) {
+    background-color: $table-row-even-bg;
+}
+.masterTable thead tr th.rotate {
+    height: 400px;
+    white-space: nowrap;
+    vertical-align: inherit;
+    border: none;
+}
+.masterTable thead tr th.rotate > div {
+    transform: translate(20px, 177px) rotate(-45deg);
+    width: 30px;
+}
+.masterTable thead tr th.rotate > div > span {
+    border-top: 1px solid #ddd;
+    padding-bottom: 10px;
+    padding-left: 33px;
+    margin-left: -33px;
+    padding-top: 4px;
+}
+
+// For variant interpretation Case/Segregation tab evidence tables
+.evidenceTable thead tr th,
+.evidenceTable tbody tr td {
+    min-width: 100px;
+}
+
+// For variant interpretation Case/Segregation tab modal dialogs
+.case-seg-modal {
+    font-weight: normal;
+}
+
+//style for the text displaying the number of entries for each gdm search and for each interpretation search
+.number-of-entries {
+    color: grey;
+    font-size: 50%
+}

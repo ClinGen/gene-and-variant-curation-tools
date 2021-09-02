@@ -1,0 +1,35 @@
+{
+    "variant_title": "title",
+    "s3object": "identifier",
+    "affiliaton": "8888",
+    "submitted_by": "tom",
+    "clinvarId": "1234",
+    "carId": "ca1234",
+    "Calculated Pathogenicity":"Likely pathogenic",
+    "Modified Pathogenicity":"Likely pathogenic",
+    "Reason": "test extra provisional",
+    "interpretation_status": "approved",
+    "date_created": "today",
+    "date_approved": "tomorrow",
+    "disease": "corona",
+    "mode_of_inheritance": "inherited",
+    "evidence_summary": "long string explanation",
+    "evaluation_list": [
+        {
+            "B/P": "some sort of status",
+            "criteria": "ps1",
+            "criteria_description": "string",
+            "modified": "no",
+            "evaluation_status": "string_status",
+            "evaluation_explanation": "string explanation"
+        },
+        {
+            "B/P": "some sort of status",
+            "criteria": "ps1",
+            "criteria_description": "string",
+            "modified": "no",
+            "evaluation_status": "string_status",
+            "evaluation_explanation": "string explanation"
+        }
+    ]
+}

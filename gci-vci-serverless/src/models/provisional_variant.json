@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "ProvisionalVariantModel",
+    "type": "object",
+    "properties": {
+        "date_created": {
+            "type": "string"
+        },
+        "item_type": {
+            "type": "string",
+            "enum": [
+                "provisional_variant"
+            ]
+        },
+        "last_modified": {
+            "type": "string"
+        },
+        "PK": {
+            "type": "string"
+        }
+    }
+}

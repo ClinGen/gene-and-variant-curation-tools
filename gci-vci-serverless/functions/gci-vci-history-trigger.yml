@@ -1,0 +1,17 @@
+gci-vci-history-trigger:
+  handler: history/index.handler
+  role: !GetAtt ClinGenTriggerRole.Arn
+  package:
+    exclude:
+      - '**'
+    include:
+      - 'history/**'
+  runtime: nodejs12.x
+  environment:
+    HISTORY_TABLE: ${self:custom.resources.history-table-name}
+  events:
+    - stream:
+        type: dynamodb
+        arn: !GetAtt ClinGenTable.StreamArn
+        batchWindow: 10
+        

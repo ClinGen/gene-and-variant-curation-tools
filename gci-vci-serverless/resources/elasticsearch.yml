@@ -1,0 +1,57 @@
+
+Resources: 
+  ElasticsearchAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: 
+              AWS: !Join ["", ["arn:aws:iam::", {"Ref": "AWS::AccountId"}, ":root"]]
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - 
+          PolicyName: "ESAccess"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: "es:*"
+                Resource: !Join ["", ["arn:aws:es:${self:provider.region}:", {"Ref": "AWS::Region"}, ":domain/${self:custom.resources.elasticsearch-domain-name}/*" ]]
+                
+
+  ElasticsearchDomain:
+    Type: AWS::Elasticsearch::Domain
+    Properties: 
+      DomainName: ${self:custom.resources.elasticsearch-domain-name}
+      ElasticsearchVersion: '7.10'
+      ElasticsearchClusterConfig:
+        InstanceCount: 2
+        InstanceType: 'c6g.large.elasticsearch'
+      EBSOptions:
+        EBSEnabled: true
+        VolumeSize: '30'
+        VolumeType: 'gp2'
+      AccessPolicies:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: 'Allow'
+            Principal:
+              AWS: 
+                - !GetAtt ElasticsearchAccessRole.Arn
+                - !GetAtt ServerlessRole.Arn
+                - !GetAtt ClinGenElasticsearchTriggerRole.Arn
+            Action: 'es:*'
+            Resource: 
+              - !Join ["", ["arn:aws:es:${self:provider.region}:", {"Ref": "AWS::Region"}, ":domain/${self:custom.resources.elasticsearch-domain-name}/*" ]]
+      AdvancedOptions:
+        rest.action.multi.allow_explicit_index: true
+      EncryptionAtRestOptions:
+        Enabled: true
+      NodeToNodeEncryptionOptions:
+        Enabled: true

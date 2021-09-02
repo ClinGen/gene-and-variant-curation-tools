@@ -1,0 +1,145 @@
+.population-table {
+    .card-header {
+        color: $panel-heading-text;
+        background-color: $panel-heading-bg;
+        border-color: $panel-heading-border;
+    }
+
+    .exac-gnomad-version {
+        margin-left: 5px;
+    }
+
+    .card-body {
+        padding: 0;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-top: none;
+    }
+
+    .panel-subtitle {
+        font-size: 85%;
+        font-weight: normal;
+        line-height: 17.5px;
+    }
+
+    .table tfoot .count:first-child td {
+        border-top: 2px solid #333;
+        color: #333;
+    }
+    
+    .table tfoot td {
+        font-weight: bold;
+    }
+    
+    table.additional-info {
+        background-color: #eff7fb;
+
+        tbody td.included-data {
+            border-top: none;
+            white-space: nowrap;
+            width: 10%;
+
+            .icon-times-circle {
+                color: #888;
+            }
+
+            span {
+                font-weight: bold;
+                margin-left: 4px;
+            }
+        }
+
+        tbody td.filter {
+            border-top: none;
+            width: 90%;
+
+            span {
+                font-weight: bold;
+                margin-right: 4px;
+            }
+
+            ul {
+                display: inline;
+                word-break: break-word;
+                padding: 0;
+
+                li {
+                    margin: 0px 3px;
+                    padding: 3px 6px;
+                    white-space: normal;
+                }
+            }
+        }
+    }
+
+    .datasource-1000G .table tbody td,
+    .datasource-1000G .table tfoot td,
+    .datasource-ESP .table tbody td,
+    .datasource-ESP .table tfoot td {
+        width: 16.66%;
+    }
+
+    .label {
+        display: inline;
+        padding: .2em .6em .3em;
+        font-size: 75%;
+        font-weight: bold;
+        line-height: 1;
+        color: $label-color;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: .25em;
+    }
+
+    .label-success {
+        background-color: $brand-success;
+    }
+
+    a.credit-mygene {
+        background: url(../../img/mygene-logo.png) 0 1px no-repeat;
+    }
+
+    a.credit-myvariant {
+        background: url(../../img/myvariant-logo.png) 0 1px no-repeat;
+    }
+
+    a.credit-vep {
+        background: url(../../img/vep-logo.png) 0 1px no-repeat;
+    }
+
+    a.credit-mygene,
+    a.credit-myvariant,
+    a.credit-vep {
+        background-size: 18px 18px;
+        display: inline-block;
+        height: 19px;
+        width: 18px;
+        margin-left: 10px;
+        vertical-align: bottom;
+
+        span {
+            display: none;
+        }
+    }
+
+    a.credit-vep {
+        background-size: 38px 16px;
+        height: 17px;
+        width: 38px;
+    }
+
+    a.credit-pagestudy {
+        font-size: 85%;
+        margin-left: 12px;
+        line-height: 1.6rem;
+    }
+
+    .no-pop-data {
+        padding: 8px;
+        line-height: 1.42857;
+        vertical-align: top;
+    }
+}

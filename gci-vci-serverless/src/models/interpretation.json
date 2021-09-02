@@ -1,0 +1,23 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "InterpretationModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["interpretation"]
+        },
+        "disease": {"type": "string", "$schema": "disease"},
+        "PK":{"type":"string"},
+        "submitted_by":{"type":"string", "$schema": "user"},
+        "date_created":{"type":"string"},
+        "last_modified":{"type":"string"},
+        "status": {
+            "type":"string",
+            "enum":["in progress", "deleted", "submitted", "approved"]
+        },
+        "curated_evidence_list": {
+            "type": "string"
+        }
+    }
+}

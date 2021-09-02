@@ -1,0 +1,18 @@
+gci-vci-vp-count-trigger:
+  handler: ddb_stream_interp_count/app.handler
+  role: !GetAtt ClinGenVPCountTriggerRole.Arn
+  package:
+    exclude:
+      - '**'
+    include:
+      - 'ddb_stream_interp_count/**'
+  runtime: python3.8
+  environment:
+    GENE_VARIANT_CURATION_TABLE: !Ref ClinGenTable
+    VP_TABLE: !Ref ClinGenVPTTable
+  events:
+    - stream:
+        type: dynamodb
+        arn: !GetAtt ClinGenTable.StreamArn
+        batchWindow: 10
+        maximumRetryAttempts: 3

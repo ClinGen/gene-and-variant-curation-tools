@@ -1,0 +1,119 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "IndividualModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["individual"]
+        },
+        "PK": { "type": "string" },
+        "submitted_by": { "type": "string", "$schema": "user" },
+        "date_created": { "type": "string" },
+        "modified_by": { "type": "string", "$schema": "user" },
+        "last_modified": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "label": { "type": "string" },
+        "diagnosis": {
+          "description": "List of ontology IDs of common diagnosis for the individual",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "$schema": "disease"
+          }
+        },
+        "hpoIdInDiagnosis": {
+          "description": "List of HPO ID for the disease",
+          "type": "array"
+        },
+        "termsInDiagnosis": {
+          "description": "HPO terms (separated by comma) for the disease",
+          "type": "string"
+        },
+        "hpoIdInElimination": {
+          "description": "List of HPO IDs eliminated from the disease",
+          "type": "array"
+        },
+        "termsInElimination": {
+          "description": "Non-HPO terms (separated by comma) eliminated from the disease",
+          "type": "string"
+        },
+        "sex": { "type": "string" },
+        "countryOfOrigin": { "type": "string" },
+        "ethnicity": {
+            "type": "string",
+            "enum": ["", "Hispanic or Latino", "Not Hispanic or Latino", "Unknown"]
+        },
+        "race": {
+            "type": "string",
+            "enum": ["","American Indian or Alaska Native", "Asian", "Black", "Native Hawaiian or Other Pacific Islander", "White", "Mixed", "Unknown"] 
+        },
+        "ageType": {
+            "type": "string",
+            "enum": ["", "Onset", "Report", "Diagnosis", "Death"]
+        },
+        "ageValue": { "type": "number" },
+        "ageUnit": {
+            "type": "string",
+            "enum": ["", "Hours", "Days", "Weeks", "Weeks gestation", "Months", "Years"]
+        },
+        "method": {
+            "type": "object",
+            "properties": {
+                "previousTesting": { "type": "boolean" },
+                "previousTestingDescription": { "type": "string" },
+                "genomeWideStudy": { "type": "boolean" },
+                "genotypingMethods": { "type": "array" },
+                "entireGeneSequenced": { "type": "boolean" },
+                "copyNumberAssessed": { "type": "boolean" },
+                "specificMutationsGenotyped": { "type": "boolean" },
+                "specificMutationsGenotypedMethod": { "type": "string" },
+                "additionalInformation": { "type": "string" },
+                "dateTime": { "type": "string" }
+            }
+        },
+        "additionalInformation": { "type": "string" },
+        "otherPMIDs": {
+          "description": "List of other PMIDs having evidence about the individual, link to article objects",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "variants": {
+          "description": "List of variant(s) associated to the individual",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "$schema": "variant"
+          }
+        },
+        "proband": { "type": "boolean" },
+        "bothVariantsInTrans": { "type": "string" },
+        "probandIs": { "type": "string" },
+        "denovo": { "type": "string" },
+        "maternityPaternityConfirmed": { "type": "string" },
+        "recessiveZygosity": { "type": "string" },
+        "scores": {
+          "description": "List of scores for this individual",
+          "type": "array",
+          "items": {
+            "description": "Score assigned by user. Limited to one per user",
+            "type": "string",
+            "$schema": "evidenceScore"
+          }
+        },
+        "variantScores": {
+          "description": "List of variantScores for this individual",
+          "type": "array",
+          "items": {
+            "description": "variantScore assigned by user.",
+            "type": "string",
+            "$schema": "variantScore"
+          }
+        },
+        "associatedParentType": { "type": "string" },
+        "associatedParent": {
+          "description": "Parent of the individual - annotation or group or family",
+          "type": "string"
+        }
+    }
+}

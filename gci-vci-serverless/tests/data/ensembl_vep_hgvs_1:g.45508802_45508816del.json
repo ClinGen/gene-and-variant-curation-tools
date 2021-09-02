@@ -1,0 +1,397 @@
+[{
+  "allele_string": "TCAGGTGTGTGCATA/-",
+  "regulatory_feature_consequences": [
+    {
+      "conservation": 0.416,
+      "regulatory_feature_id": "ENSR00000923653",
+      "variant_allele": "-",
+      "impact": "MODIFIER",
+      "consequence_terms": [
+        "regulatory_region_variant"
+      ]
+    }
+  ],
+  "strand": 1,
+  "most_severe_consequence": "inframe_deletion",
+  "input": "1:g.45508802_45508816del",
+  "seq_region_name": "1",
+  "transcript_consequences": [
+    {
+      "distance": 2220,
+      "used_ref": "TCAGGTGTGTGCATA",
+      "genesplicer": "loss/donor/45508812-45508811/Medium/5.084220,gain/acceptor/45508809-45508808/Medium/11.111633",
+      "biotype": "protein_coding",
+      "transcript_id": "ENST00000262746",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "refseq_transcript_ids": [
+        "NM_001202431.1",
+        "NM_181696.2",
+        "NM_002574.3"
+      ],
+      "source": "Ensembl",
+      "gene_symbol": "PRDX1",
+      "gene_symbol_source": "HGNC",
+      "strand": -1,
+      "gene_id": "ENSG00000117450",
+      "conservation": 0.416,
+      "variant_allele": "-",
+      "protein_id": "ENSP00000262746",
+      "hgnc_id": "HGNC:9352",
+      "consequence_terms": [
+        "downstream_gene_variant"
+      ],
+      "canonical": 1,
+      "impact": "MODIFIER"
+    },
+    {
+      "genesplicer": "loss/donor/45508812-45508811/Medium/5.084220,gain/acceptor/45508809-45508808/Medium/11.111633",
+      "used_ref": "TCAGGTGTGTGCATA",
+      "distance": 2235,
+      "source": "Ensembl",
+      "gene_symbol": "PRDX1",
+      "transcript_id": "ENST00000319248",
+      "biotype": "protein_coding",
+      "refseq_transcript_ids": [
+        "NM_181697.3"
+      ],
+      "given_ref": "TCAGGTGTGTGCATA",
+      "conservation": 0.416,
+      "mane": "NM_181697.3",
+      "variant_allele": "-",
+      "gene_symbol_source": "HGNC",
+      "strand": -1,
+      "gene_id": "ENSG00000117450",
+      "impact": "MODIFIER",
+      "protein_id": "ENSP00000361152",
+      "hgnc_id": "HGNC:9352",
+      "consequence_terms": [
+        "downstream_gene_variant"
+      ]
+    },
+    {
+      "variant_allele": "-",
+      "conservation": 0.416,
+      "gene_id": "ENSG00000117450",
+      "strand": -1,
+      "gene_symbol_source": "HGNC",
+      "impact": "MODIFIER",
+      "consequence_terms": [
+        "downstream_gene_variant"
+      ],
+      "protein_id": "ENSP00000361150",
+      "hgnc_id": "HGNC:9352",
+      "genesplicer": "loss/donor/45508812-45508811/Medium/5.084220,gain/acceptor/45508809-45508808/Medium/11.111633",
+      "used_ref": "TCAGGTGTGTGCATA",
+      "distance": 2235,
+      "gene_symbol": "PRDX1",
+      "source": "Ensembl",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "transcript_id": "ENST00000372079",
+      "biotype": "protein_coding"
+    },
+    {
+      "consequence_terms": [
+        "inframe_deletion"
+      ],
+      "canonical": 1,
+      "gene_symbol_source": "HGNC",
+      "exon": "4/4",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "transcript_id": "ENST00000401061",
+      "hgvsp": "ENSP00000383840.4:p.Ser146_Ile150del",
+      "biotype": "protein_coding",
+      "codons": "TCAGGTGTGTGCATA/-",
+      "cdna_end": 483,
+      "hgvsc": "ENST00000401061.9:c.436_450del",
+      "protein_id": "ENSP00000383840",
+      "cdna_start": 469,
+      "hgnc_id": "HGNC:24525",
+      "amino_acids": "SGVCI/-",
+      "impact": "MODERATE",
+      "strand": 1,
+      "gene_id": "ENSG00000132763",
+      "cds_start": 436,
+      "variant_allele": "-",
+      "conservation": 0.416,
+      "domains": [
+        {
+          "db": "Pfam",
+          "name": "PF16690"
+        },
+        {
+          "name": "PTHR31457",
+          "db": "PANTHER"
+        },
+        {
+          "name": "cd12959",
+          "db": "CDD"
+        }
+      ],
+      "mane": "NM_015506.3",
+      "refseq_transcript_ids": [
+        "NM_015506.3"
+      ],
+      "protein_start": 146,
+      "protein_end": 150,
+      "gene_symbol": "MMACHC",
+      "source": "Ensembl",
+      "cds_end": 450,
+      "used_ref": "TCAGGTGTGTGCATA",
+      "genesplicer": "loss/donor/45508806-45508807/Medium/5.084220"
+    },
+    {
+      "transcript_id": "ENST00000477188",
+      "biotype": "processed_transcript",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "source": "Ensembl",
+      "gene_symbol": "MMACHC",
+      "used_ref": "TCAGGTGTGTGCATA",
+      "distance": 617,
+      "genesplicer": "loss/donor/45508806-45508807/Medium/5.084220",
+      "hgnc_id": "HGNC:24525",
+      "consequence_terms": [
+        "upstream_gene_variant"
+      ],
+      "impact": "MODIFIER",
+      "gene_symbol_source": "HGNC",
+      "strand": 1,
+      "gene_id": "ENSG00000132763",
+      "conservation": 0.416,
+      "variant_allele": "-"
+    },
+    {
+      "impact": "MODERATE",
+      "consequence_terms": [
+        "inframe_deletion"
+      ],
+      "amino_acids": "SGVCI/-",
+      "cdna_start": 428,
+      "protein_id": "ENSP00000478859",
+      "hgnc_id": "HGNC:24525",
+      "exon": "4/5",
+      "variant_allele": "-",
+      "domains": [
+        {
+          "name": "PF16690",
+          "db": "Pfam"
+        },
+        {
+          "name": "PTHR31457",
+          "db": "PANTHER"
+        },
+        {
+          "db": "CDD",
+          "name": "cd12959"
+        }
+      ],
+      "conservation": 0.416,
+      "cds_start": 265,
+      "gene_id": "ENSG00000132763",
+      "strand": 1,
+      "gene_symbol_source": "HGNC",
+      "gene_symbol": "MMACHC",
+      "codons": "TCAGGTGTGTGCATA/-",
+      "source": "Ensembl",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "protein_start": 89,
+      "refseq_transcript_ids": [
+        "NM_001330540.2"
+      ],
+      "hgvsp": "ENSP00000478859.1:p.Ser89_Ile93del",
+      "protein_end": 93,
+      "biotype": "protein_coding",
+      "transcript_id": "ENST00000616135",
+      "cdna_end": 442,
+      "genesplicer": "loss/donor/45508806-45508807/Medium/5.084220",
+      "hgvsc": "ENST00000616135.1:c.265_279del",
+      "cds_end": 279,
+      "used_ref": "TCAGGTGTGTGCATA"
+    },
+    {
+      "variant_allele": "-",
+      "conservation": 0.416,
+      "gene_id": "5052",
+      "strand": -1,
+      "gene_symbol_source": "EntrezGene",
+      "impact": "MODIFIER",
+      "consequence_terms": [
+        "downstream_gene_variant"
+      ],
+      "protein_id": "NP_001189360.1",
+      "hgnc_id": "HGNC:9352",
+      "genesplicer": "loss/donor/45508812-45508811/Medium/5.084220,gain/acceptor/45508809-45508808/Medium/11.111633",
+      "bam_edit": "OK",
+      "distance": 2219,
+      "used_ref": "TCAGGTGTGTGCATA",
+      "gene_symbol": "PRDX1",
+      "source": "RefSeq",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "biotype": "protein_coding",
+      "transcript_id": "NM_001202431.1"
+    },
+    {
+      "genesplicer": "loss/donor/45508806-45508807/Medium/5.084220",
+      "cdna_end": 534,
+      "hgvsc": "NM_001330540.2:c.265_279del",
+      "cds_end": 279,
+      "used_ref": "TCAGGTGTGTGCATA",
+      "codons": "TCAGGTGTGTGCATA/-",
+      "gene_symbol": "MMACHC",
+      "source": "RefSeq",
+      "protein_start": 89,
+      "given_ref": "TCAGGTGTGTGCATA",
+      "transcript_id": "NM_001330540.2",
+      "protein_end": 93,
+      "biotype": "protein_coding",
+      "hgvsp": "NP_001317469.1:p.Ser89_Ile93del",
+      "variant_allele": "-",
+      "exon": "4/4",
+      "conservation": 0.416,
+      "strand": 1,
+      "gene_id": "25974",
+      "cds_start": 265,
+      "gene_symbol_source": "EntrezGene",
+      "impact": "MODERATE",
+      "consequence_terms": [
+        "inframe_deletion"
+      ],
+      "protein_id": "NP_001317469.1",
+      "hgnc_id": "HGNC:24525",
+      "cdna_start": 520,
+      "amino_acids": "SGVCI/-"
+    },
+    {
+      "conservation": 0.416,
+      "variant_allele": "-",
+      "gene_symbol_source": "EntrezGene",
+      "gene_id": "5052",
+      "strand": -1,
+      "impact": "MODIFIER",
+      "protein_id": "NP_002565.1",
+      "hgnc_id": "HGNC:9352",
+      "consequence_terms": [
+        "downstream_gene_variant"
+      ],
+      "bam_edit": "OK",
+      "genesplicer": "loss/donor/45508812-45508811/Medium/5.084220,gain/acceptor/45508809-45508808/Medium/11.111633",
+      "used_ref": "TCAGGTGTGTGCATA",
+      "distance": 2219,
+      "source": "RefSeq",
+      "gene_symbol": "PRDX1",
+      "transcript_id": "NM_002574.3",
+      "biotype": "protein_coding",
+      "given_ref": "TCAGGTGTGTGCATA"
+    },
+    {
+      "cds_start": 436,
+      "strand": 1,
+      "gene_id": "25974",
+      "gene_symbol_source": "EntrezGene",
+      "exon": "4/4",
+      "variant_allele": "-",
+      "conservation": 0.416,
+      "consequence_terms": [
+        "inframe_deletion"
+      ],
+      "amino_acids": "SGVCI/-",
+      "hgnc_id": "HGNC:24525",
+      "protein_id": "NP_056321.2",
+      "cdna_start": 469,
+      "canonical": 1,
+      "impact": "MODERATE",
+      "used_ref": "TCAGGTGTGTGCATA",
+      "cds_end": 450,
+      "cdna_end": 483,
+      "genesplicer": "loss/donor/45508806-45508807/Medium/5.084220",
+      "hgvsc": "NM_015506.3:c.436_450del",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "protein_start": 146,
+      "biotype": "protein_coding",
+      "hgvsp": "NP_056321.2:p.Ser146_Ile150del",
+      "protein_end": 150,
+      "transcript_id": "NM_015506.3",
+      "gene_symbol": "MMACHC",
+      "codons": "TCAGGTGTGTGCATA/-",
+      "source": "RefSeq"
+    },
+    {
+      "used_ref": "TCAGGTGTGTGCATA",
+      "distance": 2219,
+      "genesplicer": "loss/donor/45508812-45508811/Medium/5.084220,gain/acceptor/45508809-45508808/Medium/11.111633",
+      "bam_edit": "OK",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "transcript_id": "NM_181696.2",
+      "biotype": "protein_coding",
+      "gene_symbol": "PRDX1",
+      "source": "RefSeq",
+      "strand": -1,
+      "gene_id": "5052",
+      "gene_symbol_source": "EntrezGene",
+      "variant_allele": "-",
+      "conservation": 0.416,
+      "consequence_terms": [
+        "downstream_gene_variant"
+      ],
+      "protein_id": "NP_859047.1",
+      "hgnc_id": "HGNC:9352",
+      "impact": "MODIFIER"
+    },
+    {
+      "strand": -1,
+      "gene_id": "5052",
+      "gene_symbol_source": "EntrezGene",
+      "variant_allele": "-",
+      "conservation": 0.416,
+      "consequence_terms": [
+        "downstream_gene_variant"
+      ],
+      "hgnc_id": "HGNC:9352",
+      "protein_id": "NP_859048.1",
+      "canonical": 1,
+      "impact": "MODIFIER",
+      "used_ref": "TCAGGTGTGTGCATA",
+      "distance": 2235,
+      "genesplicer": "loss/donor/45508812-45508811/Medium/5.084220,gain/acceptor/45508809-45508808/Medium/11.111633",
+      "given_ref": "TCAGGTGTGTGCATA",
+      "transcript_id": "NM_181697.3",
+      "biotype": "protein_coding",
+      "gene_symbol": "PRDX1",
+      "source": "RefSeq"
+    },
+    {
+      "hgvsc": "XM_005270724.5:c.241_255del",
+      "genesplicer": "loss/donor/45508806-45508807/Medium/5.084220",
+      "cdna_end": 359,
+      "used_ref": "TCAGGTGTGTGCATA",
+      "cds_end": 255,
+      "source": "RefSeq",
+      "codons": "TCAGGTGTGTGCATA/-",
+      "gene_symbol": "MMACHC",
+      "transcript_id": "XM_005270724.5",
+      "hgvsp": "XP_005270781.1:p.Ser81_Ile85del",
+      "biotype": "protein_coding",
+      "protein_end": 85,
+      "protein_start": 81,
+      "given_ref": "TCAGGTGTGTGCATA",
+      "conservation": 0.416,
+      "variant_allele": "-",
+      "exon": "3/3",
+      "gene_symbol_source": "EntrezGene",
+      "strand": 1,
+      "gene_id": "25974",
+      "cds_start": 241,
+      "impact": "MODERATE",
+      "cdna_start": 345,
+      "protein_id": "XP_005270781.1",
+      "hgnc_id": "HGNC:24525",
+      "amino_acids": "SGVCI/-",
+      "consequence_terms": [
+        "inframe_deletion"
+      ]
+    }
+  ],
+  "id": "1:g.45508802_45508816del",
+  "end": 45508816,
+  "start": 45508802,
+  "assembly_name": "GRCh38"
+}]

@@ -1,0 +1,152 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "GroupModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["group"]
+        },
+        "PK": { "type": "string" },
+        "submitted_by": { "type": "string", "$schema": "user" },
+        "date_created": { "type": "string" },
+        "modified_by": { "type": "string", "$schema": "user" },
+        "last_modified": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "label": { "type": "string" },
+        "commonDiagnosis": {
+          "description": "List of ontology IDs of common diagnosis for the group",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "$schema": "disease"
+          }
+        },
+        "hpoIdInDiagnosis": {
+          "description": "List of HPO ID for the disease",
+          "type": "array"
+        },
+        "termsInDiagnosis": {
+          "description": "HPO terms (separated by comma) for the disease",
+          "type": "string"
+        },
+        "hpoIdInElimination": {
+          "description": "List of HPO IDs eliminated from the disease",
+          "type": "array"
+        },
+        "termsInElimination": {
+          "description": "Non-HPO terms (separated by comma) eliminated from the disease",
+          "type": "string"
+        },
+        "numberOfMale": { "type": "number" },
+        "numberOfFemale": { "type": "number" },
+        "countryOfOrigin": { "type": "string" },
+        "ethnicity": {
+            "type": "string",
+            "enum": ["", "Hispanic or Latino", "Not Hispanic or Latino", "Unknown"]
+        },
+        "race": {
+            "type": "string",
+            "enum": ["","American Indian or Alaska Native", "Asian", "Black", "Native Hawaiian or Other Pacific Islander", "White", "Mixed", "Unknown"] 
+        },
+        "ageRangeType": {
+            "type": "string",
+            "enum": ["", "Onset", "Report", "Diagnosis", "Death"]
+        },
+        "ageRangeFrom": { "type": "number" },
+        "ageRangeTo": { "type": "number" },
+        "ageRangeUnit": {
+            "type": "string",
+            "enum": ["", "Hours", "Days", "Weeks", "Weeks gestation", "Months", "Years"]
+        },
+        "totalNumberIndividuals": { "type": "number" },
+        "numberOfIndividualsWithFamilyInformation": { "type": "number" },
+        "numberOfIndividualsWithoutFamilyInformation": { "type": "number" },
+        "numberOfIndividualsWithVariantInCuratedGene": { "type": "number" },
+        "numberOfIndividualsWithoutVariantInCuratedGene": { "type": "number" },
+        "numberOfIndividualsWithVariantInOtherGene": { "type": "number" },
+        "otherGenes": {
+          "description": "List of other genes which can link to gene objects",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "method": {
+          "type": "object",
+          "properties": {
+            "previousTesting": { "type": "boolean" },
+            "previousTestingDescription": { "type": "string" },
+            "genomeWideStudy": { "type": "boolean" },
+            "genotypingMethods": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Chromosomal microarray",
+                  "Denaturing gradient gel",
+                  "Exome sequencing",
+                  "Genotyping",
+                  "High resolution melting",
+                  "Homozygosity mapping",
+                  "Linkage analysis",
+                  "Next generation sequencing panels",
+                  "Other",
+                  "PCR",
+                  "Restriction digest",
+                  "Sanger sequencing",
+                  "SSCP",
+                  "Whole genome shotgun sequencing"
+                ]
+              }
+            },
+            "entireGeneSequenced": { "type": "boolean" },
+            "copyNumberAssessed": { "type": "boolean" },
+            "specificMutationsGenotyped": { "type": "boolean" },
+            "specificMutationsGenotypedMethod": { "type": "string" },
+            "additionalInformation": { "type": "string" },
+            "dateTime": { "type": "string" }
+          }
+        },
+        "additionalInformation": { "type": "string" },
+        "otherPMIDs": {
+          "description": "List of other PMIDs having evidence about the group, link to article objects",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "familyIncluded": {
+          "description": "List of families included in the group, link to family objects",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "$schema": "family:injectParentAsAssociatedField"
+          }
+        },
+        "individualIncluded": {
+          "description": "List of individuals included in the group but NOT included in any family, link to individual objects",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "$schema": "individual:injectParentAsAssociatedField"
+          }
+        },
+        "groupType": {
+          "description": "List of types the group used in case level or case control",
+
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "numberWithVariant": {
+          "title": "Number of Case or Control with Variant",
+          "description": "For case cohort or control cohort only",
+          "type": "number"
+        },
+        "numberAllGenotypedSequenced": { "type": "number" },
+        "alleleFrequency": { "type": "number" },
+        "controlType": {
+          "description": "For control cohort only",
+          "type": "string"
+        },
+        "associatedParent": {
+          "type": "string"
+        }
+    }
+}

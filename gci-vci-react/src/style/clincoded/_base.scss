@@ -1,0 +1,315 @@
+html, body {
+    font-size: 18px;
+
+    @include media-breakpoint-up(sm) {
+        font-size: 14px;
+    }
+}
+
+body {
+    //font-family: 'Helvetica Neue', 'Lato', Helvetica, sans-serif;
+}
+
+.container {
+    position: relative;
+    // Widen container on larger resolution slightly
+    @media (min-width: 1200px){
+        max-width: 1200px;
+    }
+
+    .btn-outline-primary.audit-trail {
+        margin-left: 10px;
+    }
+
+    div.audit-trail {
+        .audit-trail-title {
+            float: left;
+            line-height: 50px;
+            padding-left: 10px;
+            width: 55%;
+
+            .audit-trail-tooltip {
+                vertical-align: super;
+            }
+        }
+
+        .audit-trail-filter {
+            float: right;
+            width: 45%
+        }
+
+        .audit-trail-clear {
+            clear: both;
+            padding-left: 10px;
+        }
+
+        .audit-trail-table {
+            display: table;
+            width: 100%;
+        }
+
+        .audit-trail-table-row {
+            display: table-row;
+        }
+
+        .audit-trail-table-cell {
+            display: table-cell;
+            padding: 2px;
+
+            &.label {
+                width: 30%;
+            }
+
+            &.audit-trail-data {
+                width: 70%;
+            }
+        }
+
+        .audit-trail-data {
+            font-weight: bold;
+        }
+    }
+}
+
+h1, .h1 { font-size: $font-size-h1; }
+h2, .h2 { font-size: $font-size-h2; }
+h3, .h3 { font-size: $font-size-h3; }
+h4, .h4 { font-size: $font-size-h4; }
+h5, .h5 { font-size: $font-size-h5; }
+h6, .h6 { font-size: $font-size-h6; }
+
+p {
+    line-height: 1.6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=search],
+textarea.form-control {
+    background-color: #fff;
+}
+
+.btn {
+    @include border-radius(2px);
+}
+
+.btn-primary {
+    border: 1px solid $color-btn;
+    background-color: $color-btn;
+
+    &:hover:not(:disabled) {
+        border: 1px solid $color-btn-hover !important;
+        background-color: $color-btn-hover !important;
+    }
+}
+
+.btn-inline-spacer {
+    margin-left: 5px;
+}
+
+// Last button in a panel; gap to bottom of panel
+.btn-last {
+    margin-bottom: 40px;
+}
+
+.site-header {
+    /*position: relative;
+    border-top: 6px solid $color-trim;
+    border-bottom: 2px solid $color-trim;
+    background: white;
+
+    @include media-breakpoint-up(sm) {
+        background: url(../img/header-bg.jpg) center center no-repeat;
+        background-size: cover;
+    }*/
+}
+
+dl.inline-dl {
+    dt {
+        float: left;
+        clear: left;
+        margin: 0 5px 0 0;
+        padding: 0;
+        line-height: 1.3;
+    }
+
+    dd {
+        float: left;
+        margin: 0;
+        padding: 0;
+        line-height: 1.3;
+    }
+}
+
+dl.dl-horizontal {
+    margin: 0;
+
+    dt, dd {
+        display: block;
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    dt {
+        font-weight: bold;
+        text-overflow: clip;
+        width: auto;
+
+        &:after {
+            content: ": ";
+        }
+    }
+
+    dd {
+        @extend .clearfix;
+    }
+
+    div {
+        clear: both;
+        margin: 6px 0;
+    }
+
+    @include media-breakpoint-up(sm) {
+        display: table;
+
+        dt, dd {
+            display: table-cell;
+            vertical-align: bottom;
+        }
+
+        dt {
+            padding: 6px 20px 6px 0;
+        }
+
+        dd {
+            padding: 6px 0;
+        }
+
+        div {
+            clear: none;
+            display: table-row;
+        }
+    }
+}
+
+.beta-note {
+    font-style: italic;
+}
+
+.icon-alt {
+    font-size: 1rem;
+
+    @include media-breakpoint-up(sm) {
+        font-size: 1.5rem;
+    }
+}
+
+.notice-bar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.alert-demo {
+    color: white;
+    background: #880000;
+    border-top: 1px solid red;
+    border-bottom: 1px solid red;
+}
+
+.demo-background {
+    background-image: url(../img/test-bg.svg);
+}
+
+.alert-production {
+    color: #8a6d3b;
+    background: #fed84d;
+    height: 80px;
+    border-top: 1px solid #f4b61f;
+    border-bottom: 1px solid #f4b61f;
+    text-align: center;
+    line-height: 50px;
+}
+
+//Default Hyperlink, even without href value
+a:not([href]) {
+    color:$brand-primary;
+    &:hover{cursor:pointer;text-decoration: underline;}
+}
+// Display external-link fontawesome icon after EVERY link (override later)
+a[href^="http://"]:after,
+a[href^="https://"]:after,
+a.external-link:after {
+    font-family: FontAwesome;
+    content: "\a0\f08e";
+    font-weight: normal;
+}
+
+// Disable external-link icon for clinicalgenome.org and localhost links
+a[href^="localhost"]:after,
+a[href^="instance.clinicalgenome.org/"]:after,
+a[href^="demo.clinicalgenome.org/"]:after,
+a[href^="production.clinicalgenome.org/"]:after,
+a[href^="curation-test.clinicalgenome.org/"]:after,
+a[href^="curation.clinicalgenome.org/"]:after,
+a.no-external-link:after {
+    content: "";
+    padding-left: 0;
+}
+
+//Panel CSS, need to add module and clean up existing modules
+.card-group{
+    &.collapse{
+        position:relative;
+        display:flex;
+        &:after{
+            content:'';
+            display:block;
+            width:100%;
+            height:2.3rem;
+            position:absolute;
+            z-index:1;
+            background:rgba(255,255,255,0.5);
+            background: linear-gradient(to top, rgba(255,255,255,1) 0%,rgba(255,255,255,0.7) 70%, rgba(255,255,255,0) 100%);
+            bottom:0;
+        }
+    }
+    &.collapse:not(.show){
+        height:9rem;
+        overflow:hidden;
+
+    }      
+    &.collapsing{
+        height:9rem;
+    }
+    &.show{
+        height:auto;
+        padding-bottom:2.3rem;
+        &:after{display:none;}
+    }
+    .btn-expand{
+        position:absolute;
+        bottom:0;
+        left:0;
+        z-index:2;
+    }
+}
+
+#non-prod-banner {
+    font-size: 16px;
+    font-weight: bold;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+/** Fix for print settings not appearing 
+in Chrome PDF print within Evidence Summaries 
+https://stackoverflow.com/questions/36322109/chrome-printing-website-missing-layout-options 
+https://developer.mozilla.org/en-US/docs/Web/CSS/@page **/
+@page {
+  size: auto;
+}

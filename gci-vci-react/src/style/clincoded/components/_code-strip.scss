@@ -1,0 +1,56 @@
+.code-strip{
+    margin-bottom:3rem;
+    width:100%;
+    box-shadow:$box-shadow-light;
+    background:#fff;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top:-1px;
+    z-index:3;
+
+    .btn-outline-primary{
+        font-weight:bold;
+        border-color:$gray-lighter;
+        max-width:50px;
+
+        // Override default button colors on hover to match color-coding
+        
+        &.benign-strong:hover, &.benign-strong.is-active {
+            background-color: $benign-strong;
+            color:#fff;
+        }
+        &.benign-supporting:hover, &.benign-supporting.is-active {
+            background-color: $benign-supporting;
+            color:#fff;
+        }
+        &.pathogenic-supporting:hover, &.pathogenic-supporting.is-active {
+            background-color: $pathogenic-supporting;
+            color:#fff;
+        }
+        &.pathogenic-moderate:hover, &.pathogenic-moderate.is-active {
+            background-color: $pathogenic-moderate;
+            color:#fff;
+        }
+        &.pathogenic-strong:hover, &.pathogenic-strong.is-active {
+            background-color: $pathogenic-strong;
+            color:#fff;
+        }
+        &.pathogenic-very-strong:hover, &.pathogenic-very-strong.is-active {
+            background-color: $pathogenic-very-strong;
+            color:#fff;
+        }
+        &.stand-alone:hover, &.stand-alone.is-active {
+            background-color: $stand-alone;
+            color:#fff;
+        }
+        
+    }
+
+    // CSS for code strip when "Not Met"
+    .btn-outline-primary.is-not-met {
+        background-color:$gray-lighter !important;
+        &:hover{
+            color:inherit;
+        }
+    }
+}

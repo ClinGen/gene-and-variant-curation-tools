@@ -1,0 +1,696 @@
+{
+  "entAliases": [
+    {
+      "id": "177629",
+      "iri": "https://www.ncbi.nlm.nih.gov/clinvar/variation/177629/",
+      "label": "ClinVar"
+    }
+  ],
+  "entId": "CA015944",
+  "entIri": "http://reg.genome.network/allele/CA015944",
+  "entType": "Variant",
+  "ld": {
+    "AlleleMolecularConsequenceStatement": [
+      {
+        "entContent": {
+          "preferredTranscripts": [
+            {
+              "biotype": "protein_coding",
+              "canonical": true,
+              "id": "ENST00000355349",
+              "molecularConsequence": "missense_variant",
+              "source": "Ensembl",
+              "tsl": "1"
+            },
+            {
+              "biotype": "miRNA",
+              "canonical": true,
+              "id": "ENST00000401172",
+              "molecularConsequence": "downstream_gene_variant",
+              "source": "Ensembl"
+            },
+            {
+              "biotype": "antisense",
+              "canonical": true,
+              "id": "ENST00000557368",
+              "molecularConsequence": "upstream_gene_variant",
+              "source": "Ensembl",
+              "tsl": "3"
+            },
+            {
+              "biotype": "protein_coding",
+              "canonical": true,
+              "id": "NM_000257.4",
+              "manePreferredRefSeq": true,
+              "molecularConsequence": "missense_variant",
+              "source": "RefSeq"
+            },
+            {
+              "biotype": "miRNA",
+              "canonical": true,
+              "id": "NR_030624.1",
+              "molecularConsequence": "downstream_gene_variant",
+              "source": "RefSeq"
+            },
+            {
+              "biotype": "lncRNA",
+              "canonical": true,
+              "id": "NR_126491.1",
+              "molecularConsequence": "upstream_gene_variant",
+              "source": "RefSeq"
+            }
+          ]
+        },
+        "entContentSrc": [
+          {
+            "genomeBuild": "GRCh38",
+            "source": "ensembl-vep",
+            "url": "http://rest.ensembl.org/",
+            "ver": "96.0"
+          }
+        ],
+        "entId": "NC_000014.9:g.23415228T>C",
+        "entIri": "http://rest.ensembl.org/vep/human/hgvs/NC_000014.9:g.23415228T>C?content-type=application/json&merged=true&canonical=true&ccds=true&xref_refseq=true&tsl=true",
+        "entType": "AlleleMolecularConsequenceStatement",
+        "ldhId": "41941061",
+        "ldhIri": "https://ldh.genome.network/ldh/AlleleMolecularConsequenceStatement/id/41941061",
+        "modified": "2019-10-03T17:05:02.504Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIT_Ai--A"
+      }
+    ],
+    "ClinVarSubmission": [
+      {
+        "entContent": {
+          "clinVarRCVs": [
+            "RCV000620185",
+            "RCV000765157",
+            "RCV000462813",
+            "RCV000168915",
+            "RCV000514376",
+            "RCV000154209"
+          ],
+          "clinVarSCVs": [
+            {
+              "clinVarSCV": "SCV000203861.4",
+              "evaluationDate": "Nov 29, 2018",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "Laboratory for Molecular Medicine,Partners HealthCare Personalized Medicine"
+            },
+            {
+              "clinVarSCV": "SCV000208629.9",
+              "evaluationDate": "May 09, 2017",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "GeneDx"
+            },
+            {
+              "clinVarSCV": "SCV000546233.4",
+              "evaluationDate": "Dec 28, 2018",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "Invitae"
+            },
+            {
+              "clinVarSCV": "SCV000740371.1",
+              "evaluationDate": "May 18, 2016",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "Molecular Diagnostic Laboratory for Inherited Cardiovascular Disease,Montreal Heart Institute"
+            },
+            {
+              "clinVarSCV": "SCV000736987.2",
+              "evaluationDate": "Jun 11, 2016",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "Ambry Genetics"
+            },
+            {
+              "clinVarSCV": "SCV000896386.1",
+              "evaluationDate": "Oct 31, 2018",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "Fulgent Genetics,Fulgent Genetics"
+            },
+            {
+              "clinVarSCV": "SCV000280364.1",
+              "evaluationDate": "Jan 06, 2015",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "Stanford Center for Inherited Cardiovascular Disease,Stanford University"
+            },
+            {
+              "clinVarSCV": "SCV000609658.1",
+              "evaluationDate": "Apr 19, 2017",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "Center for Pediatric Genomic Medicine,Children's Mercy Hospital and Clinics"
+            },
+            {
+              "clinVarSCV": "SCV000564457.4",
+              "evaluationDate": "Dec 15, 2016",
+              "significance": "Uncertain significance",
+              "submitterStudyName": "ClinGen Inherited Cardiomyopathy Variant Curation Expert Panel"
+            }
+          ],
+          "clinicalSignificance": "Uncertain significance",
+          "date": "Dec 28, 2018",
+          "name": "NM_000257.4(MYH7):c.5326A>G (p.Ser1776Gly)",
+          "reviewStatus": "reviewed by expert panel",
+          "variation": 177629
+        },
+        "entId": "177629",
+        "entIri": "https://www.ncbi.nlm.nih.gov/clinvar/variation/177629",
+        "entType": "ClinVarSubmission",
+        "ldhId": "41999999",
+        "ldhIri": "https://ldh.genome.network/ldh/ClinVarSubmission/id/41999999",
+        "modified": "2019-10-03T17:08:25.726Z",
+        "modifier": "sailakss",
+        "rev": "_Z2qz6Mi--G"
+      }
+    ],
+    "CommunityAnnotation": [
+      {
+        "entContent": {
+          "clinvarId": 177629,
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5679632/",
+          "tags": [
+            "Individual",
+            "CaseInfo",
+            "Variant",
+            "GenotypingMethod",
+            "AdditionalPreviousTesting",
+            "AutosomalDominant",
+            "HCM",
+            "FullPreviousTesting",
+            "SupplementalData",
+            "ClinVarID:177629",
+            "MultipleGeneVariants",
+            "UnregisteredVariant"
+          ]
+        },
+        "entId": "RgYK0DFiEemqBne7hCBxSw",
+        "entIri": "https://hyp.is/RgYK0DFiEemqBne7hCBxSw",
+        "entType": "CommunityAnnotation",
+        "ldhId": "42004188",
+        "ldhIri": "https://ldh.genome.network/ldh/CommunityAnnotation/id/42004188",
+        "modified": "2019-10-03T17:08:39.447Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIWS3e--B"
+      }
+    ],
+    "InSilicoPredictionScoreStatement": [
+      {
+        "entContent": {
+          "predictors": [
+            {
+              "algorithm": "REVEL",
+              "prediction": 0.776
+            },
+            {
+              "algorithm": "CADD",
+              "prediction": 5.279986
+            },
+            {
+              "algorithm": "M-CAP",
+              "prediction": 0.934046
+            }
+          ]
+        },
+        "entId": "chr14:g.23884437T>C",
+        "entIri": "http://myvariant.info/v1/variant/chr14:g.23884437T>C?assembly=hg19",
+        "entType": "InSilicoPredictionScoreStatement",
+        "ldhId": "42007899",
+        "ldhIri": "https://ldh.genome.network/ldh/InSilicoPredictionScoreStatement/id/42007899",
+        "modified": "2019-10-03T17:08:51.590Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIWeuW--B"
+      }
+    ],
+    "PopulationAlleleFrequencySource": [
+      {
+        "entContent": {
+          "gnomad-exomes": {
+            "dbSNP": {
+              "id": "rs369437262",
+              "iri": "https://www.ncbi.nlm.nih.gov/snp/rs369437262"
+            },
+            "faf95": 0.00001567,
+            "faf99": 0.00001487,
+            "filters": "PASS",
+            "popmax": {
+              "alleleFrequency": 0.000184547,
+              "population": "afr"
+            },
+            "qual": "27985",
+            "raw": {
+              "alleleCount": 8,
+              "alleleFrequency": 0.0000318097,
+              "alleleNumber": 251496,
+              "homozygousAlleleIndividualCount": 0
+            },
+            "total": {
+              "alleleCount": 8,
+              "alleleFrequency": 0.0000318099,
+              "alleleNumber": 251494,
+              "homozygousAlleleIndividualCount": 0
+            }
+          },
+          "gnomad-genomes": {
+            "dbSNP": {
+              "id": "rs369437262",
+              "iri": "https://www.ncbi.nlm.nih.gov/snp/rs369437262"
+            },
+            "faf95": 0.00006263,
+            "faf99": 0.00006266,
+            "filters": "PASS",
+            "popmax": {
+              "alleleFrequency": 0.00192308,
+              "population": "eas"
+            },
+            "qual": "1319.95",
+            "raw": {
+              "alleleCount": 5,
+              "alleleFrequency": 0.000159155,
+              "alleleNumber": 31416,
+              "homozygousAlleleIndividualCount": 0
+            },
+            "total": {
+              "alleleCount": 5,
+              "alleleFrequency": 0.000159246,
+              "alleleNumber": 31398,
+              "homozygousAlleleIndividualCount": 0
+            }
+          }
+        },
+        "entContentSrc": {
+          "genomeBuild": "GRCh37",
+          "source": "gnomAD",
+          "url": "http://gnomad.broadinstitute.org/",
+          "ver": "v2.1.1"
+        },
+        "entId": "14-23884437-T-C",
+        "entIri": "http://gnomad.broadinstitute.org/variant/14-23884437-T-C",
+        "entType": "PopulationAlleleFrequencySource",
+        "ldhId": "42057720",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencySource/id/42057720",
+        "modified": "2019-10-03T17:11:30.603Z",
+        "modifier": "sailakss",
+        "rev": "_aB6mH0e--F"
+      }
+    ],
+    "PopulationAlleleFrequencyStatement": [
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 30616,
+          "faf95": 0,
+          "faf99": 0,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "sas"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077269",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077269",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--I"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 10080,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "asj"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077270",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077270",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--E"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 848,
+          "faf95": 0,
+          "faf99": 0,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "amr"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077277",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077277",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfe---"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 1086,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "oth"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077281",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077281",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfe--C"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 2,
+          "alleleFrequency": 0.000114482,
+          "alleleNumber": 17470,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "male"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077282",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077282",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfe---"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 113768,
+          "faf95": 0,
+          "faf99": 0,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "nfe"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077265",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077265",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--E"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 3,
+          "alleleFrequency": 0.000184547,
+          "alleleNumber": 16256,
+          "faf95": 0.00004977,
+          "faf99": 0.0000495,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "afr"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077266",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077266",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--G"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 2,
+          "alleleFrequency": 0.0000578168,
+          "alleleNumber": 34592,
+          "faf95": 0.00000958,
+          "faf99": 0.00000958,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "amr"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077267",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077267",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--C"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 3,
+          "alleleFrequency": 0.000163097,
+          "alleleNumber": 18394,
+          "faf95": 0.00004412,
+          "faf99": 0.00004394,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "eas"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077268",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077268",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--D"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 6140,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "oth"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077272",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077272",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--I"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 2,
+          "alleleFrequency": 0.0000147143,
+          "alleleNumber": 135922,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "male"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077273",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077273",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--F"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 15426,
+          "faf95": 0,
+          "faf99": 0,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "nfe"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077275",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077275",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--M"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 2,
+          "alleleFrequency": 0.000229568,
+          "alleleNumber": 8712,
+          "faf95": 0.00003979,
+          "faf99": 0.0000401,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "afr"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077276",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077276",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--H"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 290,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "asj"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077279",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077279",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--O"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 3476,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "fin"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077280",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077280",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--K"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 0,
+          "alleleFrequency": 0,
+          "alleleNumber": 21648,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "fin"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077271",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077271",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--G"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 6,
+          "alleleFrequency": 0.0000519157,
+          "alleleNumber": 115572,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-exomes",
+          "population": "female"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077274",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077274",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--K"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 3,
+          "alleleFrequency": 0.00192308,
+          "alleleNumber": 1560,
+          "faf95": 0.00052333,
+          "faf99": 0.00052342,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "eas"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077278",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077278",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfe--A"
+      },
+      {
+        "entContent": {
+          "PopulationAlleleFrequencySource": {
+            "entId": "14-23884437-T-C"
+          },
+          "alleleCount": 3,
+          "alleleFrequency": 0.000215393,
+          "alleleNumber": 13928,
+          "homozygousAlleleIndividualCount": 0,
+          "method": "gnomad-genomes",
+          "population": "female"
+        },
+        "entType": "PopulationAlleleFrequencyStatement",
+        "ldhId": "42077283",
+        "ldhIri": "https://ldh.genome.network/ldh/PopulationAlleleFrequencyStatement/id/42077283",
+        "modified": "2019-10-03T17:12:05.910Z",
+        "modifier": "sailakss",
+        "rev": "_ZXIZcfa--Q"
+      }
+    ]
+  },
+  "ldFor": {
+    "Gene": [
+      {
+        "entId": "MYH7",
+        "entIri": "http://www.ncbi.nlm.nih.gov/gene/4625",
+        "entType": "Gene",
+        "ldhId": "41887716",
+        "ldhIri": "https://ldh.genome.network/ldh/Gene/id/41887716",
+        "modified": "2019-10-03T17:04:35.367Z",
+        "modifier": "sailakss",
+        "rev": "_ZXISkge--A"
+      }
+    ]
+  },
+  "ldhId": "41889804",
+  "ldhIri": "https://ldh.genome.network/ldh/Variant/id/41889804",
+  "modified": "2019-10-03T17:04:35.395Z",
+  "modifier": "sailakss",
+  "rev": "_Z2qy396--C"
+}

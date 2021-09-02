@@ -1,0 +1,2729 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+                        
+<ClinVarResult-Set><VariationArchive VariationID="10" VariationName="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp)" VariationType="single nucleotide variant" DateCreated="2010-12-01" DateLastUpdated="2020-05-31" Accession="VCV000000010" Version="13" RecordType="interpreted" NumberOfSubmissions="19" NumberOfSubmitters="18">
+  <RecordStatus>current</RecordStatus>
+  <Species>Homo sapiens</Species>
+  <InterpretedRecord>
+    <SimpleAllele AlleleID="15049" VariationID="10">
+      <GeneList>
+        <Gene Symbol="HFE" FullName="homeostatic iron regulator" GeneID="3077" HGNC_ID="HGNC:4886" Source="submitted" RelationshipType="within multiple genes by overlap">
+          <Location>
+            <CytogeneticLocation>6p22.2</CytogeneticLocation>
+            <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="6" Accession="NC_000006.12" start="26087281" stop="26098343" display_start="26087281" display_stop="26098343" Strand="+"/>
+            <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="6" Accession="NC_000006.11" start="26087508" stop="26095468" display_start="26087508" display_stop="26095468" Strand="+"/>
+          </Location>
+          <OMIM>613609</OMIM>
+        </Gene>
+        <Gene Symbol="LOC108783645" FullName="HFE antisense RNA" GeneID="108783645" Source="calculated" RelationshipType="within multiple genes by overlap">
+          <Location>
+            <CytogeneticLocation>6p22.2</CytogeneticLocation>
+            <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="6" Accession="NC_000006.12" start="26086290" stop="26091034" display_start="26086290" display_stop="26091034" Strand="-"/>
+          </Location>
+        </Gene>
+      </GeneList>
+      <Name>NM_000410.3(HFE):c.187C&gt;G (p.His63Asp)</Name>
+      <CanonicalSPDI>NC_000006.12:26090950:C:G</CanonicalSPDI>
+      <VariantType>single nucleotide variant</VariantType>
+      <Location>
+        <CytogeneticLocation>6p22.2</CytogeneticLocation>
+        <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" forDisplay="true" AssemblyStatus="current" Chr="6" Accession="NC_000006.12" start="26090951" stop="26090951" display_start="26090951" display_stop="26090951" variantLength="1" positionVCF="26090951" referenceAlleleVCF="C" alternateAlleleVCF="G"/>
+        <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="6" Accession="NC_000006.11" start="26091179" stop="26091179" display_start="26091179" display_stop="26091179" variantLength="1" positionVCF="26091179" referenceAlleleVCF="C" alternateAlleleVCF="G"/>
+      </Location>
+      <ProteinChange>H63D</ProteinChange>
+      <ProteinChange>H40D</ProteinChange>
+      <HGVSlist>
+        <HGVS Assembly="GRCh37" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000006.11" sequenceAccession="NC_000006" sequenceVersion="11" change="g.26091179C&gt;G" Assembly="GRCh37">
+            <Expression>NC_000006.11:g.26091179C&gt;G</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Assembly="GRCh38" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000006.12" sequenceAccession="NC_000006" sequenceVersion="12" change="g.26090951C&gt;G" Assembly="GRCh38">
+            <Expression>NC_000006.12:g.26090951C&gt;G</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_000410.3" sequenceAccession="NM_000410" sequenceVersion="3" change="c.187C&gt;G">
+            <Expression>NM_000410.3:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_000401.1" sequenceAccession="NP_000401" sequenceVersion="1" change="p.His63Asp">
+            <Expression>NP_000401.1:p.His63Asp</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_001300749.2" sequenceAccession="NM_001300749" sequenceVersion="2" change="c.187C&gt;G">
+            <Expression>NM_001300749.2:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_001287678.1" sequenceAccession="NP_001287678" sequenceVersion="1" change="p.His63Asp">
+            <Expression>NP_001287678.1:p.His63Asp</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139003.3" sequenceAccession="NM_139003" sequenceVersion="3" change="c.187C&gt;G">
+            <Expression>NM_139003.3:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_620572.1" sequenceAccession="NP_620572" sequenceVersion="1" change="p.His63Asp">
+            <Expression>NP_620572.1:p.His63Asp</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139004.3" sequenceAccession="NM_139004" sequenceVersion="3" change="c.187C&gt;G">
+            <Expression>NM_139004.3:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_620573.1" sequenceAccession="NP_620573" sequenceVersion="1" change="p.His63Asp">
+            <Expression>NP_620573.1:p.His63Asp</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139006.3" sequenceAccession="NM_139006" sequenceVersion="3" change="c.187C&gt;G">
+            <Expression>NM_139006.3:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_620575.1" sequenceAccession="NP_620575" sequenceVersion="1" change="p.His63Asp">
+            <Expression>NP_620575.1:p.His63Asp</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139009.3" sequenceAccession="NM_139009" sequenceVersion="3" change="c.118C&gt;G">
+            <Expression>NM_139009.3:c.118C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_620578.1" sequenceAccession="NP_620578" sequenceVersion="1" change="p.His40Asp">
+            <Expression>NP_620578.1:p.His40Asp</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139007.3" sequenceAccession="NM_139007" sequenceVersion="3" change="c.77-363C&gt;G">
+            <Expression>NM_139007.3:c.77-363C&gt;G</Expression>
+          </NucleotideExpression>
+          <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139008.3" sequenceAccession="NM_139008" sequenceVersion="3" change="c.77-363C&gt;G">
+            <Expression>NM_139008.3:c.77-363C&gt;G</Expression>
+          </NucleotideExpression>
+          <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139010.3" sequenceAccession="NM_139010" sequenceVersion="3" change="c.77-1734C&gt;G">
+            <Expression>NM_139010.3:c.77-1734C&gt;G</Expression>
+          </NucleotideExpression>
+          <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_139011.3" sequenceAccession="NM_139011" sequenceVersion="3" change="c.77-2168C&gt;G">
+            <Expression>NM_139011.3:c.77-2168C&gt;G</Expression>
+          </NucleotideExpression>
+          <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_000410.3" sequenceAccession="NM_000410" sequenceVersion="3" change="c.187C&gt;G">
+            <Expression>NM_000410.3:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_000401.1" sequenceAccession="NP_000401" sequenceVersion="1" change="p.His63Asp">
+            <Expression>NP_000401.1:p.His63Asp</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="LRG_748t1" sequenceAccession="LRG_748t1">
+            <Expression>LRG_748t1:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="LRG_748t1" sequenceAccession="LRG_748t1">
+            <Expression>LRG_748t1:c.187C&gt;G</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="LRG_748p1" sequenceAccession="LRG_748p1" change="p.His63Asp">
+            <Expression>LRG_748p1:p.His63Asp</Expression>
+          </ProteinExpression>
+        </HGVS>
+        <HGVS Type="non-coding">
+          <NucleotideExpression sequenceAccessionVersion="NR_144383.1" sequenceAccession="NR_144383" sequenceVersion="1" change="n.84G&gt;C">
+            <Expression>NR_144383.1:n.84G&gt;C</Expression>
+          </NucleotideExpression>
+          <MolecularConsequence ID="SO:0001619" Type="non-coding transcript variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="genomic">
+          <NucleotideExpression sequenceAccessionVersion="NG_008720.2" sequenceAccession="NG_008720" sequenceVersion="2" change="g.8671C&gt;G">
+            <Expression>NG_008720.2:g.8671C&gt;G</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="genomic">
+          <NucleotideExpression sequenceAccessionVersion="LRG_748" sequenceAccession="LRG_748">
+            <Expression>LRG_748:g.8671C&gt;G</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="protein">
+          <ProteinExpression sequenceAccessionVersion="Q30201" sequenceAccession="Q30201" change="p.His63Asp">
+            <Expression>Q30201:p.His63Asp</Expression>
+          </ProteinExpression>
+        </HGVS>
+      </HGVSlist>
+      <XRefList>
+        <XRef ID="CA113797" DB="ClinGen"/>
+        <XRef ID="Q30201#VAR_004396" DB="UniProtKB"/>
+        <XRef Type="Allelic variant" ID="613609.0002" DB="OMIM"/>
+        <XRef Type="rs" ID="1799945" DB="dbSNP"/>
+      </XRefList>
+      <AlleleFrequencyList>
+        <AlleleFrequency Value="0.10116" Source="Trans-Omics for Precision Medicine (TOPMed)"/>
+        <AlleleFrequency Value="0.07308" Source="1000 Genomes Project"/>
+        <AlleleFrequency Value="0.09949" Source="The Genome Aggregation Database (gnomAD)"/>
+        <AlleleFrequency Value="0.10924" Source="The Genome Aggregation Database (gnomAD), exomes"/>
+        <AlleleFrequency Value="0.10660" Source="Exome Aggregation Consortium (ExAC)"/>
+      </AlleleFrequencyList>
+      <GlobalMinorAlleleFrequency Value="0.07308" Source="1000 Genomes Project" MinorAllele="G"/>
+    </SimpleAllele>
+    <ReviewStatus>criteria provided, conflicting interpretations</ReviewStatus>
+    <RCVList>
+      <RCVAccession Title="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp) AND Hemochromatosis type 1" DateLastEvaluated="2019-12-26" ReviewStatus="criteria provided, multiple submitters, no conflicts" Interpretation="Pathogenic" SubmissionCount="9" Accession="RCV000000026" Version="20">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="C3469186">Hemochromatosis type 1</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+      <RCVAccession Title="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp) AND Microvascular complications of diabetes 7" DateLastEvaluated="2008-09-01" ReviewStatus="no assertion criteria provided" Interpretation="risk factor" SubmissionCount="1" Accession="RCV000000027" Version="5">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="C2673520">Microvascular complications of diabetes 7</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+      <RCVAccession Title="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp) AND not provided" DateLastEvaluated="2020-01-01" ReviewStatus="criteria provided, conflicting interpretations" Interpretation="Conflicting interpretations of pathogenicity, other" SubmissionCount="3" Accession="RCV000175607" Version="7">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="CN517202">not provided</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+      <RCVAccession Title="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp) AND Hereditary hemochromatosis" DateLastEvaluated="2019-01-09" ReviewStatus="criteria provided, multiple submitters, no conflicts" Interpretation="Pathogenic" SubmissionCount="3" Accession="RCV000394716" Version="6">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="C0392514">Hereditary hemochromatosis</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+      <RCVAccession Title="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp) AND multiple conditions" DateLastEvaluated="2018-10-31" ReviewStatus="criteria provided, single submitter" Interpretation="Pathogenic" SubmissionCount="1" Accession="RCV000763144" Version="1">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="C0002395">Alzheimer disease</InterpretedCondition>
+          <InterpretedCondition DB="MedGen" ID="C0268323">Familial porphyria cutanea tarda</InterpretedCondition>
+          <InterpretedCondition DB="MedGen" ID="C3469186">Hemochromatosis type 1</InterpretedCondition>
+          <InterpretedCondition DB="MedGen" ID="C2673520">Microvascular complications of diabetes 7</InterpretedCondition>
+          <InterpretedCondition DB="MedGen" ID="C3280096">Transferrin serum level quantitative trait locus 2</InterpretedCondition>
+          <InterpretedCondition DB="MedGen" ID="C0162532">Variegate porphyria</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+      <RCVAccession Title="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp) AND Hemochromatosis type 2" DateLastEvaluated="2014-04-17" ReviewStatus="criteria provided, single submitter" Interpretation="Pathogenic" SubmissionCount="1" Accession="RCV000844708" Version="1">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="CN205842">Hemochromatosis type 2</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+      <RCVAccession Title="NM_000410.3(HFE):c.187C&gt;G (p.His63Asp) AND Cystic fibrosis" DateLastEvaluated="2019-04-01" ReviewStatus="no assertion criteria provided" Interpretation="risk factor" SubmissionCount="1" Accession="RCV000991133" Version="1">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="C0010674">Cystic fibrosis</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+    </RCVList>
+    <Interpretations>
+      <Interpretation DateLastEvaluated="2020-01-01" NumberOfSubmissions="19" NumberOfSubmitters="18" Type="Clinical significance">
+        <Description>Conflicting interpretations of pathogenicity, other</Description>
+        <Explanation DataSource="ClinVar" Type="public">Likely benign(1);Pathogenic(12)</Explanation>
+        <Citation Type="general">
+          <ID Source="PubMed">10381492</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11358905</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11399207</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11423500</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11479183</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11532995</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11812557</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11874997</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">11904676</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">12429850</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">12436244</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">12885340</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">14673107</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">14729817</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">15347835</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">15858186</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">16132052</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">17600748</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">18199861</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">18566337</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">19159930</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">19176287</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">19554541</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">21243428</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">22531912</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">23178241</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">25767899</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">26365338</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">28443246</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">28617828</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">30291871</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">31220083</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">32014855</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">8696333</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">8896550</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">8943161</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">9106528</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">9162021</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">9321765</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">9341868</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">9356458</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">9462220</ID>
+        </Citation>
+        <Citation Type="general">
+          <ID Source="PubMed">9585606</ID>
+        </Citation>
+        <Citation Type="general">
+          <URL>http://www.egl-eurofins.com/emvclass/emvclass.php?approved_symbol=HFE</URL>
+        </Citation>
+        <Citation Type="review" Abbrev="GeneReviews">
+          <ID Source="PubMed">20301613</ID>
+          <ID Source="BookShelf">NBK1440</ID>
+        </Citation>
+        <Comment DataSource="ClinVar" Type="public">Likely benign(1);Pathogenic(12)</Comment>
+        <DescriptionHistory Dated="2020-02-01">
+          <Description>Pathogenic, other</Description>
+        </DescriptionHistory>
+        <DescriptionHistory Dated="2019-08-13">
+          <Description>Pathogenic, other, risk factor</Description>
+        </DescriptionHistory>
+        <DescriptionHistory Dated="2018-05-04">
+          <Description>Conflicting interpretations of pathogenicity, other, risk factor</Description>
+        </DescriptionHistory>
+        <DescriptionHistory Dated="2016-12-05">
+          <Description>Conflicting interpretations of pathogenicity, not provided, risk factor</Description>
+        </DescriptionHistory>
+        <ConditionList>
+          <TraitSet ID="13451" Type="Disease">
+            <Trait ID="9587" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Transferrin serum level quantitative trait locus 2</ElementValue>
+                <XRef ID="Transferrin+serum+level+quantitative+trait+locus+2/9417" DB="Genetic Alliance"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">TFQTL2</ElementValue>
+                <XRef Type="MIM" ID="614193" DB="OMIM"/>
+              </Symbol>
+              <XRef ID="C3280096" DB="MedGen"/>
+              <XRef Type="MIM" ID="614193" DB="OMIM"/>
+            </Trait>
+            <Trait ID="9582" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Hemochromatosis type 1</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">HFE-Associated Hereditary Hemochromatosis</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">HFE1</ElementValue>
+                <XRef Type="MIM" ID="235200" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">HFE-HH</ElementValue>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="disease mechanism" integerValue="273">loss of function</Attribute>
+                <XRef ID="GTR000558915" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000260619" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000264968" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000332464" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000500638" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508786" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000521586" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000528695" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000028914" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000271417" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000500300" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501267" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000531271" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000551894" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000558542" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000560323" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501371" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000507663" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508970" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000509340" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000560567" DB="Genetic Testing Registry (GTR)"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="10417"/>
+                <XRef ID="10417" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="public definition">HFE hemochromatosis is characterized by inappropriately high absorption of iron by the small intestinal mucosa. The phenotypic spectrum of HFE hemochromatosis includes: Persons with clinical HFE hemochromatosis, in whom manifestations of end-organ damage secondary to iron overload are present; Individuals with biochemical HFE hemochromatosis, in whom transferrin-iron saturation is increased and the only evidence of iron overload is increased serum ferritin concentration; and Non-expressing p.Cys282Tyr homozygotes, in whom neither clinical manifestations of HFE hemochromatosis nor iron overload are present. Clinical HFE hemochromatosis is characterized by excessive storage of iron in the liver, skin, pancreas, heart, joints, and anterior pituitary gland. In untreated individuals, early symptoms include: abdominal pain, weakness, lethargy, weight loss, arthralgias, diabetes mellitus; and increased risk of cirrhosis when the serum ferritin is higher than 1,000 ng/mL. Other findings may include progressive increase in skin pigmentation, congestive heart failure, and/or arrhythmias, arthritis, and hypogonadism. Clinical HFE hemochromatosis is more common in men than women.</Attribute>
+                <XRef ID="NBK1440" DB="GeneReviews"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301613</ID>
+                <ID Source="BookShelf">NBK1440</ID>
+              </Citation>
+              <Citation Type="Translational/Evidence-based" Abbrev="EuroGenetest, 2010">
+                <ID Source="pmc">2987432</ID>
+              </Citation>
+              <Citation Type="Recommendation" Abbrev="USPSTF, 2006">
+                <ID Source="PubMed">16880462</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="AASLD, 2011">
+                <ID Source="pmc">3149125</ID>
+              </Citation>
+              <XRef ID="465508" DB="Orphanet"/>
+              <XRef ID="C3469186" DB="MedGen"/>
+              <XRef ID="MONDO:0021001" DB="MONDO"/>
+              <XRef Type="MIM" ID="235200" DB="OMIM"/>
+            </Trait>
+            <Trait ID="222" Type="Disease">
+              <Name>
+                <ElementValue Type="Alternate">Presenile and senile dementia</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Alzheimer's disease</ElementValue>
+                <XRef ID="Alzheimer+Disease/349" DB="Genetic Alliance"/>
+                <XRef ID="26929004" DB="SNOMED CT"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">ALZHEIMER DISEASE, FAMILIAL, 1, AUTOSOMAL RECESSIVE</ElementValue>
+                <XRef Type="Allelic variant" ID="104760.0022" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Preferred">Alzheimer disease</ElementValue>
+                <XRef ID="HP:0002511" DB="Human Phenotype Ontology"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">AD</ElementValue>
+                <XRef Type="MIM" ID="104300" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="632"/>
+                <XRef ID="632" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301340</ID>
+                <ID Source="BookShelf">NBK1161</ID>
+              </Citation>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301414</ID>
+                <ID Source="BookShelf">NBK1236</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="EFNS, 2010">
+                <ID Source="PubMed">20831773</ID>
+              </Citation>
+              <Citation Type="Position Statement" Abbrev="AHRQ, 2010">
+                <ID Source="PubMed">21500874</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ACMG/NSGC, 2011">
+                <ID Source="pmc">3326653</ID>
+              </Citation>
+              <Citation Type="Recommendation" Abbrev="CCCDTD, 2014">
+                <ID Source="PubMed">24829003</ID>
+              </Citation>
+              <XRef ID="1020" DB="Orphanet"/>
+              <XRef ID="C0002395" DB="MedGen"/>
+              <XRef ID="MONDO:0004975" DB="MONDO"/>
+              <XRef Type="MIM" ID="104300" DB="OMIM"/>
+              <XRef Type="primary" ID="HP:0002511" DB="Human Phenotype Ontology"/>
+              <XRef Type="secondary" ID="HP:0006878" DB="Human Phenotype Ontology"/>
+              <XRef Type="secondary" ID="HP:0007213" DB="Human Phenotype Ontology"/>
+            </Trait>
+            <Trait ID="5535" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Microvascular complications of diabetes 7</ElementValue>
+                <XRef ID="Microvascular+complications+of+diabetes+7/8892" DB="Genetic Alliance"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 7</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef Type="Allelic variant" ID="613609.0001" DB="OMIM"/>
+                <XRef Type="Allelic variant" ID="613609.0002" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">NONPROLIFERATIVE RETINOPATHY, DIABETIC, SUSCEPTIBILITY TO</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef ID="603933" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">PROLIFERATIVE RETINOPATHY, DIABETIC, SUSCEPTIBILITY TO</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef ID="603933" DB="OMIM"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">MVCD7</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="keyword">NEPHROPATHY, DIABETIC, SUSCEPTIBILITY TO</Attribute>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef ID="603933" DB="OMIM"/>
+              </AttributeSet>
+              <XRef ID="C2673520" DB="MedGen"/>
+              <XRef ID="MONDO:0012971" DB="MONDO"/>
+              <XRef Type="MIM" ID="612635" DB="OMIM"/>
+            </Trait>
+            <Trait ID="3370" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Variegate porphyria</ElementValue>
+                <XRef ID="Variegate+porphyria/7355" DB="Genetic Alliance"/>
+                <XRef ID="58275005" DB="SNOMED CT"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Porphyria, South African type</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Protoporphyrinogen oxidase deficiency</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">PPOX deficiency</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">VP</ElementValue>
+                <XRef Type="MIM" ID="176200" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">Variegate porphyria (VP) is both a cutaneous porphyria (with chronic blistering skin lesions) and an acute porphyria (with severe episodic neurovisceral symptoms). The most common manifestation of VP is adult-onset cutaneous blistering lesions (subepidermal vesicles, bullae, and erosions that crust over and heal slowly) of sun-exposed skin, especially the hands and face. Other chronic skin findings include milia, scarring, thickening, and areas of decreased and increased skin pigmentation. Facial hyperpigmentation and hypertrichosis may occur. Cutaneous manifestations may improve in winter and be less prevalent in northern regions and in dark-skinned individuals. Acute neurovisceral symptoms can occur any time after puberty, but less often in the elderly. Acute manifestations are highly variable, but may be similar from episode to episode in a person with recurrent attacks; not all manifestations are present in a single episode; and acute symptoms may become chronic. Symptoms are more common in women than men. The most common manifestations are abdominal pain; constipation; pain in the back, chest, and extremities; anxiety; seizures; and a primarily motor neuropathy resulting in muscle weakness that may progress to quadriparesis and respiratory paralysis. Psychiatric disturbances and autonomic neuropathy can also be observed. Acute attacks may be severe and are potentially fatal.</Attribute>
+                <XRef ID="NBK121283" DB="GeneReviews"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="7848"/>
+                <XRef ID="7848" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="practice guideline" Abbrev="Orphanet, 2007">
+                <URL>https://www.orpha.net/data/patho/Pro/en/Emergency_AcuteHepaticPorphyria.pdf</URL>
+                <CitationText>Orphanet, Acute hepatic porphyria neuro-visceral crisis, 2007</CitationText>
+              </Citation>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">23409300</ID>
+                <ID Source="BookShelf">NBK121283</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="Orphanet, 2007">
+                <URL>https://www.orpha.net/data/patho/Pro/en/Emergency_CutaneousPorphyrias.pdf</URL>
+                <CitationText>Orphanet emergency guideline: Cutaneous porphyrias, 2007</CitationText>
+              </Citation>
+              <XRef ID="79473" DB="Orphanet"/>
+              <XRef ID="C0162532" DB="MedGen"/>
+              <XRef ID="MONDO:0008297" DB="MONDO"/>
+              <XRef Type="MIM" ID="176200" DB="OMIM"/>
+            </Trait>
+            <Trait ID="9601" Type="Disease">
+              <Name>
+                <ElementValue Type="Alternate">PCT, TYPE II</ElementValue>
+                <XRef Type="MIM" ID="176100" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">PORPHYRIA CUTANEA TARDA, TYPE II</ElementValue>
+                <XRef Type="MIM" ID="176100" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">PORPHYRIA, HEPATOCUTANEOUS TYPE</ElementValue>
+                <XRef Type="MIM" ID="176100" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">UROD DEFICIENCY</ElementValue>
+                <XRef Type="MIM" ID="176100" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">UROPORPHYRINOGEN DECARBOXYLASE DEFICIENCY</ElementValue>
+                <XRef Type="MIM" ID="176100" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Preferred">Familial porphyria cutanea tarda</ElementValue>
+                <XRef ID="Familial+porphyria+cutanea+tarda/8404" DB="Genetic Alliance"/>
+                <XRef ID="59229005" DB="SNOMED CT"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">PCT, ''FAMILIAL'' TYPE</ElementValue>
+                <XRef Type="MIM" ID="176100" DB="OMIM"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">PCT</ElementValue>
+                <XRef Type="MIM" ID="176100" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="keyword">Neoplasm</Attribute>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="public definition">Familial porphyria cutanea tarda (F-PCT) is characterized by: skin findings including blistering over the dorsal aspects of the hands and other sun-exposed areas of skin, skin friability after minor trauma, facial hypertrichosis and hyperpigmentation, and severe thickening of affected skin areas (pseudoscleroderma); and an increased risk for hepatocellular carcinoma (HCC).</Attribute>
+                <XRef ID="NBK143129" DB="GeneReviews"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">23741761</ID>
+                <ID Source="BookShelf">NBK143129</ID>
+              </Citation>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">24175354</ID>
+                <ID Source="BookShelf">NBK169003</ID>
+              </Citation>
+              <XRef ID="101330" DB="Orphanet"/>
+              <XRef ID="443062" DB="Orphanet"/>
+              <XRef ID="C0268323" DB="MedGen"/>
+              <XRef ID="MONDO:0008296" DB="MONDO"/>
+              <XRef Type="MIM" ID="176100" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="21210" Type="Disease">
+            <Trait ID="33108" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Hereditary hemochromatosis</ElementValue>
+                <XRef ID="Hereditary+hemochromatosis/8521" DB="Genetic Alliance"/>
+                <XRef ID="35400008" DB="SNOMED CT"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">HFE</ElementValue>
+                <XRef Type="MIM" ID="235200" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">HH</ElementValue>
+                <XRef Type="MIM" ID="235200" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">HFE hemochromatosis is characterized by inappropriately high absorption of iron by the small intestinal mucosa. The phenotypic spectrum of HFE hemochromatosis includes: Persons with clinical HFE hemochromatosis, in whom manifestations of end-organ damage secondary to iron overload are present; Individuals with biochemical HFE hemochromatosis, in whom transferrin-iron saturation is increased and the only evidence of iron overload is increased serum ferritin concentration; and Non-expressing p.Cys282Tyr homozygotes, in whom neither clinical manifestations of HFE hemochromatosis nor iron overload are present. Clinical HFE hemochromatosis is characterized by excessive storage of iron in the liver, skin, pancreas, heart, joints, and anterior pituitary gland. In untreated individuals, early symptoms include: abdominal pain, weakness, lethargy, weight loss, arthralgias, diabetes mellitus; and increased risk of cirrhosis when the serum ferritin is higher than 1,000 ng/mL. Other findings may include progressive increase in skin pigmentation, congestive heart failure, and/or arrhythmias, arthritis, and hypogonadism. Clinical HFE hemochromatosis is more common in men than women.</Attribute>
+                <XRef ID="NBK1440" DB="GeneReviews"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="10746"/>
+                <XRef ID="10746" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301613</ID>
+                <ID Source="BookShelf">NBK1440</ID>
+              </Citation>
+              <Citation Type="Translational/Evidence-based" Abbrev="EuroGenetest, 2010">
+                <ID Source="pmc">2987432</ID>
+              </Citation>
+              <Citation Type="Recommendation" Abbrev="USPSTF, 2006">
+                <ID Source="PubMed">16880462</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="AASLD, 2011">
+                <ID Source="pmc">3149125</ID>
+              </Citation>
+              <XRef ID="C0392514" DB="MedGen"/>
+              <XRef ID="MONDO:0006507" DB="MONDO"/>
+              <XRef Type="Phenotypic series" ID="PS235200" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="13" Type="Disease">
+            <Trait ID="5535" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Microvascular complications of diabetes 7</ElementValue>
+                <XRef ID="Microvascular+complications+of+diabetes+7/8892" DB="Genetic Alliance"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 7</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef Type="Allelic variant" ID="613609.0001" DB="OMIM"/>
+                <XRef Type="Allelic variant" ID="613609.0002" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">NONPROLIFERATIVE RETINOPATHY, DIABETIC, SUSCEPTIBILITY TO</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef ID="603933" DB="OMIM"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">PROLIFERATIVE RETINOPATHY, DIABETIC, SUSCEPTIBILITY TO</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef ID="603933" DB="OMIM"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">MVCD7</ElementValue>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="keyword">NEPHROPATHY, DIABETIC, SUSCEPTIBILITY TO</Attribute>
+                <XRef Type="MIM" ID="612635" DB="OMIM"/>
+                <XRef ID="603933" DB="OMIM"/>
+              </AttributeSet>
+              <XRef ID="C2673520" DB="MedGen"/>
+              <XRef ID="MONDO:0012971" DB="MONDO"/>
+              <XRef Type="MIM" ID="612635" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="9460" Type="Disease">
+            <Trait ID="17556" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">not provided</ElementValue>
+                <XRef ID="13DG0619" DB="Developmental Genetics Unit,King Faisal Specialist Hospital &amp; Research Centre"/>
+              </Name>
+              <AttributeSet>
+                <Attribute Type="public definition">The term 'not provided' is registered in MedGen to support identification of submissions to ClinVar for which no condition was named when assessing the variant. 'not provided' differs from 'not specified', which is used when a variant is asserted to be benign, likely benign, or of uncertain significance for conditions that have not been specified.</Attribute>
+              </AttributeSet>
+              <XRef ID="CN517202" DB="MedGen"/>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="7" Type="Disease">
+            <Trait ID="9582" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Hemochromatosis type 1</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">HFE-Associated Hereditary Hemochromatosis</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">HFE1</ElementValue>
+                <XRef Type="MIM" ID="235200" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">HFE-HH</ElementValue>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="disease mechanism" integerValue="273">loss of function</Attribute>
+                <XRef ID="GTR000558915" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000260619" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000264968" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000332464" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000500638" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508786" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000521586" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000528695" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000028914" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000271417" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000500300" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501267" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000531271" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000551894" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000558542" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000560323" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501371" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000507663" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508970" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000509340" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000560567" DB="Genetic Testing Registry (GTR)"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="10417"/>
+                <XRef ID="10417" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="public definition">HFE hemochromatosis is characterized by inappropriately high absorption of iron by the small intestinal mucosa. The phenotypic spectrum of HFE hemochromatosis includes: Persons with clinical HFE hemochromatosis, in whom manifestations of end-organ damage secondary to iron overload are present; Individuals with biochemical HFE hemochromatosis, in whom transferrin-iron saturation is increased and the only evidence of iron overload is increased serum ferritin concentration; and Non-expressing p.Cys282Tyr homozygotes, in whom neither clinical manifestations of HFE hemochromatosis nor iron overload are present. Clinical HFE hemochromatosis is characterized by excessive storage of iron in the liver, skin, pancreas, heart, joints, and anterior pituitary gland. In untreated individuals, early symptoms include: abdominal pain, weakness, lethargy, weight loss, arthralgias, diabetes mellitus; and increased risk of cirrhosis when the serum ferritin is higher than 1,000 ng/mL. Other findings may include progressive increase in skin pigmentation, congestive heart failure, and/or arrhythmias, arthritis, and hypogonadism. Clinical HFE hemochromatosis is more common in men than women.</Attribute>
+                <XRef ID="NBK1440" DB="GeneReviews"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301613</ID>
+                <ID Source="BookShelf">NBK1440</ID>
+              </Citation>
+              <Citation Type="Translational/Evidence-based" Abbrev="EuroGenetest, 2010">
+                <ID Source="pmc">2987432</ID>
+              </Citation>
+              <Citation Type="Recommendation" Abbrev="USPSTF, 2006">
+                <ID Source="PubMed">16880462</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="AASLD, 2011">
+                <ID Source="pmc">3149125</ID>
+              </Citation>
+              <XRef ID="465508" DB="Orphanet"/>
+              <XRef ID="C3469186" DB="MedGen"/>
+              <XRef ID="MONDO:0021001" DB="MONDO"/>
+              <XRef Type="MIM" ID="235200" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="1961" Type="Disease">
+            <Trait ID="1695" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Cystic fibrosis</ElementValue>
+                <XRef ID="Cystic+Fibrosis/2071" DB="Genetic Alliance"/>
+                <XRef Type="MIM" ID="219700" DB="OMIM"/>
+                <XRef ID="190905008" DB="SNOMED CT"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Mucoviscidosis</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">CF</ElementValue>
+                <XRef Type="MIM" ID="219700" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">Cystic fibrosis (CF) is a multisystem disease affecting epithelia of the respiratory tract, exocrine pancreas, intestine, hepatobiliary system, and exocrine sweat glands. Morbidities include progressive obstructive lung disease with bronchiectasis, frequent hospitalizations for pulmonary disease, pancreatic insufficiency and malnutrition, recurrent sinusitis and bronchitis, and male infertility. Pulmonary disease is the major cause of morbidity and mortality in CF. Meconium ileus occurs at birth in 15%-20% of newborns with CF. More than 95% of males with CF are infertile. Congenital absence of the vas deferens (CAVD) is generally identified during evaluation of infertility or as an incidental finding at the time of a surgical procedure. Hypoplasia or aplasia of the vas deferens and seminal vesicles may occur either bilaterally or unilaterally. Testicular development and function and spermatogenesis are usually normal.</Attribute>
+                <XRef ID="NBK1250" DB="GeneReviews"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="disease mechanism" integerValue="273">loss of function</Attribute>
+                <XRef ID="GTR000226639" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000320929" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501921" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508812" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508889" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000514611" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000529460" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000558875" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569960" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000570010" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000570019" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000570054" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000004176" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000246717" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000328569" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000332363" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501120" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501920" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000507010" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000507950" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000528606" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000530118" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000556535" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000568279" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000570317" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000005248" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000209428" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000277984" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000330969" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000501918" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000507864" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508810" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508894" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000520059" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000521905" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000556536" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569426" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569602" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569639" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569791" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000576178" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000025280" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000028916" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000074114" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000507003" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000507006" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508782" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508811" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000571198" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508890" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000508893" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000522527" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000558928" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569406" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569790" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569946" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569982" DB="Genetic Testing Registry (GTR)"/>
+                <XRef ID="GTR000569983" DB="Genetic Testing Registry (GTR)"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="6233"/>
+                <XRef ID="6233" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="practice guideline" Abbrev="ACMG/ACOG, 2001">
+                <ID Source="PubMed">11280952</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ACMG, 2004">
+                <ID Source="pmc">3110945</ID>
+              </Citation>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301428</ID>
+                <ID Source="BookShelf">NBK1250</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ACOG, 2009">
+                <ID Source="PubMed">19888064</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="NSGC, 2005">
+                <ID Source="PubMed">15789152</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ACMG, 2008">
+                <ID Source="pmc">3110977</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="CPGPT/CF FPT Committees, 2010">
+                <ID Source="PubMed">20675678</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ECFS, 2010">
+                <ID Source="PubMed">20605539</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="CFF, 2009">
+                <ID Source="PubMed">19914445</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="CFF, 2009">
+                <ID Source="PubMed">19914443</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ACMG ACT Sheets, 2010">
+                <ID Source="PubMed">21938795</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="DailyMed Drug Label, 2012">
+                <URL>https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0ab0c9f8-3eee-4e0f-9f3f-c1e16aaffe25</URL>
+                <CitationText>DailyMed Drug Label, KALYDECO, 2012</CitationText>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ACMG Lab QA, 2002">
+                <ID Source="PubMed">12394352</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="CDC, 2012">
+                <ID Source="PubMed">22475884</ID>
+              </Citation>
+              <Citation Type="Suggested Reading" Abbrev="Accurso et al., 2010">
+                <ID Source="pmc">3148255</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="ACOG, 2011">
+                <ID Source="PubMed">21422883</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="CPIC, 2014">
+                <ID Source="pmc">4026598</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="NSGC, 2014">
+                <ID Source="PubMed">24014130</ID>
+              </Citation>
+              <Citation Type="Position Statement" Abbrev="HGS Australasia, 2014">
+                <ID Source="PubMed">25431289</ID>
+              </Citation>
+              <Citation Type="Suggested Reading" Abbrev="Wainwright et al., 2015">
+                <ID Source="PubMed">25981758</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="CFF, 2007">
+                <ID Source="PubMed">17761616</ID>
+              </Citation>
+              <XRef ID="586" DB="Orphanet"/>
+              <XRef ID="C0010674" DB="MedGen"/>
+              <XRef ID="MONDO:0009061" DB="MONDO"/>
+              <XRef Type="MIM" ID="219700" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="48435" Type="Disease">
+            <Trait ID="16195" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Hemochromatosis type 2</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">HFE2</ElementValue>
+                <XRef ID="602390" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="10092"/>
+                <XRef ID="10092" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <XRef ID="79230" DB="Orphanet"/>
+              <XRef ID="CN205842" DB="MedGen"/>
+              <XRef ID="MONDO:0019257" DB="MONDO"/>
+            </Trait>
+          </TraitSet>
+        </ConditionList>
+      </Interpretation>
+    </Interpretations>
+    <ClinicalAssertionList>
+      <ClinicalAssertion ID="775404" DateCreated="2016-12-02" DateLastUpdated="2020-04-18" SubmissionDate="2016-10-18">
+        <ClinVarSubmissionID localKey="39285|Hereditary Hemochromatosis" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000461883" Type="SCV" Version="2" SubmitterName="Illumina Clinical Services Laboratory,Illumina" OrgID="504895" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2016-06-14">
+          <Description>Pathogenic</Description>
+          <Citation>
+            <ID Source="PubMed">19554541</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">11874997</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">8696333</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">20301613</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">26365338</ID>
+          </Citation>
+          <Comment>The c.187C&gt;G (p.His63Asp) variant is well described in the literature as a pathogenic variant with significantly reduced penetrance (Seckington et al. 2015). Only two percent or fewer of individuals who are homozygous or compound heterozygous for the p.His63Asp variant are expected to develop clinical symptoms of hereditary hemochromatosis (HH) (Gochee et al. 2002; Gurrin et al. 2009; Gallego et al. 2015). The p.His63Asp variant was first reported by Feder et al. (1996) in a cohort of 178 HH patients in one homozygote, eight compound heterozygotes, and nine heterozygotes where a second variant was not observed. This variant was also found in 51 of 308 control chromosomes in this study. The p.His63Asp variant is reported at a frequency of 0.25234 in the Iberian Population in Spain in the 1000 Genomes Project. This allele frequency is high but is consistent with disease prevalence, reduced penetrance, and a mild phenotype. Based on the evidence, the p.His63Asp variant is classified as a pathogenic variant with significantly reduced penetrance for hereditary hemochromatosis.</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">ICSL Variant Classification 20161018</Attribute>
+          <Citation Type="general">
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/4jQgNGYk/ICSL_Variant_Classification_20161018.pdf</URL>
+            <CitationText>ICSL_Variant_Classification_20161018.pdf</CitationText>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Hereditary Hemochromatosis</ElementValue>
+            </Name>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>ICSL_2016Q4</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="461244" DateCreated="2015-10-02" DateLastUpdated="2020-04-24" SubmissionDate="2016-08-10">
+        <ClinVarSubmissionID localKey="2016_36|OMIM:235200" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000223933" Type="SCV" Version="2" SubmitterName="Knight Diagnostic Laboratories, Oregon Health and Sciences University" OrgID="505542" OrganizationCategory="laboratory" OrgAbbreviation="KDL-OHSU"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2016-01-27">
+          <Description>Pathogenic</Description>
+          <Comment>The c.187C&gt;G (p.His63Asp) missense variant is widely recognized as one of the two most common disease-causing variants in the HFE gene. Compound heterozygotes for p.Cys282Tyr and p.His63Asp are common in the Caucasian population, and together with homozygotes for the p.Cys282Tyr, account for 87% of individuals of European origin with HFE-HH. However, it is important to note that only ~ 0.5%-2.0% of compound heterozygous individuals develop clinical evidence of the disease due to incomplete penetrance (GeneReviews: Seckington et al., 2015; Ramrakhiani and Bacon, 1998; Morrison et al., 2003). In summary, this variant c.187C&gt;G, (p.His63Asp) meets our criteria for Pathogenic.</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+          <Citation>
+            <ID Source="PubMed">25741868</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>no</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="235200" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <StudyName>CSER-NextGen</StudyName>
+        <SubmissionNameList>
+          <SubmissionName>NextGen Project</SubmissionName>
+          <SubmissionName>CSER-NextGen-1</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="1329185" DateCreated="2018-01-04" DateLastUpdated="2020-04-18" SubmissionDate="2017-06-22">
+        <ClinVarSubmissionID localKey="478|OMIM:235200" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000678027" Type="SCV" Version="1" SubmitterName="Counsyl" OrgID="320494" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2015-12-21">
+          <Description>Pathogenic</Description>
+          <Citation>
+            <ID Source="PubMed">10381492</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">14729817</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">9585606</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">9341868</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">8696333</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">21243428</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">12436244</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">11812557</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">9356458</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">23178241</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">22531912</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">9321765</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">19176287</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">25767899</ID>
+          </Citation>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">Counsyl Autosomal and X-linked Recessive Disease Classification criteria (2015)</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/rb7nm21v/ar_xl2015criteria.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="235200" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB2805609</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="1452476" DateCreated="2018-04-18" DateLastUpdated="2020-04-18" SubmissionDate="2018-04-26">
+        <ClinVarSubmissionID localKey="NM_000410.3(HFE):c.187C&gt;G|OMIM:235200" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000693430" Type="SCV" Version="2" SubmitterName="Genetic Services Laboratory, University of Chicago" OrgID="1238" OrganizationCategory="laboratory" OrgAbbreviation="UCGS"/>
+        <RecordStatus>current</RecordStatus>
+        <ReplacedList>
+          <Replaced Accession="SCV000151392" DateChanged="2018-05-03" Version="2">
+            <Comment Type="MergeComment">SCV000151392 was merged into SCV000693430 to remove duplication.</Comment>
+          </Replaced>
+        </ReplacedList>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2015-09-14">
+          <Description>Pathogenic</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+          <Citation>
+            <ID Source="PubMed">25741868</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="235200" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB3949576</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="20169" DateCreated="2011-01-25" DateLastUpdated="2020-04-18" SubmissionDate="2013-10-15">
+        <ClinVarSubmissionID localKey="613609.0002_HEMOCHROMATOSIS, TYPE 1" title="HFE, HIS63ASP_HEMOCHROMATOSIS, TYPE 1"/>
+        <ClinVarAccession Accession="SCV000020169" Type="SCV" Version="4" SubmitterName="OMIM" OrgID="3" OrganizationCategory="resource"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>no assertion criteria provided</ReviewStatus>
+        <Interpretation DateLastEvaluated="2018-05-02">
+          <Description>Pathogenic</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species>human</Species>
+              <AffectedStatus>not provided</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>literature only</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">Drakesmith et al. (2002) used a numbering system beginning with the first amino acid of the mature HFE protein, omitting the 22 amino acids of the signal sequence, so that H63 of the immature protein is H41 in the mature protein.</Attribute>
+              <Citation>
+                <ID Source="PubMed">12429850</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Hemochromatosis, Type 1</Attribute>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">In 9 patients with hemochromatosis (HFE1; 235200) who were heterozygous for the C282Y mutation (613609.0001), Feder et al. (1996) identified a C-to-G transversion in exon 2 of the HFE gene, resulting in a his63-to-asp substitution (H63D). This variant was present in 8 of the 9 (89%) nonancestral chromosomes, representing a significant enrichment over the 17% frequency observed in control chromosomes. One patient was homozygous for the H63D variant.</Attribute>
+              <Citation>
+                <ID Source="PubMed">8696333</ID>
+              </Citation>
+              <XRef DB="OMIM" ID="235200" Type="MIM"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">An analysis of the H63D mutation in 13 families by Jouanolle et al. (1996) did not support a relationship to HFE. The mutation was present in 3 of 26 heterozygous parents of probands and in each case it was present on the normal chromosome; the analysis of these individuals did not support a compound heterozygous contribution to HFE.</Attribute>
+              <Citation>
+                <ID Source="PubMed">8896550</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">In a study of 115 unrelated patients with hereditary hemochromatosis, the UK Haemochromatosis Consortium (1997) found 1 patient who was homozygous for the H63D mutation. However, 3 homozygotes with no evidence of iron overloading were found among 101 control samples derived from healthy blood donors. In addition, compound heterozygosity for the H63D and C232Y mutations was found in 3 patients and 4 controls.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11532995</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Beutler (1997), commenting on the conclusion of Carella et al. (1997) that H63D is a polymorphic change, assembled evidence supporting the likelihood that it is a hemochromatosis-causing mutation with reduced penetrance. He suggested that most of the heterozygotes with mild disease manifestations reported before discovery of the HFE gene will prove, in fact, to be compound heterozygotes for C282Y (613609.0001) and H63D.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11812557</ID>
+              </Citation>
+              <Citation>
+                <ID Source="PubMed">9106528</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Aguilar-Martinez et al. (2001) investigated the phenotypic consequences of H63D homozygosity in 56 French homozygotes identified from a series of blood samples submitted for HFE genotyping in response to a confirmed (12) or suspected (38) clinical diagnosis of hemochromatosis or a family history of hemochromatosis (6). Of these, 50 (89%) had evidence of iron overload. In 16 individuals (32%) this appeared to be a phenomenon secondary to dysmetabolic iron overload syndrome, porphyria cutanea tarda, alcohol use, or hepatitis. In the remaining 34 (68%) individuals a secondary cause of iron overload was not identified: 12 had a phenotypic diagnosis of hemochromatosis and the remaining 22 had ill-defined, variable degrees of iron overload with no apparent cause. Extended genetic analysis failed to demonstrate any association between phenotype and other HFE mutations/polymorphisms or the TFR2 Y250X mutation (604720.0001)/TFR2 polymorphisms. The authors commented that, in this selected population, H63D homozygosity was associated with extremely variable phenotypes. They suggested that factors such as age and sex may be important nongenetic phenotypic modifiers.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11358905</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Cardoso et al. (2002) analyzed linkage disequilibrium between HLA alleles and HFE mutations in a Portuguese population. The results confirmed linkage disequilibrium of the HLA haplotype HLA-A3-B7 and the HLA-A29 allele, respectively, with the HFE mutations C282Y and H63D. Extensions of these studies showed significant linkage disequilibrium between the H63D mutation and all HLA-A29-containing haplotypes, favoring the hypothesis of a coselection of H63D and the HLA-A29 allele itself. Insight into the biologic significance of this association was given by the finding of significantly higher CD8+ T-lymphocyte counts in subjects simultaneously carrying the H63D mutation and the HLA-A29 allele.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11904676</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">To examine whether the HFE H63D mutation is pathogenic, Tomatsu et al. (2003) generated knockin mice homozygous for H67D (corresponding to human H63D), mice homozygous for C294Y (corresponding to human C282Y), and mice compound heterozygous for both mutations. The biochemical and histopathologic severity of hepatic iron loading was significantly increased in all 3 groups compared to control mice, but was less in H67D homozygotes than in compound heterozygotes, and was highest in C294Y homozygotes. Only the C294Y homozygous mice showed a significant increase in transferrin saturation compared to controls. Tomatsu et al. (2003) concluded that the H67D allele, when homozygous or combined with a more severe mutation, leads to partial loss of Hfe function in mice and to increased hepatic iron loading.</Attribute>
+              <Citation>
+                <ID Source="PubMed">14673107</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Susceptibility to Microvascular Complications of Diabetes 7</Attribute>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Moczulski et al. (2001) analyzed the H63D polymorphism in 563 Polish patients with type 2 diabetes (125853) and 196 controls and observed an increased frequency of the 63D allele (odds ratio, 1.8) among patients with diabetic nephropathy (MVCD7; 612635).</Attribute>
+              <Citation>
+                <ID Source="PubMed">11423500</ID>
+              </Citation>
+              <XRef DB="OMIM" ID="125853" Type="MIM"/>
+              <XRef DB="OMIM" ID="612635" Type="MIM"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">In a study of 225 Spanish patients with type 2 diabetes, Oliva et al. (2004) found that the prevalence of nephropathy was higher in the group of patients carrying the homozygous D/D genotype compared to the group carrying the wildtype or heterozygous D genotypes.</Attribute>
+              <Citation>
+                <ID Source="PubMed">15347835</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Davis et al. (2008) analyzed H63D and C282Y HFE genotype data for 1,245 Australian patients with type 2 diabetes from the longitudinal observational Fremantle Diabetes Study and found no independent positive associations between HFE gene status and either microvascular or macrovascular complications in cross-sectional and longitudinal analyses.</Attribute>
+              <Citation>
+                <ID Source="PubMed">18566337</ID>
+              </Citation>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <Name>HFE, HIS63ASP</Name>
+          <VariantType>Variation</VariantType>
+          <OtherNameList>
+            <Name Type="NonHGVS">HIS63ASP</Name>
+          </OtherNameList>
+          <XRefList>
+            <XRef DB="OMIM" ID="613609.0002" Type="Allelic variant"/>
+          </XRefList>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">HEMOCHROMATOSIS, TYPE 1</ElementValue>
+            </Name>
+          </Trait>
+        </TraitSet>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="20170" DateCreated="2011-01-25" DateLastUpdated="2020-04-18" SubmissionDate="2010-12-30">
+        <ClinVarSubmissionID localKey="613609.0002_MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 7" title="HFE, HIS63ASP_MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 7"/>
+        <ClinVarAccession Accession="SCV000020170" Type="SCV" Version="4" SubmitterName="OMIM" OrgID="3" OrganizationCategory="resource"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>no assertion criteria provided</ReviewStatus>
+        <Interpretation DateLastEvaluated="2008-09-01">
+          <Description>risk factor</Description>
+        </Interpretation>
+        <Assertion>variation to included disease</Assertion>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species>human</Species>
+              <AffectedStatus>not provided</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>literature only</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">Drakesmith et al. (2002) used a numbering system beginning with the first amino acid of the mature HFE protein, omitting the 22 amino acids of the signal sequence, so that H63 of the immature protein is H41 in the mature protein.</Attribute>
+              <Citation>
+                <ID Source="PubMed">12429850</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Hemochromatosis, Type 1</Attribute>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">In 9 patients with hemochromatosis (HFE1; 235200) who were heterozygous for the C282Y mutation (613609.0001), Feder et al. (1996) identified a C-to-G transversion in exon 2 of the HFE gene, resulting in a his63-to-asp substitution (H63D). This variant was present in 8 of the 9 (89%) nonancestral chromosomes, representing a significant enrichment over the 17% frequency observed in control chromosomes. One patient was homozygous for the H63D variant.</Attribute>
+              <Citation>
+                <ID Source="PubMed">8696333</ID>
+              </Citation>
+              <XRef DB="OMIM" ID="235200" Type="MIM"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">An analysis of the H63D mutation in 13 families by Jouanolle et al. (1996) did not support a relationship to HFE. The mutation was present in 3 of 26 heterozygous parents of probands and in each case it was present on the normal chromosome; the analysis of these individuals did not support a compound heterozygous contribution to HFE.</Attribute>
+              <Citation>
+                <ID Source="PubMed">8896550</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">In a study of 115 unrelated patients with hereditary hemochromatosis, the UK Haemochromatosis Consortium (1997) found 1 patient who was homozygous for the H63D mutation. However, 3 homozygotes with no evidence of iron overloading were found among 101 control samples derived from healthy blood donors. In addition, compound heterozygosity for the H63D and C232Y mutations was found in 3 patients and 4 controls.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11532995</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Beutler (1997), commenting on the conclusion of Carella et al. (1997) that H63D is a polymorphic change, assembled evidence supporting the likelihood that it is a hemochromatosis-causing mutation with reduced penetrance. He suggested that most of the heterozygotes with mild disease manifestations reported before discovery of the HFE gene will prove, in fact, to be compound heterozygotes for C282Y (613609.0001) and H63D.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11812557</ID>
+              </Citation>
+              <Citation>
+                <ID Source="PubMed">9106528</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Aguilar-Martinez et al. (2001) investigated the phenotypic consequences of H63D homozygosity in 56 French homozygotes identified from a series of blood samples submitted for HFE genotyping in response to a confirmed (12) or suspected (38) clinical diagnosis of hemochromatosis or a family history of hemochromatosis (6). Of these, 50 (89%) had evidence of iron overload. In 16 individuals (32%) this appeared to be a phenomenon secondary to dysmetabolic iron overload syndrome, porphyria cutanea tarda, alcohol use, or hepatitis. In the remaining 34 (68%) individuals a secondary cause of iron overload was not identified: 12 had a phenotypic diagnosis of hemochromatosis and the remaining 22 had ill-defined, variable degrees of iron overload with no apparent cause. Extended genetic analysis failed to demonstrate any association between phenotype and other HFE mutations/polymorphisms or the TFR2 Y250X mutation (604720.0001)/TFR2 polymorphisms. The authors commented that, in this selected population, H63D homozygosity was associated with extremely variable phenotypes. They suggested that factors such as age and sex may be important nongenetic phenotypic modifiers.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11358905</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Cardoso et al. (2002) analyzed linkage disequilibrium between HLA alleles and HFE mutations in a Portuguese population. The results confirmed linkage disequilibrium of the HLA haplotype HLA-A3-B7 and the HLA-A29 allele, respectively, with the HFE mutations C282Y and H63D. Extensions of these studies showed significant linkage disequilibrium between the H63D mutation and all HLA-A29-containing haplotypes, favoring the hypothesis of a coselection of H63D and the HLA-A29 allele itself. Insight into the biologic significance of this association was given by the finding of significantly higher CD8+ T-lymphocyte counts in subjects simultaneously carrying the H63D mutation and the HLA-A29 allele.</Attribute>
+              <Citation>
+                <ID Source="PubMed">11904676</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">To examine whether the HFE H63D mutation is pathogenic, Tomatsu et al. (2003) generated knockin mice homozygous for H67D (corresponding to human H63D), mice homozygous for C294Y (corresponding to human C282Y), and mice compound heterozygous for both mutations. The biochemical and histopathologic severity of hepatic iron loading was significantly increased in all 3 groups compared to control mice, but was less in H67D homozygotes than in compound heterozygotes, and was highest in C294Y homozygotes. Only the C294Y homozygous mice showed a significant increase in transferrin saturation compared to controls. Tomatsu et al. (2003) concluded that the H67D allele, when homozygous or combined with a more severe mutation, leads to partial loss of Hfe function in mice and to increased hepatic iron loading.</Attribute>
+              <Citation>
+                <ID Source="PubMed">14673107</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Susceptibility to Microvascular Complications of Diabetes 7</Attribute>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Moczulski et al. (2001) analyzed the H63D polymorphism in 563 Polish patients with type 2 diabetes (125853) and 196 controls and observed an increased frequency of the 63D allele (odds ratio, 1.8) among patients with diabetic nephropathy (MVCD7; 612635).</Attribute>
+              <Citation>
+                <ID Source="PubMed">11423500</ID>
+              </Citation>
+              <XRef DB="OMIM" ID="125853" Type="MIM"/>
+              <XRef DB="OMIM" ID="612635" Type="MIM"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">In a study of 225 Spanish patients with type 2 diabetes, Oliva et al. (2004) found that the prevalence of nephropathy was higher in the group of patients carrying the homozygous D/D genotype compared to the group carrying the wildtype or heterozygous D genotypes.</Attribute>
+              <Citation>
+                <ID Source="PubMed">15347835</ID>
+              </Citation>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Description">Davis et al. (2008) analyzed H63D and C282Y HFE genotype data for 1,245 Australian patients with type 2 diabetes from the longitudinal observational Fremantle Diabetes Study and found no independent positive associations between HFE gene status and either microvascular or macrovascular complications in cross-sectional and longitudinal analyses.</Attribute>
+              <Citation>
+                <ID Source="PubMed">18566337</ID>
+              </Citation>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <Name>HFE, HIS63ASP</Name>
+          <VariantType>Variation</VariantType>
+          <OtherNameList>
+            <Name Type="NonHGVS">HIS63ASP</Name>
+          </OtherNameList>
+          <XRefList>
+            <XRef DB="OMIM" ID="613609.0002" Type="Allelic variant"/>
+          </XRefList>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="included">MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 7</ElementValue>
+            </Name>
+          </Trait>
+        </TraitSet>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="415440" DateCreated="2015-06-25" DateLastUpdated="2020-04-18" SubmissionDate="2018-09-19">
+        <ClinVarSubmissionID localKey="8529_000000" localKeyIsSubmitted="1" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000227124" Type="SCV" Version="5" SubmitterName="EGL Genetic Diagnostics,Eurofins Clinical Diagnostics" OrgID="500060" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2018-06-26">
+          <Description>other</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">EGL_ClinVar_v180209_classification definitions</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/leconafi/egl_clinvar_v180209_classification_definitions.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+              <Gender>mixed</Gender>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="348"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Homozygote" integerValue="15"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SingleHeterozygote" integerValue="333"/>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>single nucleotide variant</VariantType>
+          <Location>
+            <SequenceLocation Assembly="GRCh37" Chr="6" alternateAllele="G" referenceAllele="C" start="26091179" stop="26091179" variantLength="1"/>
+            <GeneLocation>NM_000410.3:Ex2</GeneLocation>
+          </Location>
+          <XRefList>
+            <XRef DB="HGMD" ID="CM960827"/>
+            <XRef DB="dbSNP" ID="1799945" Type="rsNumber"/>
+          </XRefList>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">not provided</ElementValue>
+            </Name>
+          </Trait>
+        </TraitSet>
+        <Citation>
+          <URL>http://www.egl-eurofins.com/emvclass/emvclass.php?approved_symbol=HFE</URL>
+        </Citation>
+        <SubmissionNameList>
+          <SubmissionName>SUB4534263</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="1750148" DateCreated="2019-03-28" DateLastUpdated="2020-04-18" SubmissionDate="2018-11-14">
+        <ClinVarSubmissionID localKey=":Chr.6_26091179_26091179_C_G|OMIM:104300;176100;176200;235200;612635;614193" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000893709" Type="SCV" Version="1" SubmitterName="Fulgent Genetics,Fulgent Genetics" OrgID="500105" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2018-10-31">
+          <Description>Pathogenic</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+          <Citation>
+            <ID Source="PubMed">25741868</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <VariantType>Variation</VariantType>
+          <Location>
+            <SequenceLocation Assembly="GRCh37" Chr="6" alternateAllele="G" referenceAllele="C" start="26091179" stop="26091179" variantLength="1"/>
+          </Location>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="104300" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="176100" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="176200" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="235200" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="612635" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="614193" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <Citation Abbrev="ACMG, 2015" Type="practice guideline">
+          <ID Source="PubMed">25741868</ID>
+          <ID Source="DOI">10.1038/gim.2015.30</ID>
+        </Citation>
+        <SubmissionNameList>
+          <SubmissionName>SUB4786688</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="395837" DateCreated="2015-03-28" DateLastUpdated="2020-04-18" SubmissionDate="2019-03-28">
+        <ClinVarSubmissionID localKey="1086|MedGen:C0392514" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000219176" Type="SCV" Version="4" SubmitterName="Invitae" OrgID="500031" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2019-01-09">
+          <Description>Pathogenic</Description>
+          <Citation>
+            <ID Source="PubMed">11399207</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">16132052</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">12429850</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">11358905</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">9356458</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">11479183</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">9162021</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">24729993</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">14673107</ID>
+          </Citation>
+          <Comment>This sequence change replaces histidine with aspartic acid at codon 63 of the HFE protein (p.His63Asp). The histidine residue is moderately conserved and there is a moderate physicochemical difference between histidine and aspartic acid. This variant is present in population databases (rs1799945, ExAC 14%). This is a very common, low penetrance variant that is known to contribute to hemochromatosis when present with a second pathogenic allele in HFE. An estimated 1.5% of individuals of European descent who are affected with hemochromatosis are homozygous for this variant (PMID: 11479183), however, penetrance of the homozygous genotype is very low and is associated with variable phenotypes (PMID: 24729993, 11399207, 16132052, 11358905). ClinVar contains an entry for this variant (Variation ID: 10). Experimental studies have shown that while this variant does not affect the localization of the protein on the cell surface or normal HFE interaction with its partner molecules (PMID: 9356458, 9162021), it does disrupt the ability to inhibit cellular iron release (PMID: 12429850), and causes partial loss of HFE function and increased hepatic iron loading in mice (PMID: 14673107). For these reasons, this variant has been classified as Pathogenic (low penetrance).</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">Invitae Variant Classification Sherloc (09022015)</Attribute>
+          <Citation>
+            <ID Source="PubMed">28492532</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Hereditary hemochromatosis</ElementValue>
+            </Name>
+            <XRef DB="MedGen" ID="C0392514" Type="CUI"/>
+          </Trait>
+        </TraitSet>
+        <Citation Type="general">
+          <ID Source="PubMed">28492532</ID>
+        </Citation>
+        <SubmissionNameList>
+          <SubmissionName>SUB5371970</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="356284" DateCreated="2015-01-28" DateLastUpdated="2020-04-18" SubmissionDate="2019-03-21">
+        <ClinVarSubmissionID localKey="44748393|Orphanet:ORPHA79230" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000198337" Type="SCV" Version="4" SubmitterName="Laboratory for Molecular Medicine, Partners HealthCare Personalized Medicine" OrgID="21766" OrganizationCategory="laboratory" OrgAbbreviation="LMM"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2014-04-17">
+          <Description>Pathogenic</Description>
+          <Citation>
+            <ID Source="PubMed">11874997</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">19159930</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">11812557</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">19554541</ID>
+          </Citation>
+          <Comment>The p.His63Asp variant in HFE is a well-established pathogenic variant for hered itary hemochromatosis (HH). Although it is considered pathogenic, the penetrance is significantly reduced. Biochemically, only 13% of p.His63Asp homozygotes and 17% of p.His63Asp/p.Cys282Tyr compound heterozygotes were shown to have elevate d transferrin saturation (Pederson 2009) and less than 5% of individuals with bi allelic pathogenic HFE variants exhibit clinical symptoms of HH (Beutler 2002, G urrin 2009). In summary, this variant meets criteria to be classified as pathoge nic for HH in an autosomal recessive pattern but with significantly reduced pene trance. ACMG/AMP Criteria applied: PS3; PS4; PM3.</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="ModeOfInheritance">Autosomal recessive inheritance</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">LMM Criteria</Attribute>
+          <Citation>
+            <ID Source="PubMed">24033266</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>not provided</AffectedStatus>
+              <FamilyData NumFamiliesWithVariant="68"/>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="69"/>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <Location>
+            <GeneLocation>NM_000410.3:EXON 2</GeneLocation>
+          </Location>
+          <OtherNameList>
+            <Name>NM_000410.3:c.187C&gt;G</Name>
+            <Name>p.His63Asp</Name>
+          </OtherNameList>
+          <AttributeSet>
+            <Attribute Type="HGVS">NC_000006.11:g.26091179C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="Orphanet" ID="ORPHA79230"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB5348977</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="1174366" DateCreated="2017-10-13" DateLastUpdated="2020-04-18" SubmissionDate="2019-01-30">
+        <ClinVarSubmissionID localKey="genomeconnect_15373_15488" localKeyIsSubmitted="1" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000607203" Type="SCV" Version="2" SubmitterName="GenomeConnect, ClinGen" OrgID="506185" OrganizationCategory="other"/>
+        <RecordStatus>current</RecordStatus>
+        <ReplacedList>
+          <Replaced Accession="SCV000607317" DateChanged="2019-08-29" Version="1">
+            <Comment Type="MergeComment">SCV000607317 was merged into SCV000607203 to remove duplication.</Comment>
+          </Replaced>
+        </ReplacedList>
+        <ReviewStatus>no assertion provided</ReviewStatus>
+        <Interpretation>
+          <Description>not provided</Description>
+          <Comment>GenomeConnect assertions are reported exactly as they appear on the patient-provided report from the testing laboratory. GenomeConnect staff make no attempt to reinterpret the clinical significance of the variant.</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <Age Type="minimum" age_unit="years">60</Age>
+              <Age Type="maximum" age_unit="years">69</Age>
+              <AffectedStatus>unknown</AffectedStatus>
+              <NumberTested>1</NumberTested>
+              <Gender>female</Gender>
+            </Sample>
+            <Method>
+              <TypePlatform>Genotyping Panel</TypePlatform>
+              <MethodType>phenotyping only</MethodType>
+              <ObsMethodAttribute>
+                <Attribute Type="TestingLaboratory" dateValue="2018-08-27" integerValue="500068">Mayo Clinic Genetic Testing Laboratories,Mayo Clinic</Attribute>
+              </ObsMethodAttribute>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="1"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SampleLocalID">genomeconnect_18250</Attribute>
+            </ObservedData>
+            <TraitSet DateLastEvaluated="2018-08-27" Type="Finding">
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Hypermetropia</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000540"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Conductive hearing impairment</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000405"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Mixed hearing impairment</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000410"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Tinnitus</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000360"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of muscle physiology</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0011804"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Arrhythmia</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0011675"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Hypertension</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000822"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Stroke</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0001297"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of the intestine</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0002242"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Neoplasm of the skin</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0008069"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Colon cancer</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0003003"/>
+              </Trait>
+            </TraitSet>
+          </ObservedIn>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <Age Type="minimum" age_unit="years">40</Age>
+              <Age Type="maximum" age_unit="years">49</Age>
+              <AffectedStatus>unknown</AffectedStatus>
+              <NumberTested>1</NumberTested>
+              <Gender>male</Gender>
+            </Sample>
+            <Method>
+              <TypePlatform>Genotyping Panel</TypePlatform>
+              <MethodType>phenotyping only</MethodType>
+              <ObsMethodAttribute>
+                <Attribute Type="TestingLaboratory" dateValue="2018-11-30" integerValue="500068">Mayo Clinic Genetic Testing Laboratories,Mayo Clinic</Attribute>
+              </ObsMethodAttribute>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="1"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SampleLocalID">genomeconnect_18638</Attribute>
+            </ObservedData>
+            <TraitSet DateLastEvaluated="2018-12-13" Type="Finding">
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of vision</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000504"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Myopia</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000545"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Tinnitus</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000360"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Anxiety</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000739"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Depressivity</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000716"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of the stomach</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0002577"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of the liver</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0001392"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Misalignment of teeth</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000692"/>
+              </Trait>
+            </TraitSet>
+          </ObservedIn>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <Age Type="minimum" age_unit="years">20</Age>
+              <Age Type="maximum" age_unit="years">29</Age>
+              <AffectedStatus>unknown</AffectedStatus>
+              <NumberTested>1</NumberTested>
+              <Gender>female</Gender>
+            </Sample>
+            <Method>
+              <TypePlatform>Genotyping Panel</TypePlatform>
+              <MethodType>phenotyping only</MethodType>
+              <ObsMethodAttribute>
+                <Attribute Type="TestingLaboratory" dateValue="2017-10-04" integerValue="500068">Mayo Clinic Genetic Testing Laboratories,Mayo Clinic</Attribute>
+              </ObsMethodAttribute>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="1"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SampleLocalID">genomeconnect_16934</Attribute>
+            </ObservedData>
+            <TraitSet DateLastEvaluated="2017-10-24" Type="Finding">
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormal delivery</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0001787"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of limb bone morphology</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0002813"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Joint hypermobility</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0001382"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Arrhythmia</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0011675"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of the cardiovascular system</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0001626"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Abnormality of the large intestine</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0002250"/>
+              </Trait>
+            </TraitSet>
+          </ObservedIn>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <Age Type="minimum" age_unit="years">60</Age>
+              <Age Type="maximum" age_unit="years">69</Age>
+              <AffectedStatus>unknown</AffectedStatus>
+              <NumberTested>1</NumberTested>
+              <Gender>female</Gender>
+            </Sample>
+            <Method>
+              <TypePlatform>Genotyping Panel</TypePlatform>
+              <MethodType>phenotyping only</MethodType>
+              <ObsMethodAttribute>
+                <Attribute Type="TestingLaboratory" dateValue="2017-04-30" integerValue="500068">Mayo Clinic Genetic Testing Laboratories,Mayo Clinic</Attribute>
+              </ObsMethodAttribute>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="1"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SampleLocalID">genomeconnect_17068</Attribute>
+            </ObservedData>
+            <TraitSet DateLastEvaluated="2017-11-28" Type="Finding">
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Myopia</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000545"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Hypermetropia</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000540"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Conductive hearing impairment</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0000405"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Vertigo</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0002321"/>
+              </Trait>
+              <Trait Type="Finding">
+                <Name>
+                  <ElementValue Type="Preferred">Colon cancer</ElementValue>
+                </Name>
+                <XRef DB="HP" ID="HP:0003003"/>
+              </Trait>
+            </TraitSet>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Hereditary hemochromatosis</ElementValue>
+            </Name>
+            <XRef DB="MedGen" ID="C0392514" Type="CUI"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB5106164</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="2242863" DateCreated="2020-01-07" DateLastUpdated="2020-04-18" SubmissionDate="2019-10-22">
+        <ClinVarSubmissionID localKey="NC_000006.11:g.26091179C&gt;G|OMIM:235200" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV001137061" Type="SCV" Version="1" SubmitterName="Mendelics" OrgID="500035" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2019-05-28">
+          <Description>Pathogenic</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">Mendelics Assertion Criteria 2017</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/chhjzatu/mendelics_assertion_criteria_2017.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NC_000006.11:g.26091179C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="235200" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>MENDELICS_CLINVAR_020</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="2253680" DateCreated="2020-01-10" DateLastUpdated="2020-04-18" SubmissionDate="2019-12-18">
+        <ClinVarSubmissionID localKey="NM_000410.3:c.187C&gt;G|MedGen:C0010674" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV001142520" Type="SCV" Version="1" SubmitterName="Center for Computational Genomics and Data Science,University of Alabama" OrgID="507266" OrganizationCategory="other"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>no assertion criteria provided</ReviewStatus>
+        <Interpretation DateLastEvaluated="2019-04-01">
+          <Description>risk factor</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+              <NumberTested>3</NumberTested>
+              <FamilyData NumFamilies="1" NumFamiliesWithVariant="1"/>
+              <Indication Type="Indication">
+                <Trait Type="Disease">
+                  <Name>
+                    <ElementValue Type="Preferred">Cystic fibrosis</ElementValue>
+                  </Name>
+                </Trait>
+              </Indication>
+            </Sample>
+            <Method>
+              <TypePlatform>next-gen sequencing</TypePlatform>
+              <MethodType>research</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="3"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="VariantChromosomes" integerValue="4"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="Homozygote" integerValue="1"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SingleHeterozygote" integerValue="2"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SecondaryFinding">no</Attribute>
+            </ObservedData>
+            <Citation>
+              <ID Source="PubMed">12885340</ID>
+            </Citation>
+            <Citation>
+              <ID Source="PubMed">8696333</ID>
+            </Citation>
+            <Citation>
+              <ID Source="PubMed">31220083</ID>
+            </Citation>
+            <Citation>
+              <ID Source="PubMed">28617828</ID>
+            </Citation>
+            <Citation>
+              <ID Source="PubMed">17600748</ID>
+            </Citation>
+            <Citation>
+              <ID Source="PubMed">28443246</ID>
+            </Citation>
+            <Citation>
+              <ID Source="PubMed">30291871</ID>
+            </Citation>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <XRefList>
+            <XRef DB="dbSNP" ID="1799945" Type="rsNumber"/>
+          </XRefList>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Cystic fibrosis</ElementValue>
+            </Name>
+            <XRef DB="MedGen" ID="C0010674" Type="CUI"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB6706449</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="2273042" DateCreated="2020-01-31" DateLastUpdated="2020-05-12" SubmissionDate="2020-02-27">
+        <ClinVarSubmissionID localKey=":Chr.6_26091179_26091179_C_G|MedGen:CN517202" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV001154674" Type="SCV" Version="2" SubmitterName="CeGaT Praxis fuer Humangenetik Tuebingen" OrgID="505870" OrganizationCategory="laboratory" OrgAbbreviation="PHGT"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2020-01-01">
+          <Description>Likely benign</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">Praxis fuer Humangenetik Tuebingen - Variant Classification Criteria</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/TbQpmFtg/PHGTv1.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="171"/>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <VariantType>Variation</VariantType>
+          <Location>
+            <SequenceLocation Assembly="GRCh37" Chr="6" alternateAllele="G" referenceAllele="C" start="26091179" stop="26091179" variantLength="1"/>
+          </Location>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">not provided</ElementValue>
+            </Name>
+            <XRef DB="MedGen" ID="CN517202" Type="CUI"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>2020-02-corrected</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="455234" DateCreated="2015-09-22" DateLastUpdated="2020-04-18" SubmissionDate="2015-09-22">
+        <ClinVarSubmissionID localKey="NM_000410.3:c.187C&gt;G|OMIM:235200"/>
+        <ClinVarAccession Accession="SCV000245789" Type="SCV" Version="1" SubmitterName="GeneReviews" OrgID="500062" OrganizationCategory="resource" OrgAbbreviation="GeneReviews"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>no assertion criteria provided</ReviewStatus>
+        <Interpretation DateLastEvaluated="2015-09-17">
+          <Description>Pathogenic</Description>
+          <Citation>
+            <ID Source="PubMed">11874997</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">8943161</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">18199861</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">19159930</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">19554541</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">15858186</ID>
+          </Citation>
+          <Citation>
+            <URL>http://www.ncbi.nlm.nih.gov/books/NBK1440/</URL>
+          </Citation>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>literature only</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <OtherNameList>
+            <Name>NP_000401.1:p.His63Asp</Name>
+          </OtherNameList>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Hemochromatosis type 1</ElementValue>
+            </Name>
+            <XRef DB="OMIM" ID="235200" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="372036" DateCreated="2015-02-05" DateLastUpdated="2020-04-18" SubmissionDate="2016-01-15">
+        <ClinVarSubmissionID localKey="NM_000410.3:c.187C&gt;G|MedGen:C0392514" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000206973" Type="SCV" Version="2" SubmitterName="Blueprint Genetics" OrgID="500188" OrganizationCategory="laboratory" OrgAbbreviation="Blueprint Genetics"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2015-11-26">
+          <Description>Pathogenic</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">Variant Classification</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/nxpnxkpc/variant_classification_wp_vara41-03.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="9"/>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="MedGen" ID="C0392514" Type="CUI"/>
+          </Trait>
+        </TraitSet>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="1123807" DateCreated="2017-05-19" DateLastUpdated="2020-04-18" SubmissionDate="2019-01-29">
+        <ClinVarSubmissionID localKey="GDX:451314|Not Provided" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000577565" Type="SCV" Version="4" SubmitterName="GeneDx" OrgID="26957" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2018-10-15">
+          <Description>Pathogenic</Description>
+          <Comment>The H63D variant in the HFE gene is a common variant associated with hereditary hemochromatosis. When present in the homozygous state, H63D is associated with elevated serum transferrin and transferrin saturation, but the presence of clinical symptoms and iron overload was not increased compared to individuals without an HFE variant (Gochee et al., 2002; Feder et al., 1996). The H63D variant may be more clinically relevant when present in the compound heterozygous state with the C282Y variant, although most individuals do not develop clinical hemochromatosis symptoms, even if they have biochemical parameters consistent with hemochromatosis (Gurrin et al., 2009; Seckington and Powell, 2015). The H63D variant is observed in 18,253/126,698 alleles (14.4%) from individuals of European background, and 30,021/277,190 global alleles (10.8%) including 1992 homozygous control individuals, in large population cohorts (Lek et al., 2016). The H63D variant is a non-conservative amino acid substitution, which is likely to impact secondary protein structure as these residues differ in polarity, charge, size and/or other properties. Functional studies have shown that H63D disrupts normal protein function (Nandar et al., 2013; Mitchell et al., 2011). We interpret H63D as a pathogenic variant.</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">GeneDx Variant Classification (06012015)</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/7oynscmk/mdi-5616_26957_genedx_interprules_final_061215.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <Location>
+            <SequenceLocation Assembly="GRCh37" Chr="6" alternateAllele="G" referenceAllele="C" start="26091179" stop="26091179" variantLength="1"/>
+          </Location>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Not Provided</ElementValue>
+            </Name>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB5098196</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="2354549" DateCreated="2020-04-02" DateLastUpdated="2020-04-18" SubmissionDate="2020-01-15">
+        <ClinVarSubmissionID localKey=":Chr.6_26091179_26091179_C_G|OMIM:235200" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV001194094" Type="SCV" Version="1" SubmitterName="Myriad Women's Health, Inc." OrgID="507240" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2019-12-26">
+          <Description>Pathogenic</Description>
+          <Citation>
+            <ID Source="PubMed">9462220</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">11904676</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">11358905</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">19159930</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">19554541</ID>
+          </Citation>
+          <Citation>
+            <ID Source="PubMed">14673107</ID>
+          </Citation>
+          <Comment>NM_000410.3(HFE):c.187C&gt;G(H63D) is classified as pathogenic in the context of HFE-associated hereditary hemochromatosis. H63D is only associated with clinical hemochromatosis in the presence of some other genetic variant or condition that affects iron metabolism such as the C282Y variant or liver disease. Sources cited for classification include the following: PMID 9462220, 11904676, 11358905, 19159930, 19554541 and 14673107. Classification of NM_000410.3(HFE):c.187C&gt;G(H63D) is based on the following criteria: This is a well-established pathogenic variant in the literature that has been observed more frequently in patients with clinical diagnoses than in healthy populations. Please note: this variant was assessed in the context of healthy population screening.</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">Myriad Women's Health Autosomal Recessive and X-Linked Classification Criteria (2019)</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/vlxza0ea/myriad_women_s_health_autosomal_recessive_and_x-linked_classification_criteria_2019_.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <Location>
+            <SequenceLocation Assembly="GRCh37" Chr="6" alternateAllele="G" referenceAllele="C" start="26091179" stop="26091179" variantLength="1"/>
+          </Location>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="235200" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB6849778</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="2477478" DateCreated="2020-05-21" DateLastUpdated="2020-05-31" SubmissionDate="2020-02-26">
+        <ClinVarSubmissionID localKey="CA113797|MedGen:C3469186" submittedAssembly="GRCh38"/>
+        <ClinVarAccession Accession="SCV001251532" Type="SCV" Version="1" SubmitterName="UNC Molecular Genetics  Laboratory,University of North Carolina at Chapel Hill" OrgID="506663" OrganizationCategory="laboratory" OrgAbbreviation="UNC MGL"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation>
+          <Description>Pathogenic</Description>
+          <Citation>
+            <ID Source="PubMed">19159930</ID>
+          </Citation>
+          <Citation>
+            <ID Source="Bookshelf">NBK1440</ID>
+          </Citation>
+          <Comment>The HFE c.187C&gt;G (p.H63D) variant is a pathogenic variant seen in 10.8% of the human population in gnomAD. Indviduals with the p.H63D variant are considered carriers of hemochromatosis, although this variant is associated with less severe iron overload and reduced penetrance compared to another pathogenic HFE variant, c.845G&gt;A, p.C282Y (PMID: 19159930; 20301613).</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+          <Citation>
+            <ID Source="PubMed">25741868</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>no</AffectedStatus>
+            </Sample>
+            <Method>
+              <TypePlatform>exome sequencing</TypePlatform>
+              <MethodType>research</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="VariantAlleles" integerValue="11"/>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="HFE"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000410.3:c.187C&gt;G</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Hemochromatosis type 1</ElementValue>
+            </Name>
+            <XRef DB="MedGen" ID="C3469186" Type="CUI"/>
+          </Trait>
+        </TraitSet>
+        <StudyName>NSIGHT-NC NEXUS</StudyName>
+        <StudyDescription>The North Carolina Newborn Exome Sequencing for Universal Screening (NC NEXUS) study explored the possible use of genomic sequencing in the context of newborn screening and studied the responses of parents to this new technology.</StudyDescription>
+        <Comment>carrier finding</Comment>
+        <SubmissionNameList>
+          <SubmissionName>SUB7037417</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+    </ClinicalAssertionList>
+    <TraitMappingList>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Mixed hearing impairment" MappingRef="Preferred">
+        <MedGen CUI="C0155552" Name="Mixed hearing impairment"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1750148" TraitType="Disease" MappingType="XRef" MappingValue="235200" MappingRef="OMIM">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Misalignment of teeth" MappingRef="Preferred">
+        <MedGen CUI="C1852504" Name="Misalignment of teeth"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Hypertension" MappingRef="Preferred">
+        <MedGen CUI="C0020538" Name="Hypertensive disorder"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Stroke" MappingRef="Preferred">
+        <MedGen CUI="C0038454" Name="Stroke"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Tinnitus" MappingRef="Preferred">
+        <MedGen CUI="C0040264" Name="Tinnitus"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="2273042" TraitType="Disease" MappingType="Name" MappingValue="not provided" MappingRef="Preferred">
+        <MedGen CUI="CN517202" Name="not provided"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Colon cancer" MappingRef="Preferred">
+        <MedGen CUI="C0007102" Name="Colon cancer"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="415440" TraitType="Disease" MappingType="Name" MappingValue="not provided" MappingRef="Preferred">
+        <MedGen CUI="CN517202" Name="not provided"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of the large intestine" MappingRef="Preferred">
+        <MedGen CUI="C4025715" Name="Abnormality of the large intestine"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Anxiety" MappingRef="Preferred">
+        <MedGen CUI="C0003467" Name="Anxiety"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of the liver" MappingRef="Preferred">
+        <MedGen CUI="C4021780" Name="Abnormality of the liver"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1750148" TraitType="Disease" MappingType="XRef" MappingValue="612635" MappingRef="OMIM">
+        <MedGen CUI="C2673520" Name="Microvascular complications of diabetes 7"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Hypermetropia" MappingRef="Preferred">
+        <MedGen CUI="C0020490" Name="Hypermetropia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Joint hypermobility" MappingRef="Preferred">
+        <MedGen CUI="C1844820" Name="Joint hypermobility"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Vertigo" MappingRef="Preferred">
+        <MedGen CUI="C0042571" Name="Vertigo"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Tinnitus" MappingRef="Preferred">
+        <MedGen CUI="C0040264" Name="Tinnitus"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1750148" TraitType="Disease" MappingType="XRef" MappingValue="104300" MappingRef="OMIM">
+        <MedGen CUI="C0002395" Name="Alzheimer disease"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="775404" TraitType="Disease" MappingType="Name" MappingValue="Hereditary Hemochromatosis" MappingRef="Preferred">
+        <MedGen CUI="C0392514" Name="Hereditary hemochromatosis"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Myopia" MappingRef="Preferred">
+        <MedGen CUI="C0027092" Name="Myopia (disease)"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="455234" TraitType="Disease" MappingType="Name" MappingValue="Hemochromatosis type 1" MappingRef="Preferred">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="356284" TraitType="Disease" MappingType="XRef" MappingValue="ORPHA79230" MappingRef="Orphanet">
+        <MedGen CUI="CN205842" Name="Hemochromatosis type 2"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Colon cancer" MappingRef="Preferred">
+        <MedGen CUI="C0007102" Name="Colon cancer"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1452476" TraitType="Disease" MappingType="XRef" MappingValue="235200" MappingRef="OMIM">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="2242863" TraitType="Disease" MappingType="XRef" MappingValue="235200" MappingRef="OMIM">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of limb bone morphology" MappingRef="Preferred">
+        <MedGen CUI="C4082761" Name="Abnormality of limb bone morphology"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="372036" TraitType="Disease" MappingType="XRef" MappingValue="C0392514" MappingRef="MedGen">
+        <MedGen CUI="C0392514" Name="Hereditary hemochromatosis"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1329185" TraitType="Disease" MappingType="XRef" MappingValue="235200" MappingRef="OMIM">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Neoplasm of the skin" MappingRef="Preferred">
+        <MedGen CUI="C0037286" Name="Neoplasm of the skin"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Conductive hearing impairment" MappingRef="Preferred">
+        <MedGen CUI="C0018777" Name="Conductive hearing impairment"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of muscle physiology" MappingRef="Preferred">
+        <MedGen CUI="C4023182" Name="Abnormality of muscle physiology"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1750148" TraitType="Disease" MappingType="XRef" MappingValue="176100" MappingRef="OMIM">
+        <MedGen CUI="C0268323" Name="Familial porphyria cutanea tarda"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Depressivity" MappingRef="Preferred">
+        <MedGen CUI="C0011581" Name="Depressivity"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="395837" TraitType="Disease" MappingType="Name" MappingValue="Hereditary hemochromatosis" MappingRef="Preferred">
+        <MedGen CUI="C0392514" Name="Hereditary hemochromatosis"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="2477478" TraitType="Disease" MappingType="Name" MappingValue="Hemochromatosis type 1" MappingRef="Preferred">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="2354549" TraitType="Disease" MappingType="XRef" MappingValue="235200" MappingRef="OMIM">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="20170" TraitType="Disease" MappingType="Name" MappingValue="MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 7" MappingRef="Alternate">
+        <MedGen CUI="C2673520" Name="Microvascular complications of diabetes 7"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormal delivery" MappingRef="Preferred">
+        <MedGen CUI="C0549629" Name="Abnormal delivery"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="2253680" TraitType="Disease" MappingType="Name" MappingValue="Cystic fibrosis" MappingRef="Preferred">
+        <MedGen CUI="C0010674" Name="Cystic fibrosis"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of the stomach" MappingRef="Preferred">
+        <MedGen CUI="C4025699" Name="Abnormality of the stomach"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Conductive hearing impairment" MappingRef="Preferred">
+        <MedGen CUI="C0018777" Name="Conductive hearing impairment"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1750148" TraitType="Disease" MappingType="XRef" MappingValue="176200" MappingRef="OMIM">
+        <MedGen CUI="C0162532" Name="Variegate porphyria"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1123807" TraitType="Disease" MappingType="Name" MappingValue="Not Provided" MappingRef="Preferred">
+        <MedGen CUI="CN517202" Name="not provided"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Arrhythmia" MappingRef="Preferred">
+        <MedGen CUI="C0855329" Name="Arrhythmia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="461244" TraitType="Disease" MappingType="XRef" MappingValue="235200" MappingRef="OMIM">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Myopia" MappingRef="Preferred">
+        <MedGen CUI="C0027092" Name="Myopia (disease)"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Arrhythmia" MappingRef="Preferred">
+        <MedGen CUI="C0855329" Name="Arrhythmia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of vision" MappingRef="Preferred">
+        <MedGen CUI="C4025846" Name="Abnormality of vision"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of the intestine" MappingRef="Preferred">
+        <MedGen CUI="C4316788" Name="Abnormality of the intestine"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Abnormality of the cardiovascular system" MappingRef="Preferred">
+        <MedGen CUI="C0243050" Name="Abnormality of the cardiovascular system"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Finding" MappingType="Name" MappingValue="Hypermetropia" MappingRef="Preferred">
+        <MedGen CUI="C0020490" Name="Hypermetropia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="20169" TraitType="Disease" MappingType="Name" MappingValue="HEMOCHROMATOSIS, TYPE 1" MappingRef="Preferred">
+        <MedGen CUI="C3469186" Name="Hemochromatosis type 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1174366" TraitType="Disease" MappingType="Name" MappingValue="Hereditary hemochromatosis" MappingRef="Preferred">
+        <MedGen CUI="C0392514" Name="Hereditary hemochromatosis"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="1750148" TraitType="Disease" MappingType="XRef" MappingValue="614193" MappingRef="OMIM">
+        <MedGen CUI="C3280096" Name="Transferrin serum level quantitative trait locus 2"/>
+      </TraitMapping>
+    </TraitMappingList>
+  </InterpretedRecord>
+</VariationArchive>
+</ClinVarResult-Set>

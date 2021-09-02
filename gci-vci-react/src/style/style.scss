@@ -1,0 +1,27 @@
+// Override default variables before the import
+$body-bg: #fff;
+// Import Bootstrap and its default variables
+@import "node_modules/bootstrap/scss/bootstrap";
+// @import "node_modules/bootstrap/scss/functions";
+// @import "bootstrap/variables";
+// @import "node_modules/bootstrap/scss/mixins";
+
+// Existing CSS imports from legacy site
+@import "clincoded/variables";
+@import "clincoded/base";
+@import "clincoded/modules/curator";
+@import "clincoded/modules/dashboard";
+@import "clincoded/modules/navbar";
+@import "clincoded/modules/form";
+@import "clincoded/modules/modal";
+@import "clincoded/modules/modal_disease";
+@import "clincoded/modules/population";
+@import "clincoded/modules/gene_centric";
+@import "clincoded/modules/case_segregation";
+@import "clincoded/modules/case_control";
+@import "clincoded/modules/tooltip";
+@import "fontawesome/font-awesome";
+@import "clincoded/modules/badges";
+
+// Latest CSS imports by component
+@import "clincoded/components/_all";

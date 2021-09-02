@@ -1,0 +1,103 @@
+{
+  "caId": "CA46014101",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_005633.4:c.214-2950T>G"
+  ],
+  "clingenPreferredTitle": "NM_005633.4(SOS1):c.214-2950T>G (p.=)",
+  "dbSNPId": 899594136,
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:48.667Z",
+  "hgnc": [
+    "SOS1"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000002.11:g.39288895A>C",
+    "GRCh38": "NC_000002.12:g.39061754A>C",
+    "NCBI36": "NC_000002.10:g.39142399A>C",
+    "others": [
+      "CM000664.2:g.39061754A>C",
+      "CM000664.1:g.39288895A>C",
+      "NG_007530.1:g.63710T>G",
+      "LRG_754:g.63710T>G"
+    ]
+  },
+  "ldh": {
+    "id": "46966767",
+    "last_modified_date": "2019-10-03T19:29:59.060Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/46966767"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_005624.2:p.="
+      ],
+      "system": "RefSeq",
+      "title": "NM_005633.4:c.214-2950T>G"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_005624.2:p.="
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000402219.8:c.214-2950T>G",
+      "transcriptNotInCAR": true
+    }
+  ],
+  "proteinEffects": [
+    "NP_005624.2:p.=",
+    "XP_005264572.1:p.=",
+    "XP_011531362.1:p.=",
+    "XP_011531363.1:p.=",
+    "XP_011531364.1:p.=",
+    "XP_011531365.1:p.=",
+    "XP_011531366.1:p.=",
+    "XP_011531367.1:p.=",
+    "XP_005264572.1:p.=",
+    "XP_011531364.1:p.=",
+    "XP_011531366.1:p.=",
+    "NP_001369323.1:p.=",
+    "NP_001369324.1:p.=",
+    "NP_005624.2:p.=",
+    "ENSP00000378479.2:p.=",
+    "ENSP00000384675.2:p.=",
+    "ENSP00000387784.1:p.=",
+    "ENSP00000393899.1:p.="
+  ],
+  "transcriptHGVS": [
+    "NM_005633.3:c.214-2950T>G",
+    "LRG_754t1:c.214-2950T>G",
+    "XM_005264515.3:c.214-2950T>G",
+    "XM_011533060.1:c.307-2950T>G",
+    "XM_011533061.1:c.307-2950T>G",
+    "XM_011533062.1:c.193-2950T>G",
+    "XM_011533063.1:c.190-2950T>G",
+    "XM_011533064.1:c.43-2950T>G",
+    "XM_011533065.1:c.307-2950T>G",
+    "XM_005264515.4:c.214-2950T>G",
+    "XM_011533062.2:c.193-2950T>G",
+    "XM_011533064.2:c.43-2950T>G",
+    "NM_001382394.1:c.193-2950T>G",
+    "NM_001382395.1:c.214-2950T>G",
+    "NM_005633.4:c.214-2950T>G",
+    "ENST00000395038.6:c.214-2950T>G",
+    "ENST00000402219.6:c.214-2950T>G",
+    "ENST00000426016.5:c.214-2950T>G",
+    "ENST00000451331.1:c.43-2950T>G"
+  ]
+}

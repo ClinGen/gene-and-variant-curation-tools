@@ -1,0 +1,14 @@
+# Defines the API key table which is used to store API key to affiliation and role mappings.
+Resources:
+  APIKeyTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: 'api_key_value'
+            AttributeType: 'S'
+        BillingMode: PAY_PER_REQUEST # Note this is more expensive, but automatically scales and is the internal default at Amazon
+        KeySchema:
+          - AttributeName: 'api_key_value'
+            KeyType: HASH
+        TableName: ${self:custom.resources.db_table_name}
+        

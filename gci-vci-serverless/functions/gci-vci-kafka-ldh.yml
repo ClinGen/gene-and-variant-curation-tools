@@ -1,0 +1,6 @@
+gci-vci-kafka-ldh:
+  handler: src/kafka/ldh-lambda.handler
+  timeout: 900
+  role: !GetAtt KafkaLambdaRole.Arn
+  environment:
+    DB_VPT_TABLE_NAME: ${self:custom.resources.vpt-table-name}

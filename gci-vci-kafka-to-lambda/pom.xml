@@ -1,0 +1,124 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+  The project object model provides an overview of how the
+  project should be built. It's basically the "Makefile" for Maven, which
+  is the most popular build tool for Java projects. Another popular build
+  tool is gradle, but we've used maven here.
+  -->
+  <groupId>edu.stanford.kafka</groupId>
+  <artifactId>consumer</artifactId>
+  <!--
+  Snapshot version is common for internally developed tools. A real CI/CD that
+  lands in maven central (equivalent to something like npm) would use a
+  firm version and sign the jar. A Java "jar" is a zip file (literally, you
+  can unzip it) that contains class files. Class files are exectable with a
+  Java virtual machine. We will be building a "fat jar", which is a jar that
+  bundles all dependencies within a single file, and has the advantages of:
+
+  1. Single file deploy
+  2. No need to setup Java's classpath, which is like the PATH variable, but
+     specific to Java.
+  -->
+
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <!-- name of the Jar will be name-version.jar. Here, "consumer-1.0.0-SNAPSHOT.jar" -->
+  <name>consumer</name>
+  <url>http://maven.apache.org</url>
+
+  <!-- These are variables that can be used elsewhere in the POM. Versions are popular here -->
+  <!-- Ideally we'd capture all versions here in the properties -->
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <aws.java.sdk.version>2.13.7</aws.java.sdk.version>
+  </properties>
+
+  <!--
+  Dependencies are as they sound - dependencies for the project.
+  artifactid of "bom" allows Maven to pull all information for all the components
+  of the SDK. bom = bill of materials. Once imported, you can grab individual
+  components more easily. We will only need Lambda access here.
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>bom</artifactId>
+      <version>${aws.java.sdk.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>lambda</artifactId>
+      <version>${aws.java.sdk.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>2.5.0</version>
+    </dependency>
+
+    <!-- Jackson fasterxml library is the most popular json library in Java -->
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.11.1</version>
+    </dependency>
+
+    <!-- Finally, slf4j provides our logging, and is also used by Kafka -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.30</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.30</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <!-- Maven plugins allow tweaks to the standard build process -->
+    <plugins>
+      <plugin>
+        <!-- Build an executable JAR -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>edu.stanford.kafka.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <!-- The shade plugin gives us fat jars -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
+        <configuration>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

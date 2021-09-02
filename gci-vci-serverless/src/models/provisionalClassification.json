@@ -1,0 +1,200 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "ProvisionalClassificationModel",
+    "type": "object",
+    "properties": {
+        "PK": { "type": "string" },
+        "item_type": {
+            "type":"string",
+            "enum":["provisionalClassification"]
+        },
+        "submitted_by": {
+            "type": "string",
+            "$schema": "user"
+        },
+        "date_created": { "type": "string" },
+        "last_modified": { "type": "string" },
+        "status": {
+            "type": "string",
+            "enum": [ "in progress", "deleted", "submitted", "approved" ]
+        },
+        "affiliation": { "type": "string" },
+        "classificationPoints": {
+            "type": "object",
+            "properties": {
+                "evidencePointsTotal": { "type": "number" },
+                "geneticEvidenceTotal": { "type": "number" },
+                "experimentalEvidenceTotal": { "type": "number" },
+                "autosomalDominantOrXlinkedDisorder": {
+                    "type": "object"
+                },
+                "autosomalRecessiveDisorder": {
+                    "type": "object"
+                },
+                "segregation": {
+                    "type": "object",
+                    "properties": {
+                        "evidenceCountCandidate": { "type": "number" },
+                        "evidenceCountExome": { "type": "number" },
+                        "evidenceCountTotal": { "type": "number" },
+                        "evidencePointsCandidate": { "type": "number" },
+                        "evidencePointsExome": { "type": "number" },
+                        "totalPointsGiven": { "type": "number" },
+                        "pointsCounted": { "type": "number" }
+                    }
+                },
+                "caseControl": {
+                    "type": "object",
+                    "properties": {
+                        "evidenceCount": { "type": "number" },
+                        "totalPointsGiven": { "type": "number" },
+                        "pointsCounted": { "type": "number" }
+                    }
+                },
+                "function": {
+                    "type": "object",
+                    "properties": {
+                        "totalPointsGiven": { "type": "number" },
+                        "pointsCounted": { "type": "number" },
+                        "biochemicalFunctions": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "proteinInteractions": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "expression": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        }
+                    }
+                },
+                "functionalAlteration": {
+                    "type": "object",
+                    "properties": {
+                        "totalPointsGiven": { "type": "number" },
+                        "pointsCounted": { "type": "number" },
+                        "patientCells": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "nonPatientCells": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        }
+                    }
+                },
+                "modelsRescue": {
+                    "type": "object",
+                    "properties": {
+                        "totalPointsGiven": { "type": "number" },
+                        "pointsCounted": { "type": "number" },
+                        "modelsNonHuman": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "modelsCellCulture": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "rescueHuman": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "rescueNonHuman": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "rescueCellCulture": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        },
+                        "rescuePatientCells": {
+                            "type": "object",
+                            "properties": {
+                                "evidenceCount": { "type": "number" },
+                                "totalPointsGiven": { "type": "number" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "autoClassification": { "type": "string" },
+        "alteredClassification": { "type": "string" },
+        "reasons": { "type": "string" },
+        "classificationStatus": {
+            "type": "string",
+            "enum": [ "In progress", "Provisional", "Approved" ]
+        },
+        "evidenceSummary": { "type": "string" },
+        "replicatedOverTime": { "type": "boolean" },
+        "contradictingEvidence": {
+            "type": "object",
+            "properties": {
+                "proband": { "type": "boolean" },
+                "caseControl": { "type": "boolean" },
+                "experimental": { "type": "boolean" }
+            }
+        },
+        "classificationDate": { "type": "string" },
+        "approvalSubmitter": { "type": "string" },
+        "classificationApprover": { "type": "string" },
+        "classificationContributors": { "type": "array" },
+        "additionalApprover": { "type": "string" },
+        "approvalDate": { "type": "string" },
+        "approvalReviewDate": { "type": "string" },
+        "approvalComment": { "type": "string" },
+        "contributorComment": { "type": "string" },
+        "provisionalSubmitter": { "type": "string" },
+        "provisionalDate": { "type": "string" },
+        "provisionalReviewDate": { "type": "string" },
+        "provisionalComment": { "type": "string" },
+        "publishSubmitter": { "type": "string" },
+        "publishAffiliation": { "type": "string" },
+        "publishDate": { "type": "string" },
+        "publishComment": { "type": "string" },
+        "provisionedClassification": { "type": "boolean" },
+        "sopVersion": { "type": "string" },
+        "approvedClassification": { "type": "boolean" },
+        "publishClassification": { "type": "boolean" },
+        "associatedClassificationSnapshots": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$schema": "snapshot"
+            }
+        }
+    }
+}

@@ -1,0 +1,140 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "FamilyModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["family"]
+        },
+        "PK": { "type": "string" },
+        "submitted_by": { "type": "string", "$schema": "user" },
+        "date_created": { "type": "string" },
+        "modified_by": { "type": "string", "$schema": "user" },
+        "last_modified": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "label": { "type": "string" },
+        "commonDiagnosis": {
+          "description": "List of ontology IDs of common diagnosis for the family",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "$schema": "disease"
+          }
+        },
+        "hpoIdInDiagnosis": {
+          "description": "List of HPO ID for the disease",
+          "type": "array"
+        },
+        "termsInDiagnosis": {
+          "description": "HPO terms (separated by comma) for the disease",
+          "type": "string"
+        },
+        "hpoIdInElimination": {
+          "description": "List of HPO IDs eliminated from the disease",
+          "type": "array"
+        },
+        "termsInElimination": {
+          "description": "Non-HPO terms (separated by comma) eliminated from the disease",
+          "type": "string"
+        },
+        "countryOfOrigin": { "type": "string" },
+        "ethnicity": {
+            "type": "string",
+            "enum": ["", "Hispanic or Latino", "Not Hispanic or Latino", "Unknown"]
+        },
+        "race": {
+            "type": "string",
+            "enum": ["","American Indian or Alaska Native", "Asian", "Black", "Native Hawaiian or Other Pacific Islander", "White", "Mixed", "Unknown"] 
+        },
+        "method": {
+            "type": "object",
+            "properties": {
+                "previousTesting": { "type": "boolean" },
+                "previousTestingDescription": { "type": "string" },
+                "genomeWideStudy": { "type": "boolean" },
+                "genotypingMethods": { "type": "array" },
+                "entireGeneSequenced": { "type": "boolean" },
+                "copyNumberAssessed": { "type": "boolean" },
+                "specificMutationsGenotyped": { "type": "boolean" },
+                "specificMutationsGenotypedMethod": { "type": "string" },
+                "additionalInformation": { "type": "string" },
+                "dateTime": { "type": "string" }
+            }
+        },
+        "segregation": {
+            "type": "object",
+            "properties": {
+                "dateTime": { "type": "string" },
+                "pedigreeDescription": { "type": "string" },
+                "pedigreeSize": { "type": "number" },
+                "numberOfGenerationInPedigree": { "type": "number" },
+                "consanguineousFamily": { "type": "boolean" },
+                "numberOfCases": { "type": "number" },
+                "deNovoType": {
+                    "type": "string",
+                    "enum": ["", "Inferred", "Confirmed"]
+                },
+                "numberOfParentsUnaffectedCarriers": {
+                    "type": "number",
+                    "enum": [0, 1, 2]
+                },
+                "numberOfAffectedAlleles": { "type": "number" },
+                "numberOfAffectedWithOneVariant": { "type": "number" },
+                "numberOfAffectedWithTwoVariants": { "type": "number" },
+                "numberOfUnaffectedCarriers": { "type": "number" },
+                "numberOfUnaffectedIndividuals": { "type": "number" },
+                "probandAssociatedWithBoth": { "type": "boolean" },
+                "additionalInformation": { "type": "string" },
+                "numberOfAffectedWithGenotype": { "type": "number" },
+                "numberOfUnaffectedWithoutBiallelicGenotype": { "type": "number" },
+                "numberOfSegregationsForThisFamily": { "type": "number" },
+                "inconsistentSegregationAmongstTestedIndividuals": { "type": "string" },
+                "explanationForInconsistent": { "type": "string" },
+                "familyConsanguineous": { "type": "string" },
+                "moiDisplayedForFamily": { "type": "string" },
+                "probandIs": { "type": "string" },
+                "pedigreeLocation": { "type": "string" },
+                "lodRequirements": { "type": "string" },
+                "lodPublished": { "type": "boolean" },
+                "publishedLodScore": { "type": "number" },
+                "estimatedLodScore": { "type": "number" },
+                "includeLodScoreInAggregateCalculation": { "type": "boolean" },
+                "sequencingMethod": {
+                    "type": "string",
+                    "enum": ["Candidate gene sequencing", "Exome/genome or all genes sequenced in linkage region"]
+                },
+                "reasonExplanation": { "type": "string" },
+                "variants": {
+                  "description": "List of variants Associated with Proband",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "$schema": "variant"
+                  }
+                }
+            }
+        },
+        "additionalInformation": { "type": "string" },
+        "otherPMIDs": {
+          "description": "List of other PMIDs having evidence about the group, link to article objects",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "individualIncluded": {
+          "title": "Individual Included",
+          "description": "List of individuals included in the family",
+          "type": "array",
+          "items": {
+            "description": "Individual id",
+            "type": "string",
+            "$schema": "individual:injectParentAsAssociatedField"
+          }
+        },
+        "associatedParentType": { "type": "string" },
+        "associatedParent": {
+          "description": "Parent of the family - annotation or group",
+          "type": "string"
+        }
+    }
+}

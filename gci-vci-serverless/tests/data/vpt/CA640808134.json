@@ -1,0 +1,175 @@
+{
+  "caId": "CA640808134",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_001323289.2:c.99+3735C>T"
+  ],
+  "clingenPreferredTitle": "NM_001323289.2(CDKL5):c.99+3735C>T (p.=)",
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:52.268Z",
+  "hgnc": [
+    "CDKL5"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000023.10:g.18532709C>T",
+    "GRCh38": "NC_000023.11:g.18514589C>T",
+    "NCBI36": "NC_000023.9:g.18442630C>T",
+    "others": [
+      "CM000685.2:g.18514589C>T",
+      "CM000685.1:g.18532709C>T",
+      "NG_008475.1:g.93985C>T"
+    ]
+  },
+  "ldh": {
+    "id": "37961175",
+    "last_modified_date": "2019-10-03T15:27:18.897Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/37961175"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_001310218.1:p.="
+      ],
+      "system": "RefSeq",
+      "title": "NM_001323289.2:c.99+3735C>T"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_001310218.1:p.="
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000623535.2:c.99+3735C>T",
+      "transcriptNotInCAR": true
+    }
+  ],
+  "populationAlleleFrequencyMetadata": [
+    {
+      "filters": [
+        "AC0"
+      ],
+      "method": "gnomad-genomes"
+    }
+  ],
+  "populationAlleleFrequencyStatements": [
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 6334,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "male"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 557,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "amr"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 926,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "eas"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 169,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "asj"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 737,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "oth"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 5398,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "afr"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 9993,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "nfe"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 13776,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "female"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 2330,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "fin"
+    }
+  ],
+  "proteinEffects": [
+    "NP_001032420.1:p.=",
+    "NP_003150.1:p.=",
+    "XP_011543871.1:p.=",
+    "XP_011543872.1:p.=",
+    "NP_001310218.1:p.=",
+    "NP_001310218.1:p.=",
+    "NP_001032420.1:p.=",
+    "NP_003150.1:p.=",
+    "ENSP00000369325.3:p.=",
+    "ENSP00000369332.3:p.=",
+    "ENSP00000485184.1:p.=",
+    "ENSP00000485581.1:p.=",
+    "ENSP00000485244.1:p.=",
+    "ENSP00000485359.1:p.="
+  ],
+  "transcriptHGVS": [
+    "NM_001037343.1:c.99+3735C>T",
+    "NM_003159.2:c.99+3735C>T",
+    "XM_011545569.1:c.99+3735C>T",
+    "XM_011545570.1:c.13+3735C>T",
+    "XR_950484.1:n.351+3735C>T",
+    "NM_001323289.1:c.99+3735C>T",
+    "NM_001323289.2:c.99+3735C>T",
+    "NM_001037343.2:c.99+3735C>T",
+    "NM_003159.3:c.99+3735C>T",
+    "ENST00000379989.6:c.99+3735C>T",
+    "ENST00000379996.7:c.99+3735C>T",
+    "ENST00000463994.4:c.99+3735C>T",
+    "ENST00000623364.3:c.99+3735C>T",
+    "ENST00000623535.1:n.99+3735C>T",
+    "ENST00000624700.3:c.99+3735C>T"
+  ]
+}

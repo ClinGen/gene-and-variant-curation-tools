@@ -1,0 +1,241 @@
+{
+  "caId": "CA228373257",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_000051.4:c.8672-273C>T"
+  ],
+  "clingenPreferredTitle": "NM_000051.4(ATM):c.8672-273C>T (p.=)",
+  "dbSNPId": 759928300,
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:50.043Z",
+  "hgnc": [
+    "ATM"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000011.9:g.108224220C>T",
+    "GRCh38": "NC_000011.10:g.108353493C>T",
+    "NCBI36": "NC_000011.8:g.107729430C>T",
+    "others": [
+      "CM000673.2:g.108353493C>T",
+      "CM000673.1:g.108224220C>T",
+      "NG_009830.1:g.135662C>T",
+      "LRG_135:g.135662C>T",
+      "NG_054724.1:g.121340G>A"
+    ]
+  },
+  "ldh": {
+    "id": "40490661",
+    "last_modified_date": "2019-10-03T16:42:38.616Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/40490661"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000042.3:p.="
+      ],
+      "system": "RefSeq",
+      "title": "NM_000051.4:c.8672-273C>T"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001627",
+          "term": "intron_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000042.3:p.="
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000675843.1:c.8672-273C>T",
+      "transcriptNotInCAR": true
+    }
+  ],
+  "populationAlleleFrequencyMetadata": [
+    {
+      "filters": [
+        "PASS"
+      ],
+      "method": "gnomad-genomes",
+      "popmax": 0.000324212
+    }
+  ],
+  "populationAlleleFrequencyStatements": [
+    {
+      "alleleCount": 5,
+      "alleleFrequency": 0.000324212,
+      "alleleNumber": 15422,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "nfe"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 1558,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "eas"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 290,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "asj"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 3472,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "fin"
+    },
+    {
+      "alleleCount": 1,
+      "alleleFrequency": 0.000114784,
+      "alleleNumber": 8712,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "afr"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 1084,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "oth"
+    },
+    {
+      "alleleCount": 3,
+      "alleleFrequency": 0.000171743,
+      "alleleNumber": 17468,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "male"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 844,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "amr"
+    },
+    {
+      "alleleCount": 3,
+      "alleleFrequency": 0.00021561,
+      "alleleNumber": 13914,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "female"
+    }
+  ],
+  "proteinEffects": [
+    "NP_000042.3:p.=",
+    "XP_005271471.1:p.=",
+    "XP_005271472.1:p.=",
+    "XP_005271618.2:p.=",
+    "XP_005271619.2:p.=",
+    "XP_006718906.1:p.=",
+    "XP_006718908.1:p.=",
+    "XP_011540942.1:p.=",
+    "XP_011540944.1:p.=",
+    "XP_011540945.1:p.=",
+    "XP_011541142.1:p.=",
+    "XP_011541143.1:p.=",
+    "XP_011541144.1:p.=",
+    "XP_011541146.1:p.=",
+    "XP_011541147.1:p.=",
+    "XP_011541149.1:p.=",
+    "NP_001317297.1:p.=",
+    "NP_001338039.1:p.=",
+    "NP_001338763.1:p.=",
+    "XP_005271471.1:p.=",
+    "XP_005271472.1:p.=",
+    "XP_005271619.2:p.=",
+    "XP_006718906.1:p.=",
+    "XP_006718908.1:p.=",
+    "XP_011540942.1:p.=",
+    "XP_011540945.1:p.=",
+    "XP_011541142.1:p.=",
+    "XP_011541144.1:p.=",
+    "XP_011541146.1:p.=",
+    "XP_011541147.1:p.=",
+    "XP_016872736.1:p.=",
+    "XP_016873278.1:p.=",
+    "XP_016873279.1:p.=",
+    "NP_001317297.1:p.=",
+    "NP_001338039.1:p.=",
+    "NP_001338763.1:p.=",
+    "NP_000042.3:p.=",
+    "ENSP00000278616.4:p.=",
+    "ENSP00000388058.2:p.=",
+    "ENSP00000433395.1:p.=",
+    "ENSP00000431706.1:p.=",
+    "ENSP00000483537.1:p.="
+  ],
+  "transcriptHGVS": [
+    "NM_000051.3:c.8672-273C>T",
+    "LRG_135t1:c.8672-273C>T",
+    "XM_005271414.3:c.788-18201G>A",
+    "XM_005271415.3:c.732-18201G>A",
+    "XM_005271561.3:c.8672-273C>T",
+    "XM_005271562.3:c.8672-273C>T",
+    "XM_006718843.2:c.8672-273C>T",
+    "XM_006718845.1:c.4628-273C>T",
+    "XM_011542640.1:c.788-13129G>A",
+    "XM_011542642.1:c.732-4420G>A",
+    "XM_011542643.1:c.732-13129G>A",
+    "XM_011542840.1:c.8672-273C>T",
+    "XM_011542841.1:c.8672-273C>T",
+    "XM_011542842.1:c.8507-273C>T",
+    "XM_011542844.1:c.7628-273C>T",
+    "XM_011542845.1:c.7364-273C>T",
+    "XM_011542847.1:c.3743-273C>T",
+    "NM_001330368.1:c.640+32427G>A",
+    "NM_001351110.1:c.695-18201G>A",
+    "NM_001351834.1:c.8672-273C>T",
+    "NR_147053.2:n.2301+1422G>A",
+    "XM_005271414.4:c.788-18201G>A",
+    "XM_005271415.4:c.732-18201G>A",
+    "XM_005271562.5:c.8672-273C>T",
+    "XM_006718843.4:c.8672-273C>T",
+    "XM_006718845.2:c.4628-273C>T",
+    "XM_011542640.2:c.788-13129G>A",
+    "XM_011542643.2:c.732-13129G>A",
+    "XM_011542840.3:c.8672-273C>T",
+    "XM_011542842.3:c.8507-273C>T",
+    "XM_011542844.3:c.7628-273C>T",
+    "XM_011542845.2:c.7364-273C>T",
+    "XM_017017247.1:c.904-13129G>A",
+    "XM_017017789.2:c.8672-273C>T",
+    "XM_017017790.2:c.8672-273C>T",
+    "NM_001330368.2:c.640+32427G>A",
+    "NM_001351110.2:c.695-18201G>A",
+    "NM_001351834.2:c.8672-273C>T",
+    "NM_000051.4:c.8672-273C>T",
+    "NR_147053.3:n.2299+1422G>A",
+    "ENST00000278616.8:c.8672-273C>T",
+    "ENST00000452508.6:c.8672-273C>T",
+    "ENST00000524755.5:n.227-18201G>A",
+    "ENST00000524792.5:n.4887-273C>T",
+    "ENST00000525178.5:n.160-273C>T",
+    "ENST00000525729.5:c.640+32427G>A",
+    "ENST00000526725.1:n.272-13129G>A",
+    "ENST00000527531.5:c.*1196+1422G>A",
+    "ENST00000615746.4:c.*1196+1422G>A"
+  ]
+}

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+                        
+<ClinVarResult-Set><VariationArchive VariationID="550731" VariationName="NM_015506.3(MMACHC):c.436_450del (p.Ser146_Ile150del)" VariationType="Deletion" DateCreated="2018-08-01" DateLastUpdated="2020-04-22" Accession="VCV000550731" Version="1" RecordType="interpreted" NumberOfSubmissions="1" NumberOfSubmitters="1">
+  <RecordStatus>current</RecordStatus>
+  <Species>Homo sapiens</Species>
+  <InterpretedRecord>
+    <SimpleAllele AlleleID="541114" VariationID="550731">
+      <GeneList>
+        <Gene Symbol="MMACHC" FullName="metabolism of cobalamin associated C" GeneID="25974" HGNC_ID="HGNC:24525" Source="submitted" RelationshipType="within single gene">
+          <Location>
+            <CytogeneticLocation>1p34.1</CytogeneticLocation>
+            <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="1" Accession="NC_000001.11" start="45500229" stop="45513382" display_start="45500229" display_stop="45513382" Strand="+"/>
+            <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="1" Accession="NC_000001.10" start="45965855" stop="45976738" display_start="45965855" display_stop="45976738" Strand="+"/>
+          </Location>
+          <OMIM>609831</OMIM>
+        </Gene>
+      </GeneList>
+      <Name>NM_015506.3(MMACHC):c.436_450del (p.Ser146_Ile150del)</Name>
+      <CanonicalSPDI>NC_000001.11:45508796:GCATATCAGGTGTGTGCATA:GCATA</CanonicalSPDI>
+      <VariantType>Deletion</VariantType>
+      <Location>
+        <CytogeneticLocation>1p34.1</CytogeneticLocation>
+        <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" forDisplay="true" AssemblyStatus="current" Chr="1" Accession="NC_000001.11" start="45508797" stop="45508811" display_start="45508797" display_stop="45508811" variantLength="15" positionVCF="45508796" referenceAlleleVCF="CGCATATCAGGTGTGT" alternateAlleleVCF="C"/>
+        <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="1" Accession="NC_000001.10" start="45974469" stop="45974483" display_start="45974469" display_stop="45974483" variantLength="15" positionVCF="45974468" referenceAlleleVCF="CGCATATCAGGTGTGT" alternateAlleleVCF="C"/>
+      </Location>
+      <HGVSlist>
+        <HGVS Assembly="GRCh37" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000001.10" sequenceAccession="NC_000001" sequenceVersion="10" change="g.45974474_45974488del" Assembly="GRCh37">
+            <Expression>NC_000001.10:g.45974474_45974488del</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Assembly="GRCh38" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000001.11" sequenceAccession="NC_000001" sequenceVersion="11" change="g.45508802_45508816del" Assembly="GRCh38">
+            <Expression>NC_000001.11:g.45508802_45508816del</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_001330540.2" sequenceAccession="NM_001330540" sequenceVersion="2" change="c.265_279del">
+            <Expression>NM_001330540.2:c.265_279del</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_001317469.1" sequenceAccession="NP_001317469" sequenceVersion="1" change="p.Ser89_Ile93del">
+            <Expression>NP_001317469.1:p.Ser89_Ile93del</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001822" Type="inframe_deletion" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_015506.3" sequenceAccession="NM_015506" sequenceVersion="3" change="c.436_450del">
+            <Expression>NM_015506.3:c.436_450del</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_056321.2" sequenceAccession="NP_056321" sequenceVersion="2" change="p.Ser146_Ile150del">
+            <Expression>NP_056321.2:p.Ser146_Ile150del</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001822" Type="inframe_deletion" DB="SO"/>
+        </HGVS>
+        <HGVS Type="genomic">
+          <NucleotideExpression sequenceAccessionVersion="NG_013378.1" sequenceAccession="NG_013378" sequenceVersion="1" change="g.13619_13633del">
+            <Expression>NG_013378.1:g.13619_13633del</Expression>
+          </NucleotideExpression>
+        </HGVS>
+      </HGVSlist>
+      <XRefList>
+        <XRef Type="rs" ID="747550590" DB="dbSNP"/>
+      </XRefList>
+    </SimpleAllele>
+    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+    <RCVList>
+      <RCVAccession Title="NM_015506.3(MMACHC):c.436_450del (p.Ser146_Ile150del) AND Methylmalonic acidemia with homocystinuria" DateLastEvaluated="2017-02-10" ReviewStatus="criteria provided, single submitter" Interpretation="Uncertain significance" SubmissionCount="1" Accession="RCV000665556" Version="1">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="C1848561">Methylmalonic acidemia with homocystinuria</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+    </RCVList>
+    <Interpretations>
+      <Interpretation DateLastEvaluated="2017-02-10" NumberOfSubmissions="1" NumberOfSubmitters="1" Type="Clinical significance">
+        <Description>Uncertain significance</Description>
+        <ConditionList>
+          <TraitSet ID="384" Type="Disease">
+            <Trait ID="5516" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Methylmalonic acidemia with homocystinuria</ElementValue>
+                <XRef ID="Methylmalonic+acidemia+with+homocystinuria/4715" DB="Genetic Alliance"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Methylmalonic acidemia and homocystinemia</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Cobalamin-C methylmalonic acidemia and homocystinuria</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Methylmalonic acidemia and homocystinuria cblC type</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Methylmalonic aciduria and homocystinuria, Vitamin B12-responsive</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Vitamin B12 metabolic defect with combined deficiency of methylmalonyl-CoA mutase and homocysteine:methyltetrahydrofolate methyltransferase</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Alternate">cblC</ElementValue>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Preferred">MAHCC</ElementValue>
+                <XRef Type="MIM" ID="277400" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">Disorders of intracellular cobalamin metabolism have a variable phenotype and age of onset that are influenced by the severity and location within the pathway of the defect. The prototype and best understood phenotype is cblC; it is also the most common of these disorders. The age of initial presentation of cblC spans a wide range: In utero with fetal presentation of nonimmune hydrops, cardiomyopathy, and intrauterine growth restriction. Newborns, who can have microcephaly, poor feeding, and encephalopathy. Infants, who can have poor feeding and slow growth, neurologic abnormality, and, rarely, hemolytic uremic syndrome (HUS). Toddlers, who can have poor growth, progressive microcephaly, cytopenias (including megaloblastic anemia), global developmental delay, encephalopathy, and neurologic signs such as hypotonia and seizures. Adolescents and adults, who can have neuropsychiatric symptoms, progressive cognitive decline, thromboembolic compications, and/or subacute combined degeneration of the spinal cord.</Attribute>
+                <XRef ID="NBK1328" DB="GeneReviews"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301503</ID>
+                <ID Source="BookShelf">NBK1328</ID>
+              </Citation>
+              <XRef ID="26" DB="Orphanet"/>
+              <XRef ID="79282" DB="Orphanet"/>
+              <XRef ID="C1848561" DB="MedGen"/>
+              <XRef Type="MIM" ID="277400" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+        </ConditionList>
+      </Interpretation>
+    </Interpretations>
+    <ClinicalAssertionList>
+      <ClinicalAssertion ID="1540004" DateCreated="2018-08-01" DateLastUpdated="2019-03-31" SubmissionDate="2018-07-10">
+        <ClinVarSubmissionID localKey="1314105|OMIM:277400" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV000789700" Type="SCV" Version="1" SubmitterName="Counsyl" OrgID="320494" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+        <Interpretation DateLastEvaluated="2017-02-10">
+          <Description>Uncertain significance</Description>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">Counsyl Autosomal Recessive and X-Linked Classification Criteria (2018)</Attribute>
+          <Citation>
+            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/3ys2zqtz/counsyl_autosomal_recessive_and_x-linked_classification_criteria_2018_.pdf</URL>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>unknown</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>unknown</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="MMACHC"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <Location>
+            <SequenceLocation Assembly="GRCh37" Chr="1" alternateAllele="C" referenceAllele="CGCATATCAGGTGTGT" start="45974468" stop="45974483" variantLength="16"/>
+          </Location>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_015506.2:c.436_450del15</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="277400" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB4282047</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+    </ClinicalAssertionList>
+    <TraitMappingList>
+      <TraitMapping ClinicalAssertionID="1540004" TraitType="Disease" MappingType="XRef" MappingValue="277400" MappingRef="OMIM">
+        <MedGen CUI="C1848561" Name="Methylmalonic acidemia with homocystinuria"/>
+      </TraitMapping>
+    </TraitMappingList>
+  </InterpretedRecord>
+</VariationArchive>
+</ClinVarResult-Set>

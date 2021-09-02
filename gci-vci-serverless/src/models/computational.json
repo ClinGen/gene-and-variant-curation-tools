@@ -1,0 +1,23 @@
+{   
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ComputationalModel",
+  "type": "object",
+  "properties": {
+    "variant": {
+      "type": "string"
+    },
+    "computationalData": {
+      "type": "object"
+    },
+    "item_type": {
+        "type": "string",
+        "enum": ["computational"]
+    },
+    "PK": {
+      "type": "string"
+    },
+    "last_modified": {
+      "type":"string"
+    }
+  }
+}

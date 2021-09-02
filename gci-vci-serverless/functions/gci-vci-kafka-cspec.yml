@@ -1,0 +1,5 @@
+gci-vci-kafka-cspec:
+  handler: src/kafka/cspec-lambda.handler
+  role: !GetAtt KafkaLambdaRole.Arn
+  environment:
+    DB_TABLE_NAME: ${self:custom.resources.gci-vci-table-name}

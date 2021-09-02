@@ -1,0 +1,20 @@
+{
+  "@context": "http://reg.genome.network/schema/gene.jsonld",
+  "@id": "http://reg.genome.network/gene/GN007715",
+  "externalRecords": {
+    "HGNC": {
+      "@id": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:7715",
+      "id": "HGNC:7715",
+      "name": "NADH:ubiquinone oxidoreductase core subunit S8",
+      "symbol": "NDUFS8"
+    },
+    "NCBI": {
+      "@id": "http://www.ncbi.nlm.nih.gov/gene/4728",
+      "id": 4728
+    },
+    "MANEPrefRefSeq": {
+      "@id": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002496.4",
+      "id": "NM_002496.4"
+    }
+  }
+}

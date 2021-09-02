@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+                        
+<ClinVarResult-Set><VariationArchive VariationID="55962" VariationName="NM_000111.2(SLC26A3):c.1028G&gt;A (p.Cys343Tyr)" VariationType="single nucleotide variant" DateCreated="2013-07-22" DateLastUpdated="2020-04-17" Accession="VCV000055962" Version="1" RecordType="interpreted" NumberOfSubmissions="1" NumberOfSubmitters="1">
+  <RecordStatus>current</RecordStatus>
+  <Species>Homo sapiens</Species>
+  <InterpretedRecord>
+    <SimpleAllele AlleleID="70601" VariationID="55962">
+      <GeneList>
+        <Gene Symbol="SLC26A3" FullName="solute carrier family 26 member 3" GeneID="1811" HGNC_ID="HGNC:3018" Source="submitted" RelationshipType="within single gene">
+          <Location>
+            <CytogeneticLocation>7q22.3-31.1</CytogeneticLocation>
+            <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="7" Accession="NC_000007.14" start="107765469" stop="107803223" display_start="107765469" display_stop="107803223" Strand="-"/>
+            <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="7" Accession="NC_000007.13" start="107405911" stop="107443677" display_start="107405911" display_stop="107443677" Strand="-"/>
+          </Location>
+          <OMIM>126650</OMIM>
+        </Gene>
+      </GeneList>
+      <Name>NM_000111.2(SLC26A3):c.1028G&gt;A (p.Cys343Tyr)</Name>
+      <CanonicalSPDI>NC_000007.14:107783295:C:T</CanonicalSPDI>
+      <VariantType>single nucleotide variant</VariantType>
+      <Location>
+        <CytogeneticLocation>7q22.3</CytogeneticLocation>
+        <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" forDisplay="true" AssemblyStatus="current" Chr="7" Accession="NC_000007.14" start="107783296" stop="107783296" display_start="107783296" display_stop="107783296" variantLength="1" positionVCF="107783296" referenceAlleleVCF="C" alternateAlleleVCF="T"/>
+        <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="7" Accession="NC_000007.13" start="107423741" stop="107423741" display_start="107423741" display_stop="107423741" variantLength="1" positionVCF="107423741" referenceAlleleVCF="C" alternateAlleleVCF="T"/>
+      </Location>
+      <ProteinChange>C343Y</ProteinChange>
+      <HGVSlist>
+        <HGVS Assembly="GRCh37" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000007.13" sequenceAccession="NC_000007" sequenceVersion="13" change="g.107423741C&gt;T" Assembly="GRCh37">
+            <Expression>NC_000007.13:g.107423741C&gt;T</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Assembly="GRCh38" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000007.14" sequenceAccession="NC_000007" sequenceVersion="14" change="g.107783296C&gt;T" Assembly="GRCh38">
+            <Expression>NC_000007.14:g.107783296C&gt;T</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_000111.2" sequenceAccession="NM_000111" sequenceVersion="2" change="c.1028G&gt;A">
+            <Expression>NM_000111.2:c.1028G&gt;A</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_000102.1" sequenceAccession="NP_000102" sequenceVersion="1" change="p.Cys343Tyr">
+            <Expression>NP_000102.1:p.Cys343Tyr</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="LRG_683t1" sequenceAccession="LRG_683t1" change="c.1028G&gt;A">
+            <Expression>LRG_683t1:c.1028G&gt;A</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="LRG_683p1" sequenceAccession="LRG_683p1" change="p.Cys343Tyr">
+            <Expression>LRG_683p1:p.Cys343Tyr</Expression>
+          </ProteinExpression>
+        </HGVS>
+        <HGVS Type="genomic">
+          <NucleotideExpression sequenceAccessionVersion="NG_008046.1" sequenceAccession="NG_008046" sequenceVersion="1" change="g.24938G&gt;A">
+            <Expression>NG_008046.1:g.24938G&gt;A</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="genomic">
+          <NucleotideExpression sequenceAccessionVersion="LRG_683" sequenceAccession="LRG_683" change="g.24938G&gt;A">
+            <Expression>LRG_683:g.24938G&gt;A</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="protein">
+          <ProteinExpression sequenceAccessionVersion="P40879" sequenceAccession="P40879" change="p.Cys343Tyr">
+            <Expression>P40879:p.Cys343Tyr</Expression>
+          </ProteinExpression>
+        </HGVS>
+      </HGVSlist>
+      <XRefList>
+        <XRef ID="CA144035" DB="ClinGen"/>
+        <XRef ID="P40879#VAR_066067" DB="UniProtKB"/>
+        <XRef Type="rs" ID="386833444" DB="dbSNP"/>
+      </XRefList>
+    </SimpleAllele>
+    <ReviewStatus>no assertion criteria provided</ReviewStatus>
+    <RCVList>
+      <RCVAccession Title="NM_000111.2(SLC26A3):c.1028G&gt;A (p.Cys343Tyr) AND Congenital secretory diarrhea, chloride type" ReviewStatus="no assertion criteria provided" Interpretation="Likely pathogenic" SubmissionCount="1" Accession="RCV000049371" Version="1">
+        <InterpretedConditionList>
+          <InterpretedCondition DB="MedGen" ID="C0267662">Congenital secretory diarrhea, chloride type</InterpretedCondition>
+        </InterpretedConditionList>
+      </RCVAccession>
+    </RCVList>
+    <Interpretations>
+      <Interpretation NumberOfSubmissions="1" NumberOfSubmitters="1" Type="Clinical significance">
+        <Description>Likely pathogenic</Description>
+        <Citation Type="general">
+          <ID Source="PubMed">21394828</ID>
+        </Citation>
+        <ConditionList>
+          <TraitSet ID="6433" Type="Disease">
+            <Trait ID="4957" Type="Disease">
+              <Name>
+                <ElementValue Type="Alternate">Congenital chloride diarrhea</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Diarrhea 1, secretory chloride, congenital</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Chloridorrhea, congenital</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Darrow-Gamble disease</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Preferred">Congenital secretory diarrhea, chloride type</ElementValue>
+                <XRef ID="Congenital+Chloride+Diarrhea/1795" DB="Genetic Alliance"/>
+                <XRef ID="24412005" DB="SNOMED CT"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">CHLORIDE DIARRHEA, CONGENITAL, FINNISH TYPE</ElementValue>
+                <XRef Type="MIM" ID="214700" DB="OMIM"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Alternate">CLD</ElementValue>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Preferred">DIAR1</ElementValue>
+                <XRef Type="MIM" ID="214700" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="10001"/>
+                <XRef ID="10001" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <XRef ID="53689" DB="Orphanet"/>
+              <XRef ID="C0267662" DB="MedGen"/>
+              <XRef ID="MONDO:0008964" DB="MONDO"/>
+              <XRef Type="MIM" ID="214700" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+        </ConditionList>
+      </Interpretation>
+    </Interpretations>
+    <ClinicalAssertionList>
+      <ClinicalAssertion ID="131164" DateCreated="2013-07-22" DateLastUpdated="2019-03-31" SubmissionDate="2013-05-19">
+        <ClinVarSubmissionID localKey="FINDIS323"/>
+        <ClinVarAccession Accession="SCV000081804" Type="SCV" Version="1" SubmitterName="Juha Muilu Group; Institute for Molecular Medicine Finland (FIMM)" OrgID="500116" OrganizationCategory="laboratory"/>
+        <RecordStatus>current</RecordStatus>
+        <ReviewStatus>no assertion criteria provided</ReviewStatus>
+        <Interpretation>
+          <Description>probable-pathogenic</Description>
+          <Comment Type="ConvertedByNCBI">Converted during submission to Likely pathogenic.</Comment>
+        </Interpretation>
+        <Assertion>variation to disease</Assertion>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>not provided</Origin>
+              <Species>human</Species>
+              <AffectedStatus>not provided</AffectedStatus>
+              <NumberTested>1</NumberTested>
+            </Sample>
+            <Method>
+              <MethodType>not provided</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <VariantType>Variation</VariantType>
+          <CitationList>
+            <Citation Type="general">
+              <ID Source="PubMed">21394828</ID>
+            </Citation>
+          </CitationList>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_000111.2:c.1028G&gt;A</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">Congenital secretory diarrhea, chloride type</ElementValue>
+            </Name>
+            <XRef DB="OMIM" ID="214700" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <Comment Type="public">FinDis database variant: This variant was not found or characterized by our laboratory, data were collected from public sources: see reference</Comment>
+        <SubmissionNameList>
+          <SubmissionName>FinDis_mutations</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+    </ClinicalAssertionList>
+    <TraitMappingList>
+      <TraitMapping ClinicalAssertionID="131164" TraitType="Disease" MappingType="Name" MappingValue="Congenital secretory diarrhea, chloride type" MappingRef="Preferred">
+        <MedGen CUI="C0267662" Name="Congenital secretory diarrhea, chloride type"/>
+      </TraitMapping>
+    </TraitMappingList>
+  </InterpretedRecord>
+</VariationArchive>
+</ClinVarResult-Set>

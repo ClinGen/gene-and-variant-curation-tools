@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "SnapshotModel",
+  "type": "object",
+  "properties": {
+    "PK": { "type": "string" },
+    "item_type": {
+      "type":"string",
+      "enum":["snapshot"]
+    },
+    "resource": {
+      "type": "object"
+    }
+  }
+}

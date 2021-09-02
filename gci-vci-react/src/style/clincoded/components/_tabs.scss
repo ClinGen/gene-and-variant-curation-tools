@@ -1,0 +1,53 @@
+// Tabs are using https://www.npmjs.com/package/react-tabs 
+// with custom styling
+.nav-tabs {
+    .tab-link{
+        outline:none;
+        font-size:1rem;
+        border-top:2px solid transparent;
+        border-radius:none;
+        padding:1rem 1.5rem;
+        color:$gray-light;
+        font-weight:bold;
+        &.react-tabs__tab--selected{
+            border-top:3px solid $brand-primary;
+            border-bottom:1px solid #fff;
+            border-left:1px solid $gray-lighter;
+            border-right:1px solid $gray-lighter;
+            margin-bottom:-1px;
+            color:$brand-primary;
+        }
+        &:hover{
+            cursor:pointer;
+        }
+    }
+}
+
+.tab-panel{
+    display:none;
+    padding:3rem;
+    border:1px solid $gray-lighter;
+    border-top:none;
+    &.react-tabs__tab-panel--selected{
+        display:block;
+    }
+}
+
+.nav-pills {
+    .nav-item.nav-link {
+        border:none;
+        color:$brand-primary;
+        font-weight:bold;
+        background:$gray-lighter;
+        &.active, &.react-tabs__tab--selected {
+            background:$brand-primary;
+            color:#fff;
+            &:hover {
+                background:$brand-primary-dark;
+            }
+        }
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

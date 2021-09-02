@@ -1,0 +1,13 @@
+# This file describes AWS Resources and is specifically written in a way to be included in
+# a serverless.yml file. By itself it is not a valid CloudFormation template.
+
+Resources:
+  
+  ApiValidation:
+    Type: AWS::ApiGateway::RequestValidator
+    Properties:
+      Name: 'ClinGenValidation'
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      ValidateRequestBody: true
+      ValidateRequestParameters: false

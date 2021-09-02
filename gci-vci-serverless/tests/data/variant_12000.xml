@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ClinVarResult-Set>
+    <VariationArchive VariationID="12000" VariationName="NM_000151.4(G6PC):c.1039C&gt;T (p.Gln347Ter)" VariationType="single nucleotide variant" DateCreated="2010-12-01" DateLastUpdated="2020-02-28" Accession="VCV000012000" Version="6" RecordType="interpreted" NumberOfSubmissions="9" NumberOfSubmitters="9">
+        <RecordStatus>current</RecordStatus>
+        <Species>Homo sapiens</Species>
+        <InterpretedRecord>
+            <SimpleAllele AlleleID="27039" VariationID="12000">
+                <GeneList>
+                    <Gene Symbol="G6PC" FullName="glucose-6-phosphatase catalytic subunit" GeneID="2538" HGNC_ID="HGNC:4056" Source="submitted" RelationshipType="within single gene">
+                        <Location>
+                            <CytogeneticLocation>17q21.31</CytogeneticLocation>
+                            <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="17" Accession="NC_000017.11" start="42900799" stop="42914438" display_start="42900799" display_stop="42914438" Strand="+"/>
+                            <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="17" Accession="NC_000017.10" start="41052813" stop="41066449" display_start="41052813" display_stop="41066449" Strand="+"/>
+                        </Location>
+                        <OMIM>613742</OMIM>
+                    </Gene>
+                </GeneList>
+                <Name>NM_000151.4(G6PC):c.1039C&gt;T (p.Gln347Ter)</Name>
+                <CanonicalSPDI>NC_000017.11:42911390:C:T</CanonicalSPDI>
+                <VariantType>single nucleotide variant</VariantType>
+                <Location>
+                    <CytogeneticLocation>17q21.31</CytogeneticLocation>
+                    <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" forDisplay="true" AssemblyStatus="current" Chr="17" Accession="NC_000017.11" start="42911391" stop="42911391" display_start="42911391" display_stop="42911391" variantLength="1" positionVCF="42911391" referenceAlleleVCF="C" alternateAlleleVCF="T"/>
+                    <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="17" Accession="NC_000017.10" start="41063408" stop="41063408" display_start="41063408" display_stop="41063408" variantLength="1" positionVCF="41063408" referenceAlleleVCF="C" alternateAlleleVCF="T"/>
+                </Location>
+                <OtherNameList>
+                    <Name>G6PC, GLN347TER</Name>
+                    <Name>p.Q347*:CAG&gt;TAG</Name>
+                    <Name>1118C&gt;T</Name>
+                </OtherNameList>
+                <ProteinChange>Q347*</ProteinChange>
+                <HGVSlist>
+                    <HGVS Assembly="GRCh37" Type="genomic, top-level">
+                        <NucleotideExpression sequenceAccessionVersion="NC_000017.10" sequenceAccession="NC_000017" sequenceVersion="10" change="g.41063408C&gt;T" Assembly="GRCh37">
+                            <Expression>NC_000017.10:g.41063408C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                    <HGVS Assembly="GRCh38" Type="genomic, top-level">
+                        <NucleotideExpression sequenceAccessionVersion="NC_000017.11" sequenceAccession="NC_000017" sequenceVersion="11" change="g.42911391C&gt;T" Assembly="GRCh38">
+                            <Expression>NC_000017.11:g.42911391C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                    <HGVS Type="coding">
+                        <NucleotideExpression sequenceAccessionVersion="NM_000151.4" sequenceAccession="NM_000151" sequenceVersion="4" change="c.1039C&gt;T">
+                            <Expression>NM_000151.4:c.1039C&gt;T</Expression>
+                        </NucleotideExpression>
+                        <ProteinExpression sequenceAccessionVersion="NP_000142.2" sequenceAccession="NP_000142" sequenceVersion="2" change="p.Gln347Ter">
+                            <Expression>NP_000142.2:p.Gln347Ter</Expression>
+                        </ProteinExpression>
+                        <MolecularConsequence ID="SO:0001587" Type="nonsense" DB="SO"/>
+                    </HGVS>
+                    <HGVS Type="coding">
+                        <NucleotideExpression sequenceAccessionVersion="NM_001270397.2" sequenceAccession="NM_001270397" sequenceVersion="2" change="c.*431C&gt;T">
+                            <Expression>NM_001270397.2:c.*431C&gt;T</Expression>
+                        </NucleotideExpression>
+                        <MolecularConsequence ID="SO:0001624" Type="3 prime UTR variant" DB="SO"/>
+                    </HGVS>
+                    <HGVS Type="coding">
+                        <NucleotideExpression sequenceAccessionVersion="LRG_147t1" sequenceAccession="LRG_147t1" change="c.1039C&gt;T">
+                            <Expression>LRG_147t1:c.1039C&gt;T</Expression>
+                        </NucleotideExpression>
+                        <ProteinExpression sequenceAccessionVersion="LRG_147p1" sequenceAccession="LRG_147p1" change="p.Gln347Ter">
+                            <Expression>LRG_147p1:p.Gln347Ter</Expression>
+                        </ProteinExpression>
+                    </HGVS>
+                    <HGVS Type="coding">
+                        <NucleotideExpression sequenceAccessionVersion="LRG_147t1" sequenceAccession="LRG_147t1">
+                            <Expression>LRG_147t1:c.1039C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                    <HGVS Type="genomic">
+                        <NucleotideExpression sequenceAccessionVersion="NG_011808.1" sequenceAccession="NG_011808" sequenceVersion="1" change="g.15594C&gt;T">
+                            <Expression>NG_011808.1:g.15594C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                    <HGVS Type="genomic">
+                        <NucleotideExpression sequenceAccessionVersion="LRG_147" sequenceAccession="LRG_147" change="g.15594C&gt;T">
+                            <Expression>LRG_147:g.15594C&gt;T</Expression>
+                        </NucleotideExpression>
+                    </HGVS>
+                    <HGVS Type="protein">
+                        <ProteinExpression sequenceAccessionVersion="NP_000142.1" sequenceAccession="NP_000142" sequenceVersion="1" change="p.Gln347Ter">
+                            <Expression>NP_000142.1:p.Gln347Ter</Expression>
+                        </ProteinExpression>
+                    </HGVS>
+                </HGVSlist>
+                <XRefList>
+                    <XRef ID="CA256179" DB="ClinGen"/>
+                    <XRef Type="Allelic variant" ID="613742.0004" DB="OMIM"/>
+                    <XRef Type="rs" ID="80356487" DB="dbSNP"/>
+                </XRefList>
+                <AlleleFrequencyList>
+                    <AlleleFrequency Value="0.00019" Source="The Genome Aggregation Database (gnomAD)"/>
+                    <AlleleFrequency Value="0.00018" Source="Trans-Omics for Precision Medicine (TOPMed)"/>
+                </AlleleFrequencyList>
+            </SimpleAllele>
+            <ReviewStatus>criteria provided, multiple submitters, no conflicts</ReviewStatus>
+            <RCVList>
+                <RCVAccession Title="NM_000151.4(G6PC):c.1039C&gt;T (p.Gln347Ter) AND Glycogen storage disease type 1A" DateLastEvaluated="2018-11-13" ReviewStatus="criteria provided, multiple submitters, no conflicts" Interpretation="Pathogenic" SubmissionCount="7" Accession="RCV000012780" Version="11">
+                    <InterpretedConditionList>
+                        <InterpretedCondition DB="MedGen" ID="C2919796">Glycogen storage disease type 1A</InterpretedCondition>
+                    </InterpretedConditionList>
+                </RCVAccession>
+                <RCVAccession Title="NM_000151.4(G6PC):c.1039C&gt;T (p.Gln347Ter) AND not provided" DateLastEvaluated="2017-07-03" ReviewStatus="criteria provided, multiple submitters, no conflicts" Interpretation="Pathogenic" SubmissionCount="2" Accession="RCV000199372" Version="5">
+                    <InterpretedConditionList>
+                        <InterpretedCondition DB="MedGen" ID="CN517202">not provided</InterpretedCondition>
+                    </InterpretedConditionList>
+                </RCVAccession>
+            </RCVList>
+            <Interpretations>
+                <Interpretation DateLastEvaluated="2018-11-13" NumberOfSubmissions="9" NumberOfSubmitters="9" Type="Clinical significance">
+                    <Description>Pathogenic</Description>
+                    <Citation Type="general">
+                        <ID Source="PubMed">8182131</ID>
+                    </Citation>
+                    <Citation Type="general">
+                        <URL>http://www.egl-eurofins.com/emvclass/emvclass.php?approved_symbol=G6PC</URL>
+                    </Citation>
+                    <Citation Type="general">
+                        <ID Source="PubMed">18449899</ID>
+                    </Citation>
+                    <Citation Type="general">
+                        <ID Source="PubMed">8733042</ID>
+                    </Citation>
+                    <Citation Type="general">
+                        <ID Source="PubMed">7573034</ID>
+                    </Citation>
+                    <Citation Type="general">
+                        <ID Source="PubMed">10070617</ID>
+                    </Citation>
+                    <Citation Type="review" Abbrev="GeneReviews">
+                        <ID Source="PubMed">20301489</ID>
+                        <ID Source="BookShelf">NBK1312</ID>
+                    </Citation>
+                    <ConditionList>
+                        <TraitSet ID="9460" Type="Disease">
+                            <Trait ID="17556" Type="Disease">
+                                <Name>
+                                    <ElementValue Type="Preferred">not provided</ElementValue>
+                                    <XRef ID="13DG0619" DB="Developmental Genetics Unit,King Faisal Specialist Hospital &amp; Research Centre"/>
+                                </Name>
+                                <AttributeSet>
+                                    <Attribute Type="public definition">The term 'not provided' is registered in MedGen to support identification of submissions to ClinVar for which no condition was named when assessing the variant. 'not provided' differs from 'not specified', which is used when a variant is asserted to be benign, likely benign, or of uncertain significance for conditions that have not been specified.</Attribute>
+                                </AttributeSet>
+                                <XRef ID="CN517202" DB="MedGen"/>
+                            </Trait>
+                        </TraitSet>
+                        <TraitSet ID="3246" Type="Disease">
+                            <Trait ID="10924" Type="Disease">
+                                <Name>
+                                    <ElementValue Type="Preferred">Glycogen storage disease type 1A</ElementValue>
+                                    <XRef ID="Glycogen+Storage+Disease+Type+1A/3120" DB="Genetic Alliance"/>
+                                    <XRef ID="7864" DB="Office of Rare Diseases"/>
+                                </Name>
+                                <Name>
+                                    <ElementValue Type="Alternate">GSD Ia</ElementValue>
+                                    <XRef Type="MIM" ID="232200" DB="OMIM"/>
+                                </Name>
+                                <Symbol>
+                                    <ElementValue Type="Alternate">GSD1</ElementValue>
+                                    <XRef Type="MIM" ID="232200" DB="OMIM"/>
+                                    <XRef ID="7864" DB="Office of Rare Diseases"/>
+                                </Symbol>
+                                <Symbol>
+                                    <ElementValue Type="Preferred">GSD1A</ElementValue>
+                                    <XRef Type="MIM" ID="232200" DB="OMIM"/>
+                                </Symbol>
+                                <AttributeSet>
+                                    <Attribute Type="public definition">Glycogen storage disease type I (GSDI) is characterized by accumulation of glycogen and fat in the liver and kidneys, resulting in hepatomegaly and renomegaly. The two subtypes (GSDIa and GSDIb) are clinically indistinguishable. Some untreated neonates present with severe hypoglycemia; more commonly, however, untreated infants present at age three to four months with hepatomegaly, lactic acidosis, hyperuricemia, hyperlipidemia, hypertriglyceridemia, and/or hypoglycemic seizures. Affected children typically have doll-like faces with fat cheeks, relatively thin extremities, short stature, and protuberant abdomen. Xanthoma and diarrhea may be present. Impaired platelet function can lead to a bleeding tendency with frequent epistaxis. Untreated GSDIb is associated with impaired neutrophil and monocyte function as well as chronic neutropenia after the first few years of life, all of which result in recurrent bacterial infections and oral and intestinal mucosal ulcers. Long-term complications of untreated GSDI include growth retardation resulting in short stature, osteoporosis, delayed puberty, gout, renal disease, pulmonary hypertension, hepatic adenomas with potential for malignant transformation, polycystic ovaries, pancreatitis, and changes in brain function. Normal growth and puberty is expected in treated children. Most affected individuals live into adulthood.</Attribute>
+                                    <XRef ID="NBK1312" DB="GeneReviews"/>
+                                </AttributeSet>
+                                <Citation Type="review" Abbrev="GeneReviews">
+                                    <ID Source="PubMed">20301489</ID>
+                                    <ID Source="BookShelf">NBK1312</ID>
+                                </Citation>
+                                <Citation Type="practice guideline" Abbrev="ACMG, 2014">
+                                    <ID Source="PubMed">25356975</ID>
+                                </Citation>
+                                <XRef ID="364" DB="Orphanet"/>
+                                <XRef ID="79258" DB="Orphanet"/>
+                                <XRef ID="C2919796" DB="MedGen"/>
+                                <XRef Type="MIM" ID="232200" DB="OMIM"/>
+                            </Trait>
+                        </TraitSet>
+                    </ConditionList>
+                </Interpretation>
+            </Interpretations>
+            <ClinicalAssertionList>
+                <ClinicalAssertion ID="33020" DateCreated="2011-01-25" DateLastUpdated="2019-05-02" SubmissionDate="2010-12-30">
+                    <ClinVarSubmissionID localKey="613742.0004_GLYCOGEN STORAGE DISEASE Ia" title="G6PC, GLN347TER_GLYCOGEN STORAGE DISEASE Ia"/>
+                    <ClinVarAccession Accession="SCV000033020" Type="SCV" Version="3" SubmitterName="OMIM" OrgID="3" OrganizationCategory="resource"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>no assertion criteria provided</ReviewStatus>
+                    <Interpretation DateLastEvaluated="1994-05-01">
+                        <Description>Pathogenic</Description>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species>human</Species>
+                                <AffectedStatus>not provided</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>literature only</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">In a patient with glycogen storage disease Ia (GSD1A; 232200), Lei et al. (1994) demonstrated compound heterozygosity for an arg83-to-cys mutation (613742.0002) in exon 2 and a gln347-to-ter mutation in exon 5. The latter mutation was detected in homozygous form in 2 sibs of an unrelated family. The predicted Q347X mutant G6Pase is a truncated protein of 346 amino acids, 11 amino acids shorter than the wildtype G6Pase. Site-directed mutagenesis and transient expression assays demonstrated that the mutant protein is devoid of G6Pase activity.</Attribute>
+                                <Citation>
+                                    <ID Source="PubMed">8182131</ID>
+                                </Citation>
+                                <XRef DB="OMIM" ID="232200" Type="MIM"/>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <Name>G6PC, GLN347TER</Name>
+                        <VariantType>Variation</VariantType>
+                        <OtherNameList>
+                            <Name Type="NonHGVS">GLN347TER</Name>
+                        </OtherNameList>
+                        <XRefList>
+                            <XRef DB="OMIM" ID="613742.0004" Type="Allelic variant"/>
+                        </XRefList>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <Name>
+                                <ElementValue Type="Preferred">GLYCOGEN STORAGE DISEASE Ia</ElementValue>
+                            </Name>
+                        </Trait>
+                    </TraitSet>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="1750562" DateCreated="2019-03-28" DateLastUpdated="2019-08-03" SubmissionDate="2018-11-14">
+                    <ClinVarSubmissionID localKey=":Chr.17_41063408_41063408_C_T|OMIM:232200" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000894123" Type="SCV" Version="1" SubmitterName="Fulgent Genetics,Fulgent Genetics" OrgID="500105" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2018-10-31">
+                        <Description>Pathogenic</Description>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+                        <Citation>
+                            <ID Source="PubMed">25741868</ID>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>unknown</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <VariantType>Variation</VariantType>
+                        <Location>
+                            <SequenceLocation Assembly="GRCh37" Chr="17" alternateAllele="T" referenceAllele="C" start="41063408" stop="41063408" variantLength="1"/>
+                        </Location>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <XRef DB="OMIM" ID="232200" Type="MIM"/>
+                        </Trait>
+                    </TraitSet>
+                    <Citation Abbrev="ACMG, 2015" Type="practice guideline">
+                        <ID Source="PubMed">25741868</ID>
+                        <ID Source="DOI">10.1038/gim.2015.30</ID>
+                    </Citation>
+                    <SubmissionNameList>
+                        <SubmissionName>SUB4786688</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="466616" DateCreated="2015-10-09" DateLastUpdated="2019-05-09" SubmissionDate="2019-01-29">
+                    <ClinVarSubmissionID localKey="GDX:23116|Not Provided" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000251525" Type="SCV" Version="13" SubmitterName="GeneDx" OrgID="26957" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2017-07-03">
+                        <Description>Pathogenic</Description>
+                        <Comment Type="public">The Q347X variant in the G6PC gene has been reported previously in association with autosomal recessive glycogen storage disease type 1a when present in the homozygous state or when in trans with another pathogenic variant (Lei et al., 1994; Kozak et al., 2000; Carlin et al., 2013). Site-directed mutagenesis and transient expression assays in COS1 cells demonstrated a loss of glucose-6-phosphatase activity (Lei et al., 1994). This variant is predicted to cause loss of normal protein function through protein truncation as the last 11 amino acids of the protein are lost. The Q347X variant is observed in 29/66,352 alleles (0.04%) from individuals of non-Finnish European background in the ExAC dataset (Lek et al., 2016). We interpret Q347X as a pathogenic variant.</Comment>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">GeneDx Variant Classification (06012015)</Attribute>
+                        <Citation>
+                            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/7oynscmk/mdi-5616_26957_genedx_interprules_final_061215.pdf</URL>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>yes</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <Location>
+                            <SequenceLocation Assembly="GRCh37" Chr="17" alternateAllele="T" referenceAllele="C" start="41063408" stop="41063408" variantLength="1"/>
+                        </Location>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_000151.2:c.1039C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <Name>
+                                <ElementValue Type="Preferred">Not Provided</ElementValue>
+                            </Name>
+                        </Trait>
+                    </TraitSet>
+                    <SubmissionNameList>
+                        <SubmissionName>SUB5098196</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="1795989" DateCreated="2019-05-29" DateLastUpdated="2019-06-03" SubmissionDate="2019-04-24">
+                    <ClinVarSubmissionID localKey="NM_000151.2:c.1039C&gt;T|MedGen:C2919796" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000919368" Type="SCV" Version="1" SubmitterName="Integrated Genetics/Laboratory Corporation of America" OrgID="500026" OrganizationCategory="laboratory" OrgAbbreviation="IG"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2017-09-25">
+                        <Description>Pathogenic</Description>
+                        <Citation>
+                            <ID Source="PubMed">8733042</ID>
+                        </Citation>
+                        <Comment Type="public">Variant summary: The G6PC c.1039C&gt;T (p.Gln347X) variant results in a premature termination codon, predicted to cause a truncated or absent G6PC protein due to nonsense mediated decay, which are commonly known mechanisms for disease. This variant was found in 56/276802 control chromosomes at a frequency of 0.0002023, which does not exceed the estimated maximal expected allele frequency of a pathogenic G6PC variant (0.0017321). Multiple publications have cited the variant in affected compound heterozygote and homozygote individuals that had little to none glucose-6-phosphatase activity. In addition, multiple clinical diagnostic laboratories/reputable databases classified this variant as pathogenic. Taken together, this variant is classified as pathogenic.</Comment>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">LabCorp Variant Classification Summary - May 2015</Attribute>
+                        <Citation>
+                            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/pttb9itm/labcorp_variant_classification_method_-_may_2015.pdf</URL>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_000151.2:c.1039C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <Name>
+                                <ElementValue Type="Preferred">Glycogen storage disease type 1A</ElementValue>
+                            </Name>
+                            <XRef DB="MedGen" ID="C2919796" Type="CUI"/>
+                        </Trait>
+                    </TraitSet>
+                    <SubmissionNameList>
+                        <SubmissionName>SUB5494893</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="1486021" DateCreated="2018-05-22" DateLastUpdated="2019-08-15" SubmissionDate="2019-03-28">
+                    <ClinVarSubmissionID localKey="2377327|MedGen:CN069618" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000776256" Type="SCV" Version="3" SubmitterName="Invitae" OrgID="500031" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2018-11-13">
+                        <Description>Pathogenic</Description>
+                        <Citation>
+                            <ID Source="PubMed">7573034</ID>
+                        </Citation>
+                        <Citation>
+                            <ID Source="PubMed">8182131</ID>
+                        </Citation>
+                        <Comment>This sequence change results in a premature translational stop signal in the G6PC gene (p.Gln347*). While this is not anticipated to result in nonsense mediated decay, it is expected to delete the last 11 amino acids of the G6PC protein. This variant is present in population databases (rs80356487, ExAC 0.04%). This variant is the second most common cause of glycogen storage disease type 1A in Caucasians (PMID: 7573034, 8182131,Â¬â€ 8733042, 10070617, 11949931, 28397058). ClinVar contains an entry for this variant (Variation ID: 12000). Experimental studies have shown that this nonsense change reduces G6PC enzymatic activity (PMID: 8182131). For these reasons, this variant has been classified as Pathogenic.</Comment>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">Invitae Variant Classification Sherloc (09022015)</Attribute>
+                        <Citation>
+                            <ID Source="PubMed">28492532</ID>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_000151.3:c.1039C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <XRef DB="MedGen" ID="CN069618" Type="CUI"/>
+                        </Trait>
+                    </TraitSet>
+                    <Citation Type="general">
+                        <ID Source="PubMed">28492532</ID>
+                    </Citation>
+                    <SubmissionNameList>
+                        <SubmissionName>SUB5371970</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="2292849" DateCreated="2020-02-27" DateLastUpdated="2020-02-28" SubmissionDate="2019-09-27">
+                    <ClinVarSubmissionID localKey="NC_000017.10:g.41063408C&gt;T|OMIM:232200" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV001163792" Type="SCV" Version="1" SubmitterName="Baylor Genetics" OrgID="1006" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation>
+                        <Description>Pathogenic</Description>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+                        <Citation>
+                            <ID Source="PubMed">25741868</ID>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NC_000017.10:g.41063408C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <XRef DB="OMIM" ID="232200" Type="MIM"/>
+                        </Trait>
+                    </TraitSet>
+                    <SubmissionNameList>
+                        <SubmissionName>BG_GA_2018_SNVs_INDELS</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="40455" DateCreated="2011-05-06" DateLastUpdated="2019-07-02" SubmissionDate="2016-08-25">
+                    <ClinVarSubmissionID localKey="NM_000151.3:c.1039C&gt;T|OMIM:232200" submittedAssembly="not applicable"/>
+                    <ClinVarAccession Accession="SCV000040455" Type="SCV" Version="2" SubmitterName="GeneReviews" OrgID="500062" OrganizationCategory="resource" OrgAbbreviation="GeneReviews"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>no assertion criteria provided</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2016-08-25">
+                        <Description>Pathogenic</Description>
+                        <Citation>
+                            <URL>http://www.ncbi.nlm.nih.gov/books/NBK1312/</URL>
+                        </Citation>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>yes</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>literature only</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <OtherNameList>
+                            <Name>NP_000142.1:p.Gln347Ter</Name>
+                            <Name>1118C&gt;T</Name>
+                        </OtherNameList>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_000151.3:c.1039C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <XRef DB="OMIM" ID="232200" Type="MIM"/>
+                        </Trait>
+                    </TraitSet>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="948919" DateCreated="2017-01-04" DateLastUpdated="2019-05-02" SubmissionDate="2016-11-23">
+                    <ClinVarSubmissionID localKey="454|OMIM:232200" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000485169" Type="SCV" Version="1" SubmitterName="Counsyl" OrgID="320494" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2016-01-05">
+                        <Description>Pathogenic</Description>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">Counsyl Autosomal and X-linked Recessive Disease Classification criteria (2015)</Attribute>
+                        <Citation Type="general">
+                            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/k1i5ewqh/mdi-5618_320494_counsyl_autosomal_and_x-linked_recessive_disease_classification_criteria_(2015).pdf</URL>
+                            <CitationText>mdi-5618_320494_Counsyl Autosomal and X-linked Recessive Disease Classification criteria (2015).pdf</CitationText>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>unknown</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="Description">not provided</Attribute>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <VariantType>Variation</VariantType>
+                        <AttributeSet>
+                            <Attribute Type="HGVS">NM_000151.3:c.1039C&gt;T</Attribute>
+                        </AttributeSet>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <XRef DB="OMIM" ID="232200" Type="MIM"/>
+                        </Trait>
+                    </TraitSet>
+                    <SubmissionNameList>
+                        <SubmissionName>Counsyl2016</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+                <ClinicalAssertion ID="419178" DateCreated="2015-06-25" DateLastUpdated="2019-05-02" SubmissionDate="2018-09-19">
+                    <ClinVarSubmissionID localKey="11699_000000" localKeyIsSubmitted="1" submittedAssembly="GRCh37"/>
+                    <ClinVarAccession Accession="SCV000230856" Type="SCV" Version="5" SubmitterName="EGL Genetic Diagnostics,Eurofins Clinical Diagnostics" OrgID="500060" OrganizationCategory="laboratory"/>
+                    <RecordStatus>current</RecordStatus>
+                    <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+                    <Interpretation DateLastEvaluated="2015-04-07">
+                        <Description>Pathogenic</Description>
+                        <Citation>
+                            <ID Source="PubMed">10070617</ID>
+                        </Citation>
+                        <Citation>
+                            <ID Source="PubMed">18449899</ID>
+                        </Citation>
+                        <Citation>
+                            <ID Source="PubMed">8182131</ID>
+                        </Citation>
+                        <Citation>
+                            <ID Source="PubMed">8733042</ID>
+                        </Citation>
+                    </Interpretation>
+                    <Assertion>variation to disease</Assertion>
+                    <AttributeSet>
+                        <Attribute Type="AssertionMethod">EGL_Classification_Definitions_2015</Attribute>
+                        <Citation>
+                            <URL>https://submit.ncbi.nlm.nih.gov/ft/byid/dn5yhybg/egl_classification_definitions_2015.pdf</URL>
+                        </Citation>
+                    </AttributeSet>
+                    <ObservedInList>
+                        <ObservedIn>
+                            <Sample>
+                                <Origin>germline</Origin>
+                                <Species TaxonomyId="9606">human</Species>
+                                <AffectedStatus>unknown</AffectedStatus>
+                                <Gender>mixed</Gender>
+                            </Sample>
+                            <Method>
+                                <MethodType>clinical testing</MethodType>
+                            </Method>
+                            <ObservedData>
+                                <Attribute Type="VariantAlleles" integerValue="12"/>
+                            </ObservedData>
+                            <ObservedData>
+                                <Attribute Type="Homozygote" integerValue="1"/>
+                            </ObservedData>
+                            <ObservedData>
+                                <Attribute Type="SingleHeterozygote" integerValue="11"/>
+                            </ObservedData>
+                        </ObservedIn>
+                    </ObservedInList>
+                    <SimpleAllele>
+                        <GeneList>
+                            <Gene Symbol="G6PC"/>
+                        </GeneList>
+                        <VariantType>single nucleotide variant</VariantType>
+                        <Location>
+                            <SequenceLocation Assembly="GRCh37" Chr="17" alternateAllele="T" referenceAllele="C" start="41063408" stop="41063408" variantLength="1"/>
+                            <GeneLocation>NM_000151.3:Ex5</GeneLocation>
+                        </Location>
+                        <XRefList>
+                            <XRef DB="HGMD" ID="CM940797"/>
+                            <XRef DB="dbSNP" ID="80356487" Type="rsNumber"/>
+                        </XRefList>
+                    </SimpleAllele>
+                    <TraitSet Type="Disease">
+                        <Trait Type="Disease">
+                            <Name>
+                                <ElementValue Type="Preferred">not provided</ElementValue>
+                            </Name>
+                        </Trait>
+                    </TraitSet>
+                    <Citation>
+                        <URL>http://www.egl-eurofins.com/emvclass/emvclass.php?approved_symbol=G6PC</URL>
+                    </Citation>
+                    <SubmissionNameList>
+                        <SubmissionName>SUB4534263</SubmissionName>
+                    </SubmissionNameList>
+                </ClinicalAssertion>
+            </ClinicalAssertionList>
+            <TraitMappingList>
+                <TraitMapping ClinicalAssertionID="1795989" TraitType="Disease" MappingType="Name" MappingValue="Glycogen storage disease type 1A" MappingRef="Preferred">
+                    <MedGen CUI="C2919796" Name="Glycogen storage disease type 1A"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="33020" TraitType="Disease" MappingType="Name" MappingValue="GLYCOGEN STORAGE DISEASE Ia" MappingRef="Preferred">
+                    <MedGen CUI="C2919796" Name="Glycogen storage disease type 1A"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="1486021" TraitType="Disease" MappingType="XRef" MappingValue="CN069618" MappingRef="MedGen">
+                    <MedGen CUI="C2919796" Name="Glycogen storage disease type 1A"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="1750562" TraitType="Disease" MappingType="XRef" MappingValue="232200" MappingRef="OMIM">
+                    <MedGen CUI="C2919796" Name="Glycogen storage disease type 1A"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="419178" TraitType="Disease" MappingType="Name" MappingValue="not provided" MappingRef="Preferred">
+                    <MedGen CUI="CN517202" Name="not provided"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="466616" TraitType="Disease" MappingType="Name" MappingValue="Not Provided" MappingRef="Preferred">
+                    <MedGen CUI="CN517202" Name="not provided"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="2292849" TraitType="Disease" MappingType="XRef" MappingValue="232200" MappingRef="OMIM">
+                    <MedGen CUI="C2919796" Name="Glycogen storage disease type 1A"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="948919" TraitType="Disease" MappingType="XRef" MappingValue="232200" MappingRef="OMIM">
+                    <MedGen CUI="C2919796" Name="Glycogen storage disease type 1A"/>
+                </TraitMapping>
+                <TraitMapping ClinicalAssertionID="40455" TraitType="Disease" MappingType="XRef" MappingValue="232200" MappingRef="OMIM">
+                    <MedGen CUI="C2919796" Name="Glycogen storage disease type 1A"/>
+                </TraitMapping>
+            </TraitMappingList>
+        </InterpretedRecord>
+    </VariationArchive>
+</ClinVarResult-Set>

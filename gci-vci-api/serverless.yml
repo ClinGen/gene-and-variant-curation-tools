@@ -1,0 +1,67 @@
+service: gci-vci-api
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+plugins:
+  - serverless-python-requirements
+  - serverless-dynamodb-local
+  - serverless-python-requirements
+  - serverless-offline
+  - serverless-add-api-key
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  
+  timeout: 30
+  lambdaHashingVersion: 20201221
+
+custom:
+  account_id: ${file(./get_account_id.js):getAccountId}
+  gci_vci_serverless_function:
+    stage_name: ${opt:gvs_stage_name, '${opt:stage, "dev"}'}
+
+  pythonRequirements:
+    dockerizePip: non-linux
+
+  dynamodb:
+    stages:
+      - dev
+
+  resources:
+    db_table_name: GCI-VCI-API-${self:provider.stage}
+
+
+  apiKeys:
+    - admin-api-key
+
+resources:
+  - ${file(./resources/apikeys-table.yml)}
+  - ${file(./resources/iam.yml)}
+
+## Include this in separate file.
+functions:
+  gci-vci-api:
+    handler: src/handler.handler
+    role: !GetAtt GciVciApiLambdaRole.Arn
+    environment:
+      API_DYNAMO_TABLE_NAME: ${self:custom.resources.db_table_name}
+      BACKEND_FUNCTION_ARN: arn:aws:lambda:${self:provider.region}:${self:custom.account_id}:function:gci-vci-serverless-${self:custom.gci_vci_serverless_function.stage_name}-gci-vci-serverless
+
+    ## Only specifying the GET affliations endpoint for now. 
+    events:
+      - http:
+          path: /affiliations
+          method: get
+          private: true
+      - http:
+          path: /interpretations
+          method: get
+          private: true
+      - http:
+          path: /snapshots
+          method: get
+          private: true

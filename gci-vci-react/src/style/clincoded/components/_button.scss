@@ -1,0 +1,16 @@
+.btn:disabled,
+.btn[disabled],
+.btn.disabled {
+  cursor: not-allowed;
+}
+
+.icon-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rounded-button {
+  border-radius: 25px;
+}

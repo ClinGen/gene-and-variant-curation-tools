@@ -1,0 +1,10 @@
+.inheritance-modal {
+  .modal-body {
+    font-size: 14px;
+    padding: 2rem;
+
+    .row:not(:first-child) {
+      margin-top: 1rem;
+    }
+  }
+}

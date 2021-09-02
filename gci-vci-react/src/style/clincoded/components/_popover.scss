@@ -1,0 +1,16 @@
+.popover-computational-pred {
+  max-width: 100%;
+  font-size: 11px;
+  line-height: 60%;
+}
+
+.popover-trigger-line-height-80 {
+  line-height: 80%
+}
+
+.popover-bg-black {
+  background-color: black;
+  .arrow::after {
+    border-top-color: black;
+  }
+}

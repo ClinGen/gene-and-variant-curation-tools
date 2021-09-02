@@ -1,0 +1,73 @@
+{
+  "caId": "CA485620021",
+  "canonicalRefSeqTranscriptHGVS": [
+    "NM_000257.4:c.3912C>A"
+  ],
+  "clingenPreferredTitle": "NM_000257.4(MYH7):c.3912C>A (p.Gly1304=)",
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:54.943Z",
+  "hgnc": [
+    "MYH7"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000014.8:g.23888446G>T",
+    "GRCh38": "NC_000014.9:g.23419237G>T",
+    "NCBI36": "NC_000014.7:g.22958286G>T",
+    "others": [
+      "CM000676.2:g.23419237G>T",
+      "CM000676.1:g.23888446G>T",
+      "NG_007884.1:g.21425C>A",
+      "LRG_384:g.21425C>A"
+    ]
+  },
+  "ldh": {
+    "id": "41895392",
+    "last_modified_date": "2019-10-03T17:10:51.027Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/41895392"
+  },
+  "maneTranscripts": [
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001819",
+          "term": "synonymous_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000248.2:p.Gly1304="
+      ],
+      "system": "RefSeq",
+      "title": "NM_000257.4:c.3912C>A"
+    },
+    {
+      "maneType": "MANE Select",
+      "maneVersion": "0.93",
+      "molecularConsequences": [
+        {
+          "soId": "SO:0001819",
+          "term": "synonymous_variant"
+        }
+      ],
+      "proteinEffects": [
+        "NP_000248.2:p.Gly1304="
+      ],
+      "system": "Ensembl",
+      "title": "ENST00000355349.4:c.3912C>A",
+      "transcriptNotInCAR": true
+    }
+  ],
+  "proteinEffects": [
+    "NP_000248.2:p.Gly1304=",
+    "XP_016876829.1:p.Gly1304=",
+    "NP_000248.2:p.Gly1304=",
+    "ENSP00000347507.3:p.Gly1304="
+  ],
+  "transcriptHGVS": [
+    "NM_000257.3:c.3912C>A",
+    "XM_017021340.1:c.3912C>A",
+    "NM_000257.4:c.3912C>A",
+    "ENST00000355349.3:c.3912C>A"
+  ]
+}

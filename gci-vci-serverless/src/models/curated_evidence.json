@@ -1,0 +1,38 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://curation.clinicalgenome.org/model#curated-evidence",
+    "title": "CuratedEvidenceModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["curated-evidence"]
+        },
+        "PK": { "type":"string" },
+        "submitted_by": {
+          "type": "string",
+          "$schema": "user"
+        },
+        "date_created": { "type": "string" },
+        "modified_by": { "type": "string" },
+        "last_modified": { "type": "string" },
+        "schema_version": { "type": "string" },
+        "variant": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "category": { "type": "string" },
+        "subcategory": { "type": "string" },
+        "articles": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
+        },
+        "evidenceCriteria": { "type": "string" },
+        "evidenceDescription": { "type": "string" },
+        "sourceInfo": { "type": "object" },
+        "status": {
+            "type": "string",
+            "enum": ["deleted"]
+        }
+    }
+}

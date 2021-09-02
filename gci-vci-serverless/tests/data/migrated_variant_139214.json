@@ -1,0 +1,291 @@
+{
+  "status": "in progress",
+  "clinVarRCVs": [],
+  "clinvarVariantTitle": "NM_005902.4(SMAD3):c.-28C>T",
+  "@type": [
+      "variant",
+      "item"
+  ],
+  "variant_identifier": "139214",
+  "actions": [
+      {
+          "name": "edit-json",
+          "href": "/variants/a9f88044-3423-434c-9e2f-7dce18e61014/#!edit-json",
+          "title": "Edit JSON",
+          "profile": "/profiles/variant.json"
+      },
+      {
+          "name": "edit",
+          "href": "/variants/a9f88044-3423-434c-9e2f-7dce18e61014/#!edit",
+          "title": "Edit",
+          "profile": "/profiles/variant.json"
+      }
+  ],
+  "maneTranscriptTitle": "",
+  "otherDescription": "",
+  "uuid": "a9f88044-3423-434c-9e2f-7dce18e61014",
+  "audit": {},
+  "associatedPathogenicities": [],
+  "@id": "/variants/a9f88044-3423-434c-9e2f-7dce18e61014/",
+  "molecular_consequence": "5 prime UTR variant",
+  "clinVarSCVs": [],
+  "last_modified": "2020-11-10T06:07:05.142081+00:00",
+  "dbSNPIds": [
+      "144374592"
+  ],
+  "modified_by": "/users/7b112e8d-4e72-4336-b789-f7c0b241da01/",
+  "carId": "CA020063",
+  "molecularConsequenceList": [
+      {
+          "term": "5 prime UTR variant",
+          "soId": "SO:0001623",
+          "hgvsName": "NM_005902.4:c.-28C>T"
+      }
+  ],
+  "source": "ClinVar",
+  "submitted_by": {
+      "first_name": "ClinGen",
+      "affiliation": [],
+      "last_name": "Test Curator",
+      "user_status": "active",
+      "@type": [
+          "user",
+          "item"
+      ],
+      "@id": "/users/7b112e8d-4e72-4336-b789-f7c0b241da01/",
+      "title": "ClinGen Test Curator",
+      "lab": "/labs/curator/",
+      "date_created": "2020-04-29T00:12:22.398587+00:00",
+      "email": "clingen.demo.curator@genome.stanford.edu",
+      "uuid": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+  },
+  "associatedInterpretations": [
+      {
+          "status": "in progress",
+          "last_modified": "2020-06-16T16:52:16.213804+00:00",
+          "modified_by": {
+              "first_name": "ClinGen",
+              "affiliation": [],
+              "last_name": "Test Curator",
+              "user_status": "active",
+              "@type": [
+                  "user",
+                  "item"
+              ],
+              "@id": "/users/7b112e8d-4e72-4336-b789-f7c0b241da01/",
+              "title": "ClinGen Test Curator",
+              "lab": "/labs/curator/",
+              "date_created": "2020-04-29T00:12:22.398587+00:00",
+              "email": "clingen.demo.curator@genome.stanford.edu",
+              "uuid": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+          },
+          "interpretation_status": "In Progress",
+          "@type": [
+              "interpretation",
+              "item"
+          ],
+          "modeInheritanceAdjective": "",
+          "variant": "/variants/a9f88044-3423-434c-9e2f-7dce18e61014/",
+          "submitted_by": {
+              "first_name": "ClinGen",
+              "affiliation": [],
+              "last_name": "Test Curator",
+              "user_status": "active",
+              "@type": [
+                  "user",
+                  "item"
+              ],
+              "@id": "/users/7b112e8d-4e72-4336-b789-f7c0b241da01/",
+              "title": "ClinGen Test Curator",
+              "lab": "/labs/curator/",
+              "date_created": "2020-04-29T00:12:22.398587+00:00",
+              "email": "clingen.demo.curator@genome.stanford.edu",
+              "uuid": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+          },
+          "date_created": "2020-06-16T16:52:16.213793+00:00",
+          "evaluation_count": 0,
+          "@id": "/interpretations/3d3c4ba4-506e-403f-ae85-5f93a3e0e5a1/",
+          "schema_version": "8",
+          "uuid": "3d3c4ba4-506e-403f-ae85-5f93a3e0e5a1",
+          "interpretation_genes": "",
+          "provisional_count": 0,
+          "interpretation_disease": ""
+      },
+      {
+          "status": "in progress",
+          "last_modified": "2020-07-17T20:25:32.330971+00:00",
+          "interpretation_disease": "",
+          "modified_by": {
+              "first_name": "Christine",
+              "affiliation": [
+                  "77777",
+                  "88888",
+                  "99999",
+                  "10066"
+              ],
+              "last_name": "Preston",
+              "user_status": "active",
+              "@type": [
+                  "user",
+                  "item"
+              ],
+              "@id": "/users/55af6f87-8264-4336-a239-ba894bf3316b/",
+              "title": "Christine Preston",
+              "lab": "/labs/j-michael-cherry/",
+              "date_created": "2020-04-29T00:12:36.916768+00:00",
+              "email": "christip@stanford.edu",
+              "uuid": "55af6f87-8264-4336-a239-ba894bf3316b"
+          },
+          "interpretation_status": "Provisional",
+          "affiliation": "77777",
+          "@type": [
+              "interpretation",
+              "item"
+          ],
+          "modeInheritanceAdjective": "with genetic anticipation",
+          "variant": "/variants/a9f88044-3423-434c-9e2f-7dce18e61014/",
+          "submitted_by": {
+              "first_name": "Rao",
+              "affiliation": [
+                  "77777",
+                  "88888",
+                  "99999"
+              ],
+              "last_name": "Madhavrao",
+              "user_status": "active",
+              "@type": [
+                  "user",
+                  "item"
+              ],
+              "@id": "/users/c57329f6-6f0d-4aa6-bdc7-f54e95673c91/",
+              "title": "Rao Madhavrao",
+              "lab": "/labs/j-michael-cherry/",
+              "date_created": "2020-04-29T00:12:49.656923+00:00",
+              "email": "lmadhavr@stanford.edu",
+              "uuid": "c57329f6-6f0d-4aa6-bdc7-f54e95673c91"
+          },
+          "interpretation_genes": "",
+          "evaluation_count": 3,
+          "@id": "/interpretations/06cf1c9d-852d-4156-a7b7-04a9c96771fd/",
+          "schema_version": "8",
+          "uuid": "06cf1c9d-852d-4156-a7b7-04a9c96771fd",
+          "provisional_variant": [
+              {
+                  "status": "in progress",
+                  "affiliation": "77777",
+                  "approvedClassification": false,
+                  "classificationDate": "2020-07-17T20:24:41.095Z",
+                  "@type": [
+                      "provisional_variant",
+                      "item"
+                  ],
+                  "@id": "/provisional-variant/62c47430-fc8f-4e33-a835-85d6bb53c2cd/",
+                  "uuid": "62c47430-fc8f-4e33-a835-85d6bb53c2cd",
+                  "schema_version": "5",
+                  "evidenceSummary": "afsafsafa",
+                  "reason_present": "dfadfsaadfafaf",
+                  "last_modified": "2020-07-17T20:24:41.246375+00:00",
+                  "modified_by": "/users/55af6f87-8264-4336-a239-ba894bf3316b/",
+                  "reason": "dfadfsaadfafaf",
+                  "submitted_by": "/users/55af6f87-8264-4336-a239-ba894bf3316b/",
+                  "publishClassification": false,
+                  "alteredClassification_present": "Uncertain significance",
+                  "interpretation_associated": [
+                      "/interpretations/06cf1c9d-852d-4156-a7b7-04a9c96771fd/"
+                  ],
+                  "date_created": "2020-07-17T20:24:41.246490+00:00",
+                  "autoClassification": "Uncertain significance - insufficient evidence",
+                  "classificationStatus": "In progress",
+                  "provisionedClassification": false,
+                  "alteredClassification": "Uncertain significance"
+              }
+          ],
+          "evaluations": [
+              "/evaluations/478313ae-906c-4d85-9329-98377d208aad/",
+              "/evaluations/a1412ef4-87c8-4620-8068-8fe13328a6de/",
+              "/evaluations/64ed2b72-4fb5-4182-a539-538d474b6876/"
+          ],
+          "date_created": "2020-07-08T22:51:28.785765+00:00",
+          "provisional_count": 1,
+          "modeInheritance": "Autosomal recessive inheritance (HP:0000007)"
+      },
+      {
+          "status": "in progress",
+          "last_modified": "2020-09-11T21:47:55.640505+00:00",
+          "modified_by": {
+              "first_name": "Christine",
+              "affiliation": [
+                  "77777",
+                  "88888",
+                  "99999",
+                  "10066"
+              ],
+              "last_name": "Preston",
+              "user_status": "active",
+              "@type": [
+                  "user",
+                  "item"
+              ],
+              "@id": "/users/55af6f87-8264-4336-a239-ba894bf3316b/",
+              "title": "Christine Preston",
+              "lab": "/labs/j-michael-cherry/",
+              "date_created": "2020-04-29T00:12:36.916768+00:00",
+              "email": "christip@stanford.edu",
+              "uuid": "55af6f87-8264-4336-a239-ba894bf3316b"
+          },
+          "interpretation_disease": "",
+          "evaluations": [
+              "/evaluations/1f001260-abbd-43f9-af68-0eb49e2e388f/",
+              "/evaluations/e407573e-9b08-4aad-8725-4a622c33f43a/"
+          ],
+          "@type": [
+              "interpretation",
+              "item"
+          ],
+          "modeInheritanceAdjective": "",
+          "variant": "/variants/a9f88044-3423-434c-9e2f-7dce18e61014/",
+          "submitted_by": {
+              "first_name": "Christine",
+              "affiliation": [
+                  "77777",
+                  "88888",
+                  "99999",
+                  "10066"
+              ],
+              "last_name": "Preston",
+              "user_status": "active",
+              "@type": [
+                  "user",
+                  "item"
+              ],
+              "@id": "/users/55af6f87-8264-4336-a239-ba894bf3316b/",
+              "title": "Christine Preston",
+              "lab": "/labs/j-michael-cherry/",
+              "date_created": "2020-04-29T00:12:36.916768+00:00",
+              "email": "christip@stanford.edu",
+              "uuid": "55af6f87-8264-4336-a239-ba894bf3316b"
+          },
+          "date_created": "2020-09-11T20:25:59.812269+00:00",
+          "evaluation_count": 2,
+          "@id": "/interpretations/b86c9471-6434-416f-b0e4-bdba5c2d4c72/",
+          "schema_version": "8",
+          "uuid": "b86c9471-6434-416f-b0e4-bdba5c2d4c72",
+          "interpretation_genes": "",
+          "provisional_count": 0,
+          "interpretation_status": "In Progress"
+      }
+  ],
+  "schema_version": "6",
+  "date_created": "2020-11-10T06:07:05.142093+00:00",
+  "variation_type": "single nucleotide variant",
+  "variationType": "single nucleotide variant",
+  "clinvarVariantId": "139214",
+  "hgvsNames": {
+      "others": [
+          "NM_005902.4:c.-28C>T",
+          "NG_011990.1:g.5271C>T"
+      ],
+      "GRCh37": "NC_000015.9:g.67358465C>T",
+      "GRCh38": "NC_000015.10:g.67066127C>T"
+  }
+}

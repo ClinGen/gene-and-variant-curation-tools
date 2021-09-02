@@ -1,0 +1,3244 @@
+
+gci-vci-serverless:
+  role: !GetAtt ServerlessRole.Arn
+  handler: src/app.handler
+  environment:
+    CLIN_VAR_EUTILS_VCV_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?api_key=&db=clinvar&rettype=vcv&is_variationid&from_esearch=true&id='
+    CAR_ALLELE_ENDPOINT: 'https://reg.genome.network/allele/'
+    ENSEMBL_VEP_HGVS_ENDPOINT: 'https://rest.ensembl.org/vep/human/hgvs/'
+    CLIN_VAR_ESEARCH_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?api_key=&db=clinvar&term='
+    DB_TABLE_NAME: ${self:custom.resources.gci-vci-table-name}
+    DB_VPT_TABLE_NAME: ${self:custom.resources.vpt-table-name}
+    DB_VPFILTER_TABLE_NAME: ${self:custom.resources.vpf-table-name}
+    HISTORY_TABLE: ${self:custom.resources.history-table-name}
+    APPROVED_BUCKET: ${self:custom.resources.approved-bucket-name}
+    PROVISIONAL_BUCKET: ${self:custom.resources.provisional-bucket-name}
+    SNAPSHOT_BUCKET: ${self:custom.resources.snapshot-bucket-name}
+    VP_BUCKET: ${self:custom.resources.vp-bucket-name}
+    APP_STAGE: ${self:provider.stage}
+    MIGRATION: ${opt:migration}
+    # Temporary - move to Secrets Manager (dynamic reference)?
+    KAFKA_CERT_PW: ''
+    # Temporary - locate elsewhere or use other data/services
+    LOCAL_FILE_DIR: 'local-files'
+    #ES_DOMAIN_ENDPOINT: !GetAtt ElasticsearchDomain.DomainEndpoint
+  events:
+    - schedule:
+        name: warmer-schedule-${self:provider.stage}
+        rate: rate(5 minutes)
+        enabled: true
+        input:
+          sequence: 1
+          concurrency: 2
+          warmer: true
+
+    - http:
+        path: /variants/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get variant info from DynamoDB."
+          description: "Pulls variant info for a given RID."
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique primary (legacy RID) key of the Variant to get."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The variant object matching the given RID."
+              responseModels:
+                "application/json": "Variant"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /variants
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a variant from either the CAR or ClinVar repositories."
+          description: >-
+            Returns a variant objecting matching the given CAR ID or ClinVarVariant ID. The method
+            queries the external repositories; parses the responses; and returns a variant object.
+            You must provide either the clinvarVariantId or carId query parameter in your request.
+          queryParams:
+            -
+              name: "carId"
+              description: "The CAR ID (e.g. 'CA321211') of the variant to find."
+            -
+              name: "clinvarVariantId"
+              descrition: "The ClinVar Variant ID  (e.g. '120000') of the variant to find."
+            -
+              name: "basicInfo"
+              descrition: "Switch to enable basic info variant data fetching"
+            -
+              name: "variantSource"
+              descrition: "Either clinvar or car. Effective when basicInfo is present."
+            -
+              name: "variantId"
+              descrition: "Variant id of clinvar or car. Effective when basicInfo is present."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The variant object matching the given ID from the appropriate source."
+              # responseModels:
+              #   "application/json": "Variant"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /variants
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new variant or update an existing one."
+          description: >-
+            This method will first look for an existing variant object with a matching carId or clinvarVariantId
+            value. If one is found we update the existing object with the data the request body. If we do not find
+            a variant matching those fields it will create a new one.
+          requestBody:
+            description: "The variant object to create or update."
+          requestModels:
+            "application/json": "Variant"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created or updated variant."
+              # responseModels:
+              #   "application/json": "Variant"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "The error describing what went wrong during the create or update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /vpt
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new vpt."
+          description: "Creates a new vpt with the data in the request body."
+          requestBody:
+            description: "The vpt to create."
+          #requestModels:
+          #  "application/json": "Vpt"
+          methodResponses:
+            - statusCode: "201"
+              responseBody:
+                description: "The created assessment."
+              #responseModels:
+              #  "application/json": "Variant"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+            - statusCode: "404"
+              responseBody:
+                description: "An error describing what went wrong."
+    - http:
+        path: /vpt/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing Vpt record."
+          description: "Update an existing ClinGenVPTTable provided in the body of the request."
+          pathParams:
+            - name: "pk"
+              description: "The unique PK of the vp to update."
+          #requestModels:
+          #  "application/json": "Assessment"
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "The assessment that was updated."
+              responseModels:
+                "application/json": "Vpt"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+    - http:
+        path: /interpretations
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new interpretation."
+          description: >-
+            Creates a new interpretation with the data in the request body. You can provide an embedded variant
+            or variant RID for the variant field. If an RID is detected this method will first lookup the variant
+            and embed the full variant object as the 'variant' field on interpretation.
+          requestBody:
+            description: "The interpretation to create."
+          requestModels:
+            "application/json": "Interpretation"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created interpretation."
+              responseModels:
+                "application/json": "Interpretation"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+            -
+              statusCode: "404"
+              responseBody:
+                  description: >-
+                    An error describing that the variant RID specified in the 'variant' field could not be found. If the
+                    variant can not be found the interpretation can not be saved.
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /interpretations/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing interpretation."
+          description: >-
+            Update an existing interpretation provided in the body of the request. Before updating
+            the given interpretation object will be set with the given PK to ensure we're updating
+            the requested object.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the interpretation to update."
+          requestModels:
+            "application/json": "Interpretation"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The interpretation that was updated."
+              responseModels:
+                "application/json": "Interpretation"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /interpretations
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of interpretations."
+          description: "Queries for a list of all interpretations."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of interpretations that match the given query."
+              # responseModels:
+              #   "application/json": "InterpretationList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /interpretations/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of interpretations."
+          description: "Queries for a list of all interpretations."
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the interpretation to find."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of interpretations that match the given query."
+              # responseModels:
+              #   "application/json": "InterpretationList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /evaluations
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new evaluation."
+          description: >-
+            Creates a new evaluation with the data in the request body.
+          requestBody:
+            description: "The evaluation to create."
+          requestModels:
+            "application/json": "Evaluation"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created evaluation."
+              responseModels:
+                "application/json": "Evaluation"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /evaluations/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing evaluation."
+          description: >-
+            Get an evaluation with the given PK. Returns either the matching evaluation
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the evaluation to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The evaluation matching the given PK."
+                # responseModels:
+                #   "application/json": "Evaluation"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /evaluations/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing evaluation."
+          description: >-
+            Update an existing evaluation provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the evaluation to update."
+          requestBody:
+            description: "The evaluation that will replace the existing one."
+          requestModels:
+            "application/json": "Evaluation"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The evaluation that was updated."
+              # responseModels:
+              #   "application/json": "Interpretation"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /articles/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Retrive a PubMed article metadata based on the given PubMed Id."
+          descriont: >-
+            Returns the PubMed with the given PubMed Id which is a required query parameter.
+          pathParams:
+            -
+              name: 'pk'
+              description: >-
+                The primary key or Pubmed Id of the requested article. The ID should not include any prefixes
+                For example you should remove characters like 'PMID:' before issuing this request.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The article matching the given PubMed Id."
+                responseModels:
+                  "application/json": "Article"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+                responseModels:
+                  "application/json": "EmptyResponse"
+    - http:
+        path: /articles
+        method: post
+        cors: true
+        documentation:
+          summary: "Create a new article item."
+          description: >-
+            Creates a new article item with the data in the request body.
+          requestBody:
+            description: "The article item to create."
+          requestModels:
+            "application/json": "Article"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created article item."
+              responseModels:
+                "application/json": "Article"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /curated-evidences
+        method: post
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Create a new curated evidence item."
+          description: >-
+            Creates a new curated evidence item with the data in the request body.
+          requestBody:
+            description: "The curated evidence item to create."
+          requestModels:
+            "application/json": "CuratedEvidence"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created curated evidence item."
+              responseModels:
+                "application/json": "CuratedEvidence"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /curated-evidences/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Update an existing curated evidence item."
+          description: >-
+            Update an existing curated evidence provided in the body of the request. Before updating
+            the given object will be set with the given PK to ensure we're updating
+            the requested object.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the curated evidence to update."
+          requestModels:
+            "application/json": "CuratedEvidence"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The curated evidence that was updated."
+              responseModels:
+                "application/json": "CuratedEvidence"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /curated-evidences
+        method: get
+        cors: true
+        documentation:
+          summary: "Get a list of curated evidences."
+          description: "Queries for a list of curated evidences."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of curated evidences that match the given query."
+              # responseModels:
+              #   "application/json": "CuratedEvidencesList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /curated-evidences/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing curated evidence item."
+          description: >-
+            Get a curated evidence item with the given PK. Returns either the matching curated evidence
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the curated evidence to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The curated evidence matching the given PK."
+                responseModels:
+                  "application/json": "CuratedEvidence"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /snapshots
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of snapshots."
+          description: "Queries for a list of snapshots."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of snapshots that match the given query."
+              # responseModels:
+              #   "application/json": "SnapshotList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /snapshots/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing snapshot (metadata only)."
+          description: >-
+            Get a snapshot with the given PK. Returns either the matching
+            snapshot (metadata only) or an empty/error response.
+          pathParameters:
+            -
+              name: "pk"
+              description: "The unique PK of the snapshot to find."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The snapshot (metadata only) matching the given PK."
+              # responseModels:
+              #   "application/json": "Snapshot"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /snapshots/{pk}/complete
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing snapshot (complete dataset)."
+          description: >-
+            Get a snapshot with the given PK. Returns either the matching
+            snapshot (complete dataset) or an empty/error response.
+          pathParameters:
+            -
+              name: "pk"
+              description: "The unique PK of the snapshot to find."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The snapshot (complete dataset) matching the given PK."
+              # responseModels:
+              #   "application/json": "Snapshot"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /snapshots
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a snapshot of the provided type and action."
+          description: >-
+            Using the data in the request body, creates a snapshot where the curation data
+            is archived in S3 and a small amount of metadata is stored in the DB.
+          queryParams:
+            -
+              name: "type"
+              description: "The type of data (interpretation or gdm) being saved to a snapshot. This query parameter is required."
+            -
+              name: "action"
+              description: "The user action (provision or approve) creating the snapshot. This query parameter is required."
+          requestBody:
+            description: The curation data being archived.
+          # requestModels:
+          #   "application/json": Snapshot
+          methodResponses:
+            -
+              statusCode: '201'
+              responseBody:
+                description: 'The created snapshot item'
+              # responseModels:
+              #   'application/json': 'Snapshot'
+            -
+              statusCode: '400'
+              responseBody:
+                description: An error occurred.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+            -
+              statusCode: '404'
+              responseBody:
+                description: The related interpretation could not be found.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+            -
+              statusCode: '422'
+              responseBody:
+                description: An error in the request body.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+    - http:
+        path: /snapshots/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing snapshot of the provided type."
+          description: "Update an existing snapshot (metadata in DB only) using the body of the request."
+          pathParameters:
+            -
+              name: "pk"
+              description: "The unique PK of the snapshot to update."
+          queryParams:
+            -
+              name: "type"
+              description: "The type of data (interpretation or gdm) in the snapshot. This query parameter is required."
+          # requestModels:
+          #   "application/json": "Snapshot"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The snapshot that was updated."
+              # responseModels:
+              #   "application/json": "Snapshot"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error occurred (bad request)."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /genes
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new gene."
+          description: >-
+            Creates a new gene with the data in the request body.
+          requestBody:
+            description: "The gene to create."
+          requestModels:
+            "application/json": "Gene"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The created gene."
+              responseModels:
+                "application/json": "Gene"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /genes/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Update an existing gene item."
+          description: >-
+            Update an existing gene provided in the body of the request. Before updating
+            the given object will be set with the given PK to ensure we're updating
+            the requested object.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the gene to update."
+          requestModels:
+            "application/json": "Gene"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The gene that was updated."
+              responseModels:
+                "application/json": "Gene"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /genes
+        method: get
+        cors: true
+        documentation:
+          summary: "Get a list of genes."
+          description: "Queries for a list of all genes."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of all genes."
+              # responseModels:
+              #   "application/json": "GeneList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /genes/{pk}
+        method: get
+        cors: true
+        documentation:
+          summary: "Retrieve an existing gene based on the given gene symbol."
+          description: >-
+            Return the gene with the given gene symbol
+            First make request to HGNC to try and find the gene
+            If found, query database to see if gene exists there
+              If found in database, compare HGNC gene data with data in database  
+                If found differences, update HGNC data to database and return gene object
+                If not, do nothing and return gene object
+              If not found in database, add gene to database and return gene object
+            If not found, return empty json object
+          pathParameters:
+            -
+              name: "symbol"
+              description: >-
+                The unique gene symbol to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The gene matching the given symbol."
+                # responseModels:
+                #   "application/json": "Gene"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object if gene can not be found."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+    - http:
+        path: /gdms
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new gdm."
+          description: >-
+            Creates a new gdm with the data in the request body.
+          requestBody:
+            description: "The gdm to create."
+          requestModels:
+            "application/json": "GDM"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created gdm."
+              responseModels:
+                "application/json": "GDM"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+            -
+              statusCode: "404"
+              responseBody:
+                  description: >-
+                    An error describing that the gdm does not exist.
+              # responseModels
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /gdms
+        method: get
+        cors: true
+        documentation:
+          summary: "Get a list of gdms."
+          description: "Queries for a list of all gdms."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of gdms that match the given query."
+              # responseModels:
+              #   "application/json": "GdmList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /gdms/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Update an existing gdm."
+          description: >-
+            Update an existing gdm provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the gdm to update."
+          requestModels:
+            "application/json": "GDM"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The GDM that was updated."
+              responseModels:
+                "application/json": "GDM"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /gdms/{pk}
+        method: get
+        cors: true
+        documentation:
+          summary: "Get an existing gdm"
+          description: >-
+            Get a gdm with the given PK. Returns either the matching gdm
+            or an error
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the gdm to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The gdm matching the given PK."
+                # responseModels:
+                #   "application/json": "Gdm"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /diseases
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new disease."
+          description: >-
+            Creates a new disease with the data in the request body.
+          requestBody:
+            description: "The disease to create."
+          requestModels:
+            "application/json": "Disease"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created disease."
+              responseModels:
+                "application/json": "Disease"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /diseases/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Retrive an existing disease based on the given MONDO ID."
+          description: >-
+            Returns the disease with the given MONDO Id. First queries our local database to
+            see if we have already cached this disease. If not found locally we make a request
+            to the OLS API to try and find the disease. If the disease is returned from OLS
+            it is first saved to our database and then returned to the sender of the originating
+            request.
+          pathParams:
+            -
+              name: "diseaseId"
+              description: >-
+                The unique MONDO Id of the requested disease. The Id should be formatted with
+                the prefix 'MONDO_'. For example 'MONDO_0000214'
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+              description: "The disease matching the given MONDO Id."
+              responseModels:
+                "application/json": "Disease"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+    - http:
+        path: /provisional-classifications
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new provisionalClassification."
+          description: >-
+            Creates a new provisionalClassification with the data in the request body.
+          requestBody:
+            description: "The provisionalClassification to create."
+          requestModels:
+            "application/json": "ProvisionalClassification"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created provisionalClassification."
+              responseModels:
+                "application/json": "ProvisionalClassification"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /provisional-classifications/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing provisionalClassification."
+          description: >-
+            Update an existing provisionalClassification provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the provisionalClassification to update."
+          requestModels:
+            "application/json": "ProvisionalClassification"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The provisionalClassification that was updated."
+              responseModels:
+                "application/json": "ProvisionalClassification"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /provisional-classifications/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing provisionalClassification."
+          description:  >-
+            Get a provisionalClassification with the given PK. Returns either the matching provisionalClassification
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the provisionalClassification to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The provisionalClassification matching the given PK."
+              responseModels:
+                "application/json": "ProvisionalClassification"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /provisional-classifications
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of provisionalClassifications."
+          description: "Queries for a list of all provisionalClassifications."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of provisionalClassifications that match the given query."
+              # responseModels:
+              #   "application/json": "provisionalClassificationList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /annotations
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new annotation."
+          description: >-
+            Creates a new annotation with the data in the request body.
+          requestBody:
+            description: "The annotation to create."
+          requestModels:
+            "application/json": "Annotation"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created annotation."
+              responseModels:
+                "application/json": "Annotation"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /annotations/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing annotation."
+          description: >-
+            Update an existing annotation provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the annotation to update."
+          requestModels:
+            "application/json": "Annotation"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The annotation that was updated."
+              responseModels:
+                "application/json": "Annotation"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /annotations/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing annotation."
+          description:  >-
+            Get a annotation with the given PK. Returns either the matching annotation
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the annotation to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The annotation matching the given PK."
+              responseModels:
+                "application/json": "Annotation"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /annotations
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of annotations."
+          description: "Queries for a list of all annotations."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of annotations that match the given query."
+              # responseModels:
+              #   "application/json": "AnnotationList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /populations
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new population"
+          description: >-
+            Creates a new population with the data in the request body.
+          requestBody:
+            description: "The population to create."
+          requestModels:
+            "application/json": "Population"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created population."
+              responseModels:
+                "application/json": "Population"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /populations/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing population."
+          description: >-
+            Update an existing population provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the population to update."
+          requestModels:
+            "application/json": "Population"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The population that was updated."
+              responseModels:
+                "application/json": "Population"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /populations/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing population."
+          description:  >-
+            Get a population with the given PK. Returns either the matching population
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the population to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The population matching the given PK."
+              responseModels:
+                "application/json": "Population"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /populations
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of population."
+          description: "Queries for a list of all population."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of populations that match the given query."
+              # responseModels:
+              #   "application/json": "PopulationList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /provisional-variants/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing provisional_variant."
+          description: >-
+            Get a provisional_variant with the given PK. Returns either the
+            matching provisional_variant or an empty/error response.
+          pathParameters:
+            -
+              name: "pk"
+              description: "The unique PK of the provisional_variant to find."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The provisional_variant matching the given PK."
+              responseModels:
+                "application/json": "ProvisionalVariant"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /provisional-variants
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of provisional_variants."
+          description: "Queries for a list of all provisional_variants."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of provisional_variants that match the given query."
+              # responseModels:
+              #   "application/json": "ProvisionalVariantList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /provisional-variants
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new provisional_variant."
+          description: >-
+            Creates a new provisional_variant with the data in the request body.
+          requestBody:
+            description: "The provisional_variant to create."
+          requestModels:
+            "application/json": "ProvisionalVariant"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created provisional_variant."
+              responseModels:
+                "application/json": "ProvisionalVariant"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /provisional-variants/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing provisional_variant."
+          description: >-
+            Update an existing provisional_variant using the body of the request.
+          pathParameters:
+            -
+              name: "pk"
+              description: "The unique PK of the provisional_variant to update."
+          requestModels:
+            "application/json": "ProvisionalVariant"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The provisional_variant that was updated."
+              responseModels:
+                "application/json": "ProvisionalVariant"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /functional
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create new functional data."
+          description: >-
+            Creates new functional data with the data in the request body.
+          requestBody:
+            description: "The functional data object to create."
+          requestModels:
+            "application/json": "Functional"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created functional data."
+              responseModels:
+                "application/json": "Functional"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /functional
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Retrive and parse functional data from the LDH based on the given variant id."
+          description: >-
+            Returns the functional data with the given variant id. First makes call to the ldh to
+            fetch variant data which contains the allele frequency impact statements (AFIS) ids.
+            Then makes a number of calls to the ldh for the further details for the AFIS corresponding
+            to the number of statements available. Finally, parses and reconstructs parts of the AFIS data
+            and makes a number of calls out to PubMed to embed article information into the data corresponding
+            to the number of PubMed articles referenced.
+          queryParams:
+            -
+              name: "variantId"
+              description: "The variant ID of the functional data to retrieve"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The functional data for the given variant Id."
+              # responseModels:
+              #   "application/json": "Functional"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /functional/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Retrive functional data from dynamoDB based on the PK."
+          description: >-
+            Get the functional data object with the given PK
+          pathParams:
+            -
+              name: "pk"
+              description: >-
+                The unique PK of the functional data to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+              description: "The functional data for the given variant Id."
+              responseModels:
+                "application/json": "Functional"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /functional/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update existing functional data."
+          description: >-
+            Update an existing entry of functional data provided in the body of the request. Before updating
+            the given functional data object will be set with the given PK to ensure we're updating
+            the requested object.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the functional data to update."
+          requestModels:
+            "application/json": "Functional"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The functional data that was updated."
+              responseModels:
+                "application/json": "Functional"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /computational/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Retrive computational data from dynamoDB based on the PK."
+          description: >-
+            Get the computational data object from with the given PK
+          pathParams:
+            -
+              name: "pk"
+              description: >-
+                The unique PK of the computational data to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+              description: "The computational data for the given variant Id."
+              responseModels:
+                "application/json": "Computational"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /computational
+        method: get
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Get a Esearch data from ClinVar Esearch."
+          description: >-
+            Returns ClinVar Esearch Data. First fetches ClinVar variant data and then parses
+            the data using the extended flag. Then uses the parsed ClinVar data to get data
+            from ClinVar Esearch.
+          queryParams:
+            -
+              name: "clinvarVariantId"
+              descrition: "The ClinVar Variant ID  (e.g. '120000') of the variant to find."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The Esearch data object matching the given ID from the appropriate source."
+              # responseModels:
+              #   "application/json": "Variant"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /computational
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create new computational data."
+          description: >-
+            Creates new computational data with the data in the request body.
+          requestBody:
+            description: "The computational data object to create."
+          requestModels:
+            "application/json": "Computational"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created computational data."
+              responseModels:
+                "application/json": "Computational"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /computational/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update existing computational data."
+          description: >-
+            Update an existing entry of computational data provided in the body of the request. Before updating
+            the given computational data object will be set with the given PK to ensure we're updating
+            the requested object.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the computational data to update."
+          requestModels:
+            "application/json": "Computational"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The computational data that was updated."
+              responseModels:
+                "application/json": "Computational"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /groups
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new group."
+          description: >-
+            Creates a new group with the data in the request body.
+          requestBody:
+            description: "The group to create."
+          requestModels:
+            "application/json": "Group"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created group."
+              responseModels:
+                "application/json": "Group"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /groups/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing group."
+          description: >-
+            Update an existing group provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the group to update."
+          requestModels:
+            "application/json": "Group"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The group that was updated."
+              responseModels:
+                "application/json": "Group"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /groups/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing group."
+          description:  >-
+            Get a group with the given PK. Returns either the matching group
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the group to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The group matching the given PK."
+              responseModels:
+                "application/json": "Group"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /groups
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of groups."
+          description: "Queries for a list of all groups."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of groups that match the given query."
+              # responseModels:
+              #   "application/json": "GroupList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /families
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new family."
+          description: >-
+            Creates a new family with the data in the request body.
+          requestBody:
+            description: "The family to create."
+          requestModels:
+            "application/json": "Family"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created family."
+              responseModels:
+                "application/json": "Family"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /families/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing family."
+          description: >-
+            Update an existing family provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the family to update."
+          requestModels:
+            "application/json": "Family"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The family that was updated."
+              responseModels:
+                "application/json": "Family"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /families/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing family."
+          description:  >-
+            Get a family with the given PK. Returns either the matching family
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the family to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The family matching the given PK."
+              responseModels:
+                "application/json": "Family"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /families
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of families."
+          description: "Queries for a list of all families."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of families that match the given query."
+              # responseModels:
+              #   "application/json": "FamilyList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /individuals
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new individual."
+          description: >-
+            Creates a new individual with the data in the request body.
+          requestBody:
+            description: "The individual to create."
+          requestModels:
+            "application/json": "Individual"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created individual."
+              responseModels:
+                "application/json": "Individual"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /individuals/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing individual."
+          description: >-
+            Update an existing individual provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the individual to update."
+          requestModels:
+            "application/json": "Individual"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The individual that was updated."
+              responseModels:
+                "application/json": "Individual"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /individuals/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing individual."
+          description:  >-
+            Get a individual with the given PK. Returns either the matching individual
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the individual to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The individual matching the given PK."
+              responseModels:
+                "application/json": "Individual"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /individuals
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of individuals."
+          description: "Queries for a list of all individuals."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of individuals that match the given query."
+              # responseModels:
+              #   "application/json": "IndividualList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+
+    - http:
+        path: /experimental
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new experimental"
+          description: >-
+            Creates a new experimental with the data in the request body.
+          requestBody:
+            description: "The experimental to create."
+          requestModels:
+            "application/json": "Experimental"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created experimental."
+              responseModels:
+                "application/json": "Experimental"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /experimental/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing experimental."
+          description: >-
+            Update an existing experimental provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the experimental to update."
+          requestModels:
+            "application/json": "Experimental"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The experimental that was updated."
+              responseModels:
+                "application/json": "Experimental"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /experimental/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing experimental."
+          description:  >-
+            Get an experimental with the given PK. Returns either the matching experimental
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the experimental to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The experimental matching the given PK."
+              responseModels:
+                "application/json": "Experimental"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /experimental
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of experimental."
+          description: "Queries for a list of all experimental."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of experimental that match the given query."
+              # responseModels:
+              #   "application/json": "ExperimentalList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /casecontrol
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new case-control"
+          description: >-
+            Creates a new case-control with the data in the request body.
+          requestBody:
+            description: "The case-control to create."
+          requestModels:
+            "application/json": "CaseControl"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created case-control."
+              responseModels:
+                "application/json": "CaseControl"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /casecontrol/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing case-control."
+          description: >-
+            Update an existing case-control provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the case-control to update."
+          requestModels:
+            "application/json": "CaseControl"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The case-control that was updated."
+              responseModels:
+                "application/json": "CaseControl"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /casecontrol/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing case-control."
+          description:  >-
+            Get a case-control with the given PK. Returns either the matching case-control
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the case-control to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The case-control matching the given PK."
+              responseModels:
+                "application/json": "CaseControl"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /casecontrol
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of case-control."
+          description: "Queries for a list of all case-control."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of case-control that match the given query."
+              # responseModels:
+              #   "application/json": "CaseControlList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /evidencescore
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new evidence score"
+          description: >-
+            Creates a new evidence score with the data in the request body.
+          requestBody:
+            description: "The evidence score to create."
+          requestModels:
+            "application/json": "EvidenceScore"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created evidence score."
+              responseModels:
+                "application/json": "EvidenceScore"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /evidencescore/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing evidence score."
+          description: >-
+            Update an existing evidence score provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the evidence score to update."
+          requestModels:
+            "application/json": "EvidenceScore"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The evidence score that was updated."
+              responseModels:
+                "application/json": "EvidenceScore"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /evidencescore/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing evidence score."
+          description:  >-
+            Get an evidence score with the given PK. Returns either the matching evidence score
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the evidence score to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The evidence score matching the given PK."
+              responseModels:
+                "application/json": "EvidenceScore"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /evidencescore
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of evidence score."
+          description: "Queries for a list of all evidence score."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of evidence score that match the given query."
+              # responseModels:
+              #   "application/json": "EvidenceScoreList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /variantscore
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new variant score"
+          description: >-
+            Creates a new variant score with the data in the request body.
+          requestBody:
+            description: "The variant score to create."
+          requestModels:
+            "application/json": "VariantScore"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created variant score."
+              responseModels:
+                "application/json": "VariantScore"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /variantscore/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing variant score."
+          description: >-
+            Update an existing variant score provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the variant score to update."
+          requestModels:
+            "application/json": "VariantScore"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The variant score that was updated."
+              responseModels:
+                "application/json": "VariantScore"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /variantscore/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing variant score."
+          description:  >-
+            Get an variant score with the given PK. Returns either the matching variant score
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the variant score to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The variant score matching the given PK."
+              responseModels:
+                "application/json": "VariantScore"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /variantscore
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of variant score."
+          description: "Queries for a list of all variant score."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of variant score that match the given query."
+              # responseModels:
+              #   "application/json": "VariantScoreList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /users
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a migrated user object in db."
+          description: >-
+            Creates a new user with the data in the request body; some fields are transformed to adapt to new architecture.
+          requestBody:
+            description: "The user object to migrate."
+          requestModels:
+            "application/json": "User"
+          methodResponses:
+            -
+              statusCode: "201"
+              responseBody:
+                description: "The created user object."
+              responseModels:
+                "application/json": "User"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /users/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing user record."
+          description: >-
+            Update an existing user provided in the body of the request.
+          pathParams:
+            -
+              name: "pk"
+              description: "The unique PK of the user to update."
+          requestModels:
+            "application/json": "User"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The user that was updated."
+              responseModels:
+                "application/json": "User"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /users/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing user"
+          description:  >-
+            Get a user with the given PK. Returns either the matching user
+            or an empty response.
+          pathParameters:
+            -
+              name: "pk"
+              description: The unique PK of the user to find.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The user matching the given PK."
+              responseModels:
+                "application/json": "User"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /users
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of users"
+          description: "Queries for a list of all users."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of users that match the given query."
+              # responseModels:
+              #   "application/json": "UserList"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /affiliations
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of affiliations"
+          description: "Queries for a list of all affiliations."
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "A list of affiliations that match the given query."
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+    - http:
+        path: /affiliations/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing affiliation"
+          description: >-
+            Get a affiliation with the given PK. Returns either the matching
+            affiliation or an empty response.
+          pathParameters:
+            - name: "pk"
+              description: "The unique PK of the affiliation to find."
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "The affiliation matching the given PK."
+              responseModels:
+                "application/json": "Affiliation"
+            - statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+            - statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+    - http:
+        path: /affiliations/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing affiliation record."
+          description: "Update an existing affiliation provided in the body of the request."
+          pathParams:
+            - name: "pk"
+              description: "The unique PK of the affiliation to update."
+          requestModels:
+            "application/json": "Affiliation"
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "The affiliation that was updated."
+              responseModels:
+                "application/json": "Affiliation"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+    - http:
+        path: /affiliations
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new affiliation."
+          description: "Creates a new affiliation with the data in the request body."
+          requestBody:
+            description: "The affiliation to create."
+          requestModels:
+            "application/json": "Affiliation"
+          methodResponses:
+            - statusCode: "201"
+              responseBody:
+                description: "The created affiliation."
+              responseModels:
+                "application/json": "Affiliation"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+            - statusCode: "404"
+              responseBody:
+                description: "An error describing what went wrong."
+    - http:
+        path: /messaging/{action}/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Perform a messaging action using specified data."
+          description: >-
+            After retrieving a data object (typically a snapshot) with the given
+            PK, perform the requested messaging action using that data.
+          pathParameters:
+            -
+              name: "action"
+              description: "The messaging action (publish or generate-clinvar-data) to perform."
+            -
+              name: "pk"
+              description: "The unique PK of the data object to use."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The generated messaging data."
+            -
+              statusCode: "404"
+              responseBody:
+                description: "An error describing what data was not found."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error in the request body."
+    - http:
+        path: /messaging/{action}
+        method: post
+        cors: true
+        authorizer: aws_iam
+        reqValidatorName: ApiValidation
+        documentation:
+          summary: "Perform a messaging action using provided data."
+          description: >-
+            Using data provided within, perform the requested messaging action.
+          pathParameters:
+            -
+              name: "action"
+              description: "The messaging action (publish-gdm or track-data) to perform."
+          requestBody:
+            description: "The message data."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The message data."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error in the request body."
+    - http:
+        path: /history/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an item's history."
+          description: >-
+            Query the history table for all entries for the provided
+            item (PK) and return a historical log of all changes.
+          pathParameters:
+            -
+              name: "pk"
+              description: "The unique PK of the item of interest."
+          queryParams:
+            -
+              name: "related"
+              description: "Related item types (optional, can be multiple, comma-separated values)"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The history for the given PK."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error in the request body."
+    - http:
+        path: /pathogenicity/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing pathogenicity"
+          description: >-
+            Get a pathogenicity with the given PK. Returns either the matching
+            pathogenicity or an empty response.
+          pathParameters:
+            - name: "pk"
+              description: "The unique PK of the pathogenicity to find."
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "The pathogenicity matching the given PK."
+              responseModels:
+                "application/json": "Pathogenicity"
+            - statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+            - statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+    - http:
+        path: /pathogenicity
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of pathogenicities."
+          description: "Queries for a list of all pathogenicities."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of pathogenicities that match the given query."
+              # responseModels:
+              #   "application/json": "Pathogenicity"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /pathogenicity/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing pathogenicity record."
+          description: "Update an existing pathogenicity provided in the body of the request."
+          pathParams:
+            - name: "pk"
+              description: "The unique PK of the pathogenicity to update."
+          requestModels:
+            "application/json": "Pathogenicity"
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "The pathogenicity that was updated."
+              responseModels:
+                "application/json": "Pathogenicity"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+    - http:
+        path: /pathogenicity
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new pathogenicity."
+          description: "Creates a new pathogenicity with the data in the request body."
+          requestBody:
+            description: "The pathogenicity to create."
+          requestModels:
+            "application/json": "Pathogenicity"
+          methodResponses:
+            - statusCode: "201"
+              responseBody:
+                description: "The created pathogenicity."
+              responseModels:
+                "application/json": "Pathogenicity"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+            - statusCode: "404"
+              responseBody:
+                description: "An error describing what went wrong."
+    - http:
+        path: /assessments/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get an existing assessment"
+          description: >-
+            Get a assessment with the given PK. Returns either the matching
+            assessment or an empty response.
+          pathParameters:
+            - name: "pk"
+              description: "The unique PK of the assessment to find."
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "The assessment matching the given PK."
+              responseModels:
+                "application/json": "Assessment"
+            - statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+            - statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+    - http:
+        path: /assessments
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of assessments."
+          description: "Queries for a list of all assessments."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of assessments that match the given query."
+              # responseModels:
+              #   "application/json": "Assessment"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /assessments/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing assessment record."
+          description: "Update an existing assessment provided in the body of the request."
+          pathParams:
+            - name: "pk"
+              description: "The unique PK of the assessment to update."
+          requestModels:
+            "application/json": "Assessment"
+          methodResponses:
+            - statusCode: "200"
+              responseBody:
+                description: "The assessment that was updated."
+              responseModels:
+                "application/json": "Assessment"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+    - http:
+        path: /assessments
+        method: post
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Create a new assessment."
+          description: "Creates a new assessment with the data in the request body."
+          requestBody:
+            description: "The assessment to create."
+          requestModels:
+            "application/json": "Assessment"
+          methodResponses:
+            - statusCode: "201"
+              responseBody:
+                description: "The created assessment."
+              responseModels:
+                "application/json": "Assessment"
+            - statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the create."
+            - statusCode: "404"
+              responseBody:
+                description: "An error describing what went wrong."
+    - http:
+        path: /vpt/search
+        method: get
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Get variant data through gene search"
+          description: >-
+            Returns variant data via gene search
+          queryParams:
+            -
+              name: "geneSymbol"
+              descrition: "The gene symbol to find"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The variant data matching the gene search"
+                responseModels:
+                  "application/json": "Variant"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+                responseModels:
+                  "application/json": "ErrorResponse"
+    - http:
+        path: /vpt/search/{getids}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        pathParameters:
+          - name: "getids"
+            description: "The chunkids of the vp search results." 
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Get variant data through gene search"
+          description: >-
+            Returns variant data via gene search
+          queryParams:
+            -
+              name: "geneSymbol"
+              descrition: "The gene symbol to find"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The variant data matching the gene search"
+                responseModels:
+                  "application/json": "Variant"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+                responseModels:
+                  "application/json": "ErrorResponse"
+    - http:
+        path: /vpt/saves
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of existing vp filter saves"
+          description: >-
+            Get list of vp saves with the given queryParam. Returns either the matching
+            vp saves (metadata only) or an empty/error response.
+          queryParams:
+            -
+              name: "affiliation"
+              description: "The affiliation that the vp save belongs to. This query parameter is required."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The vp save data matching the query params."
+              # responseModels:
+              #   "application/json": "VP_Save"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /vpt/saves
+        method: post
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Create a vp save of the provided type and action."
+          description: >-
+            Using the data in the request body, creates a vp save where the data
+            is archived in S3 and a small amount of metadata is stored in the DB.
+          requestBody:
+            description: The vp save data being archived.
+          # requestModels:
+          #   "application/json": VP_Save
+          methodResponses:
+            -
+              statusCode: '201'
+              responseBody:
+                description: 'The created vp_save item'
+              # responseModels:
+              #   'application/json': 'VP_Save'
+            -
+              statusCode: '400'
+              responseBody:
+                description: An error occurred.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+            -
+              statusCode: '404'
+              responseBody:
+                description: The related vp_save could not be found.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+            -
+              statusCode: '422'
+              responseBody:
+                description: An error in the request body.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+    - http:
+        path: /vpt/saves/{pk}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Update an existing vp filter save."
+          description: "Update an existing vp filter save"
+          pathParameters:
+            -
+              name: "pk"
+              description: "The unique PK of the vp filter save to update."
+          # requestModels:
+          #   "application/json": "VP Save"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The vp filter save that was updated."
+              # responseModels:
+              #   "application/json": "VP Save"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error occurred (bad request)."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the update."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /vpt/saves/{pk}/complete
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a complete vp save object"
+          description: >-
+            Gets a complete vp save object by the saves PK. Returns either the matching
+            vp save (complete w/ payload) or an empty/error response.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The vp save data matching the query params."
+              # responseModels:
+              #   "application/json": "VP_Save"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /vpt/exports
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of existing vp exports"
+          description: >-
+            Get list of vp exports with the given queryParam. Returns either the matching
+            vp exports (metadata only) or an empty/error response.
+          queryParams:
+            -
+              name: "affiliation"
+              description: "The affiliation that the vp save belongs to. This query parameter is required."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The vp save data matching the query params."
+              # responseModels:
+              #   "application/json": "VP_Save"
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+              # responseModels:
+              #   "application/json": "EmptyResponse"
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /vpt/exports
+        method: post
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Create a vp export of the provided type and action."
+          description: >-
+            Using the data in the request body, creates a vp export and stores the data in the DB.
+          requestBody:
+            description: The vp export data being archived.
+          # requestModels:
+          #   "application/json": VP_Export
+          methodResponses:
+            -
+              statusCode: '201'
+              responseBody:
+                description: 'The created vp_export item'
+              # responseModels:
+              #   'application/json': 'VP_Export'
+            -
+              statusCode: '400'
+              responseBody:
+                description: An error occurred.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+            -
+              statusCode: '404'
+              responseBody:
+                description: The related vp_export could not be found.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'
+            -
+              statusCode: '422'
+              responseBody:
+                description: An error in the request body.
+              # responseModels:
+              #   'application/json': 'ErrorResponse'

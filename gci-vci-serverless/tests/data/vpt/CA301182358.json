@@ -1,0 +1,144 @@
+{
+  "caId": "CA301182358",
+  "clingenPreferredTitle": "NC_000018.10:g.55589855A>G",
+  "dbSNPId": 1029437002,
+  "event": "Update",
+  "eventTime": "2021-03-03T20:18:46.799Z",
+  "hgnc": [
+    "TCF4"
+  ],
+  "hgvsNames": {
+    "GRCh37": "NC_000018.9:g.53257086A>G",
+    "GRCh38": "NC_000018.10:g.55589855A>G",
+    "NCBI36": "NC_000018.8:g.51408084A>G",
+    "others": [
+      "CM000680.2:g.55589855A>G",
+      "CM000680.1:g.53257086A>G",
+      "NG_011716.1:g.3775T>C",
+      "NG_011716.2:g.51139T>C"
+    ]
+  },
+  "ldh": {
+    "id": "47586482",
+    "last_modified_date": "2019-10-03T20:10:52.146Z",
+    "uri": "https://ldh.genome.network/ldh/Variant/id/47586482"
+  },
+  "populationAlleleFrequencyMetadata": [
+    {
+      "filters": [
+        "PASS"
+      ],
+      "method": "gnomad-genomes",
+      "popmax": 0.000344748
+    }
+  ],
+  "populationAlleleFrequencyStatements": [
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 1560,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "eas"
+    },
+    {
+      "alleleCount": 3,
+      "alleleFrequency": 0.000344748,
+      "alleleNumber": 8702,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "afr"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 848,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "amr"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 15404,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "nfe"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 290,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "asj"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 1088,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "oth"
+    },
+    {
+      "alleleCount": 0,
+      "alleleFrequency": 0,
+      "alleleNumber": 3474,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "fin"
+    },
+    {
+      "alleleCount": 2,
+      "alleleFrequency": 0.000114534,
+      "alleleNumber": 17462,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "male"
+    },
+    {
+      "alleleCount": 1,
+      "alleleFrequency": 0.0000719217,
+      "alleleNumber": 13904,
+      "homozygousAlleleIndividualCount": 0,
+      "method": "gnomad-genomes",
+      "population": "female"
+    }
+  ],
+  "proteinEffects": [
+    "NP_001230155.2:p.=",
+    "XP_011524456.1:p.=",
+    "XP_011524457.1:p.=",
+    "XP_011524458.1:p.=",
+    "XP_011524459.1:p.=",
+    "XP_016881435.1:p.=",
+    "NP_001230155.2:p.=",
+    "ENSP00000381382.1:p.=",
+    "ENSP00000455450.1:p.=",
+    "ENSP00000454328.1:p.=",
+    "ENSP00000457082.2:p.=",
+    "ENSP00000457392.1:p.=",
+    "ENSP00000487557.1:p.=",
+    "ENSP00000487134.1:p.="
+  ],
+  "transcriptHGVS": [
+    "NM_001243226.2:c.287-2719T>C",
+    "XM_011526154.1:c.287-2719T>C",
+    "XM_011526155.1:c.287-2719T>C",
+    "XM_011526156.1:c.287-2719T>C",
+    "XM_011526157.1:c.287-2719T>C",
+    "XM_017025946.2:c.-559T>C",
+    "NM_001243226.3:c.287-2719T>C",
+    "ENST00000398339.5:c.287-2719T>C",
+    "ENST00000562543.5:c.-21+1262T>C",
+    "ENST00000564343.5:c.-1+1262T>C",
+    "ENST00000565124.4:c.317-2719T>C",
+    "ENST00000565393.2:n.187-2719T>C",
+    "ENST00000568169.5:c.85-4503T>C",
+    "ENST00000569357.4:n.282-4503T>C",
+    "ENST00000627320.2:c.*3-4503T>C",
+    "ENST00000628391.1:n.141-4503T>C",
+    "ENST00000630224.2:c.196-2719T>C"
+  ]
+}

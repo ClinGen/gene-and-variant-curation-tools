@@ -1,0 +1,62 @@
+# This file describes AWS Resources and is specifically written in a way to be included in
+# a serverless.yml file. By itself it is not a valid CloudFormation template.
+
+Resources:
+    
+  ClinGenVPFTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: 'PK'
+          AttributeType: 'S'
+        - AttributeName: 'date_created'
+          AttributeType: 'S'
+        - AttributeName: 'email'
+          AttributeType: 'S'
+        - AttributeName: 'affiliation'
+          AttributeType: 'S'
+        - AttributeName: 'item_type'
+          AttributeType: 'S'
+        - AttributeName: 'last_modified'
+          AttributeType: 'S'
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        -
+          AttributeName: 'PK'
+          KeyType: HASH
+      #ProvisionedThroughput:
+      #  ReadCapacityUnits: "10"
+      #  WriteCapacityUnits: "10"
+      GlobalSecondaryIndexes:
+      - IndexName: item_type_index
+        KeySchema:
+          - AttributeName: 'item_type'
+            KeyType: HASH
+          - AttributeName: 'last_modified'
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: DbSavesEmailGSI
+        KeySchema:
+          - AttributeName: 'email'
+            KeyType: HASH
+          - AttributeName: 'date_created'
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        #ProvisionedThroughput:
+          #ReadCapacityUnits: "10"
+          #WriteCapacityUnits: "10"
+      - IndexName: DbSavesAffiliationGSI
+        KeySchema:
+          - AttributeName: 'affiliation'
+            KeyType: HASH
+          - AttributeName: 'date_created'
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      TableName: ${self:custom.resources.vpf-table-name}
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+          

@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "EvidenceScoreModel",
+    "type":"object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["evidenceScore"]
+        },
+        "PK": { "type": "string" },
+        "submitted_by": { "type": "string", "$schema": "user" },
+        "date_created": { "type": "string" },
+        "modified_by": { "type": "string", "$schema": "user" },
+        "last_modified": { "type": "string" },
+        "affiliation": { "type": "string" },
+        "scoreStatus": { "type": "string" },
+        "calculatedScore": { "type": "number" },
+        "score": { "type": "number" },
+        "caseInfoType": { "type": "string" },
+        "scoreExplanation": { "type": "string" },
+        "evidenceType": { "type": "string" },
+        "evidenceScored": { "type": "string" },
+        "gdmId": { "type": "string" }
+    }
+}
