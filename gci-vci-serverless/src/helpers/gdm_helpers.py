@@ -146,7 +146,7 @@ def get_gdms(db, filters, projections):
 
 
 def getCustom(db, query_params):
-  """Queries and returns all Interpretation objects"""    
+  """Queries and returns all GDM objects"""
   projections= 'PK, gene, disease, diseaseTerm, submitted_by, affiliation, item_type, \
   provisionalClassifications, #status, modeInheritance,\
   last_modified, date_created'
@@ -164,7 +164,9 @@ def getCustom(db, query_params):
     print('Fired warmup')
     warmup(db, filters, projections)
 
-  if filters is not None and 'affiliation' in filters:
+  # If an affiliation was the only filter provided, use the affiliation index to query.
+  # Otherwise, query using the item type index.
+  if filters is not None and 'affiliation' in filters and len(filters) == 1:
     gdms = get_gdms_by_affiliation(db, filters['affiliation'], projections)
   else:
     gdms = get_gdms(db, filters, projections)
