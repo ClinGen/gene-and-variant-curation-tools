@@ -16,6 +16,8 @@ import { useAmplifyAPIRequestRecycler } from "../../utilities/fetchUtilities";
 import Modal from "../common/Modal";
 import { renderPublishStatus } from '../recordStatus//publishStatus';
 import { isOwnedByCurrentCuratingEntity } from "../../utilities/ownershipUtilities";
+import { getAffiliationName } from '../../helpers/get_affiliation_name.js';
+
 
 
 export const GdmHeader = (props) => {
@@ -230,7 +232,11 @@ GdmHeader.propTypes = {};
 const DuplicateGdmAlertModalContent = ({ duplicatedGdm }) => {
   // duplicatedGdm object does not have disease object, only disease(string) and diseaseTerm(string)
   return (
-    <>A curation record already exists for <strong>{lodashGet(duplicatedGdm, 'gene')} – {lodashGet(duplicatedGdm, 'diseaseTerm')} ({lodashGet(duplicatedGdm, 'disease')}) – {lodashGet(duplicatedGdm, 'modeInheritance')}</strong>.
-    You may curate this existing record, or cancel and change the disease for a different gene – disease – mode combination.</>
+    <>
+      <h2 className="lead">A curation record already exists for this gene/disease/mode of inheritance:</h2>
+      <p><strong>{lodashGet(duplicatedGdm, 'gene')} &#8211; {lodashGet(duplicatedGdm, 'diseaseTerm')} &#8211; {lodashGet(duplicatedGdm, 'modeInheritance')}</strong></p>
+      <h2 className="lead">This record currently belongs to:</h2>
+      <p><strong>{lodashGet(duplicatedGdm, 'affiliation') && getAffiliationName(duplicatedGdm.affiliation)}</strong></p>
+    </>
   )
 }

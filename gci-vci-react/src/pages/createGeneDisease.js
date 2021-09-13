@@ -39,7 +39,7 @@ function CreateGeneDisease(props) {
     const [geneSymbolValidation, setGeneSymbolValidation] = useState(null);
     const [diseaseValidation, setDiseaseValidation] = useState(null);
 
-    const [confirmGdmPk, setConfirmGdmPk] = useState(null);
+    const [confirmGdm, setConfirmGdm] = useState(null);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const moiValues = Object.values(modesOfInheritance);
@@ -49,7 +49,7 @@ function CreateGeneDisease(props) {
 
     useEffect(()=>{
         console.log('disease', disease);
-    }, [disease, confirmGdmPk])
+    }, [disease, confirmGdm])
 
     // Handle Mode of Inheritance Select Changes & Adjective Options
     const handleMOIChange = (value) => {
@@ -97,7 +97,7 @@ function CreateGeneDisease(props) {
 
     const handleCurate = () => {
       setShowConfirmModal(false);
-      history.push('/curation-central/' + confirmGdmPk);
+      history.push('/curation-central/' + lodashGet(confirmGdm, "PK", ''));
     }
 
     const handleCancelCurate = () => {
@@ -312,7 +312,7 @@ function CreateGeneDisease(props) {
                 console.log('GDM Already Exists!', gdmSearch)
 
                 // bring up a modal to check if user wants to curate this GDM or create different GDM
-                setConfirmGdmPk(gdmSearch[0].PK);
+                setConfirmGdm(gdmSearch[0]);
                 setShowConfirmModal(true);
                 setIsLoading(false);
             }
@@ -409,12 +409,14 @@ function CreateGeneDisease(props) {
             id="confirmCuration"
             show={showConfirmModal}
             hideButtonText="Cancel"
-            saveButtonText="Curate"
+            saveButtonText={lodashGet(confirmGdm, 'affiliation') && lodashGet(auth, 'currentAffiliation.affiliation_id') && confirmGdm.affiliation === auth.currentAffiliation.affiliation_id ? "Curate" : "View"}
             onHide={() => handleCancelCurate()}
             onSave={() => handleCurate()}
         >
-            <h2 className="lead">A curation record already exists</h2>
-            <p><strong>{HGNCGene && HGNCGene} &#8211; {disease && disease.term} &#8211; {activeMOI && activeMOI}</strong> already exists in your affiliation. You may curate this existing record, or cancel to specify a different gene &#8211; disease &#8211; mode.</p>
+            <h2 className="lead">A curation record already exists for this gene/disease/mode of inheritance:</h2>
+            <p><strong>{HGNCGene && HGNCGene} &#8211; {disease && disease.term} &#8211; {activeMOI && activeMOI}</strong></p>
+            <h2 className="lead">This record currently belongs to:</h2>
+            <p><strong>{lodashGet(confirmGdm, 'affiliation') && getAffiliationName(confirmGdm.affiliation)}</strong></p>
         </Modal>
 
         </>
