@@ -1550,6 +1550,7 @@ def request_clinvar_data(source_data):
 
   # Return result of ClinVar submitter service as JSON-encoded content
   try:
+    print ('Clinvar results %s \n' %clinvar_result.json())
     return clinvar_result.json()
 
   except Exception:
