@@ -239,6 +239,6 @@ const DuplicateGdmAlertModalContent = ({ duplicatedGdm }) => {
   // duplicatedGdm object does not have disease object, only disease(string) and diseaseTerm(string)
   return (
     <>A curation record already exists for <strong>{lodashGet(duplicatedGdm, 'gene')} – {lodashGet(duplicatedGdm, 'diseaseTerm')} ({lodashGet(duplicatedGdm, 'disease')}) – {lodashGet(duplicatedGdm, 'modeInheritance')}</strong>.
-    You may curate this existing record, or cancel and change the disease for a different gene
+    You may curate this existing record, or cancel and change the disease for a different gene – disease – mode combination.</>
   )
 }
