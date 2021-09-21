@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { Button } from 'react-bootstrap';
 
 import { sortListByDate } from '../../helpers/sort';
 import { Link } from 'react-router-dom';
@@ -96,6 +97,7 @@ export function renderProvisionalLink(snapshot, resourceType, gdm, isMyClassific
         // generate href and title
         let provisionalLinkHref;
         let provisionalLinkTitle;
+        // Even if isMyClassification, the snapshot might be created by another affiliation previously so link to read only
         if (!isMyClassification) {
             // render as others classification's link to evidence summary (read-only)
 
@@ -105,7 +107,10 @@ export function renderProvisionalLink(snapshot, resourceType, gdm, isMyClassific
 
             // add additional params
             const params = new URLSearchParams('status=Provisional')
-            if (affiliationId && affiliationId.length) {
+            // Use the affiliation from the snapshot if exists since this affiliation is this snapshot's owner
+            if (snapshot && snapshot.resource && snapshot.resource.affiliation) {
+                params.append('affiliationId', snapshot.resource.affiliation);
+            } else if (affiliationId && affiliationId.length) {
                 params.append('affiliationId', affiliationId);
             } else if (userId && userId.length) {
                 params.append('userId', userId);
@@ -127,7 +132,7 @@ export function renderProvisionalLink(snapshot, resourceType, gdm, isMyClassific
 
         return (
             <span className="classification-link-item ml-1">
-                <Link target={linkTarget} to={provisionalLinkHref} title={provisionalLinkTitle}><i className="icon icon-link"></i></Link>
+                <Button variant="info" target={linkTarget} as={Link} to={provisionalLinkHref} className="ml-2">{provisionalLinkTitle}</Button>
             </span>
         );
     } else if (resourceType === 'interpretation') {

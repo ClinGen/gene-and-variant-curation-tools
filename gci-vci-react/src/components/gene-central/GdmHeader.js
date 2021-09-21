@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Jumbotron, Container, Button, Row, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faFileAlt, faTable, faBriefcase } from "@fortawesome/free-solid-svg-icons";
+import { getAffiliationName } from '../../helpers/get_affiliation_name.js';
+
 
 import { GdmDetails } from "./GdmDetails";
 import DiseaseModal from "../common/DiseaseModal";
@@ -205,8 +207,9 @@ export const GdmHeader = (props) => {
           <i>
             {gdm.modeInheritance} {gdm.modeInheritanceAdjective ? gdm.modeInheritanceAdjective : null}
           </i>
-          {!props.isSummary && allowEdit?
+          {!props.isSummary ?
             <>
+            {allowEdit ?
               <Link
                 to={`/curation-central/${gdm.PK}/gene-disease-evidence-summary/?preview=yes`}
                 target="_blank"
@@ -214,7 +217,12 @@ export const GdmHeader = (props) => {
               >
                 <Button>Preview Evidence Scored <FontAwesomeIcon icon={faFileAlt} /></Button>
               </Link>
-              <Button as={Link} to={`/provisional-curation/${gdm.PK}`} className="ml-1">View Classification Summary <FontAwesomeIcon icon={faTable} /></Button>
+              :
+                <OverlayTrigger overlay={<Tooltip>Previewing the evidence summary is restricted to the GCEP owner of the record</Tooltip>}>
+                  <Button className="ml-auto disabled">Preview Evidence Scored <FontAwesomeIcon icon={faFileAlt} /></Button>
+                </OverlayTrigger>
+             }
+            <Button as={Link} to={`/provisional-curation/${gdm.PK}`} className="ml-1">View Classification Summary <FontAwesomeIcon icon={faTable} /></Button>
             </>
             : null}
         </Row>
@@ -231,6 +239,6 @@ const DuplicateGdmAlertModalContent = ({ duplicatedGdm }) => {
   // duplicatedGdm object does not have disease object, only disease(string) and diseaseTerm(string)
   return (
     <>A curation record already exists for <strong>{lodashGet(duplicatedGdm, 'gene')} – {lodashGet(duplicatedGdm, 'diseaseTerm')} ({lodashGet(duplicatedGdm, 'disease')}) – {lodashGet(duplicatedGdm, 'modeInheritance')}</strong>.
-    You may curate this existing record, or cancel and change the disease for a different gene – disease – mode combination.</>
+    You may curate this existing record, or cancel and change the disease for a different gene
   )
 }

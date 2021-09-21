@@ -31,6 +31,7 @@ const Snapshots = (props) => {
         isApprovalActive,
         isPublishEventActive,
         classificationStatus,
+        allowEdit,
         allowPublishButton,
         showPublishLinkAlert,
         clearPublishLinkAlert,
@@ -278,7 +279,7 @@ const Snapshots = (props) => {
 
             // A classification snapshot must have same disease as current GDM and in supported SOP format to be approved or published
             diseaseMatched = snapshot.diseaseTerm === lodashGet(gdm, "disease.term", '');
-            allowToApprove = diseaseMatched && isSnapshotOnSupportedSOP;
+            allowToApprove = allowEdit && diseaseMatched && isSnapshotOnSupportedSOP;
         } else if (snapshot.resourceType === 'interpretation') {
             resourceParent = interpretation;
 
@@ -296,8 +297,14 @@ const Snapshots = (props) => {
         // Given snapshot is on the current supported SOP (isSnapshotOnSupportedSOP), has no publish activity (!snapshot.resource.publishDate) and
         // is the current approved (snapshot['@id'] === currentApprovedSnapshotID)
         const allowSnapshotPublish = diseaseMatched && isSnapshotOnSupportedSOP && !(lodashGet(snapshot, "resource.publishDate", null)) && snapshot.PK === currentApprovedSnapshotID;
+        // Add snapshot's affiliation as params to url which allows access to snapshots created by other affiliations
+        const params = new URLSearchParams(`snapshot=${snapshotPK}`)
+        if (affiliationID) {
+          params.append('affiliationId', affiliationID);
+        }
+
         const summaryLink = isGDM
-            ? `/curation-central/${resourceParent.PK}/gene-disease-evidence-summary/?snapshot=${snapshotPK}`
+            ? `/curation-central/${resourceParent.PK}/gene-disease-evidence-summary/?${params}`
             : `/snapshot-summary/?snapshot=${snapshotPK}`;
 
         if (snapshot.approvalStatus === 'Provisioned') {
