@@ -19,8 +19,7 @@ const AssociatedVariantPanel = ({
     <Row className="mb-3">
       <div className="w-100">
         <Col sm={{ span: 7, offset: 5 }} className="alert alert-warning">
-          ClinVar VariationID should be provided in all instances it exists. This is the only way to associate probands from different studies with
-          the same variant, and ensures the accurate counting of probands.
+          ClinVar VariationID should be provided when available. This allows the aggregation of variant data across genetic and experimental evidence in the “Gene-Disease Record Variants” section on the gene-disease record landing page.
         </Col>
         {variantInfo.map((variant, i) => (
           <div key={i}>
