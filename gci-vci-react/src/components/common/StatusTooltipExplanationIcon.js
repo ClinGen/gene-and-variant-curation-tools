@@ -9,13 +9,18 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
  * Component to render a mouseover explanation for the 'all classifications and interpretations' panel titles.
  */
 export const StatusTooltipExplanationIcon = ({ resourceType, ...props }) => {
+  let toolTipText = '';
+  if (resourceType === 'Classifications') {
+      toolTipText = `${resourceType} marked as "Approved" or "Provisional" may be viewed by any user within the interface; those marked as "In progress" are viewable only by the submitter.`;
+  } else {
+      toolTipText = `${resourceType} marked as "Approved" may be viewed by any user within the interface; those marked as "In progress" or "Provisional" mare viewable only by the submitter.`;
+  }
+
   return (
     <OverlayTrigger
       overlay={
         <Tooltip>
-          {resourceType} marked as "Approved" may be viewed by any user within
-          the interface; those marked as "In progress" or "Provisional" are
-          viewable only by the submitter.
+          {toolTipText}
         </Tooltip>
       }
     >

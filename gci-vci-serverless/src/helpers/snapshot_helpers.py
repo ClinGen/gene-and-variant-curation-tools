@@ -117,7 +117,6 @@ def get_snapshots(db, params):
     # /snapshots?x-api-key=<api-key>&target=gci&affiliation=<affId>&status=approved&start=2021-06-01&end=2021-07-28
     # Add &count if only want to get the number of gdms found
     # curl example:
-    #curl -H "x-api-key: 12345sY1Ck7aeTzgw0WSx5ZjD6XP7ZUQ1Ka12345" -G "https://zs90vps8yh.execute-api.us-west-2.amazonaws.com/gciapi/snapshots" -d target=gci -d status=approved -d start=2018-01-01 -d end=2019-06-01 -d affiliation=10007 -d count
     # Check query params include required params: target, affiliation, status, start, and end
     if 'target' in params and 'affiliation' in params and 'status' in params and 'start' in params and 'end' in params:
       # build filters from given params

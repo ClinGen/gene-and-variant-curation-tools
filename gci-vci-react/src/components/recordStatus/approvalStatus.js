@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { Button } from 'react-bootstrap';
 
 import { sortListByDate } from '../../helpers/sort';
 import { Link } from 'react-router-dom';
@@ -78,7 +79,11 @@ function renderApprovalLink(snapshot, resourceType, affiliationId, userId, gdmPK
         summary_uri = '/snapshot-summary/'
     }
     if (snapshot) {
-        if (affiliationId && affiliationId.length) {
+        // Use the affiliation from the snapshot if exists since this affiliation is this snapshot's owner
+        if (snapshot.resource && snapshot.resource.affiliation) {
+            param.append('status', 'Approved');
+            param.append('affiliationId', snapshot.resource.affiliation);
+        } else if (affiliationId && affiliationId.length) {
             param.append('status', 'Approved');
             param.append('affiliationId', affiliationId);
         } else if (userId && userId.length) {
@@ -87,9 +92,17 @@ function renderApprovalLink(snapshot, resourceType, affiliationId, userId, gdmPK
         }
       url = `${summary_uri}?snapshot=${snapshotPK}&${param}`;
     }
-    return (
-        <span className="classification-link-item ml-1">
-            <Link to={{ pathname: url }} title="View Current Approved" target="_blank"><i className="icon icon-link"></i></Link>
-        </span>
-    );
+    if (resourceType === 'classification') {
+        return (
+            <span className="classification-link-item ml-1">
+                <Button variant="success" target="_blank" as={Link} to={url} className="ml-2">View Current Approved</Button>
+            </span>
+        );
+    } else if (resourceType === 'interpretation') {
+        return (
+            <span className="classification-link-item ml-1">
+                <Link to={{ pathname: url }} title="View Current Approved" target="_blank"><i className="icon icon-link"></i></Link>
+            </span>
+        );
+    }
 }

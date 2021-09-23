@@ -74,6 +74,7 @@ class ClassificationApproval extends Component {
                     label: `${affiliation.fullName} (${affiliation.id})`
                 };
             });
+            parsedAffiliations.sort((first, second) => first.label.localeCompare(second.label));
             this.setState({ affiliationsList: parsedAffiliations });
         }
     }
@@ -97,6 +98,7 @@ class ClassificationApproval extends Component {
                     });
                 }
             });
+            parsedApprovers.sort((first, second) => first.label.localeCompare(second.label));
             this.setState({ approversList: parsedApprovers });
         }
     }
