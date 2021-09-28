@@ -33,6 +33,7 @@ class ProvisionalCuration extends Component {
     this.state = {
       user: null, // login user uuid
       gdm: null, // current gdm object, must be null initially.
+      allowEdit: true, // current gdm object can be edited by current logged in user
       provisional: {}, // login user's existing provisional object, must be null initially.
       //assessments: null,  // list of all assessments, must be nul initially.
       totalScore: null,
@@ -177,13 +178,14 @@ class ProvisionalCuration extends Component {
 
       let stateObj = {};
       stateObj.user = this.props.auth.PK;
-      // search for provisional owned by affiliation or login user
+      const gdmAffiliation = this.props.gdm.affiliation;
+      const curatorAffiliation = this.props.auth.currentAffiliation;
+      // search for provisional owned by gdm affiliation or owner
       if (provisionalClassifications && provisionalClassifications.length > 0) {
         for (let provisionalClassification of provisionalClassifications) {
-          let curatorAffiliation = this.props.auth.currentAffiliation;
           let affiliation = provisionalClassification.affiliation ? provisionalClassification.affiliation : null;
           let creator = provisionalClassification.submitted_by;
-          if ((affiliation && curatorAffiliation && affiliation === curatorAffiliation.affiliation_id) || (!affiliation && !curatorAffiliation && creator === stateObj.user)) {
+          if ((affiliation && gdmAffiliation && affiliation === gdmAffiliation) || (!affiliation && !gdmAffiliation && creator === stateObj.user)) {
             stateObj.provisional = provisionalClassification;
             stateObj.alteredClassification = stateObj.provisional.alteredClassification;
             stateObj.replicatedOverTime = stateObj.provisional.replicatedOverTime;
@@ -196,6 +198,10 @@ class ProvisionalCuration extends Component {
         if (stateObj.provisional && stateObj.provisional.PK) {
           this.getClassificationSnapshots(stateObj.provisional);
         }
+      }
+      // Set if current curator cannot edit this gdm
+      if ((gdmAffiliation && curatorAffiliation && gdmAffiliation !== curatorAffiliation.affiliation_id) || (!gdmAffiliation && !curatorAffiliation && gdm.submitted_by.PK !== stateObj.user)) {
+        this.setState({ allowEdit: false });
       }
     }
     this.calculateScoreTable();
@@ -919,7 +925,7 @@ class ProvisionalCuration extends Component {
     const lastSavedDate = currentClassification !== 'None' ? getClassificationSavedDate(provisional) : null;
     const affiliation = this.props.auth ? this.props.auth.currentAffiliation : null;
     const classificationStatus = this.state.classificationStatus;
-    const allowPublishButton = gdm && gdm.disease ? allowPublishGlobal(affiliation, 'classification', gdm.modeInheritance, gdm.disease.PK) : false;
+    const allowPublishButton = gdm && gdm.disease && this.state.allowEdit ? allowPublishGlobal(affiliation, 'classification', gdm.modeInheritance, gdm.disease.PK) : false;
     // Only support to save and provisionally approve the latest SOP format
     const currentSOP = provisional ? isScoringForCurrentSOP(provisional.classificationPoints) : false;
     const demoVersion = this.props.demoVersion;
@@ -931,6 +937,8 @@ class ProvisionalCuration extends Component {
           <GdmClassificationRecords className="mx-2" />
         </Container>
         <div className="container summary-provisional-classification-wrapper">
+          {this.state.allowEdit ?
+          <>
           <form onSubmit={this.submitForm} className="form-horizontal mt-5">
             <CardPanel className="classification-matrix-panel" title="Calculated Classification Matrix" open>
               <div className="form-group">
@@ -1234,6 +1242,8 @@ class ProvisionalCuration extends Component {
               </p>
             </div>
             : null}
+          </>
+          : null}
           {sortedSnapshotList.length ?
             <div className="snapshot-list">
               <CardPanel title="Saved Provisional and Approved Classification(s)" panelClassName="panel-data" open>
@@ -1241,6 +1251,7 @@ class ProvisionalCuration extends Component {
                   snapshots={sortedSnapshotList}
                   gdm={gdm}
                   classificationStatus={classificationStatus}
+                  allowEdit={this.state.allowEdit}
                   allowPublishButton={allowPublishButton}
                   demoVersion={demoVersion}
                   fromProvisionalCuration={true}

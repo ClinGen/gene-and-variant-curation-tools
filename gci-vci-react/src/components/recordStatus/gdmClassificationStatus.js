@@ -32,11 +32,11 @@ export function renderClassificationStatus(classification, gdm, showProvisionalL
               {/* for `renderProvisionalStatus` and `renderNewProvisionalStatus`: pass in `isMyClassification` to determine whether the status link directs user to `provisional-classification` page for modifying status, or the read-only evidence summary page. */}
               {renderProvisionalStatus(snapshots, 'classification', gdm, showProvisionalLink, false, isMyClassification, affiliationId, userId)}
 
+              {renderPublishStatus(snapshots, 'classification')}
+
               {renderApprovalStatus(snapshots, 'classification', affiliationId, userId, false, gdm.PK)}
 
               {renderNewProvisionalStatus(snapshots, 'classification', gdm, showProvisionalLink, false, isMyClassification, affiliationId, userId)}
-
-              {renderPublishStatus(snapshots, 'classification')}
 
               <span>
                 {renderNewSummaryStatus(classification)}
