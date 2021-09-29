@@ -489,16 +489,36 @@ VariantGenomicContext.propTypes = {
     GRCh38: PropTypes.string
 }
 
+export const CivicLink = ({ civicData, loadingCivic }) => {
+  let url;
+  const geneId = civicData.gene_id ? civicData.gene_id : null;
+  const variantId = civicData.id ? civicData.id : null;
+  const evidenceCount = civicData.evidence_items ? civicData.evidence_items.length : [];
+
+  if (geneId && variantId) {
+    url = `https://civicdb.org/events/genes/${geneId}/summary/variants/${variantId}/summary#variant`
+  }
+  return (
+    !loadingCivic && Object.keys(civicData).length > 0 ? (
+      <ExternalLink href={url}>CIViC evidence for variant ({evidenceCount} EIDs found)</ExternalLink>
+    ) : !loadingCivic && Object.keys(civicData).length === 0 ? (
+      'Link is not available for this variant at this genomic location.'
+    ) : (
+      <LoadingSpinner/>
+    )
+  );
+};
+
 export const BasicInfoLovdTableView = ({
     lovdLink,
-    loading,
+    loadingLovd,
 }) => (
-    !loading && lovdLink ? (
+    !loadingLovd && lovdLink ? (
         <p className="card-text">
             {lovdLink.shared && <ExternalLink href={lovdLink.shared}>Global Variome shared LOVD</ExternalLink>}
             {lovdLink.whole_genome && <ExternalLink href={lovdLink.whole_genome}>LOVD Whole genome datasets</ExternalLink>}
         </p>
-    ) : !loading && !lovdLink ? (
+    ) : !loadingLovd && !lovdLink ? (
         <div className="panel-body">
             <span>Link to LOVD is not available for this variant at this genomic location.</span>
         </div> 
