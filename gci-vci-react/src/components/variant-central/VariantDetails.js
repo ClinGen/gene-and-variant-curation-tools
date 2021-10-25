@@ -10,6 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 import { API_NAME } from '../../utils';
 import { getGenomicLinkouts, setContextLinks } from '../variant-central/helpers/helpers';
 import ExternalResourcesPanel from '../common/ExternalResourcesPanel';
+import { ExternalLink } from "../common/ExternalLink";
 import DiseaseModal from '../common/DiseaseModal';
 import Modal from '../common/Modal';
 import Popover from '../common/Popover';
@@ -215,6 +216,12 @@ const VariantDetails = (props) => {
                             gRCh38Links={gRCh38Links}
                             gRCh37Links={gRCh37Links}
                         />
+                        {!props.isLoadingHypothesis && props.hypothesisData ? 
+                          <div>
+                            <i className="icon c3-icon"></i>
+                            <ExternalLink href={props.hypothesisData.hypothesisLink}> {props.hypothesisData.hypothesisTotal} Hypothes.is Annotation Articles</ExternalLink>
+                          </div>
+                          : null}
                     </div>
                 </div>
                 <div className="card">
