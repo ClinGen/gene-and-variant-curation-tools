@@ -199,7 +199,7 @@ const Snapshots = (props) => {
                             <h5><strong>Published by:</strong> {snapshot.resource.publishSubmitter + publishAffiliation}</h5>
                             <h5>Date published: {formatDate(snapshot.resource.publishDate, 'YYYY MMM DD, h:mm a')}</h5>
                                 
-                            <h5>Additional comments: {snapshot.resource.publishComment ? snapshot.resource.publishComment : null}</h5>
+                            <h5><span className="text-pre-wrap">Additional comments: {snapshot.resource.publishComment ? snapshot.resource.publishComment : null}</span></h5>
                             <h5>Link: <span><a href={publishSiteURL} target="_blank" rel="noopener noreferrer">{publishSiteLinkName}</a></span>
                                 {publishLinkAlert ?
                                     <Alert type={publishLinkAlertType}
@@ -230,7 +230,7 @@ const Snapshots = (props) => {
                         <div className="col-sm-6">
                           <h5><strong>Unpublished by:</strong> {snapshot.resource.publishSubmitter}</h5>
                           <h5>Date unpublished: {formatDate(snapshot.resource.publishDate, 'YYYY MMM DD, h:mm a')}</h5>
-                          <h5>Additional comments: {snapshot.resource.publishComment ? snapshot.resource.publishComment : null}</h5>
+                          <h5><span className="text-pre-wrap">Additional comments: {snapshot.resource.publishComment ? snapshot.resource.publishComment : null}</span></h5>
                         </div>
                         <div className="col-sm-6 text-right">
                             {allowSnapshotPublish ? renderPublishLink(resourceParent, snapshot.resourceType, snapshotPK, snapshot.resource.publishClassification) : null}
@@ -346,7 +346,7 @@ const Snapshots = (props) => {
                             <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
                             
                             {lodashGet(snapshot, "resource.provisionalComment", null) && (
-                                <h5><strong>Additional comments:</strong> {snapshot.resource.provisionalComment}</h5>
+                                <h5><span className="text-pre-wrap"><strong>Additional comments:</strong> {snapshot.resource.provisionalComment}</span></h5>
                             )}
                         </div>
                     </div>
@@ -400,11 +400,11 @@ const Snapshots = (props) => {
                             </h5>
                             <h5><strong>Disease:</strong> {snapshot.diseaseTerm ? snapshot.diseaseTerm : "None"}</h5>
                             <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
-                            <h5><strong>Approver comments:</strong> {lodashGet(snapshot, "resource.approvalComment", null) ? snapshot.resource.approvalComment : null}</h5>
+                            <h5><span className="text-pre-wrap"><strong>Approver comments:</strong> {lodashGet(snapshot, "resource.approvalComment", null) ? snapshot.resource.approvalComment : null}</span></h5>
                             
                             {isGDM ?
                                 <>
-                                    <h5><strong>Contributor comments:</strong> {lodashGet(snapshot, "resource.contributorComment", null) ? snapshot.resource.contributorComment : null}</h5>
+                                    <h5><span className="text-pre-wrap"><strong>Contributor comments:</strong> {lodashGet(snapshot, "resource.contributorComment", null) ? snapshot.resource.contributorComment : null}</span></h5>
                                     <h5><strong>SOP Version:</strong> {determineSOPVersion(snapshot.resource)}</h5>
                                 </>
                                 : null}

@@ -106,7 +106,8 @@ const CaseLevelEvidencePanelSop7 = ({
                 }
               </>
             );
-          }
+          },
+          style: { whiteSpace: 'pre-wrap' }
         },
       ]
     },
@@ -186,7 +187,7 @@ const CaseLevelEvidencePanelSop7 = ({
     {
       Header: '  ',
       columns: [
-        { Header: 'Proband Previous Testing', accessor: 'previousTestingDescription', disableSortBy: true },
+        { Header: 'Proband Previous Testing', accessor: 'previousTestingDescription', disableSortBy: true, style: { whiteSpace: 'pre-wrap' }},
         {
           Header: 'Proband Methods of Detection',
           accessor: 'detectionMethod',
@@ -210,8 +211,8 @@ const CaseLevelEvidencePanelSop7 = ({
                 }
               </>
             );
-          }
-
+          },
+          style: { whiteSpace: 'pre-wrap' }
         },
         { Header: 'Score Status', accessor: 'scoreStatus', disableSortBy: true },
         {
@@ -232,7 +233,7 @@ const CaseLevelEvidencePanelSop7 = ({
           Header: 'Reason for Changed Score',
           accessor: 'scoreExplanation',
           disableSortBy: true,
-          style: { maxWidth: 240 }
+          style: { whiteSpace: 'pre-wrap', maxWidth: 240 }
         }
       ]
     }

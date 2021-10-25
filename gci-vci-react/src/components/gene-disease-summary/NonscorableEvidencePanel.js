@@ -28,7 +28,7 @@ const GeneDiseaseEvidenceSummaryNonscorableEvidence = ({
                       <strong>Explanation: </strong>
                       {
                         evidence.articleNotes && evidence.articleNotes.nonscorable && evidence.articleNotes.nonscorable.text
-                          ? <span>{ evidence.articleNotes.nonscorable.text }</span>
+                          ? <span className="text-pre-wrap">{ evidence.articleNotes.nonscorable.text }</span>
                           : <span>None</span>
                       }
                   </span>

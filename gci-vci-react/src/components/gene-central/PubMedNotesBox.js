@@ -241,7 +241,9 @@ export const PubMedNotesBox = ({
                     onChange={formik.handleChange}
                   />
                 ) : formik.values.nonscorable.text ? (
-                  formik.values.nonscorable.text
+                  <span className="text-pre-wrap">
+                    {formik.values.nonscorable.text}
+                  </span>
                 ) : (
                   <span className="text-muted">
                     <i>(None)</i>
@@ -281,7 +283,9 @@ export const PubMedNotesBox = ({
                     onChange={formik.handleChange}
                   />
                 ) : formik.values.other.text ? (
-                  formik.values.other.text
+                  <span className="text-pre-wrap">
+                    {formik.values.other.text}
+                  </span>
                 ) : (
                   <span className="text-muted">
                     <i>(None)</i>

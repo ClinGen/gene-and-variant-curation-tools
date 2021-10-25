@@ -74,6 +74,7 @@ class ClassificationApproval extends Component {
                     label: `${affiliation.fullName} (${affiliation.id})`
                 };
             });
+            parsedAffiliations.sort((first, second) => first.label.localeCompare(second.label));
             this.setState({ affiliationsList: parsedAffiliations });
         }
     }
@@ -97,6 +98,7 @@ class ClassificationApproval extends Component {
                     });
                 }
             });
+            parsedApprovers.sort((first, second) => first.label.localeCompare(second.label));
             this.setState({ approversList: parsedApprovers });
         }
     }
@@ -553,7 +555,7 @@ class ClassificationApproval extends Component {
                                         <div className="pt-3 pb-3">
                                             <h5><strong>SOP Version:</strong> {sopVersion}</h5>
                                             <h5><strong>Classification Contributor(s):</strong> {classificationContributors ? getContributorNames(classificationContributors).join(', ') : null}</h5>
-                                            <h5><strong>Contributor Comments:</strong> {contributorComment}</h5>
+                                            <h5><span className="text-pre-wrap"><strong>Contributor Comments:</strong> {contributorComment}</span></h5>
                                         </div>
                                     : null}
                                 </div>
@@ -562,7 +564,7 @@ class ClassificationApproval extends Component {
                                 <div className="col-sm-5">
                                     <h5><strong>Date saved as Approved:</strong> {approvalDate ? formatDate(parseDate(approvalDate), "YYYY MMM DD, h:mm a") : null}</h5>
                                     <h5><strong>Final Approval Date:</strong> {approvalReviewDate ? formatDate(parseDate(approvalReviewDate), "YYYY MMM DD") : null}</h5>
-                                    <h5><strong>Approver Comments:</strong> {approvalComment ? approvalComment : null}</h5>
+                                    <h5><span className="text-pre-wrap"><strong>Approver Comments:</strong> {approvalComment ? approvalComment : null}</span></h5>
                                     {gdm ?
                                         <h5><strong>Classification Approver:</strong> {additionalApprover ? getApproverNames(additionalApprover) : null}</h5>
                                     : null}

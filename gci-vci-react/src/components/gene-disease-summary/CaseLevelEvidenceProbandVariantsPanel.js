@@ -35,6 +35,7 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
         {
           Header: 'Variant',
           accessor: 'Variant',
+          style: { minWidth: 80, maxWidth: 110 },
           disableSortBy: true,
           // eslint-disable-next-line react/display-name
           Cell: ({ row }) => {
@@ -113,9 +114,16 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
               </>
             );
           },
+          style: { whiteSpace: 'pre-wrap' },
           enableRowSpan: true
         },
-        { Header: 'Proband Previous Testing', accessor: 'previousTestingDescription', disableSortBy: true, enableRowSpan: true },
+        {
+          Header: 'Proband Previous Testing',
+          accessor: 'previousTestingDescription',
+          disableSortBy: true,
+          style: { whiteSpace: 'pre-wrap' },
+          enableRowSpan: true
+        },
         {
           Header: 'Proband Methods of Detection',
           accessor: 'detectionMethod',
@@ -140,6 +148,7 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
               </>
             );
           },
+          style: { whiteSpace: 'pre-wrap' },
           enableRowSpan: true
         },
         {
@@ -155,7 +164,8 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
                 {evidence.functionalDataExplanation ? ` (${evidence.functionalDataExplanation})` : null}
               </>
             );
-          }
+          },
+          style: { whiteSpace: 'pre-wrap', minWidth: 80, maxWidth: 110 }
         },
         {
           Header: 'De Novo (paternity/ maternity confirmed)',
@@ -197,7 +207,7 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
           Header: 'Explanation',
           accessor: 'scoreExplanation',
           disableSortBy: true,
-          style: { minWidth: 150, maxWidth: 240 }
+          style: { whiteSpace: 'pre-wrap', minWidth: 150, maxWidth: 240 }
         }
       ]
     },

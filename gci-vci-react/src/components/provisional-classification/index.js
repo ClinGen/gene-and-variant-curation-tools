@@ -732,7 +732,7 @@ class ProvisionalClassification extends Component {
                                       <dt>
                                         <span>Explain Reason(s) for Change:</span>
                                       </dt>
-                                      <dd>
+                                      <dd className="text-pre-wrap">
                                         {provisional.reasons}
                                       </dd>
                                     </dl>
@@ -744,7 +744,7 @@ class ProvisionalClassification extends Component {
                                       <dt>
                                         <span>Evidence Summary:</span>
                                       </dt>
-                                      <dd>
+                                      <dd className="text-pre-wrap">
                                         {provisional.evidenceSummary}
                                       </dd>
                                     </dl>
