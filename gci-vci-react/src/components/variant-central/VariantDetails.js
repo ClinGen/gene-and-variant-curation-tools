@@ -219,7 +219,7 @@ const VariantDetails = (props) => {
                         {!props.isLoadingHypothesis && props.hypothesisData ? 
                           <div>
                             <i className="icon c3-icon"></i>
-                            <ExternalLink href={props.hypothesisData.hypothesisLink}> {props.hypothesisData.hypothesisTotal} Hypothes.is Annotation Articles</ExternalLink>
+                            <ExternalLink href={props.hypothesisData.hypothesisLink}> {props.hypothesisData.hypothesisTotal} C3 Community Annotations</ExternalLink>
                           </div>
                           : null}
                     </div>
