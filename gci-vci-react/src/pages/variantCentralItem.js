@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import lodashGet from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import axios from 'axios';
 
 import { updateInterpretation, updateVariant } from '../actions/actions';
 import { setCuratedEvidencesAction } from "../actions/curatedEvidenceActions";
@@ -35,7 +34,6 @@ const VariantCentralItem = (props) => {
     const [ view, setView ] = useState("Evidence");
     const { disease } = interpretation || {};
     const [ isLoadingInterpretation, setIsLoadingInterpretation ] = useState(false);
-    const [ isLoadingHypothesis, setIsLoadingHypothesis ] = useState(false);
     const [ basicInfoTabExternalAPILoadingStatus, setBasicInfoTabExternalAPILoadingStatus ] = useState(LoadingStatus.INITIAL);
     const [ basicInfoTabExternalAPIData, setBasicInfoTabExternalAPIData ] = useState({});
     const [ basicInfoTabExternalAPIErrorMessage, setBasicInfoTabExternalAPIErrorMessage ] = useState('');
@@ -43,7 +41,6 @@ const VariantCentralItem = (props) => {
     const [ relatedInterpretations, setRelatedInterpretations ] = useState([]);
     const [ relatedInterpretationsSnapshots, setRelatedInterpretationsSnapshots ] = useState([]);
     const [ calculatedPathogenicity, setCalculatedPathogenicity ] = useState('');
-    const [ hypothesisData, setHypothesisData ] = useState({});
 
     // Retrieve variant and store in redux
 
@@ -112,8 +109,6 @@ const VariantCentralItem = (props) => {
                     requestRecycler
                 });
 
-                fetchHypothesisData();
-
                 // fetch all associated curated evidences (curatedEvidences of all interpretations assoicated with this variant)
                 // make sure to re-fetch whenever variant is changed
                 fetchAllVariantCuratedEvidences(res.PK, dispatch, requestRecycler)
@@ -152,55 +147,6 @@ const VariantCentralItem = (props) => {
         });
       }
       return snapshotArray;
-    }
-
-    const fetchHypothesisData = () => {
-      setIsLoadingHypothesis(true);
-      const carId = lodashGet(props.variant, 'carId');
-      const clinvarVariantId = lodashGet(props.variant, 'clinvarVariantId');
-      const urls = [`https://hypothes.is/api/search?tag=CAID:${carId}`, `https://hypothes.is/api/search?tag=ClinVarID:${clinvarVariantId}`];
-      let config = {
-        headers: {
-          "Authorization": `Bearer ${process.env.REACT_APP_HYPOTHESIS_TOKEN}`
-        }
-      };
-      
-      let requests = urls.map(url => {
-        return axios.get(url, config);
-      });
-      // We need to make a request using both caId and clinvarVariantId 
-      // because they are mutually exclusive in hypothesis, not linked tags even though variant is the same
-      Promise.all(requests).then(response => {
-        handleHypothesisData(response);
-      })
-      .catch(err => {
-        if (axios.isCancel(err)) {
-          return;
-        }
-        setIsLoadingHypothesis(false);
-        console.log('Hypothesis Fetch Error=: %o', err);
-      });
-    }
-
-    const handleHypothesisData = (response) => {
-      // check if we received valid responses by checking data.total
-      // and pick one that has returned data, if both return, pick first one
-      if (response[0].data.total !== 0) {
-        response = response[0];
-      } else if (response[1].data.total !== 0) {
-        response = response[1];
-      }
-      if (response.data && response.data.rows[0]) {
-        // grab incontext link, html link will be used in the future
-        const hypothesisLink = response.data.rows[0].links.incontext;
-        const hypothesisTotal = response.data.total;
-        let hypothesisData = {
-          hypothesisLink,
-          hypothesisTotal
-        }
-        setHypothesisData(hypothesisData);
-        setIsLoadingHypothesis(false);
-      }
     }
 
     const classificationCallback = (classification) => {
@@ -339,8 +285,6 @@ const VariantCentralItem = (props) => {
                     calculatedPathogenicity={calculatedPathogenicity} 
                     relatedInterpretations={relatedInterpretations}
                     handleInterpretationUpdate={handleInterpretationUpdate}
-                    isLoadingHypothesis={isLoadingHypothesis}
-                    hypothesisData={hypothesisData}
                 />
             </div>
         </div>
