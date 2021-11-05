@@ -285,6 +285,7 @@
         "approver": [
             "Kristin Maloney",
             "Linda Jeng",
+            "Stephanie Riley",
             "Toni Pollin"
         ]
     },
@@ -785,7 +786,9 @@
             },
             "vcep": {
                 "id": "50053",
-                "fullname": "Glaucoma VCEP"
+                "fullname": "Glaucoma VCEP",
+                "guidelines_name": "ClinGen Glaucoma Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+                "guidelines_url": "https://www.clinicalgenome.org/affiliation/50053/docs/assertion-criteria"
             }
         }
     },
@@ -1015,12 +1018,12 @@
     },
     {
         "affiliation_id": "10077",
-        "affiliation_fullname": "Glaucoma/Neuro",
+        "affiliation_fullname": "Glaucoma and Neuro-Ophthalmology",
         "publish_approval": true,
         "subgroups": {
             "gcep": {
                 "id": "40077",
-                "fullname": "Glaucoma/Neuro GCEP"
+                "fullname": "Glaucoma and Neuro-Ophthalmology GCEP"
             }
         }
     },
@@ -1248,6 +1251,50 @@
             "gcep": {
                 "id": "40104",
                 "fullname": "Hereditary Cardiovascular Disease GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10105",
+        "affiliation_fullname": "Epilepsy Sodium Channel",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50105",
+                "fullname": "Epilepsy Sodium Channel VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10106",
+        "affiliation_fullname": "Prenatal",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40106",
+                "fullname": "Prenatal GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10107",
+        "affiliation_fullname": "Leukodystrophy and Leukoencephalopathy",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50107",
+                "fullname": "Leukodystrophy and Leukoencephalopathy VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10108",
+        "affiliation_fullname": "Potassium Channel Arrhythmia",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50108",
+                "fullname": "Potassium Channel Arrhythmia VCEP"
             }
         }
     }
