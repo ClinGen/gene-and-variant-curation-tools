@@ -57,7 +57,9 @@ class VariantView extends Component {
             classificationStatus: '',
             classificationSnapshots: [],
             lovdLink: '',
+            civicData: {},
             isLoadingLovd: false,
+            isLoadingCivic: false,
         };
         this.state = this.initialState;
         this.requestRecycler = new AmplifyAPIRequestRecycler();
@@ -69,6 +71,7 @@ class VariantView extends Component {
         
         this.fetchMyVariantInfo();
         this.fetchLovdLink();
+        this.fetchCivicData();
 
         // Check for evaluations in interpretations object, 
         // then loop through the PK values and pre-populate forms accordingly
@@ -206,6 +209,28 @@ class VariantView extends Component {
         }
     }
 
+    // Query CIViC for link in Other Evidence table - Basic info
+    fetchCivicData() {
+      this.setState({ isLoadingCivic: true });
+      const clinvarVariantId = lodashGet(this.props.variant, 'clinvarVariantId');
+      const carId = lodashGet(this.props.variant, 'carId');
+      const url = carId
+        ? `https://civicdb.org/api/variants/${carId}?identifier_type=allele_registry`
+        : `https://civicdb.org/api/variants/${clinvarVariantId}?identifier_type=clinvar`;
+
+      axios.get(url, { cancelToken: this.axioCanceller.token })
+        .then(response => {
+            this.setState({ civicData: response.data[0], isLoadingCivic: false });
+        })
+        .catch(err => {
+            if (axios.isCancel(err)) {
+                return;
+            }
+            this.setState({ isLoadingCivic: false });
+            console.log('CIViC Fetch Error=: %o', err);
+        });
+    }
+
     // For Disease Modal and Inheritance Modal
     setShowModal = (type, value) => {
         this.setState({ [`show${type}Modal`]: value });
@@ -312,6 +337,8 @@ class VariantView extends Component {
                         GRCh37={gRCh37}
                         GRCh38={gRCh38}
                         lovdLink={this.state.lovdLink}
+                        civicData={this.state.civicData}
+                        isLoadingCivic={this.state.isLoadingCivic}
                         isLoadingLovd={this.state.isLoadingLovd}
                         externalAPIData={this.props.basicInfoTabExternalAPIData} 
                         basicInfoTabExternalAPILoadingStatus={this.props.basicInfoTabExternalAPILoadingStatus}
