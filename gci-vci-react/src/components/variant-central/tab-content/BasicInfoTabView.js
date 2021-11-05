@@ -9,6 +9,8 @@ import {
     ClinvarInterpretationSummaryTableView,
     VciInterpretationTableView,
     VariantGenomicContext,
+    BrcaLink,
+    CivicLink,
     BasicInfoLovdTableView,
 } from "./BasicInfoTables";
 import CardPanel from "../../common/CardPanel";
@@ -18,6 +20,7 @@ import { Link } from "react-router-dom";
 import { EXTERNAL_API_MAP } from "../../../constants/externalApis";
 import { renderDataCredit } from "../helpers/credit";
 import { StatusTooltipExplanationIcon } from "../../common/StatusTooltipExplanationIcon";
+import { ExternalLink } from "../../common/ExternalLink";
 
 
 const RichEnsemblVEPTitle = (props) => {
@@ -96,11 +99,46 @@ export const BasicInfoTabView = ({
                         />
                     </CardPanel>
 
-                    <CardPanel title="Leiden Open Variation Database (LOVD)">
-                        <BasicInfoLovdTableView
-                            lovdLink={props.lovdLink}
-                            loading={props.isLoadingLovd}
-                        />
+                    <CardPanel title="Other Evidence Resources">
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>Resource</th>
+                            <th>Link to variant in resource</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Leiden Open Variation Database (LOVD)</td>
+                            <td>
+                              <BasicInfoLovdTableView
+                                lovdLink={props.lovdLink}
+                                loadingLovd={props.isLoadingLovd}
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Clinical Interpretation of Variants in Cancer (CIViC)</td>
+                            <td>
+                              <CivicLink
+                                civicData={props.civicData}
+                                loadingCivic={props.isLoadingCivic}
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>BRCA Exchange</td>
+                            <td>
+                              <BrcaLink 
+                                hasBrcaData={props.hasBrcaData}
+                                carId={props.carId}
+                                loadingBrca={props.isLoadingBrca}
+                              />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                        
                     </CardPanel>
 
                     <CardPanel title={<RichEnsemblVEPTitle text="RefSeq Transcripts" />}>

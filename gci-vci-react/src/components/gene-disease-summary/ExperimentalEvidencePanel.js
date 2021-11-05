@@ -65,7 +65,7 @@ const ExperimentalEvidencePanel = ({
         Header: item.text,
         accessor: item.key,
         disableSortBy: true,
-        style: { maxWidth: 600 }
+        style: { whiteSpace: 'pre-wrap', maxWidth: 600 }
       }
     } else if (item.key === 'scoreStatus') {
       return {
@@ -92,7 +92,7 @@ const ExperimentalEvidencePanel = ({
         Header: item.text,
         accessor: item.key,
         disableSortBy: true,
-        style: { maxWidth: 600 }
+        style: { whiteSpace: 'pre-wrap', maxWidth: 600 }
       };
     } else {
       return {

@@ -1,4 +1,3 @@
-
 import copy
 import datetime
 import os
@@ -8,7 +7,9 @@ from src.db.ddb_client import Client as DynamoClient
 
 from src.helpers import interpretation_helpers
 from src.helpers import snapshot_helpers
+from src.helpers import snapshot_report_helpers
 from decimal import Decimal
+
 
 # Create an instance of the database client for all db interactions.
 db = DynamoClient(
@@ -25,8 +26,7 @@ def handle(event):
   if httpMethod == 'GET':
     if event.get('pathParameters') and 'pk' in event['pathParameters']:
       response = find(event['pathParameters']['pk'], path.endswith('/complete'))
-    elif event.get('queryStringParameters') and 'target' in event['queryStringParameters']:
-      # Call from API to query snapshot data
+    elif event.get('queryStringParameters'):
       response = get(event['queryStringParameters'])
     else:
       response = { 'statusCode': 400, 'body': json.dumps({ 'error': 'Unrecognized path for ' + httpMethod }) }
@@ -64,45 +64,21 @@ def handle(event):
 
   return response
 
-# Add to support API to query snapshot data
+# Query snapshot objects
 def get(query_params= {}):
-  try:
-    snapshots = snapshot_helpers.get_snapshots(db,query_params)
-  except Exception as e:
-    print ('ERROR: Exception during Get snapshots %s ' %e )
-    response = { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
-
-  # If only count is requested, just return the count
-  if 'count' in query_params:
-    num = str(len(snapshots))
-    return { 'statusCode': 200, 'body': json.dumps({ 'Number of curation found': '%s' %num }) }
-
-  # Loop through all snapshots to gather data and return
-  if snapshots is not None:
-    status = query_params['status']
-    aff = query_params['affiliation']
-    gdms = []
-    for snapshot in snapshots:
-      if 'resource' in snapshot and 'resourceParent' in snapshot and 's3_archive_key' in snapshot['resourceParent']:
-        # print("found resourceParent S3 key")
-        try:
-          curation = snapshot_helpers.get_from_archive(snapshot['resourceParent']['s3_archive_key'])
-          gdm = snapshot_helpers.gather_gdm_proband_individuals(snapshot, curation, aff, status)
-
-          if gdm is not None:
-            gdms.append(gdm)
-        except Exception as e:
-          return { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
-  try:
-    if status == 'published':
-      gdms.sort(key = lambda gdm: gdm['Published Date'])
+  snapshots = []
+  # Call from API to generate snapshot related report
+  if 'target' in query_params:
+    response = snapshot_report_helpers.generate_api_report(db, query_params)
+  else:
+    try:
+      # Queries and returns requested snapshot objects
+      snapshots = db.query_by_item_type('snapshot', query_params, False)
+    except Exception as e:
+      print ('ERROR: Exception during Get snapshots %s ' %e )
+      response = { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
     else:
-      gdms.sort(key = lambda gdm: gdm['Approval Date'])
-  except Exception:
-    pass
-
-  # print(json.dumps(gdms))
-  response = { 'statusCode': 200, 'body': json.dumps(gdms) }
+      response = { 'statusCode': 200, 'body': json.dumps(snapshots) }
 
   return response
 

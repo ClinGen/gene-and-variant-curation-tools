@@ -39,6 +39,7 @@ const updateObjectUrl = {
   'experimental': '/experimental',
   'caseControl': '/casecontrol',
   'evidenceScore': '/evidencescore',
+  'variantScore': '/variantscore',
   'provisionalClassification': '/provisional-classifications',
   'pathogenicity': '/pathogenicity',
   'interpretation': '/interpretations',
@@ -200,7 +201,7 @@ export const TransferCuration = () => {
   }
   
   /**
-   * Return an array of 'PK' from the gdm, annotations, evidence, scores, classifications if GDM object
+   * Return an array of 'PK' from the gdm, annotations, evidence, scores, variantScores, classifications if GDM object
    * Return an array of 'PK' from the evaluations, provisionalVariant, curated_evidences if Interpretation object
    * @param {string} type - object type - gdm or interpretation
    * @param {object} object - the gene-disease record data object or interpretation data object
@@ -211,7 +212,7 @@ export const TransferCuration = () => {
   const findAllObjects = (type, object, contributorType, contributorPKs, affiliationId) => {
     let allObjects = null;
     if (type === 'gdm') {
-      allObjects = getTransferGdmObjects(object, contributorType === "affiliation");
+      allObjects = getTransferGdmObjects(object);
     } else {
       allObjects = getTransferInterpretationObjects(object);
     }
@@ -221,8 +222,15 @@ export const TransferCuration = () => {
     if (contributorType === 'individual') {
       // Remove objects not created by the same user(s) who started the GDM/Interpretation
       foundObjects = allObjects.filter(obj => {
-        // Some objects' submitted_by is just user PK and some is full user object
-        return (contributorPKs.indexOf(obj.submitted_by) > -1 || contributorPKs.indexOf(obj.submitted_by.PK) > -1);
+        if (type === 'gdm') {
+          // Annotation object has no submitted_by property, only has affiliation,
+          // so auto transfer all annotation(s) to new affiliation
+          // Some objects' submitted_by is just user PK and some is full user object
+          return (obj.item_type === 'annotation' || contributorPKs.indexOf(obj.submitted_by) > -1 || contributorPKs.indexOf(obj.submitted_by.PK) > -1);
+        } else {
+          // Some objects' submitted_by is just user PK and some is full user object
+          return (contributorPKs.indexOf(obj.submitted_by) > -1 || contributorPKs.indexOf(obj.submitted_by.PK) > -1);
+        }
       });
     } else {
       // Remove objects not belonged to the given affiliation(s)
@@ -231,16 +239,7 @@ export const TransferCuration = () => {
       });
     }
 
-    if (type === "gdm") {
-      // Annotation objects have no submitted_by so error when filtered by individual(s) but still need to update affiliation
-      // so add back annotation objects
-      if (contributorType === "individual" && object.annotations && object.annotations.length > 0) {
-        const allowed = ['date_created', 'last_modified', 'submitted_by', 'item_type', 'affiliation', 'PK'];
-        object.annotations.forEach(annotation => {
-          foundObjects.push(filteredObject(annotation, allowed));
-        });
-      }
-    } else {
+    if (type === "interpretation") {
       // interpretation.provisionalVariant is no longer a linked object
       // but interpretation.provisionalVariant.affiliation may exist and need to be updated
       if (object && object.provisionalVariant) {
@@ -484,6 +483,7 @@ export const TransferCuration = () => {
    * @param {array} contributorPKs - contributor PKs or affiliation ids
    * @param {string} newAffiliationId - transfer to affiliation id
    */
+  // ??? This codes is not being used, need to work on more
   const checkNoDupScores = (gdm, contributorType, contributorPKs, newAffiliationId) => {
     let noDuplicate = true;
 
@@ -494,15 +494,19 @@ export const TransferCuration = () => {
         if (noDuplicate && annotation.groups && annotation.groups.length) {
           annotation.groups.forEach(group => {
             // Loop through families in group evidence
-            if (group.familyIncluded && group.familyIncluded.length > 0) {
+            if (noDuplicate && group.familyIncluded && group.familyIncluded.length > 0) {
               group.familyIncluded.forEach(family => {
                 // Loop through individuals within each family of the group
-                if (family.individualIncluded && family.individualIncluded.length > 0) {
+                if (noDuplicate && family.individualIncluded && family.individualIncluded.length > 0) {
                   family.individualIncluded.forEach(individual => {
                     // Loop through group's family's individual scores and check for possible duplicated score
-                    if (individual.scores && individual.scores.length > 1) {
-                      noDuplicate = noDupScore(individual.scores, contributorType, contributorPKs, newAffiliationId);
+                    // Stop if any duplicate is found
+                    if (noDuplicate) {
+                      if (individual.scores && individual.scores.length > 1) {
+                        noDuplicate = noDupScore(individual.scores, contributorType, contributorPKs, newAffiliationId);
+                      }
                     }
+                    // ??? variantScores should only have one
                   }); // forEach group's family's individual
                 }
               }); // forEach group's family
@@ -514,12 +518,13 @@ export const TransferCuration = () => {
         if (noDuplicate && annotation.families && annotation.families.length > 0) {
           annotation.families.forEach(family => {
             // Loop through individuals with each family
-            if (family.individualIncluded && family.individualIncluded.length > 0) {
+            if (noDuplicate && family.individualIncluded && family.individualIncluded.length > 0) {
               family.individualIncluded.forEach(individual => {
                 // Loop through family's individual scores and check for possible duplicated score
-                if (individual.scores && individual.scores.length > 1) {
+                if (noDuplicate && individual.scores && individual.scores.length > 1) {
                   noDuplicate = noDupScore(individual.scores, contributorType, contributorPKs, newAffiliationId);
                 }
+                // ??? variantScores should only have one
               });
             }
           });
@@ -529,9 +534,10 @@ export const TransferCuration = () => {
         if (noDuplicate && annotation.individuals && annotation.individuals.length > 0) {
           annotation.individuals.forEach(individual => {
             // Loop through individual scores and check for possible duplicated score
-            if (individual.scores && individual.scores.length > 1) {
+            if (noDuplicate && individual.scores && individual.scores.length > 1) {
               noDuplicate = noDupScore(individual.scores, contributorType, contributorPKs, newAffiliationId);
             }
+            // ??? variantScores should only have one
           });
         }
 
@@ -539,7 +545,7 @@ export const TransferCuration = () => {
         if (noDuplicate && annotation.experimentalData && annotation.experimentalData.length > 0) {
           annotation.experimentalData.forEach(experimental => {
             // Loop through experimental scores and check for possible duplicated score
-            if (experimental.scores && experimental.scores.length > 1) {
+            if (noDuplicate && experimental.scores && experimental.scores.length > 1) {
               noDuplicate = noDupScore(experimental.scores, contributorType, contributorPKs, newAffiliationId);
             }
           });
@@ -549,7 +555,7 @@ export const TransferCuration = () => {
         if (noDuplicate && annotation.caseControlStudies && annotation.caseControlStudies.length > 0) {
           annotation.caseControlStudies.forEach(caseControl => {
             // Loop through case-control scores and check for possible duplicated score
-            if (caseControl.scores && caseControl.scores.length > 1 ) {
+            if (noDuplicate && caseControl.scores && caseControl.scores.length > 1 ) {
               noDuplicate = noDupScore(caseControl.scores, contributorType, contributorPKs, newAffiliationId);
             }
           });
@@ -575,7 +581,8 @@ export const TransferCuration = () => {
       // Check for transfer gdm
       if (type === "gdm") {
         // Check if this transfer will cause duplicated scores in GDM evidences.
-        if (checkNoDupScores(curation, contributorType, contributorPKs, newAffiliationId)) {
+        // ??? do not check for now
+        // ??? if (checkNoDupScores(curation, contributorType, contributorPKs, newAffiliationId)) {
           // Check if transfer from contributor(s) and to affiliation both already have provisionalClassification in this GDM
           if (curation.provisionalClassifications && curation.provisionalClassifications.length > 0) {
             // Get provisionalClassification that belongs to contributor(s)
@@ -630,9 +637,9 @@ export const TransferCuration = () => {
               contributorPKs: contributorPKs
             });
           }
-        } else {
-          reject({statusText: `Duplicated Scores associated with new Affiliation ID in same evidence(s) are found.`});
-        }
+        // ??? } else {
+        // ???   reject({statusText: `Duplicated Scores associated with new Affiliation ID in same evidence(s) are found.`});
+        // ??? }
       } else {
         // Check for transfer interpretation
         if (newAffiliationId === "0") {
@@ -836,7 +843,8 @@ export const TransferCuration = () => {
                     value={formData["selectedType"]} onChange={handleChange}
                     error={formErrors["selectedType"]} groupClassName="row mb-3"
                     labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" required>
-                    <option value="interpretaton">Interpretation</option>
+                    <option value="interpretation">Interpretation</option>
+                    <option value="gdm">GDM</option>
                   </Input>
                   <Input type="text" name="selectedPK" label={pkLabel}
                     value={formData["selectedPK"]} onChange={handleChange}

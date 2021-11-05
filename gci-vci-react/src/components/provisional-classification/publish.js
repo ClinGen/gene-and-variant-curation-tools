@@ -595,8 +595,8 @@ class PublishApproval extends Component {
                                     <h5><strong>Date {publishEventLower}: {publishDate}</strong></h5>
                                 </div>
                                 <div className="col-sm-4">
-                                    <dl className="inline-dl clearfix preview-publish-comment">
-                                        <h5><strong>Additional comments:</strong></h5>
+                                    <dl className="inline-dl clearfix preview-publish-comment text-pre-wrap">
+                                        <h5><span className="text-pre-wrap"><strong>Additional comments:</strong></span></h5>
                                         {publishComment ? publishComment : null}
                                     </dl>
                                 </div>

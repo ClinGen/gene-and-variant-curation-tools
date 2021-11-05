@@ -1,64 +1,29 @@
 /**
  * Return gene-disease record objects that can be identified by affiliation with flatten needed properties in an array,
- * including gdm, evidence, scores, classifications, variantPathogenicity objects and annotation objects if requested
+ * including gdm, annotation, evidence, scores, variantScores, classifications, variantPathogenicity objects.
  * @param {object} gdm - The gene-disease record data object
  *
  */
-export function getTransferGdmObjects(gdm, includeAnnotations) {
+export function getTransferGdmObjects(gdm) {
   let totalObjects = [];
   // Loop through gdm annotations
   let annotations = gdm.annotations && gdm.annotations.length ? gdm.annotations : [];
   annotations.forEach(annotation => {
-    // Add annotation if requested 
-    if (includeAnnotations) {
-      totalObjects.push(filteredObject(annotation));
-    }
-    // Get annotation records
+    // Add annotation
+    totalObjects.push(filteredObject(annotation));
     // Loop through groups
     let groups = annotation.groups && annotation.groups.length ? annotation.groups : [];
     if (groups.length) {
       groups.forEach(group => {
-        // Get group evidence
+        // Add group evidence
         totalObjects.push(filteredObject(group));
-        // Loop through families within each group
-        let groupFamiliesIncluded = group.familyIncluded && group.familyIncluded.length ? group.familyIncluded : [];
-        if (groupFamiliesIncluded.length) {
-          groupFamiliesIncluded.forEach(family => {
-            // Get group's family evidence
-            totalObjects.push(filteredObject(family));
-            // Loop through individuals within each family of the group
-            let groupFamilyIndividualsIncluded = family.individualIncluded && family.individualIncluded.length ? family.individualIncluded : [];
-            if (groupFamilyIndividualsIncluded.length) {
-              groupFamilyIndividualsIncluded.forEach(individual => {
-                // Get group's family's individual evidence
-                totalObjects.push(filteredObject(individual));
-                // Loop through group's family's individual scores
-                let groupFamilyIndividualScores = individual.scores && individual.scores.length ? individual.scores : [];
-                if (groupFamilyIndividualScores.length) {
-                  groupFamilyIndividualScores.forEach(score => {
-                    // Get scores
-                    totalObjects.push(filteredObject(score));
-                  });
-                }
-              });
-            }
-          });
+        // Loop through group's families
+        if (group.familyIncluded && group.familyIncluded.length) {
+          totalObjects = addFamilyObjects(totalObjects, group.familyIncluded);
         }
-        // Loop through individuals of group
-        let groupIndividualsIncluded = group.individualIncluded && group.individualIncluded.length ? group.individualIncluded : [];
-        if (groupIndividualsIncluded.length) {
-          groupIndividualsIncluded.forEach(individual => {
-            // Get group's individual evidence
-            totalObjects.push(filteredObject(individual));
-            // Loop through group's individual scores
-            let groupIndividualScores = individual.scores && individual.scores.length ? individual.scores : [];
-            if (groupIndividualScores.length) {
-              groupIndividualScores.forEach(score => {
-                // Get scores
-                totalObjects.push(filteredObject(score));
-              });
-            }
-          });
+        // Loop through group's individuals
+        if (group.individualIncluded && group.individualIncluded.length) {
+          totalObjects = addIndividualObjects(totalObjects, group.individualIncluded);
         }
       });
     }
@@ -66,43 +31,14 @@ export function getTransferGdmObjects(gdm, includeAnnotations) {
     // Loop through families
     let families = annotation.families && annotation.families.length ? annotation.families : [];
     if (families.length) {
-      families.forEach(family => {
-        // Get family evidence
-        totalObjects.push(filteredObject(family));
-        // Loop through individuals with each family
-        let familyIndividualsIncluded = family.individualIncluded && family.individualIncluded.length ? family.individualIncluded : [];
-        if (familyIndividualsIncluded.length) {
-          familyIndividualsIncluded.forEach(individual => {
-            // Get family's individual evidence
-            totalObjects.push(filteredObject(individual));
-            // Loop through family's individual scores
-            let familyIndividualScores = individual.scores && individual.scores.length ? individual.scores : [];
-            if (familyIndividualScores.length) {
-              familyIndividualScores.forEach(score => {
-                // Get scores
-                totalObjects.push(filteredObject(score));
-              });
-            }
-          });
-        }
-      });
+      totalObjects = addFamilyObjects(totalObjects, families);
     }
 
     // Loop through individuals
     let individuals = annotation.individuals && annotation.individuals.length ? annotation.individuals : [];
     if (individuals.length) {
-      individuals.forEach(individual => {
-        // Get individual evidence
-        totalObjects.push(filteredObject(individual));
-        // Loop through individual scores
-        let individualScores = individual.scores && individual.scores.length ? individual.scores : [];
-        if (individualScores.length) {
-          individualScores.forEach(score => {
-            // Get scores
-            totalObjects.push(filteredObject(score));
-          });
-        }
-      });
+      // Loop through individuals
+      totalObjects = addIndividualObjects(totalObjects, individuals);
     }
 
     // Loop through experimentals
@@ -162,6 +98,46 @@ export function getTransferGdmObjects(gdm, includeAnnotations) {
 
   // Add gdm object
   totalObjects.push(filteredObject(gdm));
+
+  return totalObjects;
+}
+
+// Add family and its individual objects
+function addFamilyObjects(totalObjects, families) {
+  families.forEach(family => {
+    totalObjects.push(filteredObject(family));
+    // Loop through family's individuals
+    if (family.individualIncluded && family.individualIncluded.length) {
+      // Add family's individual objects
+      totalObjects = addIndividualObjects(totalObjects, family.individualIncluded);
+    }
+  });
+
+  return totalObjects;
+}
+
+// Add individual and its scores and variantScores objects
+function addIndividualObjects(totalObjects, individuals) {
+  individuals.forEach(individual => {
+    // Get individual evidence
+    totalObjects.push(filteredObject(individual));
+    // Loop through individual's scores
+    let scores = individual.scores && individual.scores.length ? individual.scores : [];
+    if (scores.length) {
+      scores.forEach(score => {
+        // Get scores
+        totalObjects.push(filteredObject(score));
+      });
+    }
+    // Loop through individual's variantScores
+    let variantScores = individual.variantScores && individual.variantScores.length ? individual.variantScores : [];
+    if (variantScores.length) {
+      variantScores.forEach(variantScore => {
+        // Get variantScores
+        totalObjects.push(filteredObject(variantScore));
+      });
+    }
+  });
 
   return totalObjects;
 }

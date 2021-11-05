@@ -465,10 +465,10 @@ def getDereferenced(db, query_params):
     warmup(db, filters, projections)
 
   ###### Get the interpretations
-  # If an affiliation was provided, use the affiliation index to query.
+  # If an affiliation was the only filter provided, use the affiliation index to query.
   # Otherwise, query using the item type index.
   interpretations = []
-  if filters is not None and 'affiliation' in filters:
+  if filters is not None and 'affiliation' in filters and len(filters) == 1:
     interpretations = get_interpretations_by_affiliation(db, filters['affiliation'], projections)
   else:
     interpretations = get_interpretations(db, filters, projections)

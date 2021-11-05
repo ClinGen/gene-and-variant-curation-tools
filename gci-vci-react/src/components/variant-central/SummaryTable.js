@@ -100,7 +100,7 @@ function tableHeader() {
             <td width="15%" className="evaluation-status">
                 {item.criteriaModifier ? item.criteria + '_' + item.criteriaModifier: item.criteriaStatus}
             </td>
-            <td width="25%" className="evaluation-description">{item.explanation}</td>
+            <td width="25%" className="evaluation-description text-pre-wrap">{item.explanation}</td>
         </tr>
     );
     }
@@ -116,7 +116,7 @@ function tableHeader() {
             <td width="40%" className="criteria-description">{getCriteriaDescription(item)}</td>
             <td width="5%" className="criteria-modified">N/A</td>
             <td width="15%" className="evaluation-status">Not Met</td>
-            <td width="25%" className="evaluation-description">{item.explanation}</td>
+            <td width="25%" className="evaluation-description text-pre-wrap">{item.explanation}</td>
         </tr>
     );
     }
@@ -132,7 +132,7 @@ function tableHeader() {
             <td width="40%" className="criteria-description">{getCriteriaDescription(item)}</td>
             <td width="5%" className="criteria-modified">N/A</td>
             <td width="15%" className="evaluation-status">Not Evaluated</td>
-            <td width="25%" className="evaluation-description">{item.explanation ? item.explanation : null}</td>
+            <td width="25%" className="evaluation-description text-pre-wrap">{item.explanation ? item.explanation : null}</td>
         </tr>
     );
     }

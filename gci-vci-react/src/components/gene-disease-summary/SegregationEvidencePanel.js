@@ -71,7 +71,8 @@ const SegregationEvidencePanel = ({
               }
             </>
           );
-        }
+        },
+        style: { whiteSpace: 'pre-wrap' }
       };
     } else if (item.key === 'moiDisplayedForFamily') {
       return {

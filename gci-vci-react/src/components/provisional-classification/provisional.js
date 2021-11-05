@@ -360,7 +360,7 @@ class ProvisionalApproval extends Component {
                                     <div className="provisional-comments">
                                         <dl className="inline-dl clearfix preview-provisional-comment">
                                             <dt><span>Additional comments:</span></dt>
-                                            <dd><span>{provisionalComment ? provisionalComment : null}</span></dd>
+                                            <dd><span className="text-pre-wrap">{provisionalComment ? provisionalComment : null}</span></dd>
                                         </dl>
                                     </div>
                                 </div>
