@@ -106,7 +106,8 @@ const CaseLevelEvidencePanel = ({
                 }
               </>
             );
-          }
+          },
+          style: { whiteSpace: 'pre-wrap' }
         },
       ]
     },
@@ -210,8 +211,8 @@ const CaseLevelEvidencePanel = ({
                 }
               </>
             );
-          }
-
+          },
+          style: { whiteSpace: 'pre-wrap' }
         },
         { Header: 'Score Status', accessor: 'scoreStatus', disableSortBy: true },
         {
@@ -232,7 +233,7 @@ const CaseLevelEvidencePanel = ({
           Header: 'Explanation',
           accessor: 'scoreExplanation',
           disableSortBy: true,
-          style: { maxWidth: 240 }
+          style: { whiteSpace: 'pre-wrap', maxWidth: 240 }
         }
       ]
     }

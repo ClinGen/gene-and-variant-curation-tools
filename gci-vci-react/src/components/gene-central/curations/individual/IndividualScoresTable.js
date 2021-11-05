@@ -114,7 +114,7 @@ export const IndividualScoresTable = ({
                         </td>
                       : null
                     }
-                    <td key={`explanation_${i}`}>
+                    <td key={`explanation_${i}`} className="text-pre-wrap">
                       {lodashGet(score, "scoreExplanation", null) ? score.scoreExplanation : ""}
                     </td>
                   </tr>

@@ -596,10 +596,10 @@ function addPublishState(snapshotPKValue, eventType) {
                                 <div className="col-sm-4">
                                     <h5><strong>Modified Pathogenicity:</strong> {modifiedPathogenicity ? modifiedPathogenicity : 'None'}</h5>
                                 </div>
-                                <div className="col-sm-4">
+                                <div className="col-sm-4 text-pre-wrap">
                                     <h5><strong>Reason(s) for change:</strong> {provisionalReason && provisionalReason.length ? provisionalReason : 'None'}</h5>
                                 </div>
-                                <div className="col-sm-4">
+                                <div className="col-sm-4 text-pre-wrap">
                                     <h5><strong>Evidence Summary:</strong> {evidenceSummary && evidenceSummary.length ? evidenceSummary : 'None'}</h5>
                                 </div>
                             </div>

@@ -80,7 +80,7 @@ const GeneDiseaseEvidenceSummaryHeader = ({
             </span>
             <br />
             <strong>Reason for modified classification: </strong>
-            <span className="classificationModifiedReason">
+            <span className="classificationModifiedReason text-pre-wrap">
               {provisional && provisional.reasons ? provisional.reasons : 'None'}
             </span>
             <br />
@@ -143,12 +143,12 @@ const GeneDiseaseEvidenceSummaryHeader = ({
         </Row>
       </CardPanel>
       <CardPanel title="Evidence Summary">
-        <p>
+        <span className="text-pre-wrap">
           {provisional && provisional.evidenceSummary && provisional.evidenceSummary.length
             ? provisional.evidenceSummary
             : 'No summary is provided.'
           }
-        </p>
+        </span>
       </CardPanel>
     </>
   );

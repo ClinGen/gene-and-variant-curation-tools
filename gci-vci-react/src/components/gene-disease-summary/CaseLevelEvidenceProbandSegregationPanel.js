@@ -68,6 +68,7 @@ const CaseLevelEvidenceSegregationProbandPanel = ({
               </>
             );
           },
+          style: { whiteSpace: 'pre-wrap' },
           enableRowSpan: true
         },
         {

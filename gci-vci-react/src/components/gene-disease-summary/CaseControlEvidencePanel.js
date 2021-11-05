@@ -83,7 +83,11 @@ const CaseControlEvidencePanel = ({
           }
         },
         { Header: 'Study Type', accessor: 'studyType', disableSortBy: true, },
-        { Header: 'Detection Method (Case)', accessor: 'detectionMethod', disableSortBy: true, },
+        { Header: 'Detection Method (Case)',
+          accessor: 'detectionMethod',
+          disableSortBy: true,
+          style: { whiteSpace: 'pre-wrap' }
+        },
       ]
     },
     {
@@ -101,13 +105,14 @@ const CaseControlEvidencePanel = ({
         }
       ]
     },
-    { Header: 'Bias Confounding', accessor: 'comments', disableSortBy: true, },
+    { Header: 'Bias Confounding', accessor: 'comments', disableSortBy: true, style: { whiteSpace: 'pre-wrap' } },
     {
       Header: 'Statistics',
       columns: [
         {
           Header: 'Cases with Variant in Gene / All Cases Genotyped/Sequenced',
           accessor: 'caseCohort_numberWithVariant',
+          style: { minWidth: 80, maxWidth: 120 },
           disableSortBy: true,
           // eslint-disable-next-line react/display-name
           Cell: ({ row }) => {
@@ -130,6 +135,7 @@ const CaseControlEvidencePanel = ({
         {
           Header: 'Controls with Variant in Gene / All Cases Genotyped/Sequenced',
           accessor: 'controlCohort_numberWithVariant',
+          style: { minWidth: 80, maxWidth: 120 },
           disableSortBy: true,
           // eslint-disable-next-line react/display-name
           Cell: ({ row }) => {
