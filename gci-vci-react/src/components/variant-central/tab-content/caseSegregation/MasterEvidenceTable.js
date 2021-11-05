@@ -5,6 +5,7 @@ import Popover from "../../../common/Popover";
 import { masterTable, evidenceResources } from "./segregationData";
 import { EvidenceModalManager } from "./EvidenceModalManager";
 import { DeleteEvidenceModal } from "./DeleteEvidenceModal";
+import { canCurrUserModifyEvidence } from "../CaseSegregation";
 import { ExternalLink } from "../../../common/ExternalLink";
 import { EXTERNAL_API_MAP } from "../../../../constants/externalApis";
 import { getAffiliationName } from "../../../../helpers/get_affiliation_name";
@@ -15,7 +16,6 @@ export const MasterEvidenceTable = ({
   interpretationCaseSegEvidences,  // Case segregation evidences added to current interpretation
   auth,                            // Logged in user auth data
   readOnly,                        // If the page is in read-only mode
-  canCurrUserModifyEvidence,       // Function to check if current logged in user can modify the given evidence
 }) => {
 
   // The order to display the source types in the master/tally table
@@ -64,7 +64,6 @@ export const MasterEvidenceTable = ({
         isNewEvidence={false}
         useIcon={true}
         auth={auth}
-        canCurrUserModifyEvidence={canCurrUserModifyEvidence}
         interpretationCaseSegEvidences={interpretationCaseSegEvidences}
       >
       </EvidenceModalManager>

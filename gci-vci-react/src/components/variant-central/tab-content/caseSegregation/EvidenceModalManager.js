@@ -22,6 +22,7 @@ import {
   addCuratedEvidenceAction,
 } from "../../../../actions/curatedEvidenceActions";
 import { useAmplifyAPIRequestRecycler } from "../../../../utilities/fetchUtilities";
+import { canCurrUserModifyEvidence } from "../CaseSegregation";
 import { evidenceResources } from "./segregationData";
 import { EvidenceMetadataModal } from "./EvidenceMetadataModal";
 import { EvidenceDetailsModal } from "./EvidenceDetailsModal";
@@ -32,9 +33,10 @@ export const EvidenceModalManager = ({
   selectedEvidenceType,           // Evidence source type
   selectedSubcategory,            // Subcategory (usually the panel) the evidence is part of
   isNewEvidence,                  // If adding a new piece of evidence or editing an existing piece
+  btnTitle="Edit",                // Text for Edit Button
+  btnRow=false,                   // Wrap Edit Button in a row
   useIcon,                        // Use an icon instead of text as link text  
   auth,                           // The user's auth data
-  canCurrUserModifyEvidence,      // Function to check if current logged in user can modify the given evidence
   interpretationCaseSegEvidences, // Case segregation evidences with sourceInfo added to current interpretation
 }) => {
   const [sourceData, setSourceData] = useState({'metadata': {}, 'data': {}}); // Source data being added/edited
@@ -503,7 +505,7 @@ export const EvidenceModalManager = ({
 
   // If adding new evidence, display "Add Evidence" button
   // If editing and displaying in master/tally table, use edit icon
-  // else display "Edit" button
+  // else display "Edit" or "Add in New Format" button
   const renderButton = () => {
     if (evidenceData) {
       if (useIcon) {
@@ -514,9 +516,13 @@ export const EvidenceModalManager = ({
         );
       }
       else {
+        let btnClass = "";
+        if (btnRow) {
+          btnClass = "row";
+        }
         return (
-          <Button variant="primary" onClick={onAddEditButtonClick}>
-            Edit
+          <Button className={btnClass} variant="primary" onClick={onAddEditButtonClick}>
+            {btnTitle}
           </Button>
         );
       }
@@ -562,8 +568,7 @@ export const EvidenceModalManager = ({
         isSubmitting={isSubmitting}
         show={nextModal}
         onHide={() => setNextModal(false)}
-      >
-      </EvidenceDetailsModal>
+      />
       </>
     );
   } else {
@@ -578,8 +583,7 @@ export const EvidenceModalManager = ({
         isLoadingNext={isLoadingNext}
         show={isMetadataOpen}
         onHide={onCancelMetadata}
-      >
-      </EvidenceMetadataModal>
+      />
       {renderButton()}
       </>
     );

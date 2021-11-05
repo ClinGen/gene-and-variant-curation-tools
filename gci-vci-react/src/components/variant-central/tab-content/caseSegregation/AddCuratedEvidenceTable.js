@@ -25,7 +25,6 @@ class AddCuratedEvidenceTableComponent extends Component {
     readOnly: PropTypes.bool,      // True if curated evidence is in read-only mode
     allCaseSegEvidences: PropTypes.array, // all case segregation curated evidences for this variant
     interpretationCaseSegEvidences: PropTypes.array,  // Case segregation evidences with sourceInfo added to current interpretation
-    canCurrUserModifyEvidence: PropTypes.func, // function to check if current logged in user can modify given evidence
     auth: PropTypes.object         // current logged in user auth data
   };
 
@@ -97,7 +96,6 @@ class AddCuratedEvidenceTableComponent extends Component {
                               selectedSubcategory={this.props.subcategory}
                               isNewEvidence={true}
                               auth={this.props.auth}
-                              canCurrUserModifyEvidence={this.props.canCurrUserModifyEvidence}
                               interpretationCaseSegEvidences = {this.props.interpretationCaseSegEvidences}
                             >
                             </EvidenceModalManager>
@@ -122,7 +120,6 @@ class AddCuratedEvidenceTableComponent extends Component {
               criteriaList={this.props.criteriaList}
               auth={this.props.auth}
               readOnly={this.props.readOnly}
-              canCurrUserModifyEvidence={this.props.canCurrUserModifyEvidence}
             >
             </EvidenceTable>
           </div>
