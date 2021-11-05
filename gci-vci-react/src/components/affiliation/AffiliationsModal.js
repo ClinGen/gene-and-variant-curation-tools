@@ -38,6 +38,7 @@ const AffiliationsModal = ({
         // }
         // Map over users affiliations and filter out any potential undefined values (due to typos or incorrect aff in Users Table, avoids crashes)
         const myAffiliations = auth.affiliations.map(affiliation_id => getAffiliationByID(affiliation_id)).filter(aff => aff !== undefined);
+        myAffiliations.sort((first, second) => first.affiliation_fullname.localeCompare(second.affiliation_fullname));
         setAffiliationOptions(myAffiliations);
       }
     };

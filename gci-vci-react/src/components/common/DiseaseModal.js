@@ -282,7 +282,7 @@ const DiseaseModal = ({
           && (
             <div className="retrieved-disease-section">
               <p>Below is the data from OLS for the ID you submitted. Select &quot;Save&quot; below if it is the correct disease, otherwise revise your search above:</p>
-              <a href={`https://www.ebi.ac.uk/ols/ontologies/mondo${retrievedDisease.PK}`} target="_blank" rel="noopener noreferrer"><b>{retrievedDisease.term}</b></a>
+              <a href={`https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/${retrievedDisease.PK}`} target="_blank" rel="noopener noreferrer"><b>{retrievedDisease.term}</b></a>
             </div>
           )
         }

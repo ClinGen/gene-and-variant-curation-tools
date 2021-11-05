@@ -92,9 +92,17 @@ function renderApprovalLink(snapshot, resourceType, affiliationId, userId, gdmPK
         }
       url = `${summary_uri}?snapshot=${snapshotPK}&${param}`;
     }
-    return (
-        <span className="classification-link-item ml-1">
-            <Button variant="success" target="_blank" as={Link} to={url} className="ml-2">View Current Approved</Button>
-        </span>
-    );
+    if (resourceType === 'classification') {
+        return (
+            <span className="classification-link-item ml-1">
+                <Button variant="success" target="_blank" as={Link} to={url} className="ml-2">View Current Approved</Button>
+            </span>
+        );
+    } else if (resourceType === 'interpretation') {
+        return (
+            <span className="classification-link-item ml-1">
+                <Link to={{ pathname: url }} title="View Current Approved" target="_blank"><i className="icon icon-link"></i></Link>
+            </span>
+        );
+    }
 }
