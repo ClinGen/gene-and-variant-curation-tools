@@ -9,6 +9,7 @@ import {
     ClinvarInterpretationSummaryTableView,
     VciInterpretationTableView,
     VariantGenomicContext,
+    BrcaLink,
     CivicLink,
     BasicInfoLovdTableView,
 } from "./BasicInfoTables";
@@ -19,6 +20,7 @@ import { Link } from "react-router-dom";
 import { EXTERNAL_API_MAP } from "../../../constants/externalApis";
 import { renderDataCredit } from "../helpers/credit";
 import { StatusTooltipExplanationIcon } from "../../common/StatusTooltipExplanationIcon";
+import { ExternalLink } from "../../common/ExternalLink";
 
 
 const RichEnsemblVEPTitle = (props) => {
@@ -97,7 +99,7 @@ export const BasicInfoTabView = ({
                         />
                     </CardPanel>
 
-                    <CardPanel title="Other evidence resources">
+                    <CardPanel title="Other Evidence Resources">
                       <table className="table">
                         <thead>
                           <tr>
@@ -121,6 +123,16 @@ export const BasicInfoTabView = ({
                               <CivicLink
                                 civicData={props.civicData}
                                 loadingCivic={props.isLoadingCivic}
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>BRCA Exchange</td>
+                            <td>
+                              <BrcaLink 
+                                hasBrcaData={props.hasBrcaData}
+                                carId={props.carId}
+                                loadingBrca={props.isLoadingBrca}
                               />
                             </td>
                           </tr>

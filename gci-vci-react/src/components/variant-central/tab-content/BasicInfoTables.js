@@ -489,6 +489,16 @@ VariantGenomicContext.propTypes = {
     GRCh38: PropTypes.string
 }
 
+export const BrcaLink = ({ carId, hasBrcaData, loadingBrca }) => {
+  const url = carId ? `https://brcaexchange.org/variants?search=${carId}` : null;
+  return (
+    !loadingBrca && hasBrcaData ? (
+      <ExternalLink href={url}>BRCA Exchange Link for variant {carId}</ExternalLink>
+    ) 
+      : 'Link to BRCA Exchange is not available for this variant.'
+  );
+};
+
 export const CivicLink = ({ civicData, loadingCivic }) => {
   let url;
   const geneId = civicData.gene_id ? civicData.gene_id : null;

@@ -58,7 +58,9 @@ class VariantView extends Component {
             classificationSnapshots: [],
             lovdLink: '',
             civicData: {},
+            hasBrcaData: false,
             isLoadingLovd: false,
+            isLoadingBrca: false,
             isLoadingCivic: false,
         };
         this.state = this.initialState;
@@ -71,6 +73,7 @@ class VariantView extends Component {
         
         this.fetchMyVariantInfo();
         this.fetchLovdLink();
+        this.fetchBrcaData();
         this.fetchCivicData();
 
         // Check for evaluations in interpretations object, 
@@ -231,6 +234,29 @@ class VariantView extends Component {
         });
     }
 
+    fetchBrcaData() {
+      this.setState({ isLoadingBrca: true });
+      const carId = lodashGet(this.props.variant, 'carId');
+      // This long URL should be replaced when BRCA Exchange implements &include=all querystring action
+      const url = `https://brcaexchange.org/backend/data/?format=json&search_term=${carId}&include=Variant_in_ENIGMA&include=Variant_in_ClinVar&include=Variant_in_1000_Genomes&include=Variant_in_ExAC&include=Variant_in_LOVD&include=Variant_in_BIC&include=Variant_in_ESP&include=Variant_in_exLOVD&include=Variant_in_ENIGMA_BRCA12_Functional_Assays&include=Variant_in_GnomAD`;
+      
+      axios.get(url, { cancelToken: this.axioCanceller.token })
+      .then(response => {
+        // We only want to check if BRCA Exch. is returning data and checking CA_ID in response against carId
+        if (response.data.data && response.data.data[0].CA_ID === carId) {
+          this.setState({ hasBrcaData: true, isLoadingBrca: false });
+        }
+      })
+      .catch(err => {
+          if (axios.isCancel(err)) {
+              return;
+          }
+          this.setState({ isLoadingBrca: false });
+          console.log('BRCA Exchange Fetch Error=: %o', err);
+      });
+
+    }
+
     // For Disease Modal and Inheritance Modal
     setShowModal = (type, value) => {
         this.setState({ [`show${type}Modal`]: value });
@@ -334,10 +360,13 @@ class VariantView extends Component {
                 <TabPanel className="tab-panel">
                     <BasicInfoTabView
                         clinvarVariantId={this.props.variant ? this.props.variant.clinvarVariantId : null}
+                        carId={this.props.variant ? this.props.variant.carId : null}
                         GRCh37={gRCh37}
                         GRCh38={gRCh38}
                         lovdLink={this.state.lovdLink}
+                        hasBrcaData={this.state.hasBrcaData}
                         civicData={this.state.civicData}
+                        isLoadingBrca={this.state.isLoadingBrca}
                         isLoadingCivic={this.state.isLoadingCivic}
                         isLoadingLovd={this.state.isLoadingLovd}
                         externalAPIData={this.props.basicInfoTabExternalAPIData} 
