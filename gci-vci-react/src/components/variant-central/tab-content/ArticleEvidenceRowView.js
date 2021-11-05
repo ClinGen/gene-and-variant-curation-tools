@@ -22,6 +22,7 @@ export const ArticleEvidenceRowView = ({
   subcategory,
   criteriaList,
   readOnly,
+  getCaseSegAddButton=null,
 }) => {
   const article = lodashGet(articleEvidence, "articles[0]", {});
 
@@ -59,6 +60,7 @@ export const ArticleEvidenceRowView = ({
           onEditClick={handleEdit}
           readOnly={readOnly}
           category={category}
+          getCaseSegAddButton={getCaseSegAddButton}
         />
       )}
     </tr>
@@ -70,9 +72,16 @@ ArticleEvidenceRowView.propTypes = {
   subcategory: PropTypes.string,
   criteriaList: PropTypes.arrayOf(PropTypes.string),
   readOnly: PropTypes.bool,
+  getCaseSegAddButton: PropTypes.func,
 };
 
-const ArticleEvidenceRow = ({ articleEvidence, onEditClick, readOnly, category }) => {
+const ArticleEvidenceRow = ({
+  articleEvidence,
+  onEditClick,
+  readOnly,
+  category,
+  getCaseSegAddButton=null
+}) => {
   const article = lodashGet(articleEvidence, "articles[0]", {});
 
   const handleEditClick = () => {
@@ -86,6 +95,12 @@ const ArticleEvidenceRow = ({ articleEvidence, onEditClick, readOnly, category }
   ) : null;
   const affiliation = lodashGet(articleEvidence, "affiliation", null) ? getAffiliationName(articleEvidence.affiliation) : null;
   const submittedBy = affiliation ? `${affiliation} (${getUserName(articleEvidence.submitted_by)})` : `${getUserName(articleEvidence.submitted_by)}`;
+
+  // Check if need to add 'Add in New Format' button for case segregation tab tables
+  let addCaseSegNewFormatButton = null;
+  if (category === "case-segregation" && !readOnly) {
+    addCaseSegNewFormatButton = getCaseSegAddButton(articleEvidence);
+  }
 
   return (
     <>
@@ -126,6 +141,7 @@ const ArticleEvidenceRow = ({ articleEvidence, onEditClick, readOnly, category }
           </Button>
         </Row>
         )}
+        {addCaseSegNewFormatButton}
         <Row className="mt-1">
           <DeleteArticleEvidenceModalButton
             articleEvidence={articleEvidence}

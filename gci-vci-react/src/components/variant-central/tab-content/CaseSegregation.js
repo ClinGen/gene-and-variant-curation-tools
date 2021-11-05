@@ -63,18 +63,6 @@ class CaseSegregation extends Component {
   componentWillUnmount = () => {
   };
  
-  canCurrUserModifyEvidence = (auth, evidence) => {
-    const evidenceAffId = lodashGet(evidence, "affiliation", null);
-    const evidenceUserId = lodashGet(evidence, "submitted_by.PK", null);
-    const authAffId = lodashGet(auth, "currentAffiliation.affiliation_id", null);
-    const authUserId = lodashGet(auth, "PK", null);
-
-    return (
-      (evidenceAffId && authAffId && evidenceAffId === authAffId) ||
-      (!evidenceAffId && !authAffId && evidenceUserId === authUserId)
-    );
-  };
-
   getAllCaseSegEvidences = () => {
     // get the list of case segregation curated evidences in all interpretations of current variant
     // but only include evidences that are curated in new format with sourceInfo data
@@ -142,7 +130,6 @@ class CaseSegregation extends Component {
         allCaseSegEvidences = {this.state.allCaseSegregationEvidences}
         readOnly={this.props.variant && isEmpty(this.props.interpretation)}
         auth={this.props.auth}
-        canCurrUserModifyEvidence={this.canCurrUserModifyEvidence}
       />
     );
   };
@@ -294,7 +281,6 @@ class CaseSegregation extends Component {
         readOnly={this.props.variant && isEmpty(this.props.interpretation)}
         allCaseSegEvidences = {this.state.allCaseSegregationEvidences}
         interpretationCaseSegEvidences = {this.state.interpretationCaseSegEvidences}
-        canCurrUserModifyEvidence={this.canCurrUserModifyEvidence}
         auth={this.props.auth}
       />
 
@@ -362,4 +348,18 @@ const mapStateToProps = state => ({
   interpretation: state.interpretation,
   curatedEvidences: state.curatedEvidences,
 });
+
+export const canCurrUserModifyEvidence = (auth, evidence) => {
+  // Set if logged in user can edit/delete given evidence
+  const evidenceAffId = lodashGet(evidence, "affiliation", null);
+  const evidenceUserId = lodashGet(evidence, "submitted_by.PK", null);
+  const authAffId = lodashGet(auth, "currentAffiliation.affiliation_id", null);
+  const authUserId = lodashGet(auth, "PK", null);
+
+  return (
+    (evidenceAffId && authAffId && evidenceAffId === authAffId) ||
+    (!evidenceAffId && !authAffId && evidenceUserId === authUserId)
+  );
+};
+
 export default connect(mapStateToProps)(CaseSegregation);

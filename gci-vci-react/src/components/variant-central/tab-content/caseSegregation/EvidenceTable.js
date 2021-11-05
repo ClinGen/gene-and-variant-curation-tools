@@ -8,6 +8,7 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { evidenceResources } from "./segregationData";
 import { EvidenceModalManager } from "./EvidenceModalManager";
 import { DeleteEvidenceModal } from "./DeleteEvidenceModal";
+import { canCurrUserModifyEvidence } from "../CaseSegregation";
 import PmidSummary from "../../../common/article/PmidSummary";
 import Popover from "../../../common/Popover";
 import { ExternalLink } from "../../../common/ExternalLink";
@@ -21,7 +22,6 @@ export const EvidenceTable = ({
   criteriaList,                    // ACMG criteria
   auth,                            // Logged in user's auth data
   readOnly,                        // If the page is in read-only mode
-  canCurrUserModifyEvidence,       // Function to check if current logged in user can modify the given evidence
   interpretationCaseSegEvidences,  // Case segregation evidences added to current interpretation
 }) => {
 
@@ -183,7 +183,6 @@ export const EvidenceTable = ({
           isNewEvidence={false}
           useIcon={false}
           auth={auth}
-          canCurrUserModifyEvidence={canCurrUserModifyEvidence}
           interpretationCaseSegEvidences={interpretationCaseSegEvidences}
         >
         </EvidenceModalManager>

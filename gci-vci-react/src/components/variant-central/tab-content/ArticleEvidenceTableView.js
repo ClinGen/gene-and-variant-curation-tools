@@ -1,9 +1,8 @@
 import React, { useState, useReducer } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { orderBy as lodashOrderBy } from "lodash";
 import { Row, Col, Table } from "react-bootstrap";
-import lodashGet from "lodash/get";
+import { cloneDeep, get as lodashGet, orderBy as lodashOrderBy } from "lodash";
 
 // Internal libs
 import Alert from "../../common/Alert";
@@ -11,6 +10,8 @@ import { curatedEvidenceHasSourceInfo } from "../helpers/curated_evidence_versio
 import { AddArticleEvidenceForm } from "../../common/article/AddArticleEvidenceForm";
 import AddArticleModalButton, { articleModalButtonReducer, articleModalButtonInitialState, submitSuccessArticleModalAction, openArticleModalAction, dismissArticleModalAction, submittingArticleModalAction } from "../../common/article/AddArticleModalButton"; // modal related
 import { ArticleEvidenceRowView } from "./ArticleEvidenceRowView";
+import { EvidenceModalManager } from "./caseSegregation/EvidenceModalManager";
+import { canCurrUserModifyEvidence } from "./CaseSegregation";
 import { useIsMyInterpretation } from "../../../utilities/ownershipUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -81,6 +82,65 @@ export const AddArticleEvidenceTableView = ({
 
   const onArticleModalSaveClick = () => {
     dispatchArticleModalState(submittingArticleModalAction());
+  }
+
+  // Return 'Add in New Format' button in case-segregation Curated Literature Evidence table row that has retired format evidence
+  const getCaseSegAddButton = (evidence) => {
+    let caseSegEvidences = [];
+    // Get case-segregation category curated evidences, only include the ones that are in new format (with sourceInfo)
+    caseSegEvidences = (
+      curatedEvidencesNormalizedState.byCategory["case-segregation"] || []
+    )
+      .map((PK) => curatedEvidencesNormalizedState.byPK[PK])
+      .filter((curatedEvidence) => curatedEvidenceHasSourceInfo(curatedEvidence));
+
+    const pmid = lodashGet(evidence, "articles[0].PK", null);
+
+    // Check if an evidence in new format has been created with the same PMID as the evidence in old format and editable by current curator
+    let evidenceList = null;
+    if (caseSegEvidences.length) {
+      evidenceList = caseSegEvidences
+        .filter(o => 'pmid' in o.sourceInfo.metadata &&
+              o.sourceInfo.metadata['pmid'] === pmid &&
+              canCurrUserModifyEvidence(auth, o));
+    }
+
+    // If exists, add old evidence comment to it and allow user to edit the evidence
+    let isNew = false;
+    let data = {};
+    if (evidenceList && evidenceList.length) {
+      // Copy the evidence data
+      const found = evidenceList[0];
+      data = cloneDeep(found);
+      data.sourceInfo.data['comments'] = (found.sourceInfo.data && found.sourceInfo.data['comments'] && found.sourceInfo.data['comments'] !== '') ?
+        found.sourceInfo.data['comments'] + '\n' + evidence.evidenceDescription
+        :
+        evidence.evidenceDescription;
+    } else {
+      // If not found, allow user to add evidence in new format
+      isNew = true;
+      data.articles = evidence.articles;
+      data.sourceInfo = {'metadata': {}, 'data': {}};
+      data.sourceInfo.metadata['_kind_key'] = 'PMID';
+      data.sourceInfo.metadata['_kind_title'] = 'Pubmed';
+      data.sourceInfo.metadata['pmid'] = pmid;
+      data.sourceInfo.data['comments'] = evidence.evidenceDescription;
+    }
+
+    return (
+      <EvidenceModalManager
+        evidenceData={data}
+        selectedCriteriaList={criteriaList}
+        selectedEvidenceType='PMID'
+        selectedSubcategory={subcategory}
+        isNewEvidence={isNew}
+        btnTitle='Add in New Format'
+        btnRow={true}
+        useIcon={false}
+        auth={auth}
+        interpretationCaseSegEvidences = {caseSegEvidences}
+      />
+    );
   }
 
   return (
@@ -159,13 +219,7 @@ export const AddArticleEvidenceTableView = ({
         {relevantEvidenceList.length > 0 ? (
           relevantEvidenceList.map((evidence) => {
             // Set if logged in user can edit/delete given evidence
-            const evidenceAffId = lodashGet(evidence, "affiliation", null);
-            const evidenceUserId = lodashGet(evidence, "submitted_by.PK", null);
-            const authAffId = lodashGet(auth, "currentAffiliation.affiliation_id", null);
-            const authUserId = lodashGet(auth, "PK", null);
-            const currentUserHasEditPermissionForThisEvidence =
-               (evidenceAffId && authAffId && evidenceAffId === authAffId) ||
-               (!evidenceAffId && !authAffId && evidenceUserId === authUserId);
+            const readOnly = !canCurrUserModifyEvidence(auth, evidence);
 
             return (
               <ArticleEvidenceRowView
@@ -174,7 +228,8 @@ export const AddArticleEvidenceTableView = ({
                 category={category}
                 subcategory={subcategory}
                 criteriaList={criteriaList}
-                readOnly={!currentUserHasEditPermissionForThisEvidence}
+                readOnly={readOnly}
+                getCaseSegAddButton={getCaseSegAddButton}
               />
             );
           })
