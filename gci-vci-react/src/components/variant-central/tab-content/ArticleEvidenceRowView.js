@@ -109,7 +109,7 @@ const ArticleEvidenceRow = ({ articleEvidence, onEditClick, readOnly, category }
         }
       </td>
       <td style={{ width: EVIDENCE_COLUMN_WIDTH }}>
-        <p className="word-break">{articleEvidence.evidenceDescription}</p>
+        <p className="word-break text-pre-wrap">{articleEvidence.evidenceDescription}</p>
       </td>
       <td>{submittedBy}</td>
       <td>

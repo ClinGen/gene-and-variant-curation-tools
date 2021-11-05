@@ -109,7 +109,7 @@ const SnapshotSummary = (props) => {
               }
               <h5><strong>Calculated Pathogenicity:</strong> {provisionalVariant ? provisionalVariant.autoClassification : null}</h5>
               <h5><strong>Modified Pathogenicity:</strong> {provisionalVariant && provisionalVariant.alteredClassification ? (provisionalVariant.alteredClassification === 'No Selection' ? 'None' : provisionalVariant.alteredClassification) : 'None'}</h5>
-              <h5><strong>Reason for modified pathogenicity:</strong> {provisionalVariant && provisionalVariant.reason ? provisionalVariant.reason : 'None'}</h5>
+              <h5><span className="text-pre-wrap"><strong>Reason for modified pathogenicity:</strong> {provisionalVariant && provisionalVariant.reason ? provisionalVariant.reason : 'None'}</span></h5>
             </div>
             <div className="col-sm-6">
               <h5><strong>Interpretation Status:</strong> {provisionalVariant && provisionalVariant.classificationStatus ? (
@@ -131,7 +131,7 @@ const SnapshotSummary = (props) => {
           </div>
         </CardPanel>
         <CardPanel title="Evidence Summary">
-          <span>{provisionalVariant && provisionalVariant.evidenceSummary && provisionalVariant.evidenceSummary.length ? provisionalVariant.evidenceSummary : 'No summary is provided.'}</span>
+          <span className="text-pre-wrap">{provisionalVariant && provisionalVariant.evidenceSummary && provisionalVariant.evidenceSummary.length ? provisionalVariant.evidenceSummary : 'No summary is provided.'}</span>
         </CardPanel>
 
         {evaluations && (

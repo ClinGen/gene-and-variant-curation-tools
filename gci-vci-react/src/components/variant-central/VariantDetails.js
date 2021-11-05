@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap';
 import moment from 'moment';
@@ -7,9 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import isEmpty from 'lodash/isEmpty';
+import lodashGet from "lodash/get";
+import axios from 'axios';
 import { API_NAME } from '../../utils';
 import { getGenomicLinkouts, setContextLinks } from '../variant-central/helpers/helpers';
 import ExternalResourcesPanel from '../common/ExternalResourcesPanel';
+import { ExternalLink } from "../common/ExternalLink";
 import DiseaseModal from '../common/DiseaseModal';
 import Modal from '../common/Modal';
 import Popover from '../common/Popover';
@@ -24,12 +27,27 @@ const VariantDetails = (props) => {
     const mondoUrl = 'https://www.ebi.ac.uk/ols/ontologies/mondo//terms?iri=http://purl.obolibrary.org/obo/';
     const [showDiseaseModal, setShowDiseaseModal] = useState(false);
     const [showPhiDisclaimerModal, setShowPhiDisclaimerModal] = useState(false);
+    const [hypothesisData, setHypothesisData] = useState({});
+    const [isLoadingHypothesis, setIsLoadingHypothesis] = useState(false);
     const history = useHistory();
-    const { variant, interpretation, onViewUpdate, viewValue, isLoadingInterpretation, setIsLoadingInterpretation, relatedInterpretations, handleInterpretationUpdate } = props;
+    const { 
+      variant, 
+      interpretation, 
+      onViewUpdate, 
+      viewValue, 
+      isLoadingInterpretation, 
+      setIsLoadingInterpretation, 
+      relatedInterpretations, 
+      handleInterpretationUpdate 
+    } = props;
     const { disease } = interpretation || {};
     const myInterpretation = relatedInterpretations.find(interpretation => isOwnedByCurrentCuratingEntity(interpretation, props.auth));
     const isCurrentInterpretationMine = myInterpretation && interpretation && myInterpretation.PK === interpretation.PK;
     
+    useEffect(() => {
+      fetchHypothesisData();
+    }, [])
+
     const updateView = (view) => {
         onViewUpdate(view);// also update state in parent
     }
@@ -74,6 +92,52 @@ const VariantDetails = (props) => {
         else{
             console.log('Nothing to POST');
         }
+    }
+
+    const fetchHypothesisData = () => {
+      setIsLoadingHypothesis(true);
+      const carId = lodashGet(variant, 'carId');
+      const clinvarVariantId = lodashGet(variant, 'clinvarVariantId');
+      // We need to make a request using both caId and clinvarVariantId 
+      // because they are mutually exclusive in hypothesis, tags aren't linked though variant is the same
+      const urls = [`https://hypothes.is/api/search?tag=CAID:${carId}`, `https://hypothes.is/api/search?tag=ClinVarID:${clinvarVariantId}`];
+      let config = {
+        headers: {
+          "Authorization": `Bearer ${process.env.REACT_APP_HYPOTHESIS_TOKEN}`
+        }
+      };
+      
+      let requests = urls.map(url => {
+        return axios.get(url, config);
+      });
+
+      Promise.all(requests).then(response => {
+        handleHypothesisData(response);
+      })
+      .catch(err => {
+        if (axios.isCancel(err)) {
+          return;
+        }
+        setIsLoadingHypothesis(false);
+        console.log('Hypothesis Fetch Error=: %o', err);
+      });
+    }
+
+    const handleHypothesisData = (response) => {
+      // check if we received valid responses by checking data.total
+      // and pick one that has returned data, if both return data, choose res w/ greatest total
+      response = response.reduce((clinvar, caid) => clinvar.data.total > caid.data.total ? clinvar : caid);
+      if (response.data && response.data.rows[0]) {
+        // grab incontext link, html link will be used in the future
+        const hypothesisLink = response.data.rows[0].links.incontext;
+        const hypothesisTotal = response.data.total;
+        let hypothesisData = {
+          hypothesisLink,
+          hypothesisTotal
+        }
+        setHypothesisData(hypothesisData);
+        setIsLoadingHypothesis(false);
+      }
     }
 
     const handleAgreeToDisclaimer = () => {
@@ -215,6 +279,20 @@ const VariantDetails = (props) => {
                             gRCh38Links={gRCh38Links}
                             gRCh37Links={gRCh37Links}
                         />
+                        {!isLoadingHypothesis && !isEmpty(hypothesisData) ? 
+                          <div>
+                            <a 
+                              className="no-external-link" 
+                              title="ClinGen Baseline Annotation" 
+                              href="https://www.clinicalgenome.org/curation-activities/baseline-annotation/"
+                              target="_blank"
+                              rel="noreferrer noopener"
+                            >
+                              <i className="icon c3-icon"></i>
+                            </a>
+                            <ExternalLink href={hypothesisData.hypothesisLink}> {hypothesisData.hypothesisTotal} Baseline Community Annotation(s)</ExternalLink>
+                          </div>
+                          : null}
                     </div>
                 </div>
                 <div className="card">
