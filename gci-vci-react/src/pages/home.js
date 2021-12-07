@@ -15,7 +15,7 @@ function Home() {
         <Jumbotron>
             <Container>
                 <h1 className="display-4 d-flex">ClinGen Variant &amp; Gene Curation</h1>
-                <p className="lead mb-0 text-muted"><strong>Variant Curation</strong> is available for public use. To register, create an account via &quot;Login&quot;, and then contact our helpdesk at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a>.</p>
+                <p className="lead mb-0 text-muted"><strong>Variant Curation</strong> is available for public use. To register, create an account via &quot;Login&quot;, and then contact our VCI helpdesk at <a href="mailto:vci@clinicalgenome.org">vci@clinicalgenome.org</a>.</p>
                 <p className="lead text-muted"><strong> Gene Curation </strong> is currently restricted to ClinGen curators. To collaborate on gene curation contact <a href="mailto:clingen@clinicalgenome.org">clingen@clinicalgenome.org</a></p>
                 <p>
                     <Button
