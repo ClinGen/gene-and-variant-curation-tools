@@ -1299,5 +1299,35 @@
                 "fullname": "Potassium Channel Arrhythmia VCEP"
             }
         }
+    },
+    {
+        "affiliation_id": "10109",
+        "affiliation_fullname": "Pharmacogenomics"
+    },
+    {
+        "affiliation_id": "10110",
+        "affiliation_fullname": "Lysosomal Diseases",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "40110",
+                "fullname": "Lysosomal Diseases GCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10111",
+        "affiliation_fullname": "FLT3 (Fms Related Receptor Tyrosine Kinase 3) SC",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "50111",
+                "fullname": "FLT3 (Fms Related Receptor Tyrosine Kinase 3) SC-VCEP"
+            }
+        }
+    },
+    {
+        "affiliation_id": "10112",
+        "affiliation_fullname": "Ocular Genomics Institute"
     }
 ]
