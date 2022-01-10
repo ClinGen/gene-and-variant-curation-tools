@@ -4,7 +4,7 @@ import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../../utils';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { get as lodashGet, cloneDeep } from "lodash";
+import { get as lodashGet, cloneDeep, isEmpty } from "lodash";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrashAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,7 @@ import { compareFormGroupValues, getGenomicLinkouts } from './helpers/helpers';
 import { getHgvsNotation } from './helpers/hgvs_notation';
 import DiseaseModal from '../common/DiseaseModal';
 import InheritanceModal from './InheritanceModal';
+import CspecModal from './CspecModal';
 import CodeStrip from './CodeStrip';
 import Population from './tab-content/population/Population';
 import VariantType from './tab-content/VariantType';
@@ -22,6 +23,7 @@ import GeneCentric from './tab-content/GeneCentric';
 import Experimental from './tab-content/Experimental';
 import CaseSegregation from './tab-content/CaseSegregation';
 import Summary from './Summary';
+import AuditTrail from './AuditTrail';
 import PathogenicityCalculator from './PathogenicityCalculator';
 import { BasicInfoTabView } from '../variant-central/tab-content/BasicInfoTabView';
 import { AmplifyAPIRequestRecycler } from '../../utilities/fetchUtilities';
@@ -46,6 +48,7 @@ class VariantView extends Component {
             variant: this.props.variant,
             evaluations: JSON.parse(JSON.stringify(defaultForms)),
             savedEvaluations: JSON.parse(JSON.stringify(defaultForms)),
+            showCspecModal: false,
             showDiseaseModal: false, // 'Disease' or 'Inheritance'
             showInheritanceModal: false,
             myVariantInfoData: {},
@@ -129,7 +132,6 @@ class VariantView extends Component {
                 this.getSnapshotsByPK(this.state.interpretation.snapshots)
             }
         }
-
     }
 
     // Make sure local state gets updated when props change in parent
@@ -257,7 +259,7 @@ class VariantView extends Component {
 
     }
 
-    // For Disease Modal and Inheritance Modal
+    // For Cspec, Disease, and Inheritance Modal
     setShowModal = (type, value) => {
         this.setState({ [`show${type}Modal`]: value });
     }
@@ -294,10 +296,12 @@ class VariantView extends Component {
         this.setState({ evaluations: JSON.parse(JSON.stringify(defaultForms))})
     }
     render(){
-        const { interpretation, handleInterpretationUpdate } = this.props;
+        const { interpretation, cspecDoc, handleInterpretationUpdate } = this.props;
         const isMyInterpretation = isOwnedByCurrentCuratingEntity(interpretation, this.props.auth);
         const inheritanceButtonStyle = interpretation && (interpretation.modeInheritance || interpretation.modeInheritanceAdjective)
             ? 'info' : 'secondary';
+        const cspecCriteria = cspecDoc && cspecDoc.ruleSetDoc && cspecDoc.ruleSetDoc.criteria ? cspecDoc.ruleSetDoc.criteria : [];
+
     // Variant Type Tab combines 4 groups
     const InterpretationHeader = () => {
         return(
@@ -306,6 +310,7 @@ class VariantView extends Component {
                     <h3 className="mb-3">Variant Interpretation Record</h3>
                 </div>
                 {isMyInterpretation ? <div className="col-sm-6 text-right">
+                    <button className="btn btn-secondary mr-1" onClick={() => this.setShowModal('Cspec', true)}>Specification Document  <FontAwesomeIcon icon={!isEmpty(cspecDoc) ? faEdit : faPlus} /></button>
                     {interpretation && interpretation.disease
                         ? <button className="btn btn-danger mr-1" onClick={this.handleDeleteDisease}>Disease <FontAwesomeIcon icon={faTrashAlt} /></button>
                         : <button className="btn btn-secondary mr-1" onClick={() => this.setShowModal('Disease', true)}>Disease <FontAwesomeIcon icon={faPlus} /></button>
@@ -323,10 +328,11 @@ class VariantView extends Component {
         onSubmitEval: this.submitForm,
         alert: this.state.alertMessage,
         loading: this.state.isLoading,
+        cspecCriteria: cspecCriteria,
         view: this.state.view
     }
 
-    if (this.state.view !== "Summary") {
+    if (this.state.view !== "Summary" && this.state.view !== "Audit Trail") {
         const completedSections = this.state.interpretation && this.state.interpretation.completed_sections ? this.state.interpretation.completed_sections : [];
         const { gRCh38, gRCh37 } = getGenomicLinkouts(this.props.variant);
         return(
@@ -421,6 +427,23 @@ class VariantView extends Component {
                     />
                 </TabPanel>
             </Tabs>
+              {this.state.showCspecModal &&
+                <CspecModal
+                    show={this.state.showCspecModal}
+                    onHide={() => this.setShowModal('Cspec', false)}
+                    id="addCspecModal"
+                    title="Add a specification document to this curation"
+                    handleCspecUpdate={this.props.handleCspecUpdate}
+                    parentEndpoint="interpretations"
+                    parentToInsertCspec={interpretation}
+                    deleteButtonText="Remove document from interpretation"
+                    saveButtonText="Save and apply"
+                    updateParentObj={handleInterpretationUpdate}
+                    affiliation={this.state.affiliation}
+                    userPK={this.props.auth ? this.props.auth.PK : null}
+                />
+              }
+
                 <DiseaseModal
                     show={this.state.showDiseaseModal}
                     onHide={() => this.setShowModal('Disease', false)}
@@ -453,6 +476,7 @@ class VariantView extends Component {
                 interpretation={interpretation}
                 variant={this.state.variant}
                 evaluations={this.state.savedEvaluations}
+                cspecDoc={cspecDoc}
                 calculatedAssertion={this.state.calculatedPathogenicity}
                 setProvisionalEvaluation={this.setProvisionalEvaluation}
                 view={this.state.view}
@@ -471,6 +495,10 @@ class VariantView extends Component {
             />
             </>
         )
+    } else if (this.state.view === "Audit Trail") {
+        return (
+            <AuditTrail itemType="interpretation" itemPK={interpretation.PK} />
+        );
     }
     
 }

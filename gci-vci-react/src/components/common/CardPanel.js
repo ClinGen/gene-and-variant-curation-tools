@@ -9,6 +9,7 @@ const CardPanel = ({
     title,
     subtitle,
     children,
+    headerLink,
     link,
     panelMarginClass = "mb-4",
     label,
@@ -72,6 +73,13 @@ const CardPanel = ({
             </div>
           ) : null}
         </h4>
+        {headerLink && (
+            <span className="normal float-right">
+              <a href={headerLink.url} target="_blank" rel="noopener noreferrer">
+                {headerLink.label}
+              </a>
+            </span>
+          )}
       </div>
       <div className={`card-body ${newBodyClass}`}>
         {subtitle && <h5 className="card-title">{subtitle}</h5>}
@@ -91,6 +99,10 @@ CardPanel.propTypes = {
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   subtitle: PropTypes.string,
   link: PropTypes.shape({
+    url: PropTypes.string,
+    label: PropTypes.string,
+  }),
+  headerLink: PropTypes.shape({
     url: PropTypes.string,
     label: PropTypes.string,
   }),

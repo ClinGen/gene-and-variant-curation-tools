@@ -34,6 +34,7 @@ const VariantDetails = (props) => {
       variant, 
       interpretation, 
       onViewUpdate, 
+      cspecDoc,
       viewValue, 
       isLoadingInterpretation, 
       setIsLoadingInterpretation, 
@@ -203,7 +204,13 @@ const VariantDetails = (props) => {
         const { gRCh38, gRCh37 } = getGenomicLinkouts(variant);
         const gRCh38Links = gRCh38 && setContextLinks(gRCh38, 'GRCh38');
         const gRCh37Links = gRCh37 && setContextLinks(gRCh37, 'GRCh37');
-
+        const cspecHref = cspecDoc && cspecDoc.ruleSetDoc && cspecDoc.ruleSetDoc.cspecInfo
+          ? cspecDoc.ruleSetDoc.cspecInfo.cspecUiLink 
+          : null;
+        const cspecLink = cspecDoc && cspecDoc.ruleSetDoc 
+          ? `${cspecDoc.ruleSetDoc.vcepName} ${cspecDoc.ruleSetDoc.documentVersion}`
+          : null;
+        
         const modifiedPathogenicity = interpretation && interpretation.provisionalVariant
             && interpretation.provisionalVariant.alteredClassification
             ? interpretation.provisionalVariant.alteredClassification
@@ -338,6 +345,11 @@ const VariantDetails = (props) => {
                                 <strong>Pathogenicity: </strong>{calculatedPathogenicity}<br/>
                                 <strong>Modified Pathogenicity: </strong>{modifiedPathogenicity}<br/>
                                 <strong>Provisional/Approved Status: </strong>{props.interpretation.status}<br/>
+                                <strong>Specification Document: </strong>
+                                {cspecHref && cspecLink ? 
+                                    <ExternalLink href={cspecHref}>{cspecLink}</ExternalLink>
+                                  : null}
+                                <br/>
                                 {isCurrentInterpretationMine
                                     ? (viewValue === 'Audit Trail')
                                         ? (

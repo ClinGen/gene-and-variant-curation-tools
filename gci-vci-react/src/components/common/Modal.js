@@ -14,6 +14,12 @@ const Modal = ({
   children,
   onHide,
   hideButtonText,
+  showDeleteButton,
+  onDelete,
+  deleteButtonText,
+  deleteButtonInProgressText,
+  isLoadingDelete,
+  deleteButtonDisabled,
   onSave,
   saveButtonText,
   saveButtonInProgressText,
@@ -53,6 +59,16 @@ const Modal = ({
         isLoading={isLoadingSave}
         disabled={isLoadingSave || saveButtonDisabled}
       />
+      {showDeleteButton ? 
+        <LoadingButton
+          variant="danger"
+          onClick={onDelete}
+          text={deleteButtonText || 'Delete'}
+          textWhenLoading={deleteButtonInProgressText || 'Deleting'}
+          isLoading={isLoadingDelete}
+          disabled={isLoadingDelete || deleteButtonDisabled}
+        />
+        : null}
     </BSModal.Footer>
   </BSModal>
 );
@@ -74,7 +90,12 @@ Modal.propTypes = {
   saveButtonText: PropTypes.string,
   saveButtonInProgressText: PropTypes.string,
   saveButtonDisabled: PropTypes.bool,
+  onDelete: PropTypes.func,
+  deleteButtonText: PropTypes.string,
+  deleteButtonInProgressText: PropTypes.string,
+  deleteButtonDisabled: PropTypes.bool,
 
+  isLoadingDelete: PropTypes.bool,
   isLoadingSave: PropTypes.bool,
   saveError: PropTypes.string,
 };

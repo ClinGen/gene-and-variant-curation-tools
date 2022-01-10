@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import lodashGet from 'lodash/get';
+import { get as lodashGet, isEmpty } from 'lodash';
 import { getAffiliationName } from '../../helpers/get_affiliation_name';
 import { getUserName } from '../../helpers/getUserName';
 import { connect } from 'react-redux';
@@ -257,6 +257,7 @@ class ProvisionalApproval extends Component {
             // reference to parent interpretation
             const resourceParentObj = {"interpretation": this.state.interpretation.PK}
 
+
             let newSnapshot = {
                 resourceId: newProvisional.PK,
                 resourceType: 'interpretation',
@@ -264,6 +265,7 @@ class ProvisionalApproval extends Component {
                 resource: newProvisional,
                 //interpretation: this.state.interpretation.PK,
                 resourceParent: resourceParentObj,
+                cspec: this.state.interpretation.cspec ? this.state.interpretation.cspec : null,
                 disease: this.state.interpretation.disease ? this.state.interpretation.disease : null,
                 diseaseTerm: this.state.interpretation.diseaseTerm ? this.state.interpretation.diseaseTerm : null,
                 modeInheritance: this.state.interpretation.modeInheritance ? this.state.interpretation.modeInheritance : null,
@@ -275,15 +277,12 @@ class ProvisionalApproval extends Component {
             const params = {body: {newSnapshot}}
             const url = '/snapshots/?type=interpretation&action=provision';
 
-            console.log('newSnapshot', newSnapshot)
             API.post(API_NAME, url, params).then(response => {
                 let provisionalSnapshot = response;
                 this.props.approveProvisional('yes');
-                console.log('provisional snapshot!', provisionalSnapshot)
                 this.props.updateSnapshotList(provisionalSnapshot);
                 return Promise.resolve(provisionalSnapshot);
             }).then(snapshot => {
-                // console.log('after saving newSnapshot', snapshot)
                 // POST Provisional Snapshot, then update parent interpretation
                 const interpretationObj = this.state.interpretation;
                 interpretationObj.status = "Provisional";
@@ -300,7 +299,6 @@ class ProvisionalApproval extends Component {
                 const params = {body: {interpretationObj}}
                 const url = '/interpretations/' + interpretationObj.PK;
                 API.put(API_NAME, url, params).then(data => {
-                    console.log('Added Snapshot to Interp', data);
                     this.props.updateInterpretation(data);
                     this.props.updateProvisionalObj(data.provisionalVariant);
                 })
@@ -317,6 +315,7 @@ class ProvisionalApproval extends Component {
         const provisionalComment = this.state.provisionalComment ? this.state.provisionalComment : '';
         const interpretation = this.props.interpretation;
         const provisional = this.props.provisional;
+        const cspecDocTitle = lodashGet(this.props.cspecDoc, 'ruleSetDoc.cspecInfo.documentName', null);
         //const classification = this.props.classification;
         const currentUserAffiliation = lodashGet(this.props.auth, 'currentAffiliation.affiliation_fullname', null);
         const affiliation = lodashGet(provisional, 'affiliation', null) ? provisional.affiliation : lodashGet(this.props.auth, 'currentAffiliation.affiliation_id', null);
@@ -364,6 +363,14 @@ class ProvisionalApproval extends Component {
                                         </dl>
                                     </div>
                                 </div>
+                                {interpretation ? 
+                                  <div className="col-sm-5">
+                                    <dl className="inline-dl clearfix">
+                                      <dt><span>Specification Document:</span></dt>
+                                      <dd><span className="text-pre-wrap">{cspecDocTitle ? cspecDocTitle : ''}</span></dd>
+                                    </dl>
+                                  </div>
+                                  : null}
                             </div>
                             <div className="alert alert-warning provisional-preview-note">
                                 <i className="icon icon-exclamation-circle"></i> This is a Preview only; you must still Submit to save

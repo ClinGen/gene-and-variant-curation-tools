@@ -11,7 +11,7 @@ import { API_NAME } from '../../../../utils';
 // Local State is handled in Parent (InterpretationView)	
 function PopulationEvaluation(props) {
 
-  const { selectChange, textChange, alert, loading } = props;
+  const { selectChange, cspecCriteria, textChange, alert, loading } = props;
 
   // "or" Evaluation Groupings	
   const criteriaGroups = [["BA1"], ["BS1"], ["PM2"]];
@@ -92,6 +92,7 @@ function PopulationEvaluation(props) {
     criteria: filterCodeStripObjects(["BA1", "BS1", "PM2"]),
     criteriaGroups: criteriaGroups,
     criteriaCrossCheck: [["BA1", "BS1", "PM2"]],
+    cspecCriteria: cspecCriteria,
     evaluations: evaluationsByGroup(criteriaGroups, props.evaluations),
     textChange: textChange,
     selectChange: selectChange,

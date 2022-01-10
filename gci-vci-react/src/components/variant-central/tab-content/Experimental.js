@@ -247,6 +247,7 @@ class Experimental extends Component {
   render() {
     const {
       evaluations,
+      cspecCriteria,
       view,
       selectChange,
       textChange,
@@ -282,6 +283,7 @@ class Experimental extends Component {
             evaluations={evaluationsByGroup(hotspotGroups, evaluations)}
             criteria={filterCodeStripObjects(["PM1"])}
             criteriaGroups={hotspotGroups}
+            cspecCriteria={cspecCriteria}
             onSubmitEval={onSubmitEval}
             loading={loading['PM1']}
             alert={!isEmpty(alert) && alert.id === 'PM1' ? alert : {}}
@@ -303,6 +305,7 @@ class Experimental extends Component {
             criteria={filterCodeStripObjects(["BS3", "PS3"])}
             criteriaGroups={studiesGroups}
             criteriaCrossCheck={[["BS3", "PS3"]]}
+            cspecCriteria={cspecCriteria}
             onSubmitEval={this.handleSaveFunctionalData}
             loading={loading['BS3']}
             alert={isEmpty(alert)

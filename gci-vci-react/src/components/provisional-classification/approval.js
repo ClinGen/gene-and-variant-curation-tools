@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import lodashGet from 'lodash/get';
+import { get as lodashGet, isEmpty } from 'lodash';
 
 import moment from 'moment';
 import { RestAPI as API } from '@aws-amplify/api-rest';
@@ -54,7 +54,6 @@ class ClassificationApproval extends Component {
     }
 
     componentDidMount() {
-        console.log('snapshots', this.props.snapshots)
         this.getAffiliationApprovers();
         this.parseAffiliationsList();
         this.parseApproversList();
@@ -443,6 +442,7 @@ class ClassificationApproval extends Component {
             // reference to parent interpretation
             const resourceParentObj = {"interpretation": interpretationObj.PK}
 
+
             newProvisional.last_modified = nowUTC;
 
             // Create Approved Snapshot Obj
@@ -453,6 +453,7 @@ class ClassificationApproval extends Component {
                 resource: newProvisional,
                 resourceParent: resourceParentObj,
                 associatedSnapshot: provisionalSnapshots && provisionalSnapshots[0] ? provisionalSnapshots[0] : undefined,
+                cspec: interpretationObj.cspec ? interpretationObj.cspec : null,
                 disease: interpretationObj.disease ? interpretationObj.disease : null,
                 diseaseTerm: interpretationObj.diseaseTerm ? interpretationObj.diseaseTerm : null,
                 modeInheritance: interpretationObj.modeInheritance ? interpretationObj.modeInheritance : null,
@@ -465,9 +466,7 @@ class ClassificationApproval extends Component {
             // POST Approval snapshot
             const params = {body: {snapshotObj}}
             const url = '/snapshots/?type=interpretation&action=approve';
-            console.log("Snapshot approval Params", params)
             API.post(API_NAME, url, params).then(response => {
-                console.log("Snapshot Approval", response)
                 let approvalSnapshot = response;
                 this.props.updateSnapshotList(approvalSnapshot, true);
                 return Promise.resolve(approvalSnapshot);
@@ -500,7 +499,6 @@ class ClassificationApproval extends Component {
                 const params = {body: {interpretationObj}}
 
                 API.put(API_NAME, '/interpretations/' + interpretationObj.PK, params).then(result => {
-                    console.log('interpretation updated', result)
                     this.props.updateInterpretation(result);
                     this.props.updateProvisionalObj(result.provisionalVariant, true);
                 })
@@ -536,6 +534,7 @@ class ClassificationApproval extends Component {
         const contributorWarningText = 'At present, designation of Classification Contributors is restricted to the GCI. In the future, Classification Contributors will appear on curation summaries published to the ClinGen website and/or Evidence Repository to facilitate recognition.';
         const approverHelpText = 'In the event that another affiliation approved the final approved classification, please select that affiliation from the dropdown menu.';
         const approversList = this.state.approversList ? this.state.approversList : [];
+        const cspecDocTitle = lodashGet(this.props.cspecDoc, 'ruleSetDoc.cspecInfo.documentName', null);
         //const classification = this.props.classification;
         const currentUserAffiliation = lodashGet(this.props.auth, 'currentAffiliation.affiliation_fullname', null);
 
@@ -557,6 +556,12 @@ class ClassificationApproval extends Component {
                                             <h5><strong>Classification Contributor(s):</strong> {classificationContributors ? getContributorNames(classificationContributors).join(', ') : null}</h5>
                                             <h5><span className="text-pre-wrap"><strong>Contributor Comments:</strong> {contributorComment}</span></h5>
                                         </div>
+                                    : null}
+                                    {interpretation ? 
+                                        <h5>
+                                          <strong>Specification Document: </strong>
+                                          {cspecDocTitle ? cspecDocTitle : ''}
+                                        </h5>
                                     : null}
                                 </div>
                                 

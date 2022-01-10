@@ -142,6 +142,7 @@ class CaseSegregation extends Component {
       alert,
       loading,
       evaluations,
+      cspecCriteria,
       onSubmitEval
     } = this.props;
 
@@ -267,6 +268,7 @@ class CaseSegregation extends Component {
           evaluations={evaluationsByGroup(criteriaArray, evaluations)}
           criteria={filterCodeStripObjects(panel.criteria)}
           criteriaGroups={criteriaArray}
+          cspecCriteria={cspecCriteria}
           criteriaCrossCheck={panel.criteriaCrossCheck}
           loading={loading[panel.loadingId]}
           alert={alert && alert.id === panel.loadingId ? alert : {}}
@@ -328,6 +330,7 @@ class CaseSegregation extends Component {
                 evaluations = {evaluationsByGroup([['BP6', 'PP5']], evaluations)}
                 criteria = {filterCodeStripObjects(['BP6', 'PP5'])}
                 criteriaGroups = {[['BP6', 'PP5']]}
+                cspecCriteria={cspecCriteria}
                 disabled
               />
             </Col>

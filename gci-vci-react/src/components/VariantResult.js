@@ -75,7 +75,7 @@ const VariantResult = (props) => {
                   <button type="button" 
                     onClick={() => saveSubmit(variant)} 
                     className="btn btn-primary btn-block">
-                      Save and View Evidence 
+                      View Evidence 
                   </button>
                 </div>
             </div>

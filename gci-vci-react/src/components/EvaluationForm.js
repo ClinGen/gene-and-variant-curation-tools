@@ -11,6 +11,7 @@ function EvaluationForm(props) {
     const {
         criteria,
         criteriaGroups,
+        cspecCriteria,
         evaluations,
         selectChange,
         textChange,
@@ -39,9 +40,19 @@ function EvaluationForm(props) {
                 group.forEach(item => {
                     criteria.forEach(object => {
                         if (object.code === item){
+                          // Add CSpec link to criteria obj if available for respective criteria
+                          if (cspecCriteria && cspecCriteria.length) {
+                            cspecCriteria.forEach(doc => {
+                              if (doc.code === object.code) {
+                                object.cspecLink = doc.criteriaCodeUiLink;
+                              }
+                            });
+                          } else {
+                            object.cspecLink = null; // if no cspec, remove any stale links from criteria
+                          }
                             tempArray.push(object)
                         }
-                    })
+                    });
                 })
                 setGroupedCriteria(groupedCriteria => [...groupedCriteria, tempArray]);
             })
@@ -104,6 +115,7 @@ function EvaluationForm(props) {
                                 label={criteria.code}
                                 labelClass={criteria.class}
                                 panelMarginClass="mb-3"
+                                headerLink={criteria.cspecLink ? {url: criteria.cspecLink, label: `Criteria Specification for ${criteria.code}`} : null}
                             >
                                     <div className="row">
                                         <div className="col-sm-4">

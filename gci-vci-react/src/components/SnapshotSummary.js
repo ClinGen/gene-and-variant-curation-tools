@@ -127,6 +127,7 @@ const SnapshotSummary = (props) => {
               )}
               <h5><strong>Disease:</strong> {snapshot && snapshot.disease && snapshot.diseaseTerm ? <ExternalLink href={`${EXTERNAL_API_MAP["MondoSearch"]}${snapshot.disease.PK}`}>{snapshot.diseaseTerm}</ExternalLink> : 'None'}</h5>
               <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
+              <h5><strong>Specification Document:</strong> {snapshot && snapshot.cspec && snapshot.cspec.documentName ? snapshot.cspec.documentName : "None"}</h5>
             </div>
           </div>
         </CardPanel>

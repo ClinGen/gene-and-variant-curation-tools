@@ -3,10 +3,10 @@ gci-vci-serverless:
   role: !GetAtt ServerlessRole.Arn
   handler: src/app.handler
   environment:
-    CLIN_VAR_EUTILS_VCV_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?api_key=&db=clinvar&rettype=vcv&is_variationid&from_esearch=true&id='
+    CLIN_VAR_EUTILS_VCV_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?api_key=986bd80f43a3ba6ec1bc7a50e7bda60c1b09&db=clinvar&rettype=vcv&is_variationid&from_esearch=true&id='
     CAR_ALLELE_ENDPOINT: 'https://reg.genome.network/allele/'
     ENSEMBL_VEP_HGVS_ENDPOINT: 'https://rest.ensembl.org/vep/human/hgvs/'
-    CLIN_VAR_ESEARCH_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?api_key=&db=clinvar&term='
+    CLIN_VAR_ESEARCH_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?api_key=986bd80f43a3ba6ec1bc7a50e7bda60c1b09&db=clinvar&term='
     DB_TABLE_NAME: ${self:custom.resources.gci-vci-table-name}
     DB_VPT_TABLE_NAME: ${self:custom.resources.vpt-table-name}
     DB_VPFILTER_TABLE_NAME: ${self:custom.resources.vpf-table-name}
@@ -18,7 +18,7 @@ gci-vci-serverless:
     APP_STAGE: ${self:provider.stage}
     MIGRATION: ${opt:migration}
     # Temporary - move to Secrets Manager (dynamic reference)?
-    KAFKA_CERT_PW: ''
+    KAFKA_CERT_PW: 'Access4ClinGenGCIVCI'
     # Temporary - locate elsewhere or use other data/services
     LOCAL_FILE_DIR: 'local-files'
     #ES_DOMAIN_ENDPOINT: !GetAtt ElasticsearchDomain.DomainEndpoint
@@ -3242,3 +3242,45 @@ gci-vci-serverless:
                 description: An error in the request body.
               # responseModels:
               #   'application/json': 'ErrorResponse'
+    - http:
+        path: /cspec
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of cspec documents."
+          description: "Queries for a list of all cspec documents"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of cspec docs that match the given query."
+              # responseModels:
+              #   "application/json": "Cspec"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /cspec/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a cspec doc by pk"
+          description: "Queries for a given cspec document by pk"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of cspec docs that match the given query."
+              # responseModels:
+              #   "application/json": "Cspec"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
