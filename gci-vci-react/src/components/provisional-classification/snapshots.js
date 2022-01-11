@@ -206,6 +206,12 @@ const Snapshots = (props) => {
                                         className={publishLinkAlertClass} value={publishLinkAlertMessage} />
                                     : null}
                             </h5>
+                            {snapshot.resourceType === 'interpretation' ? 
+                              <h5>
+                                <strong>Specification Document: </strong>
+                                {lodashGet(snapshot, 'cspec.documentName', 'None')}
+                              </h5>
+                              : null}
                         </div>
                         <div className="col-sm-6 text-right">
                             {renderPublishLink(resourceParent, snapshot.resourceType, snapshotPK, snapshot.resource.publishClassification)}
@@ -338,9 +344,9 @@ const Snapshots = (props) => {
                             {lodashGet(snapshot, "resource.provisionalReviewDate", null) ? <h5><strong>Date reviewed:</strong> {formatDate(snapshot.resource.provisionalReviewDate, "YYYY MMM DD")}</h5> : null}
                         </div>
                         <div className="col-sm-6">
-                            <h5><strong>{type === 'interpretation' ? 'Saved Pathogenicity: ' : 'Saved Classification: '}</strong>
+                            <h5><strong>Saved Classification: </strong>
                                 {lodashGet(snapshot, "resource.alteredClassification", null) && snapshot.resource.alteredClassification !== 'No Modification' ?
-                                <span>{snapshot.resource.alteredClassification} (modified)</span> : lodashGet(snapshot, "resource.autoClassification", null)}
+                                <span>{snapshot.resource.alteredClassification} </span> : lodashGet(snapshot, "resource.autoClassification", null)}
                             </h5>
                             <h5><strong>Disease:</strong> {snapshot.diseaseTerm ? snapshot.diseaseTerm : "None"}</h5>
                             <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
@@ -348,6 +354,12 @@ const Snapshots = (props) => {
                             {lodashGet(snapshot, "resource.provisionalComment", null) && (
                                 <h5><span className="text-pre-wrap"><strong>Additional comments:</strong> {snapshot.resource.provisionalComment}</span></h5>
                             )}
+                            {type === 'interpretation' ? 
+                              <h5>
+                                <strong>Specification Document: </strong>
+                                {lodashGet(snapshot, 'cspec.documentName', 'None')}
+                              </h5>
+                              : null}
                         </div>
                     </div>
                 </li>
@@ -394,14 +406,19 @@ const Snapshots = (props) => {
                             
                         </div>
                         <div className="col-sm-6 mb-3">
-                            <h5><strong>{type === 'interpretation' ? 'Saved Pathogenicity: ' : 'Saved Classification: '}</strong>
+                            <h5><strong>Saved Classification: </strong>
                                 {lodashGet(snapshot, "resource.alteredClassification", null) && snapshot.resource.alteredClassification !== 'No Modification' ?
-                                <span>{snapshot.resource.alteredClassification} (modified)</span> : lodashGet(snapshot, "resource.autoClassification", null)}
+                                <span>{snapshot.resource.alteredClassification}</span> : lodashGet(snapshot, "resource.autoClassification", null)}
                             </h5>
                             <h5><strong>Disease:</strong> {snapshot.diseaseTerm ? snapshot.diseaseTerm : "None"}</h5>
                             <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
                             <h5><span className="text-pre-wrap"><strong>Approver comments:</strong> {lodashGet(snapshot, "resource.approvalComment", null) ? snapshot.resource.approvalComment : null}</span></h5>
-                            
+                            {type === 'interpretation' ? 
+                              <h5>
+                                <strong>Specification Document: </strong>
+                                {lodashGet(snapshot, 'cspec.documentName', 'None')}
+                              </h5>
+                              : null}
                             {isGDM ?
                                 <>
                                     <h5><span className="text-pre-wrap"><strong>Contributor comments:</strong> {lodashGet(snapshot, "resource.contributorComment", null) ? snapshot.resource.contributorComment : null}</span></h5>
@@ -410,7 +427,9 @@ const Snapshots = (props) => {
                                 : null}
                         </div>
                     </div>
-                    {renderSnapshotPublishData(snapshot, resourceParent, diseaseMatched, isSnapshotOnSupportedSOP,  isSnapshotHasApprovalReviewDate, currentApprovedSnapshotID)}
+                    <ul>
+                      {renderSnapshotPublishData(snapshot, resourceParent, diseaseMatched, isSnapshotOnSupportedSOP,  isSnapshotHasApprovalReviewDate, currentApprovedSnapshotID)}
+                    </ul>
                 </li>
             );
         }

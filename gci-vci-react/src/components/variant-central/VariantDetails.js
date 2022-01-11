@@ -34,6 +34,7 @@ const VariantDetails = (props) => {
       variant, 
       interpretation, 
       onViewUpdate, 
+      cspecDoc,
       viewValue, 
       isLoadingInterpretation, 
       setIsLoadingInterpretation, 
@@ -203,17 +204,23 @@ const VariantDetails = (props) => {
         const { gRCh38, gRCh37 } = getGenomicLinkouts(variant);
         const gRCh38Links = gRCh38 && setContextLinks(gRCh38, 'GRCh38');
         const gRCh37Links = gRCh37 && setContextLinks(gRCh37, 'GRCh37');
-
+        const cspecHref = cspecDoc && cspecDoc.ruleSetDoc && cspecDoc.ruleSetDoc.cspecInfo
+          ? cspecDoc.ruleSetDoc.cspecInfo.cspecUiLink 
+          : null;
+        const cspecLink = cspecDoc && cspecDoc.ruleSetDoc 
+          ? `${cspecDoc.ruleSetDoc.vcepName} ${cspecDoc.ruleSetDoc.documentVersion}`
+          : null;
+        
         const modifiedPathogenicity = interpretation && interpretation.provisionalVariant
             && interpretation.provisionalVariant.alteredClassification
             ? interpretation.provisionalVariant.alteredClassification
-            : 'Not provided';
+            : null;
         
         const calculatedPathogenicity = props.calculatedPathogenicity
             ? props.calculatedPathogenicity
             : interpretation && interpretation.provisionalVariant
                 ? interpretation.provisionalVariant.autoClassification
-                : 'None';
+                : null;
 
         return(
             <div className="card-group mt-3">
@@ -335,9 +342,13 @@ const VariantDetails = (props) => {
                                         )
                                     }
                                 </span>
-                                <strong>Pathogenicity: </strong>{calculatedPathogenicity}<br/>
-                                <strong>Modified Pathogenicity: </strong>{modifiedPathogenicity}<br/>
+                                <strong>Classification: </strong>{modifiedPathogenicity || calculatedPathogenicity}<br/>
                                 <strong>Provisional/Approved Status: </strong>{props.interpretation.status}<br/>
+                                <strong>Specification Document: </strong>
+                                {cspecHref && cspecLink ? 
+                                    <ExternalLink href={cspecHref}>{cspecLink}</ExternalLink>
+                                  : null}
+                                <br/>
                                 {isCurrentInterpretationMine
                                     ? (viewValue === 'Audit Trail')
                                         ? (

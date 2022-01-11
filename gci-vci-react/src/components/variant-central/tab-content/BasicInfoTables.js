@@ -356,6 +356,7 @@ const VciInterpretationTable = ({ data = [] }) => {
         >
             {(interpretation) => {
                 let showPathogenicity = true;
+                let alteredClassification, autoClassification;
                 if (interpretation && interpretation.provisionalVariant) {
                     // first check classificationStatus
                     if (interpretation.provisionalVariant.classificationStatus) {
@@ -368,17 +369,20 @@ const VciInterpretationTable = ({ data = [] }) => {
                             showPathogenicity = false;
                         }
                     }
+
+                    if (interpretation.provisionalVariant.alteredClassification) {
+                      alteredClassification = interpretation.provisionalVariant.alteredClassification.split('-')[0];
+                    }
+
+                    if (interpretation.provisionalVariant.autoClassification) {
+                      autoClassification = interpretation.provisionalVariant.autoClassification.split('-')[0];
+                    }
                 }
               return (
                   <div className="clinical-significance">
                     {showPathogenicity ?
                       <div>
-                        {interpretation.provisionalVariant && interpretation.provisionalVariant.autoClassification ?
-                        <span><strong>Calculated:</strong> {interpretation.provisionalVariant.autoClassification.split('-')[0]}</span>
-                        : '--'}
-                        {interpretation.provisionalVariant && interpretation.provisionalVariant.alteredClassification ?
-                            <span><br /><strong>Modified:</strong> {interpretation.provisionalVariant.alteredClassification.split('-')[0]}</span>
-                            : null}
+                        {alteredClassification || autoClassification}
                       </div>
                       : '--'}
                   </div>
