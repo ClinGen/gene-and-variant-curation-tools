@@ -206,6 +206,12 @@ const Snapshots = (props) => {
                                         className={publishLinkAlertClass} value={publishLinkAlertMessage} />
                                     : null}
                             </h5>
+                            {snapshot.resourceType === 'interpretation' ? 
+                              <h5>
+                                <strong>Specification Document: </strong>
+                                {lodashGet(snapshot, 'cspec.documentName', 'None')}
+                              </h5>
+                              : null}
                         </div>
                         <div className="col-sm-6 text-right">
                             {renderPublishLink(resourceParent, snapshot.resourceType, snapshotPK, snapshot.resource.publishClassification)}
@@ -348,6 +354,12 @@ const Snapshots = (props) => {
                             {lodashGet(snapshot, "resource.provisionalComment", null) && (
                                 <h5><span className="text-pre-wrap"><strong>Additional comments:</strong> {snapshot.resource.provisionalComment}</span></h5>
                             )}
+                            {type === 'interpretation' ? 
+                              <h5>
+                                <strong>Specification Document: </strong>
+                                {lodashGet(snapshot, 'cspec.documentName', 'None')}
+                              </h5>
+                              : null}
                         </div>
                     </div>
                 </li>
@@ -401,7 +413,12 @@ const Snapshots = (props) => {
                             <h5><strong>Disease:</strong> {snapshot.diseaseTerm ? snapshot.diseaseTerm : "None"}</h5>
                             <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
                             <h5><span className="text-pre-wrap"><strong>Approver comments:</strong> {lodashGet(snapshot, "resource.approvalComment", null) ? snapshot.resource.approvalComment : null}</span></h5>
-                            
+                            {type === 'interpretation' ? 
+                              <h5>
+                                <strong>Specification Document: </strong>
+                                {lodashGet(snapshot, 'cspec.documentName', 'None')}
+                              </h5>
+                              : null}
                             {isGDM ?
                                 <>
                                     <h5><span className="text-pre-wrap"><strong>Contributor comments:</strong> {lodashGet(snapshot, "resource.contributorComment", null) ? snapshot.resource.contributorComment : null}</span></h5>

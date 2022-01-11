@@ -28,6 +28,7 @@ const {
     affiliation,
     updateSnapshotList,
     updateProvisionalObj,
+    cspecDoc
 } = props;
 
 const dispatch = useDispatch();
@@ -541,6 +542,7 @@ function addPublishState(snapshotPKValue, eventType) {
                         <div className="col-sm-6">
                             <h5><strong>Disease:</strong> {interpretation.diseaseTerm ? interpretation.diseaseTerm : 'None'}</h5>
                             <h5><strong>Mode of Inheritance:</strong> {renderSelectedModeInheritance(interpretation)}</h5>
+                            <h5><strong>Specification Document:</strong> {cspecDoc.ruleSetDoc && cspecDoc.ruleSetDoc.cspecInfo ? cspecDoc.ruleSetDoc.cspecInfo.documentName : 'None'}</h5>
                         </div>
                     </div>
                             
@@ -624,6 +626,7 @@ function addPublishState(snapshotPKValue, eventType) {
                                     <CardPanel title="Save Interpretation as Provisional" className="mt-3 mb-3">
                                             <ProvisionalApproval
                                                 interpretation={interpretation}
+                                                cspecDoc={cspecDoc}
                                                 classification={provisionalPathogenicity && provisionalPathogenicity !== 'none' ? provisionalPathogenicity : props.calculatedAssertion}
                                                 classificationStatus={classificationStatus}
                                                 provisional={provisionalVariant}
@@ -655,6 +658,7 @@ function addPublishState(snapshotPKValue, eventType) {
                                     interpretation={interpretation}
                                     classification={provisionalPathogenicity && provisionalPathogenicity !== 'none' ? provisionalPathogenicity : props.calculatedAssertion}
                                     classificationStatus={classificationStatus}
+                                    cspecDoc={cspecDoc}
                                     provisional={provisionalVariant}
                                     affiliation={affiliation}
                                     updateSnapshotList={updateSnapshotList}
@@ -687,6 +691,7 @@ function addPublishState(snapshotPKValue, eventType) {
                                         interpretation={interpretation}
                                         classification={provisionalPathogenicity && provisionalPathogenicity !== 'none' ? provisionalPathogenicity : props.calculatedAssertion}
                                         classificationStatus={classificationStatus}
+                                        cspecDoc={cspecDoc}
                                         provisional={provisionalVariant}
                                         affiliation={affiliation}
                                         updateSnapshotList={updateSnapshotList}

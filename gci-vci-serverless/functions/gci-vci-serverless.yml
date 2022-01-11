@@ -3242,3 +3242,45 @@ gci-vci-serverless:
                 description: An error in the request body.
               # responseModels:
               #   'application/json': 'ErrorResponse'
+    - http:
+        path: /cspec
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a list of cspec documents."
+          description: "Queries for a list of all cspec documents"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of cspec docs that match the given query."
+              # responseModels:
+              #   "application/json": "Cspec"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"
+    - http:
+        path: /cspec/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Get a cspec doc by pk"
+          description: "Queries for a given cspec document by pk"
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "A list of cspec docs that match the given query."
+              # responseModels:
+              #   "application/json": "Cspec"
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error describing what went wrong during the query."
+              # responseModels:
+              #   "application/json": "ErrorResponse"

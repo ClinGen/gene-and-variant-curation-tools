@@ -433,6 +433,7 @@ class VariantType extends Component {
       activeCode,
       variant,
       evaluations,
+      cspecCriteria,
       isLoadingMyVariantInfo,
       onSubmitEval
     } = this.props;
@@ -501,6 +502,7 @@ class VariantType extends Component {
                 criteria={filterCodeStripObjects(["BP1", "PP2", "PP3", "BP4"])}
                 criteriaGroups={missenseFunctionalGroups}
                 criteriaCrossCheck={[['BP1', 'PP2'], ['PP3', 'BP4']]}
+                cspecCriteria={cspecCriteria}
                 loading={loading['BP1']}
                 alert={isEmpty(alert)
                   ? saveAlert && saveAlert.id === 'BP1' ? saveAlert : {}
@@ -557,6 +559,7 @@ class VariantType extends Component {
                 criteria={filterCodeStripObjects(["PM5", "PS1"])}
                 criteriaGroups={missenseOtherGroups}
                 criteriaCrossCheck={[['PM5'], ['PS1']]}
+                cspecCriteria={cspecCriteria}
                 loading={loading['PM5']}
                 alert={!isEmpty(alert) && alert.id === 'PM5' ? alert : {}}
               />
@@ -590,6 +593,7 @@ class VariantType extends Component {
                 evaluations={evaluationsByGroup(lossFunctionGroups, evaluations)}
                 criteria={filterCodeStripObjects(["PVS1"])}
                 criteriaGroups={lossFunctionGroups}
+                cspecCriteria={cspecCriteria}
                 loading={loading['PVS1']}
                 alert={!isEmpty(alert) && alert.id === 'PVS1' ? alert : {}}
               />
@@ -627,6 +631,7 @@ class VariantType extends Component {
                 evaluations={evaluationsByGroup(silentGroups, evaluations)}
                 criteria={filterCodeStripObjects(["BP7"])}
                 criteriaGroups={silentGroups}
+                cspecCriteria={cspecCriteria}
                 loading={loading['BP7']}
                 alert={!isEmpty(alert) && alert.id === 'BP7' ? alert : {}}
               />
@@ -656,6 +661,7 @@ class VariantType extends Component {
                 criteria={filterCodeStripObjects(["BP3", "PM4"])}
                 criteriaGroups={inFrameGroups}
                 criteriaCrossCheck={[['BP3', 'PM4']]}
+                cspecCriteria={cspecCriteria}
                 loading={loading['BP3']}
                 alert={!isEmpty(alert) && alert.id === 'BP3' ? alert : {}}
               />

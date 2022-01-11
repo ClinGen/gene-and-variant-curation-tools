@@ -269,7 +269,7 @@ function AuditTrail(props) {
         ['sourceInfo', 'data', 'proband_hpo_comment'],
         ['sourceInfo', 'data', 'proband_hpo_ids']],
       'evaluation': ['criteria', 'criteriaStatus', 'explanation'],
-      'interpretation': ['disease', 'diseaseTerm', 'modeInheritance', 'modeInheritanceAdjective', 'variant',
+      'interpretation': ['cspec', 'disease', 'diseaseTerm', 'modeInheritance', 'modeInheritanceAdjective', 'variant',
         ['provisionalVariant', 'alteredClassification'],
         ['provisionalVariant', 'reason'],
         ['provisionalVariant', 'evidenceSummary'],
@@ -509,6 +509,25 @@ function AuditTrail(props) {
       return ({
         display: (<span className="audit-trail-data variant">an unrecognized variant</span>),
         filter: 'an unrecognized variant'
+      });
+    }
+  }
+
+  /**
+   * Method to generate display/filter data for a saved cspec doc
+   * @param {*} cspec
+   */
+  function renderCspec(cspec) {
+    if (cspec) {
+      const documentName = cspec.documentName;
+      return ({
+        display: (<>specification document <span className="audit-trail-data cspec">{documentName}</span></>),
+        filter: 'specification document ' + documentName
+      });
+    } else {
+      return ({
+        display: (<span className="audit-trail-data cspec">an unrecognized specification document</span>),
+        filter: 'an unrecognized specification document'
       });
     }
   }
@@ -858,6 +877,13 @@ function AuditTrail(props) {
 
           displayCombined = (<>{startText}{diseaseData.display}</>);
           filterCombined = startText + diseaseData.filter;
+        }
+
+        if (interpretationData.data.cspec) {
+          const cspecData = renderCspec(interpretationData.data.cspec);
+
+          displayCombined = (<>{startText}{cspecData.display}</>);
+          filterCombined = startText + cspecData.filter;
         }
 
         if (interpretationData.data.modeInheritance || interpretationData.data.modeInheritanceAdjective) {
