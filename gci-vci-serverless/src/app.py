@@ -35,6 +35,7 @@ from src.controllers import vp_exports_controller
 from src.controllers import variant_score_controller
 from src.controllers import history_controller
 #from src.controllers import search_controller
+from src.controllers import cspec_controller
 
 from src.controllers import warming_controller
 
@@ -130,6 +131,8 @@ def handler(event, context):
     #  response = search_controller.handle(event, 'search')
     elif path.startswith('/filter'):
       response = search_controller.handle(event, 'filter')
+    elif path.startswith('/cspec'):
+      response = cspec_controller.handle(event)
     else:
       response = {
           'statusCode': 400,

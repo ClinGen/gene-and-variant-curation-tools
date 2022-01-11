@@ -12,7 +12,6 @@ import { setCuratedEvidencesAction } from "../actions/curatedEvidenceActions";
 
 import VariantView from '../components/variant-central/VariantView';
 import VariantDetails from '../components/variant-central/VariantDetails';
-import AuditTrail from '../components/variant-central/AuditTrail';
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../utils';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -38,6 +37,7 @@ const VariantCentralItem = (props) => {
     const [ basicInfoTabExternalAPIData, setBasicInfoTabExternalAPIData ] = useState({});
     const [ basicInfoTabExternalAPIErrorMessage, setBasicInfoTabExternalAPIErrorMessage ] = useState('');
     const [ classification, setClassification ] = useState({});
+    const [ cspecDoc, setCspecDoc ] = useState({});
     const [ relatedInterpretations, setRelatedInterpretations ] = useState([]);
     const [ relatedInterpretationsSnapshots, setRelatedInterpretationsSnapshots ] = useState([]);
     const [ calculatedPathogenicity, setCalculatedPathogenicity ] = useState('');
@@ -69,6 +69,7 @@ const VariantCentralItem = (props) => {
                     if (currentInterpretation) {
                         dispatch(updateInterpretation(currentInterpretation));
                         setView("Interpretation");
+                        fetchCspecDoc(currentInterpretation);
                     } else {
                         dispatch(updateInterpretation({}));
                         setView("Evidence");
@@ -147,6 +148,25 @@ const VariantCentralItem = (props) => {
         });
       }
       return snapshotArray;
+    }
+
+    const fetchCspecDoc = (interpretation) => {
+      const cspecId = interpretation && interpretation.cspec ? interpretation.cspec.cspecId : '';
+      if (cspecId) {
+        API.get(API_NAME, `/cspec/${cspecId}`).then(cspecDoc => {
+          if (cspecDoc) {
+            setCspecDoc(cspecDoc);
+          }
+        }).catch(err => {
+          console.log('CSPEC FETCH ERROR', err);
+        });
+      } else {
+        setCspecDoc({});
+      }
+    }
+
+    const handleCspecUpdate = (cspecDoc) => {
+      setCspecDoc(cspecDoc);
     }
 
     const classificationCallback = (classification) => {
@@ -281,6 +301,7 @@ const VariantCentralItem = (props) => {
                     isLoadingInterpretation={isLoadingInterpretation}
                     setIsLoadingInterpretation={setIsLoadingInterpretation}
                     onViewUpdate={setView} 
+                    cspecDoc={cspecDoc}
                     classification={classification} 
                     calculatedPathogenicity={calculatedPathogenicity} 
                     relatedInterpretations={relatedInterpretations}
@@ -296,23 +317,23 @@ const VariantCentralItem = (props) => {
             )}
 
             {!isLoadingInterpretation && (
-                variant.status !== 'deleted'
-                ? (view === 'Audit Trail')
-                    ? <AuditTrail itemType="interpretation" itemPK={interpretation.PK} />
-                    : <VariantView
-                        variant={variant}
-                        interpretation={interpretation}
-                        basicInfoTabExternalAPIData={basicInfoTabExternalAPIData}
-                        basicInfoTabExternalAPILoadingStatus={basicInfoTabExternalAPILoadingStatus}
-                        basicInfoTabExternalAPIErrorMessage={basicInfoTabExternalAPIErrorMessage}
-                        relatedInterpretations={relatedInterpretations}
-                        interpretationsWithSnapshots={relatedInterpretationsSnapshots}
-                        internalAPILoadingStatus={isLoadingInterpretation}
-                        handleInterpretationUpdate={handleInterpretationUpdate}
-                        view={view}
-                        viewHandler={setView}
-                        setClassification={classificationCallback}
-                        setCalculatedPathogenicity={calculatedPathogenicityCallback} />
+                variant.status !== 'deleted' ? 
+                <VariantView
+                  variant={variant}
+                  interpretation={interpretation}
+                  basicInfoTabExternalAPIData={basicInfoTabExternalAPIData}
+                  basicInfoTabExternalAPILoadingStatus={basicInfoTabExternalAPILoadingStatus}
+                  basicInfoTabExternalAPIErrorMessage={basicInfoTabExternalAPIErrorMessage}
+                  relatedInterpretations={relatedInterpretations}
+                  interpretationsWithSnapshots={relatedInterpretationsSnapshots}
+                  internalAPILoadingStatus={isLoadingInterpretation}
+                  handleInterpretationUpdate={handleInterpretationUpdate}
+                  view={view}
+                  cspecDoc={cspecDoc}
+                  handleCspecUpdate={handleCspecUpdate}
+                  viewHandler={setView}
+                  setClassification={classificationCallback}
+                  setCalculatedPathogenicity={calculatedPathogenicityCallback} />
                 : (
                     <Alert className="mb-5" heading="This variant has been deleted">
                         <p>

@@ -13,11 +13,11 @@ Parameters:
   KafkaTopicName:
     Type: String
     Description: Kafka topic name
-    Default: ldh-vp
+    Default: cspec-ruleset
   KafkaGroupId:
     Type: String
     Description: Kafka group id. In testing, only this groupid can be used on the topic, otherwise topic reads will be denied
-    Default: stanford_dev_sl1
+    Default: stanford_dev_cspec_14
   SsmParameter:
     Type: String
     Description: Jaas Config SSM Parameter store parameter name
@@ -29,7 +29,7 @@ Parameters:
     Description: Select at two subnets in your selected VPC.
   DesiredCapacity:
     Type: Number
-    Default: '20'
+    Default: '1'
     Description: Number of tasks to run in the service
 Resources:
   #####################################################################

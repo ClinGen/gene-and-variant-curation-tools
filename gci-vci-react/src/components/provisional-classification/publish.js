@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import lodashGet from 'lodash/get';
+import { get as lodashGet, isEmpty } from 'lodash';
 
 import moment from 'moment';
 import { RestAPI as API } from '@aws-amplify/api-rest';
@@ -423,6 +423,8 @@ class PublishApproval extends Component {
                     );
                 } else if (selectedResourceType === 'interpretation') {
                     const interpretationObj = this.props.interpretation;
+
+                    
                     // Create selected/published snapshot object, updated with publish event data
                     const publishSnapshot = {
                         PK: this.state.selectedSnapshot.PK,
@@ -430,6 +432,7 @@ class PublishApproval extends Component {
                         resourceType: this.state.selectedSnapshot.resourceType,
                         resourceParent: this.state.selectedSnapshot.resourceParent,
                         associatedSnapshot: this.state.selectedSnapshot.associatedSnapshot,
+                        cspec: interpretationObj.cspec ? interpretationObj.cspec : null,
                         disease: interpretationObj.disease ? interpretationObj.disease : null,
                         diseaseTerm: interpretationObj.diseaseTerm ? interpretationObj.diseaseTerm : null,
                         modeInheritance: interpretationObj.modeInheritance ? interpretationObj.modeInheritance : null,
@@ -496,6 +499,7 @@ class PublishApproval extends Component {
                                     associatedSnapshot: previouslyPublishedSnapshot.associatedSnapshot,
                                     disease: previouslyPublishedSnapshot.disease ? previouslyPublishedSnapshot.disease : null,
                                     diseaseTerm: previouslyPublishedSnapshot.diseaseTerm ? previouslyPublishedSnapshot.diseaseTerm : null,
+                                    cspec: previouslyPublishedSnapshot.cspec ? previouslyPublishedSnapshot.cspec : null,
                                     modeInheritance: previouslyPublishedSnapshot.modeInheritance ? previouslyPublishedSnapshot.modeInheritance : null,
                                     modeInheritanceAdjective: previouslyPublishedSnapshot.modeInheritanceAdjective ? previouslyPublishedSnapshot.modeInheritanceAdjective : null,
                                     interpretation: previouslyPublishedSnapshot.interpretation,
@@ -553,6 +557,7 @@ class PublishApproval extends Component {
         const provisional = this.state.selectedProvisional;
         const additionalApprover = provisional ? provisional.additionalApprover : null;
         const classificationContributors = provisional ? provisional.classificationContributors : null;
+        const cspecDocTitle = lodashGet(this.props.cspecDoc, 'ruleSetDoc.cspecInfo.documentName', null);
         //const classification = this.props.classification;
         const affiliation = provisional.affiliation ? provisional.affiliation : (this.props.affiliation ? this.props.affiliation : null);
         const interpretation = this.props.interpretation;
@@ -593,6 +598,12 @@ class PublishApproval extends Component {
                                 </div>
                                 <div className="col-sm-4">
                                     <h5><strong>Date {publishEventLower}: {publishDate}</strong></h5>
+                                    {interpretation ?
+                                      <h5>
+                                        <strong>Specification Document: </strong>
+                                        {cspecDocTitle ? cspecDocTitle : ''}
+                                      </h5>
+                                      : null}
                                 </div>
                                 <div className="col-sm-4">
                                     <dl className="inline-dl clearfix preview-publish-comment text-pre-wrap">
