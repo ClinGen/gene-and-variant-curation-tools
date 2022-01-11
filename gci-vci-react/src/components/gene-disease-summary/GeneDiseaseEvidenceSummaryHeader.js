@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import MDEditor from "@uiw/react-md-editor";
 
 import CardPanel from '../common/CardPanel';
 import { ExternalLink } from '../common/ExternalLink.js';
@@ -143,9 +144,9 @@ const GeneDiseaseEvidenceSummaryHeader = ({
         </Row>
       </CardPanel>
       <CardPanel title="Evidence Summary">
-        <span className="text-pre-wrap">
+        <span>
           {provisional && provisional.evidenceSummary && provisional.evidenceSummary.length
-            ? provisional.evidenceSummary
+            ? <MDEditor.Markdown source={provisional.evidenceSummary} />
             : 'No summary is provided.'
           }
         </span>

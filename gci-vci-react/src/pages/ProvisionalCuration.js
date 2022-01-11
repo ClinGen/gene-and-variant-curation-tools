@@ -6,6 +6,7 @@ import moment from 'moment';
 import lodashGet from 'lodash/get';
 import Input from "../components/common/Input";
 import { Button, Container } from "react-bootstrap";
+import MDEditor from "@uiw/react-md-editor";
 import CardPanel from "../components/common/CardPanel";
 import { GdmHeader } from '../components/gene-central/GdmHeader';
 import { LoadingButton } from "../components/common/LoadingButton";
@@ -99,6 +100,7 @@ class ProvisionalCuration extends Component {
     this.loadData = this.loadData.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSummaryChange = this.handleSummaryChange.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.setFormErrors = this.setFormErrors.bind(this);
     this.handleReplicatedOverTime = this.handleReplicatedOverTime.bind(this);
@@ -633,11 +635,13 @@ class ProvisionalCuration extends Component {
       if (this.state.formErrors['reasons']) {
         this.setState({ formErrors: {} });
       }
-    } else if (e.target.name === 'classification-evidence-summary') {
-      this.setState({ evidenceSummary: e.target.value });
-      if (this.state.formErrors['classification-evidence-summary']) {
-        this.setState({ formErrors: {} });
-      }
+    }
+  }
+
+  handleSummaryChange(value) {
+    this.setState({ evidenceSummary: value });
+    if (this.state.formErrors['classification-evidence-summary']) {
+      this.setState({ formErrors: {} });
     }
   }
 
@@ -854,11 +858,13 @@ class ProvisionalCuration extends Component {
 
     // check required item (reasons)
     let formErr = false;
-    if (!newProvisional.evidenceSummary) {
+    // Check text is not only whitespaces
+    if (!newProvisional.evidenceSummary || !newProvisional.evidenceSummary.trim()) {
       formErr = true;
       this.setFormErrors('classification-evidence-summary', 'Required');
     }
-    if (!newProvisional.reasons && newProvisional.alteredClassification !== 'No Modification') {
+    // Check text is not only whitespaces
+    if ((!newProvisional.reasons || !newProvisional.reasons.trim()) && newProvisional.alteredClassification !== 'No Modification') {
       formErr = true;
       this.setFormErrors('reasons', 'Required when changing classification.');
     }
@@ -929,6 +935,12 @@ class ProvisionalCuration extends Component {
     // Only support to save and provisionally approve the latest SOP format
     const currentSOP = provisional ? isScoringForCurrentSOP(provisional.classificationPoints) : false;
     const demoVersion = this.props.demoVersion;
+    const mdEvidenceSummaryError = this.state.formErrors['classification-evidence-summary'];
+    const mdEvidenceSummary = {
+      name:"classification-evidence-summary",
+      placeholder:"Note: This text will appear on ClinGen's website if you publish this Classification.",
+      style:mdEvidenceSummaryError ? { border: 'solid 1px red' } : {}
+    };
 
     return (
       <div>
@@ -1149,8 +1161,8 @@ class ProvisionalCuration extends Component {
                       <tr>
                         <td colSpan="5">
                           <a name="classification-view" id="classification-view"></a>
-                          <div className="row classification-form-content-wrapper">
-                            <div className="col-xs-12 col-sm-6">
+                          <div className="classification-form-content-wrapper">
+                            <div className="col-md-11 col-xs-11 col-sm-11">
                               <div className="altered-classification">
                                 <Input type="select" name="alteredClassification"
                                   label={<span>Modify Calculated <a href="/provisional-curation/?classification=display" target="_block">Clinical Validity Classification</a>:</span>}
@@ -1184,15 +1196,31 @@ class ProvisionalCuration extends Component {
                                   </div>
                                   : null}
                               </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6">
                               <div className="classification-evidence-summary">
-                                <Input type="textarea" name="classification-evidence-summary" value={this.state.evidenceSummary} onChange={this.handleChange}
-                                  label={<span className="label-main">Evidence Summary (required):<span className="label-note">Rationale for the clinical validity classification</span><br />
-                                    <span className="label-note"><a href="https://clinicalgenome.org/docs/standardized-evidence-summary-text/" target="_block">View Example Evidence Summary Text</a></span></span>}
-                                  placeholder="Note: This text will appear on ClinGen's website if you publish this Classification."
-                                  error={this.state.formErrors['classification-evidence-summary']} rows="8" labelClassName="col-sm-5 control-label"
-                                  wrapperClassName="col-sm-6" groupClassName="row mb-3" />
+                                <div className="row mb-1">
+                                  <div className="col-md-12 col-sx-12 col-sm-12">
+                                    <label className="control-label">
+                                      <span className="label-main">Evidence Summary (required):
+                                        <span className="label-note"> Rationale for the clinical validity classification </span>
+                                        <span className="label-note"><a href="https://clinicalgenome.org/docs/standardized-evidence-summary-text/" target="_block">View Example Evidence Summary Text</a></span>
+                                      </span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className="row mb-1">
+                                  <div className="col-md-6 col-sx-6 col-sm-6">Evidence Summary text edit tool</div>
+                                  <div className="col-md-6 col-sx-6 col-sm-6">Evidence Summary text display</div>
+                                </div>
+                                <div className="row md-editor">
+                                  <div className="col-md-11 col-xs-11 col-sm-11 offset-md-1 offset-xs-1 offset-sm-1">
+                                    <MDEditor
+                                      value={this.state.evidenceSummary}
+                                      onChange={this.handleSummaryChange}
+                                      textareaProps={mdEvidenceSummary}
+                                    />
+                                    { mdEvidenceSummaryError && <span style={{ color: 'red', fontSize: 12 }}>{ mdEvidenceSummaryError }</span> }
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
