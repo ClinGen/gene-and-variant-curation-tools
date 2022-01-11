@@ -1205,6 +1205,12 @@ section #PP2 {
             }
         }
 
+        .classification-evidence-summary {
+            .label-note {
+                display: inline;
+            }
+        }
+
         .classification-status {
             margin-top: 3px;
             margin-bottom: 38px;
@@ -1236,6 +1242,7 @@ section #PP2 {
                 margin-bottom: 0;
             }
 
+            .altered-classification,
             .altered-classification-reasons, 
             .classification-evidence-summary {
                 text-align: left;

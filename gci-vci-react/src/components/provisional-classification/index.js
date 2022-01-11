@@ -4,6 +4,7 @@ import { API_NAME } from '../../utils';
 import { connect } from 'react-redux';
 import { isEmpty, get as lodashGet } from 'lodash';
 import moment from 'moment';
+import MDEditor from "@uiw/react-md-editor";
 import { queryKeyValue, editQueryValue, addQueryKey } from '../common/globals';
 import CardPanel from '../common/CardPanel';
 import { GdmHeader } from '../gene-central/GdmHeader';
@@ -716,8 +717,8 @@ class ProvisionalClassification extends Component {
                             <td colSpan="5">
                               <a name="classification-view" id="classification-view"></a>
                               <div className="col-md-12 classification-form-content-wrapper view-only">
-                                <div className="col-xs-12 col-sm-6">
-                                  <div className="altered-classfication">
+                                <div className="col-md-12 col-xs-12 col-sm-12">
+                                  <div className="altered-classification">
                                     <dl className="inline-dl clearfix">
                                       <dt>
                                         <span>Modify Calculated <a href="/provisional-curation/?classification=display" target="_block">Clinical Validity Classification</a>:</span>
@@ -737,15 +738,13 @@ class ProvisionalClassification extends Component {
                                       </dd>
                                     </dl>
                                   </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6">
                                   <div className="classification-evidence-summary">
                                     <dl className="inline-dl clearfix">
                                       <dt>
                                         <span>Evidence Summary:</span>
                                       </dt>
-                                      <dd className="text-pre-wrap">
-                                        {provisional.evidenceSummary}
+                                      <dd>
+                                        <MDEditor.Markdown source={provisional.evidenceSummary} />
                                       </dd>
                                     </dl>
                                   </div>
