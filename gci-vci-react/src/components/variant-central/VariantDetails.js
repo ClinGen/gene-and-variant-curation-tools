@@ -214,13 +214,13 @@ const VariantDetails = (props) => {
         const modifiedPathogenicity = interpretation && interpretation.provisionalVariant
             && interpretation.provisionalVariant.alteredClassification
             ? interpretation.provisionalVariant.alteredClassification
-            : 'Not provided';
+            : null;
         
         const calculatedPathogenicity = props.calculatedPathogenicity
             ? props.calculatedPathogenicity
             : interpretation && interpretation.provisionalVariant
                 ? interpretation.provisionalVariant.autoClassification
-                : 'None';
+                : null;
 
         return(
             <div className="card-group mt-3">
@@ -342,8 +342,7 @@ const VariantDetails = (props) => {
                                         )
                                     }
                                 </span>
-                                <strong>Pathogenicity: </strong>{calculatedPathogenicity}<br/>
-                                <strong>Modified Pathogenicity: </strong>{modifiedPathogenicity}<br/>
+                                <strong>Classification: </strong>{modifiedPathogenicity || calculatedPathogenicity}<br/>
                                 <strong>Provisional/Approved Status: </strong>{props.interpretation.status}<br/>
                                 <strong>Specification Document: </strong>
                                 {cspecHref && cspecLink ? 

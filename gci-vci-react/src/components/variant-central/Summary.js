@@ -536,8 +536,8 @@ function addPublishState(snapshotPKValue, eventType) {
                 <div className="card-body">
                     <div className="row">
                         <div className="col-sm-6">
-                            <h5><strong>Calculated Pathogenicity:</strong> {props.calculatedAssertion ? props.calculatedAssertion : 'None'}</h5>
-                            <h5><strong>Modified Pathogenicity:</strong> {modifiedPathogenicity ? modifiedPathogenicity : 'None'}</h5>
+                            <h5><strong>Auto-calculated Classification:</strong> {props.calculatedAssertion ? props.calculatedAssertion : 'None'}</h5>
+                            <h5><strong>Modified Classification:</strong> {modifiedPathogenicity ? modifiedPathogenicity : 'None'}</h5>
                         </div>
                         <div className="col-sm-6">
                             <h5><strong>Disease:</strong> {interpretation.diseaseTerm ? interpretation.diseaseTerm : 'None'}</h5>
@@ -552,8 +552,8 @@ function addPublishState(snapshotPKValue, eventType) {
                                 <div className="row">
                                     <div className="col-sm-6">
                                         <div className="evaluation-provision provisional-pathogenicity">
-                                            <label><strong>Modify Pathogenicity:</strong> <span className="text-muted">(optional)</span></label>
-                                            <select id="provisional-pathogenicity" label={<span>Modify Pathogenicity:<i>(optional)</i></span>}
+                                            <label><strong>Modify Classification:</strong> <span className="text-muted">(optional)</span></label>
+                                            <select id="provisional-pathogenicity" label={<span>Modify Classification:<i>(optional)</i></span>}
                                                 value={provisionalPathogenicity} onChange={e => handlePathogenicityChange(e.currentTarget.value)}
                                                 className="form-control">
                                                 <option value='none'>No Selection</option>
@@ -564,10 +564,10 @@ function addPublishState(snapshotPKValue, eventType) {
                                                 <option value="Likely pathogenic">Likely Pathogenic</option>
                                                 <option value="Pathogenic">Pathogenic</option>
                                             </select>
-                                            <label className="mt-3"><strong>Reason(s) for change:</strong><i>(required for modified pathogenicity)</i></label>
+                                            <label className="mt-3"><strong>Reason(s) for change:</strong><i>(required for modified classification)</i></label>
                                             <textarea id="provisional-reason" value={provisionalReason} 
                                                 onChange={(e) => handleReasonChange(e.currentTarget.value)} rows="3"
-                                                placeholder="Note: If you selected a pathogenicity different from the Calculated Pathogenicity, you must provide a reason for the change here."
+                                                placeholder="Note: If you selected a classification different from the Auto-calculated Classification, you must provide a reason for the change here."
                                                 className="form-control" />
                                         </div>
                                     </div>

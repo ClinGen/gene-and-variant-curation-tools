@@ -688,6 +688,8 @@ class VariantType extends Component {
         {view === "Interpretation" && (
           <CompleteSection tabName="variant-type" updateTab={this.props.updateTab} />
         )}
+        <br/>
+        <span className="credits">Predictor values shown are based on the GRCh38 genomic coordinates when available.</span>
         {renderDataCredit('myvariant', 'variant-type')}
       </section>
     );

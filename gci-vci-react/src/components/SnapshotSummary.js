@@ -107,9 +107,9 @@ const SnapshotSummary = (props) => {
                 <h5><strong>Interpretation owner:</strong> {getAffiliationName(interpretation.affiliation)}</h5>
                 : (interpretation && interpretation.submitted_by ? getUserName(interpretation.submitted_by) : null)
               }
-              <h5><strong>Calculated Pathogenicity:</strong> {provisionalVariant ? provisionalVariant.autoClassification : null}</h5>
-              <h5><strong>Modified Pathogenicity:</strong> {provisionalVariant && provisionalVariant.alteredClassification ? (provisionalVariant.alteredClassification === 'No Selection' ? 'None' : provisionalVariant.alteredClassification) : 'None'}</h5>
-              <h5><span className="text-pre-wrap"><strong>Reason for modified pathogenicity:</strong> {provisionalVariant && provisionalVariant.reason ? provisionalVariant.reason : 'None'}</span></h5>
+              <h5><strong>Auto-calculated Classification:</strong> {provisionalVariant ? provisionalVariant.autoClassification : null}</h5>
+              <h5><strong>Modified Classification:</strong> {provisionalVariant && provisionalVariant.alteredClassification ? (provisionalVariant.alteredClassification === 'No Selection' ? 'None' : provisionalVariant.alteredClassification) : 'None'}</h5>
+              <h5><span className="text-pre-wrap"><strong>Reason for modified classification:</strong> {provisionalVariant && provisionalVariant.reason ? provisionalVariant.reason : 'None'}</span></h5>
             </div>
             <div className="col-sm-6">
               <h5><strong>Interpretation Status:</strong> {provisionalVariant && provisionalVariant.classificationStatus ? (

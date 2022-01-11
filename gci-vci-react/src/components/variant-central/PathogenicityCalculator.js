@@ -220,7 +220,7 @@ const PathogenicityCalculator = (props) => {
                     </div>
                     <div className="col-sm-4 assertion-box">
                             <dl className="calculate-result">
-                            <dt>Calculated Pathogenicity</dt>
+                            <dt>Auto-calculated Classification</dt>
                             <dd>{calculatedResult && calculatedResult.assertion ? calculatedResult.assertion : 'None'}</dd>
                         </dl>
                     </div>

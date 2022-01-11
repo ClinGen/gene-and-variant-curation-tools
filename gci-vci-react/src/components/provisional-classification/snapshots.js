@@ -344,9 +344,9 @@ const Snapshots = (props) => {
                             {lodashGet(snapshot, "resource.provisionalReviewDate", null) ? <h5><strong>Date reviewed:</strong> {formatDate(snapshot.resource.provisionalReviewDate, "YYYY MMM DD")}</h5> : null}
                         </div>
                         <div className="col-sm-6">
-                            <h5><strong>{type === 'interpretation' ? 'Saved Pathogenicity: ' : 'Saved Classification: '}</strong>
+                            <h5><strong>Saved Classification: </strong>
                                 {lodashGet(snapshot, "resource.alteredClassification", null) && snapshot.resource.alteredClassification !== 'No Modification' ?
-                                <span>{snapshot.resource.alteredClassification} (modified)</span> : lodashGet(snapshot, "resource.autoClassification", null)}
+                                <span>{snapshot.resource.alteredClassification} </span> : lodashGet(snapshot, "resource.autoClassification", null)}
                             </h5>
                             <h5><strong>Disease:</strong> {snapshot.diseaseTerm ? snapshot.diseaseTerm : "None"}</h5>
                             <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
@@ -406,9 +406,9 @@ const Snapshots = (props) => {
                             
                         </div>
                         <div className="col-sm-6 mb-3">
-                            <h5><strong>{type === 'interpretation' ? 'Saved Pathogenicity: ' : 'Saved Classification: '}</strong>
+                            <h5><strong>Saved Classification: </strong>
                                 {lodashGet(snapshot, "resource.alteredClassification", null) && snapshot.resource.alteredClassification !== 'No Modification' ?
-                                <span>{snapshot.resource.alteredClassification} (modified)</span> : lodashGet(snapshot, "resource.autoClassification", null)}
+                                <span>{snapshot.resource.alteredClassification}</span> : lodashGet(snapshot, "resource.autoClassification", null)}
                             </h5>
                             <h5><strong>Disease:</strong> {snapshot.diseaseTerm ? snapshot.diseaseTerm : "None"}</h5>
                             <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
@@ -427,7 +427,9 @@ const Snapshots = (props) => {
                                 : null}
                         </div>
                     </div>
-                    {renderSnapshotPublishData(snapshot, resourceParent, diseaseMatched, isSnapshotOnSupportedSOP,  isSnapshotHasApprovalReviewDate, currentApprovedSnapshotID)}
+                    <ul>
+                      {renderSnapshotPublishData(snapshot, resourceParent, diseaseMatched, isSnapshotOnSupportedSOP,  isSnapshotHasApprovalReviewDate, currentApprovedSnapshotID)}
+                    </ul>
                 </li>
             );
         }
