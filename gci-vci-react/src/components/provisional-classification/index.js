@@ -203,6 +203,7 @@ class ProvisionalClassification extends Component {
       const affiliation = lodashGet(this, "props.auth.currentAffiliation", null);
       uncData = {
         report_id: this.state.gdm.PK,
+        iri: provisional.PK,
         gene_validity_evidence_level: this.getGeneEvidenceData(provisional),
         date: moment(date).toISOString(),
         status: {
