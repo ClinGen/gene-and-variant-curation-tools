@@ -1531,7 +1531,7 @@ def transform_interpretation(source_data, use_local):
     # if use_local:
     #   service_url = 'http://localhost:2999'
 
-    service_url = 'https://lq82g2p0mk.execute-api.us-west-2.amazonaws.com/default/VCI-to-CG_SEPIO'
+    service_url = ''
 
     transform_result = requests.post('{}/vci2cgsepio'.format(service_url), headers={'Content-Type': 'application/json'}, data=source_data_str, timeout=10)
 
@@ -1552,46 +1552,28 @@ def transform_interpretation(source_data, use_local):
 def request_clinvar_data(source_data):
   # Prepare interpretation to be sent to ClinVar submitter service
   try:
-    if ('id' in source_data ):
-      source_data['id']= 'https://vci.clinicalgenome.org/interpretations/' \
-         + source_data['id'] + '/'
-    else:
-      err_msg='Error in clinVar data generation: missing Id'
-      raise Exception(err_msg)
-      print ('%s %s ' %(err_msg,source_data))
     source_data_str = json.dumps(source_data, separators=(',', ':'))
 
   except Exception:
-    err_msg='Preparation of source data for generation service failed'
-    print ('%s %s ' %(err_msg,source_data))
-    raise Exception(err_msg)
+    raise Exception('Preparation of source data for generation service failed')
 
   # Send interpretation to ClinVar submitter service
   try:
-    service_url = 'http://clinvar-submitter.clinicalgenome.org/api/v1/submission'
-    #service_url = 'http://clinvar-submitter.prod.clingen.app/api/v1/submission'
-    print ('Submitting to ClinVar Submitter service ')
-    print ('%s \n %s ' %(service_url,source_data))
+    service_url = ''
     clinvar_result = requests.post('{}'.format(service_url), headers={'Content-Type': 'application/json'}, data=source_data_str, timeout=10)
   except Exception:
-    err_msg='Data generation service unavailable'
-    print ('%s %s ' %(err_msg,source_data))
-    raise Exception(err_msg)
+    raise Exception('Data generation service unavailable')
 
   if clinvar_result.status_code != requests.codes.ok:
-    err_msg='Data generation failed'
-    print ('%s \n %s \n %s \n' %(err_msg,source_data,clinvar_result.status_code))
-    raise Exception(err_msg)
+    raise Exception('Data generation failed')
 
   # Return result of ClinVar submitter service as JSON-encoded content
   try:
-    print ('ClinVar Submitter service response \n %s' %clinvar_result.json())
+    print ('ClinVar results %s \n' %clinvar_result.json())
     return clinvar_result.json()
 
   except Exception:
-    err_msg='Result of data generation not in expected format'
-    print ('%s %s ' %(err_msg,source_data))
-    raise Exception(err_msg)
+    raise Exception('Result of data generation not in expected format')
 
 def send_message(message, kafka_topic, use_local, extra_conf=None, message_key=None):
   message_results = { 'status': 'Fail' }
