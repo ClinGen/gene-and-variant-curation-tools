@@ -1096,6 +1096,7 @@ const ExperimentalCuration = ({
             </CardPanel>
             {formData && formData.experimentalType === 'Biochemical Function' && experimentalNameVisible &&
               <BiochemicalFunctionForm
+                auth={auth}
                 disease={disease}
                 uniprotId={uniprotId}
                 formData={formData}

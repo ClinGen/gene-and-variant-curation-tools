@@ -1,11 +1,13 @@
 import React from "react";
 import Col from 'react-bootstrap/Col';
+import lodashGet from "lodash/get";
 
 import Input from '../../../common/Input';
 import CardPanel from '../../../common/CardPanel';
 import { dbxref_prefix_map } from '../../../common/globals';
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { renderPhenotype } from '../../curations/common/commonFunc';
+import { getUserName } from "../../../../helpers/getUserName";
 import {
   Warning,
   HpoIdsLabel,
@@ -77,11 +79,9 @@ const BiochemicalFunctionForm = ({
         disabled
         rows="2"
         value={disease
-          ? !disease.freetext
-            ? disease.term + ' (' + disease.PK.replace('_', ':') + ')'
-            : disease.term + ' (' + auth && auth.name && auth.family_name
-              ? `${auth.name} ${auth.family_name}`
-              : auth && auth.email ? auth.email : ''
+          ? !lodashGet(disease, "freetext")
+            ? lodashGet(disease, "term", '') + ' (' + lodashGet(disease, "PK", '').replace('_', ':') + ')'
+            : lodashGet(disease, "term", '') + ' (' + getUserName(auth) + ')'
           : ''
         }
       />
