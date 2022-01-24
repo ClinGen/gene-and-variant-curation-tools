@@ -7,6 +7,7 @@ from decimal import Decimal
 # SOPv7 publish GDM classification template. scoreJson.GeneticEvidence.CaseLevelData.VariantEvidence attribute has old format.
 publish_classification_message_template_v7 = {
   'iri': ['$PATH_TO_DATA', 'resource', 'PK'],
+  'report_id': ['$PATH_TO_DATA', 'resourceParent', 'gdm', 'PK'],
   'jsonMessageVersion': ['$COMBINE_DATA', '.',
     {
       1: ['$CONVERT_DATA', ['resourceType'],
@@ -362,6 +363,7 @@ publish_classification_message_template_v7 = {
       'FinalClassification': ['$USE_FIRST_DATA', 'No Modification', ['resource', 'alteredClassification'], ['resource', 'autoClassification']],
       'FinalClassificationDate': ['$USE_FIRST_DATA', '', ['resource', 'approvalReviewDate'], ['resource', 'approvalDate']],
       'FinalClassificationNotes': ['$PATH_TO_DATA', 'resource', 'evidenceSummary']
+      # Animal Model only (at key "AnimalModelOnly") added here (dynamically)
       # Secondary contributors/approver (at key "contributors") added here (dynamically)
     },
     'ReplicationOverTime': ['$CONVERT_DATA', ['resource', 'replicatedOverTime'],
@@ -380,6 +382,7 @@ publish_classification_message_template_v7 = {
 # Set jsonMessageVersion to 8.1 to provide a simply way to know that this JSON format is to handle slightly different data
 publish_classification_message_template = {
   'iri': ['$PATH_TO_DATA', 'resource', 'PK'],
+  'report_id': ['$PATH_TO_DATA', 'resourceParent', 'gdm', 'PK'],
   'jsonMessageVersion': ['$COMBINE_DATA', '.',
     {
       1: ['$CONVERT_DATA', ['resourceType'],
@@ -724,6 +727,7 @@ publish_classification_message_template = {
       'FinalClassification': ['$USE_FIRST_DATA', 'No Modification', ['resource', 'alteredClassification'], ['resource', 'autoClassification']],
       'FinalClassificationDate': ['$USE_FIRST_DATA', '', ['resource', 'approvalReviewDate'], ['resource', 'approvalDate']],
       'FinalClassificationNotes': ['$PATH_TO_DATA', 'resource', 'evidenceSummary']
+      # Animal Model only (at key "AnimalModelOnly") added here (dynamically)
       # Secondary contributors/approver (at key "contributors") added here (dynamically)
     },
     'ReplicationOverTime': ['$CONVERT_DATA', ['resource', 'replicatedOverTime'],
@@ -745,7 +749,8 @@ publish_interpretation_message_template = {
   'statusPublishFlag': ['$CONVERT_DATA', ['resource', 'publishClassification'],
     {
       False: 'Publish',
-      True: 'Unpublish'
+      True: 'Unpublish',
+      '$DEFAULT': 'Publish'
     }
   ]
 }
@@ -1209,6 +1214,20 @@ def add_contradictory_evidence(data, evidence, template):
   else:
     template['Value'] = 'NO'
 
+# Add a yes/no value for animal model only (AnimalModelOnly) key to the message template
+def add_animal_model_only(data, template):
+  autoClassification = get_data_by_path(data, ['resource', 'autoClassification'], '')
+  classificationPoints = get_data_by_path(data, ['resource', 'classificationPoints'], {})
+
+  # Check if final classification is automatically calculated to "No Known Disease Relationship"
+  # and only non-human points are scored in experimental evidence, then Animal Model Only tag is Yes
+  if (autoClassification == 'No Known Disease Relationship' and
+    classificationPoints['modelsRescue']['modelsNonHuman']['totalPointsGiven'] > 0 and
+    classificationPoints['modelsRescue']['modelsNonHuman']['totalPointsGiven'] == classificationPoints['experimentalEvidenceTotal']):
+    template['AnimalModelOnly'] = 'YES'
+  else:
+    template['AnimalModelOnly'] = 'NO'
+
 # Load affiliation data from a JSON file maintained for the UI
 def load_affiliation_data():
   global affiliation_data
@@ -1455,6 +1474,7 @@ def add_data_to_message_template(data, evidence, evidence_counts, template):
 
       # Special handling to incorporate secondary contributors/approver
       elif key == 'summary':
+        add_animal_model_only(data, value)
         add_secondary_contributors_approver(data, value)
 
       if not template[key]:
@@ -1541,7 +1561,6 @@ def request_clinvar_data(source_data):
   try:
     service_url = ''
     clinvar_result = requests.post('{}'.format(service_url), headers={'Content-Type': 'application/json'}, data=source_data_str, timeout=10)
-
   except Exception:
     raise Exception('Data generation service unavailable')
 
@@ -1550,7 +1569,7 @@ def request_clinvar_data(source_data):
 
   # Return result of ClinVar submitter service as JSON-encoded content
   try:
-    print ('Clinvar results %s \n' %clinvar_result.json())
+    print ('ClinVar results %s \n' %clinvar_result.json())
     return clinvar_result.json()
 
   except Exception:

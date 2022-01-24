@@ -33,6 +33,7 @@ def handle(event):
       else:
         response = { 'statusCode': 400, 'body': json.dumps({ 'error': 'Unrecognized path for ' + httpMethod }) }
     else:
+      print('\n**** Messaging Error: Unrecognized path for GET method ****\n')
       response = { 'statusCode': 400, 'body': json.dumps({ 'error': 'Unrecognized path for ' + httpMethod }) }
 
   elif httpMethod == 'POST':
@@ -43,13 +44,16 @@ def handle(event):
         key = next(iterator)
         messaging_data = body[key]
       except:
+        print('\n**** Messaging Error: POST method ' + event['pathParameters']['action'] + ' - The body of the request is not a valid JSON object ****\n')
         response = { 'statusCode': 422, 'body': json.dumps({ 'error', 'The body of the request is not a valid JSON object.' }) }
       else:
         response = produce_data(messaging_data, event['pathParameters']['action'])
     else:
+      print('\n**** Messaging Error: Unrecognized path for POST method ****\n')
       response = { 'statusCode': 400, 'body': json.dumps({ 'error': 'Unrecognized path for ' + httpMethod }) }
 
   else:
+    print('\n**** Messaging Error: Unrecognized request - ' + httpMethod + ' for /messaging ****\n')
     response = { 'statusCode': 400, 'body': json.dumps({ 'error': 'Unrecognized request ' + httpMethod + ' for /messaging' }) }
 
   return response
@@ -57,15 +61,19 @@ def handle(event):
 def get_data(pk):
   # A basic check of pk to avoid unnecessary DB querying
   if pk is None or len(pk) == 0:
+    print('\n**** Messaging Error: get_data - Invalid primary key ****\n')
     return { 'statusCode': 422, 'body': json.dumps({ 'error': 'Invalid primary key for /messaging' }) }
 
   # Retrieve data from DB (and possibly archive)
   try:
     messaging_data = db.find(pk)
   except Exception as e:
+    print('\n**** Messaging Error: get_data - Fetching data from database - PK = ' + pk + ' ****\n')
+    print('\n**** Messaging Error: get_data - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
 
   if messaging_data is None:
+    print('\n**** Messaging Error: get_data - Data fetched from database is not found - PK = ' + pk + ' ****\n')
     return { 'statusCode': 404, 'body': json.dumps({ 'error': 'Data for messaging not found' }) }
 
   if isinstance(messaging_data, dict) and messaging_data.get('resourceParent') and 's3_archive_key' in messaging_data['resourceParent']:
@@ -73,6 +81,8 @@ def get_data(pk):
       curation_data = snapshot_helpers.get_from_archive(messaging_data['resourceParent']['s3_archive_key'])
       messaging_data['resourceParent'].update({ curation_data['item_type']: curation_data })
     except Exception as e:
+      print('\n**** Messaging Error: get_data - Data to be published not found - PK = ' + pk + ' ****\n')
+      print('\n**** Messaging Error: get_data - Return Error: ' + str(e) + ' ****\n')
       return { 'statusCode': 404, 'body': json.dumps({ 'error': 'Data to be published not found (in archive)' }) }
 
   return { 'statusCode': 'Success', 'body': messaging_data }
@@ -90,6 +100,9 @@ def publish(pk):
       return get_results
 
   except Exception as e:
+    print('\n**** Messaging Error: publish - Failed to retrieve data for publishing - PK = ' + pk + ' ****\n')
+    print('\n**** Messaging Error: publish - Return Error: ' + str(e) + ' ****\n')
+
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to retrieve data for publishing' }) }
 
   # Check that data has expected elements
@@ -108,6 +121,8 @@ def publish(pk):
       raise Exception
 
   except Exception as e:
+    print('\n**** Messaging Error: publish - Data to be published missing expected elements \n Data - %s \n ****\n' % messaging_data)
+    print('\n**** Messaging Error: publish - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Data to be published missing expected elements' }) }
 
   # Check that message should be sent? (approved status? permission to publish?)
@@ -134,7 +149,8 @@ def publish(pk):
       message = json.dumps(message_template, separators=(',', ':'))
 
   except Exception as e:
-    print('\n**** Publish Error: ' + str(e) + ' ****\n')
+    print('\n**** Messaging Error: publish - Failed to build complete message \n Data - %s \n ****\n' % messaging_data)
+    print('\n**** Messaging Error: publish - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to build complete publish message' }) }
 
   # Transform message (if necessary, via independent service)
@@ -145,6 +161,8 @@ def publish(pk):
       message = json.dumps(message_template, separators=(',', ':'))
 
   except Exception as e:
+    print('\n**** Messaging Error: publish - Failed to transform publish message \n Data - %s \n ****\n' % messaging_data)
+    print('\n**** Messaging Error: publish - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to transform publish message' }) }
 
   # Configure publish message delivery parameters
@@ -165,11 +183,16 @@ def publish(pk):
     message_results = messaging_helpers.send_message(message, kafka_topic, is_offline)
 
     if message_results['status'] == 'Success':
+      print('\n**** Messaging Success: publish success\n Data - %s \n ****\n' % message)
       return { 'statusCode': 200, 'body': json.dumps(message_results) }
     else:
+      print('\n**** Messaging Error: publish - Kafka server error\n Data - %s \n ****\n' % message)
+      print('\n**** Messaging Error: publish - Return Kafka error: %s \n ****\n' % message_results['message'])
       return { 'statusCode': 400, 'body': json.dumps({ 'error': message_results['message'] }) }
 
   except Exception as e:
+    print('\n**** Messaging Error: publish - Delivery of publish message failed\n Data - %s \n ****\n' % message)
+    print('\n**** Messaging Error: publish - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Delivery of publish message failed' }) }
 
 def generate_clinvar_data(pk):
@@ -185,6 +208,8 @@ def generate_clinvar_data(pk):
       return get_results
 
   except Exception as e:
+    print('\n**** Messaging Error: Generate clinvar data - Failed to retrieve data for ClinVar submission - PK = ' + pk + ' ****\n')
+    print('\n**** Messaging Error: Generate clinvar data - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to retrieve data for ClinVar submission' }) }
 
   # Check that data has expected elements
@@ -193,6 +218,8 @@ def generate_clinvar_data(pk):
       raise Exception
 
   except Exception as e:
+    print('\n**** Messaging Error: Generate clinvar data - Data for ClinVar submission missing expected elements \n Data - %s \n ****\n' % messaging_data)
+    print('\n**** Messaging Error: Generate clinvar data - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Data for ClinVar submission missing expected elements' }) }
 
   # Check that data should be submitted to ClinVar? (approved status? permission to generate?)
@@ -204,6 +231,8 @@ def generate_clinvar_data(pk):
     messaging_helpers.add_data_to_message_template(messaging_data, None, None, submission_template)
 
   except Exception as e:
+    print('\n**** Messaging Error: Generate clinvar data - Failed to build complete ClinVar submission \n Data - %s \n ****\n' % messaging_data)
+    print('\n**** Messaging Error: Generate clinvar data - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to build complete ClinVar submission' }) }
 
   # Transform ClinVar submission
@@ -211,9 +240,12 @@ def generate_clinvar_data(pk):
     messaging_helpers.remove_data_from_message_template(data_to_remove, submission_template['interpretation'])
     submission_template['interpretation'] = messaging_helpers.transform_interpretation(submission_template['interpretation'], is_offline)
     submission = messaging_helpers.request_clinvar_data(submission_template['interpretation'])
+    print('\n**** Messaging Success: Generate clinvar data success\n message - %s \n ****\n' % submission)
     return { 'statusCode': 200, 'body': json.dumps({ 'status': 'Success', 'message': submission }) }
 
   except Exception as e:
+    print('\n**** Messaging Error: Generate clinvar data - Failed to transform ClinVar submission \n Data - %s \n ****\n' % messaging_data)
+    print('\n**** Messaging Error: Generate clinvar data - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to transform ClinVar submission' }) }
 
 def produce_data(messaging_data, action):
@@ -226,8 +258,8 @@ def produce_data(messaging_data, action):
         curation_data = snapshot_helpers.get_from_archive(messaging_data['resourceParent']['s3_archive_key'])
         messaging_data['resourceParent'].update({ curation_data['item_type']: curation_data })
       except Exception as e:
-        print('\n**** ' + action + ': Error sending data to Data Exchange - failed to get resourceParent data ' + messaging_data['resourceParent']['s3_archive_key'] + ' ****\n')
-        print('\n**** ' + action + ': Return Error: ' + str(e) + ' ****\n')
+        print('\n**** Messaging Error: ' + action + ' - failed to get resourceParent data ' + messaging_data['resourceParent']['s3_archive_key'] + ' ****\n')
+        print('\n**** Messaging Error: ' + action + ' - Return Error: ' + str(e) + ' ****\n')
         return { 'statusCode': 404, 'body': json.dumps({ 'error': 'resourceParent Data to be published not found (in archive)\n%s' %e }) }
 
 
@@ -236,8 +268,8 @@ def produce_data(messaging_data, action):
     message = json.dumps(messaging_data, separators=(',', ':'))
 
   except Exception as e:
-    print('\n**** ' + action + ': Error sending data to Data Exchange - failed to build complete message ****\n')
-    print('\n**** ' + action + ': Return Error: ' + str(e) + ' ****\n')
+    print('\n**** Messaging Error: ' + action + ' - Failed to build complete message ****\n')
+    print('\n**** Messaging Error: ' + action + ' - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to build complete ' + action + ' message\n%s' %e }) }
 
   # Set message key
@@ -248,8 +280,8 @@ def produce_data(messaging_data, action):
       message_key = messaging_data['report_id'] + '-' + messaging_data['date']
 
   except Exception as e:
-    print('\n**** ' + action + ': Error sending data to Data Exchange - failed to set message key ****\n')
-    print('\n**** ' + action + ': Return Error: ' + str(e) + ' ****\n')
+    print('\n**** Messaging Error: ' + action + ' - Failed to set message key ****\n')
+    print('\n**** Messaging Error: ' + action + ' - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Failed to set ' + action + ' message key\n%s' %e }) }
 
   # Configure message delivery parameters
@@ -275,13 +307,14 @@ def produce_data(messaging_data, action):
     message_results = messaging_helpers.send_message(message, kafka_topic, is_offline, extra_conf, message_key)
 
     if message_results['status'] == 'Success':
+      print('\n**** Messaging Success: ' + action + ' - Success\n Data - %s \n ****\n' % message)
       return { 'statusCode': 200, 'body': json.dumps(message_results) }
     else:
-      print('\n**** ' + action + ': Error sending data to Data Exchange - Kafka server error\n Data - %s \n ****\n' % message)
-      print('\n**** ' + action + ': Kafka server error - %s \n ****\n' % message_results['message'])
+      print('\n**** Messaging Error: ' + action + ' - Kafka server error\n Data - %s \n ****\n' % message)
+      print('\n**** Messaging Error: ' + action + ' - Return error: - %s \n ****\n' % message_results['message'])
       return { 'statusCode': 400, 'body': json.dumps({ 'error': message_results['message'] }) }
 
   except Exception as e:
-    print('\n**** ' + action + ': Error sending data to Data Exchange - delivery failed\n Data - %s \n ****\n' % message)
-    print('\n**** ' + action + ': Return Error: ' + str(e) + ' ****\n')
+    print('\n**** Messaging Error: ' + action + ' - Delivery to Data Exchange failed\n Data - %s \n ****\n' % message)
+    print('\n**** Messaging Error: ' + action + ' - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Delivery of ' + action + ' message failed\n' + str(e) }) }
