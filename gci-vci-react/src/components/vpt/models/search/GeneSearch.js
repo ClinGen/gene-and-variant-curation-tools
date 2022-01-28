@@ -75,6 +75,12 @@ const GeneSearch = types.model('GeneSearch', {
           self.searched.replace([self.input]);
         });
         return toInternal(flatData);
+      }).catch(err => { 
+        self.runInAction(() => {
+          self.processing = false;
+          self.error = boom.badRequest('Something went wrong with the request. Enter a supported gene symbol or please try again. ' + err);
+        });
+        throw self.error;
       });
       // const queryHelper = new QueryHelper();
       // const result = await queryHelper.getGeneVariants({ geneName: self.input });

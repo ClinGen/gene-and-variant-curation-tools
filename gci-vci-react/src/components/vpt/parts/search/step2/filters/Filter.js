@@ -76,7 +76,7 @@ class Filter extends React.Component {
           <div className="flex">
             <div className="ml1 mr1 mt-1 cursor-grab" ><Icon name="align justify" color="grey"/></div>
             <div className="mr1 mt-2"><Checkbox checked={model.enabled} onChange={this.handleEnable} /></div>
-            <Icon name="dropdown" className="mt-3"/>
+            <Icon name="edit" className="mt-3"/>
             <div className={`ellipsis flex-auto mt-1 ${disabled? 'opacity-45': ''}`}>{model.title}</div>
             { hasMatches &&  <div className="mr3"><Label size="mini">{nice(stats.match)} out of {nice(stats.total)}</Label></div> }
             <div className="pl1 pr1" onClick={ this.handleDelete }><Icon name="trash alternate outline" className="cursor-pointer" /></div>

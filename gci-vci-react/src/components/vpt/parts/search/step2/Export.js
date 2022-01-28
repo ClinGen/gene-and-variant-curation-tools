@@ -232,7 +232,8 @@ class Export extends React.Component {
         <Header icon color="grey">
           <Statistic label={variants} value={niceSize} color="orange"/>
           <div>
-            You selected {niceSize} {variants} to export to the Variant Curation Interface (VCI).
+            {/* You selected {niceSize} {variants} to export to the Variant Curation Interface (VCI). */}
+            You selected {niceSize} {variants}. See below to download as a spreadsheet (CSV format).
           </div>
         </Header>
         <Message className="mt2">
@@ -246,8 +247,8 @@ class Export extends React.Component {
         <Segment.Inline className="mt3">
           { !success && <React.Fragment>
             <Button disabled={isProcessing} onClick={this.handleCancel}>Cancel</Button>
-            <Button onClick={this.handleDownload}>Download to CSV</Button>
-            <Button primary disabled loading={isProcessing} onClick={handler}>{buttonTitle}</Button>
+            <Button primary onClick={this.handleDownload}>Download to CSV</Button>
+            {/* <Button primary disabled loading={isProcessing} onClick={handler}>{buttonTitle}</Button> */}
             </React.Fragment>
           }
           { success && <Button primary disabled={isProcessing} loading={isProcessing} onClick={this.handleCancel} className="mr2">Done</Button> }
