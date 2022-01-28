@@ -8,6 +8,8 @@ import { observer, inject } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { Input, Form, Button, Container, Header, Label, Dimmer, Loader, Segment, Message } from 'semantic-ui-react';
 
+import { EXTERNAL_API_MAP } from "../../../../../constants/externalApis";
+import { ExternalLink } from "../../../../common/ExternalLink";
 import { displayError } from '../../../helpers/notification';
 
 class GeneInput extends React.Component {
@@ -57,12 +59,18 @@ class GeneInput extends React.Component {
     return (
       <Segment basic className="animated fadeIn p0">
         <Dimmer inverted active={disabled}>
-        { loading && <Loader size='large'>This might take 10 to 300 seconds</Loader> }
+        { loading && <Loader size='large'>Searching may take up to 120 seconds</Loader> }
         </Dimmer>
-        <Header textAlign="left" className="mb2" as="h3" color={ hasError? 'red' : 'grey'}>Enter A <span className="color-orange">Gene</span> Name</Header>
+        <Header textAlign="left" className="mb2" as="h3" color={ hasError? 'red' : 'grey'}>
+          Enter an <span className="color-orange">HGNC </span>Approved Gene Symbol 
+          <ExternalLink
+            href={`${EXTERNAL_API_MAP["HGNCHome"]}`}
+            title="HGNC"
+          />
+        </Header>
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
-            <Input error={hasError} fluid action size="big" disabled={disabled} value={input} placeholder="Type a gene name, such as PAH" onChange={this.handleInput}>
+            <Input error={hasError} fluid action size="big" disabled={disabled} value={input} placeholder="Type a gene symbol, such as PAH (see list of currently supported genes below)" onChange={this.handleInput}>
               <input/>
               <Button type="submit" disabled={disabled} color="blue" size="large">Search</Button>
             </Input>

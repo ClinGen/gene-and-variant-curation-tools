@@ -96,7 +96,7 @@ class Filters extends React.Component {
 
     return (
       <div className="p1">
-        { size > 1 && <Message ><b>Tip</b> Drag and drop to reorder the filters</Message>}
+        { size > 1 && <Message ><i className="icon icon-arrows-v"></i> Drag and drop to reorder the filters</Message>}
         <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="selected-filters">
           { (provided, snapshot) => (

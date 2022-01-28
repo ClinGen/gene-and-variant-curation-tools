@@ -32,7 +32,7 @@ class MainLayout extends React.Component {
         <div className="flex ml3 mr3 mt2">
           <div><img src={logo} alt="ClinGen Logo" style={{ width: '80px', height: '60'}}/></div>
           <Header className="ml2 mt2 flex-auto" as="h3" color="blue">Variant Prioritization
-            <Header.Subheader><a href="/" target="_blank" rel="noopener noreferrer">Learn more about this tool</a> <Icon name="external" size="small" /></Header.Subheader>
+            <Header.Subheader><a href="https://github.com/ClinGen/gene-and-variant-curation-tools/wiki/Variant-Prioritization" target="_blank" rel="noopener noreferrer">Learn more about this tool</a> </Header.Subheader>
           </Header>
           <div>
             { this.renderUserDropdown() }

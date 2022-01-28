@@ -89,7 +89,7 @@ class Columns extends React.Component {
 
     return (
       <div className="p1">
-        { size > 1 && <Message ><b>Tip</b> Drag and drop to reorder the columns</Message>}
+        { size > 1 && <Message ><i className="icon icon-arrows-v"></i> Drag and drop to reorder the columns</Message>}
         <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="selected-columns">
           { (provided, snapshot) => (

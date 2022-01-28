@@ -70,7 +70,7 @@ class SearchInput extends React.Component {
       <div className="mt3 animated fadeIn">
           <div className="mt4"></div>
           <div className="flex">
-            <Header textAlign="left" className="mt1 mr2" as="h3" color="grey">Use A Saved Search</Header>
+            <Header textAlign="left" className="mt1 mr2" as="h3" color="grey">Use a Saved Search</Header>
             <div><Button as="a" color="blue" size="tiny" onClick={() => this.goto('/vp/saves')}>View My Saved Searches</Button></div>
           </div>
           <div>{ !processing? <Divider className="mt3 mb4" horizontal>Or</Divider> : <div className="mt3 mb4 fs-9">&nbsp;</div> }</div>
