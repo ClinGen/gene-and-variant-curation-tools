@@ -122,6 +122,8 @@ def appendSnapshotStatuses (db, gdms, filters):
                 statuses= processApproved (provisionalClassification)
               gdm['snapshotStatuses']=statuses
             break
+    else:
+      gdm['snapshotStatuses'] = []
   return None
 
 def warmup(db, filters, projections):

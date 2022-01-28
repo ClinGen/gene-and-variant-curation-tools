@@ -76,7 +76,7 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
       let showPathogenicity = true;
 
       if (curationType === 'variant') {
-        if (item.snapshotStatuses && item.snapshotStatuses === "" || item.status && item.status.toLowerCase() === "in progress") {
+        if (item.snapshotStatuses && item.snapshotStatuses.length === 0 || item.status && item.status.toLowerCase() === "in progress") {
           showPathogenicity = false;
         }
         return {
@@ -84,7 +84,7 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
           variantPK: item.variant, // for displaying link to interpretation page
           interpretationPK: item.PK, // for displaying link to interpretation page while specifying the interpretation PK
           disease_modeInheritance: `${diseaseDisplayText || '--'} / ${modeInheritanceDisplayText || '--'}`,
-          snapshot: item.snapshotStatuses ? item.snapshotStatuses : item, // for displaying all matching statuses
+          snapshot: item.snapshotStatuses && item.snapshotStatuses.length ? item.snapshotStatuses : item, // for displaying all matching statuses
           pathogenicity: showPathogenicity ? pathogenicityDisplayText : '--',
           criteria: item.criteria || 'None',
           date_created: getFormattedDateTime(item.date_created, 'LLL', true),
@@ -93,7 +93,7 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
         }
       }
       else if (curationType === 'gene') {
-        if (!item.snapshotStatuses) {
+        if (item.snapshotStatuses && item.snapshotStatuses.length === 0) {
           showPathogenicity = false;
         }
         let classification = item.alteredClassification && item.alteredClassification !== 'No Modification' ? item.alteredClassification : item.autoClassification;
@@ -103,7 +103,7 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
           gdmPK: item.PK, // for displaying link to gdm page
           disease_modeInheritance: `${diseaseDisplayText || '--'} / ${modeInheritanceDisplayText || '--'}`,
           classification: showPathogenicity ? classification : '--',
-          snapshot: item.snapshotStatuses ? item.snapshotStatuses : item, // for displaying all matching statuses
+          snapshot: item.snapshotStatuses && item.snapshotStatuses.length ? item.snapshotStatuses : item, // for displaying all matching statuses
           date_created: getFormattedDateTime(item.date_created, 'LLL', true),
           last_modified: item.last_modified
         }
