@@ -285,6 +285,8 @@ def appendSnapshotStatuses(db, interpretations,filters):
           # print ('Founds snapshot statuses in provisonalVariant %s for interpretation %s' %(statuses,interpretation['PK']))
           interpretation['snapshotStatuses'] = statuses
           del interpretation['provisionalVariant']
+    else: 
+      interpretation['snapshotStatuses'] = []
   return None
 
 @timer.timeit 
