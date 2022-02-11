@@ -4,6 +4,7 @@ import os
 import uuid
 
 from src.db.ddb_client import Client as DynamoClient
+from src.helpers import affiliation_helpers
 
 
 # Create an instance of the database client for all db interactions.
@@ -69,12 +70,18 @@ def update(pk, attrs):
 def get(multiValueFilters = {}):
   """Queries and returns all affiliation objects"""
 
-  try:
-    affiliation = db.query_by_item_type('affiliation', multiValueFilters)
-  except Exception as e:
-    response = { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
+  # Call from API to get affiliations list
+  if 'target' in multiValueFilters and multiValueFilters['target'][0] == 'api':
+    # As of Jan 2022, the affiliations data is stored in a file.  So get data from file to support API request
+    affiliations = affiliation_helpers.load_affiliation_file()
+    response =  { 'statusCode': 200, 'body': json.dumps(affiliations) }
   else:
-    response = { 'statusCode': 200, 'body': json.dumps(affiliation) }
+    try:
+      affiliations = db.query_by_item_type('affiliation', multiValueFilters)
+    except Exception as e:
+      response = { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
+    else:
+      response = { 'statusCode': 200, 'body': json.dumps(affiliations) }
 
   return response
 
