@@ -23,6 +23,33 @@ variant_score_variant_types = {
   'OTHER_VARIANT_TYPE': 'Other Variant Type'
 }
 
+def get_snapshot_by_pk(db, params):
+  """Queries and returns requested snapshot object by PK"""
+  # /snapshots?x-api-key=<api-key>&target=api&pk=<snapshotPK>
+  # Check query params include required params: pk only
+  pk = params['pk']
+  if pk is None or len(pk) == 0:
+    return { 'statusCode': 422, 'body': json.dumps({ 'error': 'Invalid primary key get_snapshot_by_pk for /snapshots find' }) }
+
+  try:
+    snapshot = db.find(pk)
+  except Exception as e:
+    return { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
+
+  if snapshot is None:
+    return { 'statusCode': 404, 'body': json.dumps({}) }
+
+  if 'resourceParent' not in snapshot or 's3_archive_key' not in snapshot['resourceParent']:
+    return { 'statusCode': 200, 'body': json.dumps(snapshot) }
+
+  try:
+    curation_data = snapshot_helpers.get_from_archive(snapshot['resourceParent']['s3_archive_key'])
+    snapshot['resourceParent'].update({ curation_data['item_type']: curation_data })
+  except Exception as e:
+    return { 'statusCode': 400, 'body': json.dumps({ 'error': '%s' %e }) }
+
+  return { 'statusCode': 200, 'body': json.dumps(snapshot) }
+
 def get_snapshots(db, params):
   """Queries and returns all requested snapshot objects"""
   query_params = {}
@@ -73,11 +100,14 @@ def get_SOP_version(classification):
     return classification['sopVersion']
   else:
     # Determine SOP version by classification point as in gci-vci-react/src/helpers/sop.js
-    classificationPoints = classification['classificationPoints']
-    if 'autosomalRecessiveDisorder' in classificationPoints and 'probandWithOtherVariantType' in classificationPoints['autosomalRecessiveDisorder']:
-      return '8'
-    elif 'segregation' in classificationPoints and 'evidenceCountExome' in classificationPoints['segregation']:
-      return '7'
+    if classificationPoints in classification:
+      classificationPoints = classification['classificationPoints']
+      if 'autosomalRecessiveDisorder' in classificationPoints and 'probandWithOtherVariantType' in classificationPoints['autosomalRecessiveDisorder']:
+        return '8'
+      elif 'segregation' in classificationPoints and 'evidenceCountExome' in classificationPoints['segregation']:
+        return '7'
+      else:
+        return '5'
     else:
       return '5'
 
@@ -232,7 +262,6 @@ def gather_gdm_proband_individuals(snapshot, curation, aff, status):
   gdm = None
   list = []
   useVariantScore = False
-  # print (snapshot)
 
   if classificationPoints in snapshot['resource']: 
     useVariantScore = use_variantScores(snapshot['resource']['classificationPoints'])
@@ -279,7 +308,6 @@ def generate_gci_probands_report(query_params, snapshots):
   # Loop through all snapshots to gather data and return
   for snapshot in snapshots:
     if 'resource' in snapshot and 'resourceParent' in snapshot and 's3_archive_key' in snapshot['resourceParent']:
-      # print("found resourceParent S3 key")
       try:
         curation = snapshot_helpers.get_from_archive(snapshot['resourceParent']['s3_archive_key'])
         gdm = gather_gdm_proband_individuals(snapshot, curation, aff, status)
@@ -296,7 +324,6 @@ def generate_gci_probands_report(query_params, snapshots):
   except Exception:
     pass
 
-  # print(json.dumps(gdms))
   return { 'statusCode': 200, 'body': json.dumps(gdms) }
 
 def get_classification_total_points(data, points):
@@ -560,7 +587,6 @@ def generate_gci_summary_report(query_params, snapshots):
   gdms = []
   for snapshot in snapshots:
     if 'resource' in snapshot and 'resourceParent' in snapshot and 's3_archive_key' in snapshot['resourceParent']:
-      # print("found resourceParent S3 key")
       try:
         curation = snapshot_helpers.get_from_archive(snapshot['resourceParent']['s3_archive_key'])
         gdm = gather_gdm_summary(snapshot, curation, aff)
@@ -575,7 +601,6 @@ def generate_gci_summary_report(query_params, snapshots):
   except Exception:
     pass
 
-  # print(json.dumps(gdms))
   if format == 'csv':
     csvString = output_gci_summary_in_csv(gdms)
     return { 'statusCode': 200, 'body': csvString }
@@ -597,16 +622,25 @@ def generate_vci_report(name, snapshots, query_params):
 
 # Call from API to return a report generated from snapshot objects
 def generate_api_report(db, query_params):
-  snapshots = []
   target = query_params['target']
 
+  # If API call to get snapshot by pk, return snapshot
+  if target == 'api' and 'pk' in query_params:
+    try:
+      # Queries and gets all snapshot objects
+      snapshot = get_snapshot_by_pk(db, query_params)
+    except Exception as e:
+      print ('ERROR: Exception during Get snapshot %s ' %e )
+      return { 'statusCode': 400, 'body': json.dumps({ 'API report get_snapshot_by_pk error': '%s' %e }) }
+    return snapshot
+
+  snapshots = []
   try:
     # Queries and gets all snapshot objects
     snapshots = get_snapshots(db, query_params)
   except Exception as e:
     print ('ERROR: Exception during Get snapshots %s ' %e )
     return { 'statusCode': 400, 'body': json.dumps({ 'API report get_snapshots error': '%s' %e }) }
-
   # If only count is requested, just return the count
   if 'count' in query_params:
     num = str(len(snapshots))
