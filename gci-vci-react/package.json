@@ -23,7 +23,7 @@
     "mobx-state-tree": "^3.17.3",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "numeral": "^2.0.6",
     "popper.js": "^1.16.1",
     "react": "^16.14.0",
