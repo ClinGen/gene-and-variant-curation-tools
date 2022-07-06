@@ -7,14 +7,16 @@ import React from 'react';
  */
 export function renderAnimalOnlyTag(provisional) {
     let classificationPoints = provisional.classificationPoints;
-    // Check if final classification is automatically calculated to "No Known Disease Relationship" and
+    // Check if final classification is automatically calculated to "No Known Disease Relationship" (no altered classification) and
     // only non-human points are scored in experimental evidence, then display Animal Model Only tag
-   if (provisional.autoClassification === 'No Known Disease Relationship' &&
-       classificationPoints && 
-       classificationPoints.modelsRescue && classificationPoints.modelsRescue.modelsNonHuman &&
-       classificationPoints.modelsRescue.modelsNonHuman.totalPointsGiven && 
-       classificationPoints.modelsRescue.modelsNonHuman.totalPointsGiven > 0 &&
-       classificationPoints.modelsRescue.modelsNonHuman.totalPointsGiven === classificationPoints.experimentalEvidenceTotal) {
+    const hasAltered = provisional.alteredClassification && provisional.alteredClassification !== 'No Modification';
+    if (!hasAltered &&
+        provisional.autoClassification === 'No Known Disease Relationship' &&
+        classificationPoints &&
+        classificationPoints.modelsRescue && classificationPoints.modelsRescue.modelsNonHuman &&
+         classificationPoints.modelsRescue.modelsNonHuman.totalPointsGiven &&
+         classificationPoints.modelsRescue.modelsNonHuman.totalPointsGiven > 0 &&
+         classificationPoints.modelsRescue.modelsNonHuman.totalPointsGiven === classificationPoints.experimentalEvidenceTotal) {
             return <span className="badge badge-warning">Animal Model Only</span>;
     }
     else {
