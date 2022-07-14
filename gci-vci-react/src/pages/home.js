@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import moment from 'moment';
-import {Jumbotron, Collapse, Button, Container, Row, Col} from 'react-bootstrap'
+import {Jumbotron, Collapse, Button, Container, Row, Col, Alert} from 'react-bootstrap'
 /**
  * Stateless Component Home 
  * Landing page for application displays basic info
@@ -14,23 +14,41 @@ function Home() {
         <>
         <Jumbotron>
             <Container>
-                <h1 className="display-4 d-flex">ClinGen Variant &amp; Gene Curation</h1>
-                <p className="lead mb-0 text-muted"><strong>Variant Curation</strong> is available for public use. To register, create an account via &quot;Login&quot;, and then contact our VCI helpdesk at <a href="mailto:vci@clinicalgenome.org">vci@clinicalgenome.org</a>.</p>
-                <p className="lead text-muted"><strong> Gene Curation </strong> is currently restricted to ClinGen curators. To collaborate on gene curation contact <a href="mailto:clingen@clinicalgenome.org">clingen@clinicalgenome.org</a></p>
-                <p>
-                    <Button
-                    onClick={() => setOpen(!open)}
-                    aria-controls="hidden-text"
-                    aria-expanded={open}
-                    variant="light"
-                    >Demo version...</Button>
-                </p>
+              <Row>
+                <Col xs={12} md={8}>
+                  <h1 className="display-4 d-flex">ClinGen Variant &amp; Gene Curation</h1>
+                  <p className="lead mb-0 text-muted"><strong>Variant Curation</strong> is available for public use. To register, create an account via &quot;Login&quot;, and then contact our VCI helpdesk at <a href="mailto:vci@clinicalgenome.org">vci@clinicalgenome.org</a>.</p>
+                  <p className="lead text-muted"><strong> Gene Curation </strong> is currently restricted to ClinGen curators. To collaborate on gene curation contact <a href="mailto:clingen@clinicalgenome.org">clingen@clinicalgenome.org</a></p>
+                  <p>
+                      <Button
+                      onClick={() => setOpen(!open)}
+                      aria-controls="hidden-text"
+                      aria-expanded={open}
+                      variant="light"
+                      >Demo version...</Button>
+                  </p>
 
-                <Collapse in={open}>
-                    <div className="hidden-text">
-                        <p>Any user may explore the demo version of the ClinGen interfaces by registering using the &quot;Login&quot; button, found in the header at <a href="https://curation-test.clinicalgenome.org" target="_blank" rel="noopener noreferrer">curation-test.clinicalgenome.org</a>. If you have questions about the demo site, please email us at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu <i className="icon icon-envelope"></i></a></p> 
-                    </div>
-                </Collapse>
+                  <Collapse in={open}>
+                      <div className="hidden-text">
+                          <p>Any user may explore the demo version of the ClinGen interfaces by registering using the &quot;Login&quot; button, found in the header at <a href="https://curation-test.clinicalgenome.org" target="_blank" rel="noopener noreferrer">curation-test.clinicalgenome.org</a>. If you have questions about the demo site, please email us at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu <i className="icon icon-envelope"></i></a></p> 
+                      </div>
+                  </Collapse>
+                </Col>
+
+                <Col xs={12} md={4}>
+                  <Alert variant="success" className="publication-alert">
+                    <Alert.Heading><i className="icon icon-newspaper-o"></i> Read our new VCI Publication</Alert.Heading>
+                    <p className="publication-text">
+                      ClinGen has a new publication presenting the Variant Curation Interface in <Alert.Link href="https://genomemedicine.biomedcentral.com/articles/10.1186/s13073-021-01004-8">Genome Medicine</Alert.Link>
+                    </p>
+                    <p>
+                      Preston, C.G., Wright, M.W., Madhavrao, R. et al. ClinGen Variant Curation Interface: a variant classification 
+                      platform for the application of evidence criteria from ACMG/AMP guidelines. 
+                      Genome Med 14, 6 (2022). https://doi.org/10.1186/s13073-021-01004-8
+                    </p>
+                  </Alert>
+                </Col>
+              </Row>
             </Container>
         </Jumbotron>
 

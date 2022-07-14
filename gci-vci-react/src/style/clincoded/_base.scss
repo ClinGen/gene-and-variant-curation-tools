@@ -237,6 +237,14 @@ dl.dl-horizontal {
     line-height: 50px;
 }
 
+.publication-alert {
+  filter: brightness(105%);
+}
+
+.publication-text {
+  padding: 15px 0 15px 0;
+}
+
 //Default Hyperlink, even without href value
 a:not([href]) {
     color:$brand-primary;
