@@ -180,7 +180,7 @@ const Snapshots = (props) => {
                         snapshot.resource.approvalReviewDate ? snapshot.resource.approvalReviewDate : snapshot.resource.approvalDate;
                     publishAffiliation = snapshot.resource.publishAffiliation ? ' (' +
                         getAffiliationNameBySubgroupID('gcep', snapshot.resource.publishAffiliation) + ')' : '';
-                    publishSiteURL = 'https://search' + (demoVersion ? '-staging' : '') + '.clinicalgenome.org/kb/gene-validity/' +
+                    publishSiteURL = 'https://search' + (demoVersion ? '-staging' : '') + '.clinicalgenome.org/kb/gene-validity/CGGV:assertion_' +
                         snapshot.resource.PK + '--' + moment(publishSiteLinkDate).utc().format('Y-MM-DDTHH:mm:ss');
                     publishSiteLinkName = (resourceParent && resourceParent.gene && resourceParent.gene.symbol ?
                         resourceParent.gene.symbol + ' ' : '') + 'Classification Summary';

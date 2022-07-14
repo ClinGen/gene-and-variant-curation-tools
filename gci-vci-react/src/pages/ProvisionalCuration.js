@@ -34,7 +34,7 @@ class ProvisionalCuration extends Component {
     this.state = {
       user: null, // login user uuid
       gdm: null, // current gdm object, must be null initially.
-      allowEdit: true, // current gdm object can be edited by current logged in user
+      allowEdit: false, // current gdm object can be edited by current logged in user
       provisional: {}, // login user's existing provisional object, must be null initially.
       //assessments: null,  // list of all assessments, must be nul initially.
       totalScore: null,
@@ -201,9 +201,9 @@ class ProvisionalCuration extends Component {
           this.getClassificationSnapshots(stateObj.provisional);
         }
       }
-      // Set if current curator cannot edit this gdm
-      if ((gdmAffiliation && curatorAffiliation && gdmAffiliation !== curatorAffiliation.affiliation_id) || (!gdmAffiliation && !curatorAffiliation && gdm.submitted_by.PK !== stateObj.user)) {
-        this.setState({ allowEdit: false });
+      // Set if current curator can edit this GDM.  GDM needs to associated with a GCEP and user has to login as same GCEP in order to act on the GDM.
+      if (gdmAffiliation && curatorAffiliation && gdmAffiliation === curatorAffiliation.affiliation_id) {
+        this.setState({ allowEdit: true });
       }
     }
     this.calculateScoreTable();
