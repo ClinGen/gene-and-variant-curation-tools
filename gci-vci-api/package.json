@@ -12,11 +12,11 @@
     "serverless": "^1.64.0",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-dynamodb-local": "^0.2.39",
-    "serverless-offline": "^6.9.0",
+    "serverless-offline": "^12.0.3",
     "serverless-plugin-split-stacks": "^1.9.3",
     "serverless-python-requirements": "^5.1.0",
     "serverless-reqvalidator-plugin": "^1.0.3",
-    "serverless-s3-local": "^0.6.7"
+    "serverless-s3-local": "^0.7.1"
   },
   "scripts": {
     "test": "python3 -m pytest tests/unit/"
