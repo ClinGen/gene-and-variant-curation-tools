@@ -10,7 +10,7 @@
     "nodemon": "^2.0.6",
     "serverless": "^1.64.0",
     "serverless-aws-documentation": "^1.1.0",
-    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-dynamodb-local": "^1.0.2",
     "serverless-s3-local": "^0.6.7",
     "serverless-offline": "^6.8.0",
     "serverless-plugin-split-stacks": "^1.9.3",
