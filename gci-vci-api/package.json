@@ -9,7 +9,7 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "nodemon": "^2.0.6",
-    "serverless": "^1.64.0",
+    "serverless": "^3.27.0",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-dynamodb-local": "^0.2.39",
     "serverless-offline": "^6.9.0",
