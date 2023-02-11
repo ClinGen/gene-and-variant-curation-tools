@@ -9,7 +9,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
-    "@uiw/react-md-editor": "^3.7.0",
+    "@uiw/react-md-editor": "^3.20.2",
     "aws-amplify": "^3.0.19",
     "aws-amplify-react": "^4.1.18",
     "bootstrap": "^4.4.1",
