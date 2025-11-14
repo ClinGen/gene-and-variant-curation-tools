@@ -11,3 +11,23 @@ export const isProdSite = () => {
     return false;
   }
 }
+
+  /**
+ * Check if using the production site, returns appropriate Affiliations 
+ * API endpoint URL.
+ * @returns {string|undefined}
+ */
+export const REACT_APP_AFFILS_ENDPOINT = isProdSite()
+  ? process.env.REACT_APP_AFFILS_ENDPOINT_PROD
+  : process.env.REACT_APP_AFFILS_ENDPOINT_TEST;
+
+
+  /**
+ * Check if using the production site, returns appropriate Affiliations 
+ * API key.
+ * @returns {string|undefined}
+ */
+export const REACT_APP_AFFILS_API_KEY = isProdSite()
+  ? process.env.REACT_APP_AFFILS_API_KEY_PROD
+  : process.env.REACT_APP_AFFILS_API_KEY_TEST;
+  

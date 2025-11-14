@@ -67,5 +67,14 @@ export function renderDataCredit(source, tab) {
                 </div>
             </div>
         );
+    } else if (source === 'ldh') {
+        return (
+            <div className="credits">
+                <div className="credit credit-ldh" id={`credit-ldh-${tab}`}>
+                    <span className="credit-ldh"><span>ClinGen Linked Data Hub</span></span> - <a href="https://ldh.genome.network/ldh/srvc" target="_blank"
+                      rel="noopener noreferrer">ClinGen Linked Data Hub</a> - an efficient API lookup service that links variants to annotation data.
+                </div>
+            </div>
+        );
     }
 }

@@ -68,6 +68,14 @@ class AddArticleModalButton extends Component {
     try {
       const article = await retrieveArticleRequest;
 
+      if(article.is_preprint) {
+        // We don't want to allow curators to add articles from pre-print
+        // servers. See https://github.com/ClinGen/gci-vci-aws/issues/1416 for
+        // more info.
+        window.alert("This article can't be added as a PMID because it is originally from a preprint server.");
+        return;
+      }
+
       this.setState({
         tempResource: article,
       });
@@ -289,6 +297,7 @@ class AddArticleModalButton extends Component {
                   <PmidSummary
                     article={this.state.tempResource}
                     displayJournal
+                    displayAllAuthors
                     pmidLinkout
                   />
                 </Col>

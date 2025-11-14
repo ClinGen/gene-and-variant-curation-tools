@@ -13,7 +13,7 @@ import LoadingSpinner from '../../../common/LoadingSpinner';
 import { renderPMIDList, renderAlleleFrequency, renderHPOList } from '../common/commonFunc';
 import ScoreViewer from '../../score/ScoreViewer';
 import { getAffiliationScore } from '../../score/helpers/getAffiliationScore';
-
+import { convertDiseasePKToMondoId, displayObsoleteDiseaseIcon } from '../../../../utilities/diseaseUtilities';
 
 import { useAmplifyAPIRequestRecycler } from '../../../../utilities/fetchUtilities';
 
@@ -88,7 +88,7 @@ export const CaseControlView = ({
                   <div>
                     <dt>Common Diagnosis</dt>
                     <dd>{caseCohort.commonDiagnosis && caseCohort.commonDiagnosis.map(function(disease, i) {
-                      return <span key={disease.PK + '_' + i}>{i > 0 ? ', ' : ''}{disease.term} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{disease.PK.replace('_', ':')}</ExternalLink> : null}</span>;
+                      return <span key={disease.PK + '_' + i}>{i > 0 ? ', ' : ''}{displayObsoleteDiseaseIcon(disease.term, "gdm")}{disease.term} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{convertDiseasePKToMondoId(disease.PK)}</ExternalLink> : null}</span>;
                     })}</dd>
                   </div>
 
@@ -436,7 +436,7 @@ export const CaseControlView = ({
                 </div>
 
                 <div>
-                  <dt>Confidence interval (%)</dt>
+                  <dt>Confidence interval</dt>
                   <dd>{caseControl.confidenceIntervalFrom || caseControl.confidenceIntervalTo ? <span>{caseControl.confidenceIntervalFrom + ' – ' + caseControl.confidenceIntervalTo}</span> : null}</dd>
                 </div>
 

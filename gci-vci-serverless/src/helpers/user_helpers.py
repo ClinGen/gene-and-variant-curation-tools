@@ -1,9 +1,14 @@
 import datetime
 import uuid
+import os
 # Possible user status values.
 USER_STATUS_REQUESTED_ACTIVATION = 'requested activation'
 USER_STATUS_ACTIVE = 'active'
 USER_STATUS_INACTIVE = 'inactive'
+
+is_prod = os.environ.get('APP_STAGE', 'dev') == 'prod'
+test_affiliation_id = "10117"
+
 def build(user):
   ''' Builds a user object with default values for required fields. '''
   print(user)
@@ -35,13 +40,25 @@ def build(user):
       'groups': GROUPS
     }
   else: 
-    return {
-      'PK': str(uuid.uuid4()),
-      'item_type': 'user',
-      'date_created': now,
-      'last_modified': now,
-      'user_status': USER_STATUS_ACTIVE,
-      'affiliations': AFFILIATIONS,
-      'groups': GROUPS,
-      'institution': INSTITUTION
-    }
+    if is_prod:
+      return {
+        'PK': str(uuid.uuid4()),
+        'item_type': 'user',
+        'date_created': now,
+        'last_modified': now,
+        'user_status': USER_STATUS_REQUESTED_ACTIVATION,
+        'affiliations': AFFILIATIONS,
+        'groups': GROUPS,
+        'institution': INSTITUTION
+      }
+    else:
+      return {
+        'PK': str(uuid.uuid4()),
+        'item_type': 'user',
+        'date_created': now,
+        'last_modified': now,
+        'user_status': USER_STATUS_ACTIVE,
+        'affiliations': [test_affiliation_id],
+        'groups': GROUPS,
+        'institution': INSTITUTION
+      }

@@ -34,7 +34,7 @@ def main():
         'security.protocol': 'SASL_SSL',
         'sasl.username': username,
         'sasl.password': pw
-        #'group.id': 'StanfordStaging' # this will create a new consumer group on each invocation.
+        #'group.id': '' # this will create a new consumer group on each invocation.
     })
 
     p.flush()

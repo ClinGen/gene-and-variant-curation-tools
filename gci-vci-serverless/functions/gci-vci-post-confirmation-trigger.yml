@@ -3,6 +3,7 @@ gci-vci-post-confirmation-trigger:
   role: !GetAtt PostConfirmationTriggerRole.Arn
   environment:
     DB_TABLE_NAME: ${self:custom.resources.gci-vci-table-name}
+    APP_STAGE: ${self:provider.stage}
   events:
     - cognitoUserPool:
         pool: ${self:provider.stage}-clingen-user-pool

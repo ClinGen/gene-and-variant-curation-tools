@@ -4,6 +4,8 @@ import requests
 from confluent_kafka import Producer
 from decimal import Decimal
 
+from . import affiliation_helpers
+
 # SOPv7 publish GDM classification template. scoreJson.GeneticEvidence.CaseLevelData.VariantEvidence attribute has old format.
 publish_classification_message_template_v7 = {
   'iri': ['$PATH_TO_DATA', 'resource', 'PK'],
@@ -35,6 +37,7 @@ publish_classification_message_template_v7 = {
       True: 'Unpublish'
     }
   ],
+  'publishDate': ['$PATH_TO_DATA', 'resource', 'publishDate'],
   'type': 'clinicalValidity',
   'affiliation': {
     'id': ['$PATH_TO_DATA', 'resource', 'affiliation'],
@@ -378,8 +381,13 @@ publish_classification_message_template_v7 = {
   }
 }
 
-# SOPv8 publish GDM classification template. scoreJson.GeneticEvidence.CaseLevelData.VariantEvidence attribute has new format and new EarliestArticles attribute.,
-# Set jsonMessageVersion to 8.1 to provide a simply way to know that this JSON format is to handle slightly different data
+# SOPv8 publish GDM classification template.
+# scoreJson.GeneticEvidence.CaseLevelData.VariantEvidence attribute has new format and new EarliestArticles attribute.
+# Set jsonMessageVersion to version to provide a simply way to know that this JSON format is to handle slightly different data
+# July 2021 - 8.1 - new template to support SOP8
+# Aug 2024 - 8.2 - allow ClinVar SCV to be added as source in annotation/publication
+# Sep 2024 - 8.3 - added phase status for SOP11
+# Oct 2024 - 8.4 - allow edit of published Evidence Summary, include republish flag and publish edit history
 publish_classification_message_template = {
   'iri': ['$PATH_TO_DATA', 'resource', 'PK'],
   'report_id': ['$PATH_TO_DATA', 'resourceParent', 'gdm', 'PK'],
@@ -391,11 +399,12 @@ publish_classification_message_template = {
           'interpretation': 'VCI'
         }
       ],
-      2: '8.1'
+      2: '8.4'
     }
   ],
-  'sopVersion': '8',
+  'sopVersion': '11',
   'selectedSOPVersion': ['$PATH_TO_DATA', 'resource', 'sopVersion'],
+  'curationReasons': ['$PATH_TO_DATA', 'resource', 'curationReasons'],
   'curationVersion': 'TO BE DETERMINED',
   'title': ['$COMBINE_DATA', ' : ',
     {
@@ -410,6 +419,7 @@ publish_classification_message_template = {
       True: 'Unpublish'
     }
   ],
+  'publishDate': ['$PATH_TO_DATA', 'resource', 'publishDate'],
   'type': 'clinicalValidity',
   'affiliation': {
     'id': ['$PATH_TO_DATA', 'resource', 'affiliation'],
@@ -746,6 +756,7 @@ publish_classification_message_template = {
 
 publish_interpretation_message_template = {
   'interpretation': ['$PATH_TO_DATA', 'resourceParent', 'interpretation'],
+  'curationReasons': ['$PATH_TO_DATA', 'resource', 'curationReasons'],
   'statusPublishFlag': ['$CONVERT_DATA', ['resource', 'publishClassification'],
     {
       False: 'Publish',
@@ -798,9 +809,7 @@ publish_interpretation_data_to_remove = [
   ['variant', 'schema_version']
 ]
 
-local_file_dir = os.environ.get('LOCAL_FILE_DIR', '')
-affiliation_data = []
-saved_affiliation = []
+is_prod = os.environ.get('APP_STAGE', 'dev') == 'prod'
 
 # Retrieve data from search result(s) using a path (list of keys)
 def get_data_by_path(data, path, return_no_data=None):
@@ -824,8 +833,8 @@ def check_data_ownership(data, affiliation):
 
   return False
 
-# Check if article should be added to evidence dictionary
-def is_article_new(evidence, category, annotation):
+# Check if source should be added to evidence dictionary
+def is_source_new(evidence, category, annotation):
   if 'article' in annotation:
     if 'pmid' in annotation['article']:
       if category not in evidence:
@@ -833,7 +842,20 @@ def is_article_new(evidence, category, annotation):
         return True
       else:
         for publication in evidence[category]:
-          if publication['pmid'] == annotation['article']['pmid']:
+          if 'pmid' in publication and publication['pmid'] == annotation['article']['pmid']:
+            return False
+
+        return True
+    else:
+      return False
+  elif 'scv' in annotation:
+    if 'scvId' in annotation['scv']:
+      if category not in evidence:
+        evidence[category] = []
+        return True
+      else:
+        for publication in evidence[category]:
+          if 'scvId' in publication and publication['scvId'] == annotation['scv']['scvId']:
             return False
 
         return True
@@ -848,11 +870,11 @@ def check_individual_scoring_v7(score, evidence, annotation):
   if 'scoreStatus' in score:
     if score['scoreStatus'] == 'Score':
       if 'caseInfoType' in score:
-        if is_article_new(evidence, score['caseInfoType'], annotation):
+        if is_source_new(evidence, score['caseInfoType'], annotation):
           return (True, score['caseInfoType'])
 
     elif score['scoreStatus'] == 'Contradicts':
-      if is_article_new(evidence, 'contradicts', annotation):
+      if is_source_new(evidence, 'contradicts', annotation):
         return (True, 'contradicts')
 
   return (False, )
@@ -862,18 +884,18 @@ def check_individual_scoring_v7(score, evidence, annotation):
 def check_individual_scoring_v8(moiType, probandIs, score, evidence, annotation):
   # Set categery for the score
   prefix = ""
-  if ("Autosomal recessive" in moiType) or ("Semidominant" in moiType and "Biallelic" in probandIs):
+  if ("Autosomal recessive" in moiType) or (("Semidominant" in moiType or "somatic mosaicism" in moiType) and "Biallelic" in probandIs):
     prefix = "AUTOREC_"
 
   if 'scoreStatus' in score:
     if score['scoreStatus'] == 'Score':
       if 'variantType' in score:
         category = prefix + score['variantType']
-        if is_article_new(evidence, category, annotation):
+        if is_source_new(evidence, category, annotation):
           return (True, category)
 
     elif score['scoreStatus'] == 'Contradicts':
-      if is_article_new(evidence, 'contradicts', annotation):
+      if is_source_new(evidence, 'contradicts', annotation):
         return (True, 'contradicts')
 
   return (False, )
@@ -894,10 +916,10 @@ def check_segregation_scoring(family, evidence, annotation):
     if 'publishedLodScore' in segregation or 'estimatedLodScore' in segregation:
       if 'sequencingMethod' in segregation:
         if segregation['sequencingMethod'] == 'Candidate gene sequencing':
-          if is_article_new(evidence, 'segregation-candidate-sequencing', annotation):
+          if is_source_new(evidence, 'segregation-candidate-sequencing', annotation):
             return (True, 'segregation-candidate-sequencing')
         elif segregation['sequencingMethod'] == 'Exome/genome or all genes sequenced in linkage region':
-          if is_article_new(evidence, 'segregation-exome-sequencing', annotation):
+          if is_source_new(evidence, 'segregation-exome-sequencing', annotation):
             return (True, 'segregation-exome-sequencing')
 
   return (False, )
@@ -906,30 +928,45 @@ def check_segregation_scoring(family, evidence, annotation):
 def check_case_control_scoring(case_control, score, evidence, annotation):
   if 'studyType' in case_control:
     if case_control['studyType'] == 'Single variant analysis':
+      # case Control scores has 2 versions
+      # Old score object only has score point which by default has "Score" status
+      # New score object has scoreStatus, ScoreExplanation, and score
       if 'score' in score:
-        if 'case-control-single-count' not in evidence:
-          evidence['case-control-single-count'] = 0
-        evidence['case-control-single-count'] += 1
+        if 'scoreStatus' not in score or ('scoreStatus' in score and score['scoreStatus'] == 'Score'):
+          if 'case-control-single-count' not in evidence:
+            evidence['case-control-single-count'] = 0
+          evidence['case-control-single-count'] += 1
 
-        if 'case-control-single-points' not in evidence:
-          evidence['case-control-single-points'] = 0
-        evidence['case-control-single-points'] += score['score']
+          if 'case-control-single-points' not in evidence:
+            evidence['case-control-single-points'] = 0
+          evidence['case-control-single-points'] += score['score']
 
-      if is_article_new(evidence, 'case-control-single', annotation):
-        return (True, 'case-control-single')
-
+          # Returned for Score (TODO: Review - old codes always return even no score)
+          if is_source_new(evidence, 'case-control-single', annotation):
+            return (True, 'case-control-single')
+      elif score['scoreStatus'] == 'Contradicts':
+        if is_source_new(evidence, 'contradicts', annotation):
+          return (True, 'contradicts')
     elif case_control['studyType'] == 'Aggregate variant analysis':
+      # case Control scores has 2 versions
+      # Old score object only has score point which by default has "Score" status
+      # New score object has scoreStatus, ScoreExplanation, and score
       if 'score' in score:
-        if 'case-control-aggregate-count' not in evidence:
-          evidence['case-control-aggregate-count'] = 0
-        evidence['case-control-aggregate-count'] += 1
+        if 'scoreStatus' not in score or ('scoreStatus' in score and score['scoreStatus'] == 'Score'):
+          if 'case-control-aggregate-count' not in evidence:
+            evidence['case-control-aggregate-count'] = 0
+          evidence['case-control-aggregate-count'] += 1
 
-        if 'case-control-aggregate-points' not in evidence:
-          evidence['case-control-aggregate-points'] = 0
-        evidence['case-control-aggregate-points'] += score['score']
+          if 'case-control-aggregate-points' not in evidence:
+            evidence['case-control-aggregate-points'] = 0
+          evidence['case-control-aggregate-points'] += score['score']
 
-      if is_article_new(evidence, 'case-control-aggregate', annotation):
-        return (True, 'case-control-aggregate')
+          # Returned for score (TODO: Review - old codes always return even no score)
+          if is_source_new(evidence, 'case-control-aggregate', annotation):
+            return (True, 'case-control-aggregate')
+      elif score['scoreStatus'] == 'Contradicts':
+        if is_source_new(evidence, 'contradicts', annotation):
+          return (True, 'contradicts')
 
   return (False, )
 
@@ -989,17 +1026,17 @@ def check_experimental_scoring(experimental, score, evidence, annotation):
             evidence_category = experimental_evidence_types[experimental['evidenceType']]
 
       if evidence_category is not None:
-        if is_article_new(evidence, evidence_category, annotation):
+        if is_source_new(evidence, evidence_category, annotation):
           return (True, evidence_category)
 
     elif score['scoreStatus'] == 'Contradicts':
-      if is_article_new(evidence, 'contradicts', annotation):
+      if is_source_new(evidence, 'contradicts', annotation):
         return (True, 'contradicts')
 
   return (False, )
 
-# Rerieve article metadata that will be added to evidence dictionary
-def save_article(annotation):
+# Rerieve source metadata that will be added to evidence dictionary
+def save_source(annotation):
   publication = {}
 
   if 'article' in annotation:
@@ -1017,6 +1054,26 @@ def save_article(annotation):
 
     if 'pmid' in annotation['article']:
       publication['pmid'] = annotation['article']['pmid']
+
+  elif 'scv' in annotation:
+    # If it's a ClinVar SCV reference
+    if 'vcvId' in annotation['scv']:
+      publication['vcvId'] = annotation['scv']['vcvId']
+
+    if 'scvId' in annotation['scv']:
+      publication['scvId'] = annotation['scv']['scvId']
+
+    if 'date' in annotation['scv'] and isinstance(annotation['scv']['date'], str):
+      publication['pubdate'] = annotation['scv']['date']
+
+    if 'submitter' in annotation['scv']:
+      publication['submitter'] = annotation['scv']['submitter']
+
+    if 'variationId' in annotation['scv']:
+      publication['variationId'] = annotation['scv']['variationId']
+
+    if 'variationName' in annotation['scv']:
+      publication['variationName'] = annotation['scv']['variationName']
 
   return publication
 
@@ -1060,13 +1117,13 @@ def gather_evidence(data, user_affiliation, templateVersion):
               individual_score = check_individual_scoring(templateVersion, moiType, probandIs, score, evidence_publications, annotation)
 
               if individual_score[0]:
-                evidence_publications[individual_score[1]].append(save_article(annotation))
+                evidence_publications[individual_score[1]].append(save_source(annotation))
 
         if check_data_ownership(family, user_affiliation):
           segregation_score = check_segregation_scoring(family, evidence_publications, annotation)
 
           if segregation_score[0]:
-            evidence_publications[segregation_score[1]].append(save_article(annotation))
+            evidence_publications[segregation_score[1]].append(save_source(annotation))
 
       individuals = get_data_by_path(group, ['individualIncluded'], [])
 
@@ -1080,7 +1137,7 @@ def gather_evidence(data, user_affiliation, templateVersion):
             individual_score = check_individual_scoring(templateVersion, moiType, probandIs, score, evidence_publications, annotation)
 
             if individual_score[0]:
-              evidence_publications[individual_score[1]].append(save_article(annotation))
+              evidence_publications[individual_score[1]].append(save_source(annotation))
 
     families = get_data_by_path(annotation, ['families'], [])
 
@@ -1097,13 +1154,13 @@ def gather_evidence(data, user_affiliation, templateVersion):
             individual_score = check_individual_scoring(templateVersion, moiType, probandIs, score, evidence_publications, annotation)
 
             if individual_score[0]:
-              evidence_publications[individual_score[1]].append(save_article(annotation))
+              evidence_publications[individual_score[1]].append(save_source(annotation))
 
       if check_data_ownership(family, user_affiliation):
         segregation_score = check_segregation_scoring(family, evidence_publications, annotation)
 
         if segregation_score[0]:
-          evidence_publications[segregation_score[1]].append(save_article(annotation))
+          evidence_publications[segregation_score[1]].append(save_source(annotation))
 
     individuals = get_data_by_path(annotation, ['individuals'], [])
 
@@ -1117,7 +1174,7 @@ def gather_evidence(data, user_affiliation, templateVersion):
           individual_score = check_individual_scoring(templateVersion, moiType, probandIs, score, evidence_publications, annotation)
 
           if individual_score[0]:
-            evidence_publications[individual_score[1]].append(save_article(annotation))
+            evidence_publications[individual_score[1]].append(save_source(annotation))
 
     case_controls = get_data_by_path(annotation, ['caseControlStudies'], [])
 
@@ -1129,7 +1186,7 @@ def gather_evidence(data, user_affiliation, templateVersion):
           case_control_score = check_case_control_scoring(case_control, score, evidence_publications, annotation)
 
           if case_control_score[0]:
-            evidence_publications[case_control_score[1]].append(save_article(annotation))
+            evidence_publications[case_control_score[1]].append(save_source(annotation))
 
           break
 
@@ -1143,7 +1200,7 @@ def gather_evidence(data, user_affiliation, templateVersion):
           experimental_score = check_experimental_scoring(experimental, score, evidence_publications, annotation)
 
           if experimental_score[0]:
-            evidence_publications[experimental_score[1]].append(save_article(annotation))
+            evidence_publications[experimental_score[1]].append(save_source(annotation))
 
           break
 
@@ -1178,23 +1235,35 @@ def gather_evidence_counts(points, return_result=False, templateVersion=8):
   if return_result:
     return points
 
-# SOP8 - Add earliest article data to the message template
+# SOP8 - Add earliest source data to the message template
 def add_earliest_articles(data, template):
   earliestArticles = get_data_by_path(data, ['resource', 'earliestArticles'], {})
 
   if len(earliestArticles) > 0:
-    for article in earliestArticles:
+    # source can have PMID or VCVId/SCVId
+    for source in earliestArticles:
       try:
-        if (('PK' in article and article['PK']) and
-          ('date' in article and article['date'])):
-          print("add article")
+        # If it's a PMID article source
+        if (('pmid' in source and source['pmid']) and
+          ('date' in source and source['date'])):
           # template is 'EarliestArticles' empty array
           template.append({
-            'pmid': article['PK'],
-            'year': article['date'][0:4]
+            'pmid': source['pmid'],
+            'year': source['date'][0:4]
+          })
+        elif (('vcvId' in source and source['vcvId']) and
+          ('scvId' in source and source['scvId']) and
+          ('date' in source and source['date'])):
+          # If it's a ClinVar SCV source
+          # template is 'EarliestArticles' empty array
+          template.append({
+            'vcvId': source['vcvId'],
+            'scvId': source['scvId'],
+            'date': source['date']
           })
 
       except Exception:
+        print('ERROR: messaging_helpers error - in add_earliest_articles')
         pass
 
 
@@ -1217,40 +1286,31 @@ def add_contradictory_evidence(data, evidence, template):
 # Add a yes/no value for animal model only (AnimalModelOnly) key to the message template
 def add_animal_model_only(data, template):
   autoClassification = get_data_by_path(data, ['resource', 'autoClassification'], '')
+  alteredClassification = get_data_by_path(data, ['resource', 'alteredClassification'], 'No Modification')
   classificationPoints = get_data_by_path(data, ['resource', 'classificationPoints'], {})
 
-  # Check if final classification is automatically calculated to "No Known Disease Relationship"
+  # Check if final classification is automatically calculated to "No Known Disease Relationship" (no altered classification)
   # and only non-human points are scored in experimental evidence, then Animal Model Only tag is Yes
-  if (autoClassification == 'No Known Disease Relationship' and
+  if (alteredClassification == 'No Modification' and
+    autoClassification == 'No Known Disease Relationship' and
     classificationPoints['modelsRescue']['modelsNonHuman']['totalPointsGiven'] > 0 and
     classificationPoints['modelsRescue']['modelsNonHuman']['totalPointsGiven'] == classificationPoints['experimentalEvidenceTotal']):
     template['AnimalModelOnly'] = 'YES'
   else:
     template['AnimalModelOnly'] = 'NO'
 
-# Load affiliation data from a JSON file maintained for the UI
-def load_affiliation_data():
-  global affiliation_data
-
-  if not affiliation_data:
-    try:
-      affiliation_data = json.load(open(local_file_dir + '/affiliations.json'))
-
-    except Exception:
-      pass
-
 # Add dictionary containing secondary contributors/approver to the message template
 def add_secondary_contributors_approver(data, template):
-  global affiliation_data
   contributors = get_data_by_path(data, ['resource', 'classificationContributors'], [])
   approver = get_data_by_path(data, ['resource', 'additionalApprover'])
 
   if len(contributors) > 0 or approver:
-    load_affiliation_data()
+    # Call Affils API to get affiliations_data
+    affiliation_helpers.load_affiliation_data()
     template['contributors'] = []
 
   if len(contributors) > 0:
-    for affiliation in affiliation_data:
+    for affiliation in affiliation_helpers.affiliation_data:
       try:
         if affiliation['affiliation_id'] in contributors:
           template['contributors'].append({
@@ -1258,73 +1318,46 @@ def add_secondary_contributors_approver(data, template):
             'name': affiliation['affiliation_fullname'],
             'role': 'secondary contributor'
           })
-
       except Exception:
+        print('ERROR: messaging_helpers error - in add_secondary_contributors_approver')
         pass
-
-  try:
-    template['contributors'].sort(key = lambda contributor: contributor['name'])
-
-  except Exception:
-    pass
-
-  if approver:
-    for affiliation in affiliation_data:
-      try:
-        if approver == affiliation['subgroups']['gcep']['id']:
-          template['contributors'].append({
-            'id': approver,
-            'name': affiliation['subgroups']['gcep']['fullname'],
-            'role': 'secondary approver'
-          })
-          break
-
-      except Exception:
-        pass
-
-      try:
-        if approver == affiliation['subgroups']['vcep']['id']:
-          template['contributors'].append({
-            'id': approver,
-            'name': affiliation['subgroups']['vcep']['fullname'],
-            'role': 'secondary approver'
-          })
-          break
-
-      except Exception:
-        pass
-
-# Lookup affiliation data associated with a provided ID
-def lookup_affiliation_data(affiliation_id, affiliation_key, affiliation_subgroup=None):
-  global affiliation_data
-  global saved_affiliation
-
-  if affiliation_id and affiliation_key:
-    if not saved_affiliation or 'affiliation_id' not in saved_affiliation or affiliation_id != saved_affiliation['affiliation_id']:
-      load_affiliation_data()
-
-      for affiliation in affiliation_data:
-        try:
-          if affiliation_id == affiliation['affiliation_id']:
-            saved_affiliation = affiliation
-            break
-
-        except Exception:
-          pass
 
     try:
-      if affiliation_subgroup:
-        return saved_affiliation['subgroups'][affiliation_subgroup][affiliation_key]
-      else:
-        return saved_affiliation[affiliation_key]
-
+      template['contributors'].sort(key = lambda contributor: contributor['name'])
     except Exception:
+      print('ERROR: messaging_helpers error - in add_secondary_contributors_approver - sort')
       pass
+    
+  #  Only VCEPs and GCEPs should be considered as potential secondary contributors.
+  if approver:
+    for affiliation in affiliation_helpers.affiliation_data:
+      if 'subgroups' in affiliation:
+        try:
+          if ('gcep' in affiliation['subgroups'] 
+              and approver == affiliation['subgroups']['gcep']['id']):
+            template['contributors'].append({
+              'id': approver,
+              'name': affiliation['subgroups']['gcep']['fullname'],
+              'role': 'secondary approver'
+            })
+            break
+        except Exception:
+          print('ERROR: messaging_helpers error - in add_secondary_contributors_approver - gcep approver')
+          pass
 
-    return None
-  else:
-    return None
-
+        try:
+          if ('vcep' in affiliation['subgroups'] 
+              and approver == affiliation['subgroups']['vcep']['id']):
+            template['contributors'].append({
+              'id': approver,
+              'name': affiliation['subgroups']['vcep']['fullname'],
+              'role': 'secondary approver'
+            })
+            break
+        except Exception:
+          print('ERROR: messaging_helpers error - in add_secondary_contributors_approver - vcep approver')
+          pass
+  
 # Traverse message template, performing various data retrieval/update operations
 def add_data_to_message_template(data, evidence, evidence_counts, template):
   keep_falsy_data = False
@@ -1407,9 +1440,9 @@ def add_data_to_message_template(data, evidence, evidence_counts, template):
         # Lookup an affiliation name by ID (from a data path list)
         elif value[0] == '$LOOKUP_AFFILIATION_DATA':
           if value_length == 4:
-            template[key] = lookup_affiliation_data(get_data_by_path(data, value[1]), value[3], value[2])
+            template[key] = affiliation_helpers.lookup_affiliation_data(get_data_by_path(data, value[1]), value[3], value[2])
           elif value_length == 3:
-            template[key] = lookup_affiliation_data(get_data_by_path(data, value[1]), value[2])
+            template[key] = affiliation_helpers.lookup_affiliation_data(get_data_by_path(data, value[1]), value[2])
           else:
             template[key] = ''
 
@@ -1437,7 +1470,7 @@ def add_data_to_message_template(data, evidence, evidence_counts, template):
           else:
             template[key] = ''
 
-        # Add evidence (articles, counts or points) based on information type
+        # Add evidence (sources, counts or points) based on information type
         elif value[0] == '$EVIDENCE_DATA':
           if value_length in (2, 3) and value[1] in evidence:
             template[key] = evidence[value[1]]
@@ -1454,7 +1487,7 @@ def add_data_to_message_template(data, evidence, evidence_counts, template):
               add_data_to_message_template(data, evidence, evidence_counts, element)
       else:
         # If empty list, check for EarliestArticles
-        # SOP8 - handling to incorporate earliest articles
+        # SOP8 - handling to incorporate earliest sources/articles
         if key == 'EarliestArticles':
           add_earliest_articles(data, value)
 
@@ -1468,7 +1501,7 @@ def add_data_to_message_template(data, evidence, evidence_counts, template):
     elif isinstance(value, dict):
       add_data_to_message_template(data, evidence, evidence_counts, value)
 
-      # Special handling to incorporate contradictory evidence (articles)
+      # Special handling to incorporate contradictory evidence (sources)
       if key == 'ValidContradictoryEvidence':
         add_contradictory_evidence(data, evidence, value)
 
@@ -1514,6 +1547,7 @@ def remove_data_from_message_template(delete_list, template):
 
     # Continue processing deletion list if/when a single path has problems
     except (IndexError, KeyError):
+      print('ERROR: messaging_helpers error - in -remove_data_from_message_template')
       pass
 
 # Transform interpretation to SEPIO format (via transformation service)
@@ -1527,11 +1561,10 @@ def transform_interpretation(source_data, use_local):
 
   # Send interpretation to transformation service
   try:
-    # For now, sending all transformation requests to hosted lambda function (even from app running locally)
-    # if use_local:
-    #   service_url = 'http://localhost:2999'
-
     service_url = ''
+
+    if not is_prod:
+      service_url = ''
 
     transform_result = requests.post('{}/vci2cgsepio'.format(service_url), headers={'Content-Type': 'application/json'}, data=source_data_str, timeout=10)
 
@@ -1552,86 +1585,107 @@ def transform_interpretation(source_data, use_local):
 def request_clinvar_data(source_data):
   # Prepare interpretation to be sent to ClinVar submitter service
   try:
+    if ('id' in source_data ):
+      source_data['id']= 'https://vci.clinicalgenome.org/interpretations/' \
+         + source_data['id'] + '/'
+    else:
+      err_msg='Error in clinVar data generation: missing Id'
+      raise Exception(err_msg)
+      print ('%s %s ' %(err_msg,source_data))
     source_data_str = json.dumps(source_data, separators=(',', ':'))
 
   except Exception:
-    raise Exception('Preparation of source data for generation service failed')
+    err_msg='Preparation of source data for generation service failed'
+    print ('%s %s ' %(err_msg,source_data))
+    raise Exception(err_msg)
 
   # Send interpretation to ClinVar submitter service
   try:
     service_url = ''
+    print ('Submitting to ClinVar Submitter service ')
+    print ('%s \n %s ' %(service_url,source_data))
     clinvar_result = requests.post('{}'.format(service_url), headers={'Content-Type': 'application/json'}, data=source_data_str, timeout=10)
   except Exception:
-    raise Exception('Data generation service unavailable')
+    err_msg='Data generation service unavailable'
+    print ('%s %s ' %(err_msg,source_data))
+    raise Exception(err_msg)
 
   if clinvar_result.status_code != requests.codes.ok:
-    raise Exception('Data generation failed')
+    err_msg='Data generation failed'
+    print ('%s \n %s \n %s \n' %(err_msg,source_data,clinvar_result.status_code))
+    raise Exception(err_msg)
 
   # Return result of ClinVar submitter service as JSON-encoded content
   try:
-    print ('ClinVar results %s \n' %clinvar_result.json())
+    print ('ClinVar Submitter service response \n %s' %clinvar_result.json())
     return clinvar_result.json()
 
   except Exception:
-    raise Exception('Result of data generation not in expected format')
+    err_msg='Result of data generation not in expected format'
+    print ('%s %s ' %(err_msg,source_data))
+    raise Exception(err_msg)
 
 def send_message(message, kafka_topic, use_local, extra_conf=None, message_key=None):
   message_results = { 'status': 'Fail' }
 
   # Configure common message delivery parameters
   try:
-    kafka_cert_pw = os.environ.get('KAFKA_CERT_PW', '')
-    kafka_cert_location = local_file_dir + '/certs'
+    stage = os.environ.get('APP_STAGE', 'dev')
+    kafka_user = os.environ.get('KAFKA_KEY', '')
+    kafka_pw = os.environ.get('KAFKA_SECRET', '')
     kafka_timeout = 10
+    client_id = 'stanford_' + stage
 
     if use_local:
       kafka_conf = { 'bootstrap.servers': 'localhost:9093',
-        'log_level': 0,
-        'security.protocol': 'ssl',
-        'ssl.key.location': kafka_cert_location + '/local/client.key',
-        'ssl.key.password': kafka_cert_pw,
-        'ssl.certificate.location': kafka_cert_location + '/local/client.crt',
-        'ssl.ca.location': kafka_cert_location + '/local/server.crt' }
-
+        'log_level': 0 }
     else:
-      kafka_conf = { 'bootstrap.servers': 'exchange.clinicalgenome.org:9093',
-        'log_level': 0,
-        'security.protocol': 'ssl',
-        'ssl.key.location': kafka_cert_location + '/dataexchange/client.key',
-        'ssl.key.password': kafka_cert_pw,
-        'ssl.certificate.location': kafka_cert_location + '/dataexchange/client.crt',
-        'ssl.ca.location': kafka_cert_location + '/dataexchange/server.crt' }
+      kafka_conf = {
+        'bootstrap.servers': '',
+        'sasl.mechanism': 'PLAIN',
+        'security.protocol': 'SASL_SSL',
+        'client.id': client_id,
+        'sasl.username': kafka_user,
+        'sasl.password': kafka_pw
+      }
 
     if extra_conf:
       kafka_conf.update(extra_conf)
 
   except Exception as e:
+    print ("kafka set up conf Exception: %s" % e)
     message_results['message'] = 'Failed to configure message delivery parameters'
     return message_results
 
   # Send message
   def delivery_callback(err, msg):
     nonlocal message_results
-    if err:
-      message_results['message'] = err
-
+    if err is not None:
+      print ("kafka failed to deliver message: {}".format(err.str()))
+      message_results['message'] = str(err)
     else:
+      print ("kafka produced to: {} [{}] @ {}".format(msg.topic(), msg.partition(), msg.offset()))
       message_results = { 'status': 'Success',
-        'message': message,
+        'message': msg.topic(),
         'partition': msg.partition(),
         'offset': msg.offset() }
 
   try:
     p = Producer(**kafka_conf)
 
-    if message_key:
-      p.produce(kafka_topic, message, message_key, callback=delivery_callback)
-    else:
-      p.produce(kafka_topic, message, callback=delivery_callback)
+    #m = p.list_topics()
+    #print ('\nconfluent_kafka topics: %s' %m.topics)
 
+    if message_key:
+      p.produce(kafka_topic, key=message_key, value=message, callback=delivery_callback)
+    else:
+      p.produce(kafka_topic, value=message, callback=delivery_callback)
+
+    p.poll(0)
     p.flush(kafka_timeout)
 
   except Exception as e:
+    print ("kafka produce Exception: %s" % e)
     message_results['message'] = 'Message delivery failed'
 
   return message_results

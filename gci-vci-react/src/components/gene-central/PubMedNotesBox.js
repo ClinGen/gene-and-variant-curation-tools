@@ -18,7 +18,7 @@ import { updateAnnotationAction } from "../../actions/annotationActions";
 import { setGdmAction } from "../../actions/gdmActions";
 import { Prompt } from "react-router-dom";
 import { isOwnedByCurrentCuratingEntity } from "../../utilities/ownershipUtilities";
-
+import { getAnnotationSourceTitle } from "../../helpers/getAnnotationSourceTitle";
 
 export const PubMedNotesBox = ({
   activeAnnotation,
@@ -93,8 +93,8 @@ export const PubMedNotesBox = ({
   const onSubmit = async (values, { setSubmitting }) => {
     setEarliestError(null);
 
-    saveEarliestPublication().then(result => {
-      saveArticleNote(values).then(savedNote => {
+    saveEarliestPublication().then(() => {
+      saveArticleNote(values).then(() => {
         setSubmitting(false);
         return;
       }).catch(error => {
@@ -197,17 +197,19 @@ export const PubMedNotesBox = ({
   }, [activeAnnotation.PK, activeAnnotation.articleNotes, resetFormikForm, initialEarliestChecked]);
 
   // Handle when the earliest publication is checked/unchecked
-  const  handleEarliestChange = (e) => {
+  const  handleEarliestChange = () => {
     setEarliestError(null);
     setEarliestChecked(!earliestChecked);
   };
+
+  const sourceTitle = getAnnotationSourceTitle(activeAnnotation);
 
   return (
     <Card border="primary" {...props}>
       <Card.Body>
         <Prompt
           when={formik.dirty}
-          message={`You have unsaved article notes for PMID:${activeAnnotation.article.PK}, are you sure you want to switch to another article? Your unsaved changes will be lost.`}
+          message={`You have unsaved evidence source notes for ${sourceTitle}, are you sure you want to switch to another evidence source? Your unsaved changes will be lost.`}
         />
         <Form onSubmit={formik.handleSubmit}>
           <Form.Group controlId="pubMedNotesBox.nonscorable">
@@ -256,7 +258,7 @@ export const PubMedNotesBox = ({
             <Form.Row>
               <Col md="3">
                 <Form.Label>
-                  <strong>Other comments on PMID</strong>
+                  <strong>Other comments on evidence source</strong>
                 </Form.Label>
               </Col>
               <Col md="1">

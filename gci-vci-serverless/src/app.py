@@ -4,6 +4,7 @@ import os
 import traceback
 
 from src.controllers import articles_controller
+from src.controllers import clinvar_vcv_controller
 from src.controllers import curated_evidences_controller
 from src.controllers import evaluations_controller
 from src.controllers import interpretations_controller
@@ -36,6 +37,8 @@ from src.controllers import variant_score_controller
 from src.controllers import history_controller
 #from src.controllers import search_controller
 from src.controllers import cspec_controller
+from src.controllers import clinvar_submission_batch_controller
+from src.controllers import precurations_controller
 
 from src.controllers import warming_controller
 
@@ -133,6 +136,12 @@ def handler(event, context):
       response = search_controller.handle(event, 'filter')
     elif path.startswith('/cspec'):
       response = cspec_controller.handle(event)
+    elif path.startswith('/clinvar-submission-batch'):
+      response = clinvar_submission_batch_controller.handle(event)
+    elif path.startswith('/precurations'):
+      response = precurations_controller.handle(event)
+    elif path.startswith('/clinvar-vcv'):
+      response = clinvar_vcv_controller.handle(event)
     else:
       response = {
           'statusCode': 400,

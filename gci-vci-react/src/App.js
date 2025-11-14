@@ -14,6 +14,8 @@ import AppRouter from './routes/router';
 import ClinGenReducer from './reducers/index';
 import { loadState, saveState } from './actions/localStorage';
 import { isProdSite } from './utilities/siteUtilities';
+import { addGoogleAnalytics } from './helpers/google_analytics';
+import { AffilsContextProvider } from "./helpers/affiliationsHelpers";
 
 Amplify.configure({
   Auth: {
@@ -54,21 +56,25 @@ store.subscribe(throttle(() => {
 }, 1000));
 
 function App() {
+  addGoogleAnalytics();
+
   return (
     <div className="App">
       <Provider store={store}>
-        <Router>
-          {!isProdSite()
-            ? <Alert
-                name="non-prod-banner"
-                className="mb-0"
-                type="danger"
-                value={`<strong>Note:</strong> This is a demo version of the site. Data entered will be deleted periodically, the next deletion is scheduled for September 15, 2021.`} />
-            : null
-          }
-          <AuthNav />
-          <AppRouter />
-        </Router>
+        <AffilsContextProvider>
+          <Router>
+            {!isProdSite()
+              ? <Alert
+                  name="non-prod-banner"
+                  className="mb-0"
+                  type="danger"
+                  value={`<strong>Note:</strong> This is a demo version of the site. Data entered will be deleted periodically, the next deletion is scheduled for December 17, 2025.`} />
+              : null
+            }
+            <AuthNav />
+            <AppRouter />
+          </Router>
+        </AffilsContextProvider>
       </Provider>
     </div>
   );

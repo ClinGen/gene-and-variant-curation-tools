@@ -17,6 +17,7 @@ const Popover = ({
   trigger,
   triggerComponent,
   content,
+  delay,
   placement,
   className,
   popoverClassName,
@@ -24,6 +25,7 @@ const Popover = ({
   <BSOverlayTrigger
     trigger={trigger}
     overlay={PopoverOverlay(title, content, popoverClassName)}
+    delay={delay}
     placement={placement}
   >
     <Button className={`p-0 text-info ${className}`} variant="link">{triggerComponent}</Button>

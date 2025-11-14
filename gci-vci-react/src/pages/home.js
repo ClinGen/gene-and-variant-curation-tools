@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import moment from 'moment';
-import {Jumbotron, Collapse, Button, Container, Row, Col} from 'react-bootstrap'
+import {Jumbotron, Collapse, Button, Container, Row, Col, Alert} from 'react-bootstrap'
 /**
  * Stateless Component Home 
  * Landing page for application displays basic info
@@ -14,23 +14,41 @@ function Home() {
         <>
         <Jumbotron>
             <Container>
-                <h1 className="display-4 d-flex">ClinGen Variant &amp; Gene Curation</h1>
-                <p className="lead mb-0 text-muted"><strong>Variant Curation</strong> is available for public use. To register, create an account via &quot;Login&quot;, and then contact our VCI helpdesk at <a href="mailto:vci@clinicalgenome.org">vci@clinicalgenome.org</a>.</p>
-                <p className="lead text-muted"><strong> Gene Curation </strong> is currently restricted to ClinGen curators. To collaborate on gene curation contact <a href="mailto:clingen@clinicalgenome.org">clingen@clinicalgenome.org</a></p>
-                <p>
-                    <Button
-                    onClick={() => setOpen(!open)}
-                    aria-controls="hidden-text"
-                    aria-expanded={open}
-                    variant="light"
-                    >Demo version...</Button>
-                </p>
+              <Row>
+                <Col xs={12} md={8}>
+                  <h1 className="display-4 d-flex">ClinGen Variant &amp; Gene Curation</h1>
+                  <p className="lead mb-0 text-muted"><strong>Variant Curation</strong> is available for public use. To register, create an account via &quot;Login&quot;, and then contact our VCI helpdesk at <a href="mailto:vci@clinicalgenome.org">vci@clinicalgenome.org</a>.</p>
+                  <p className="lead text-muted"><strong> Gene Curation </strong> is currently restricted to ClinGen curators. To collaborate on gene curation contact <a href="mailto:clingen@clinicalgenome.org">clingen@clinicalgenome.org</a></p>
+                  <p>
+                      <Button
+                      onClick={() => setOpen(!open)}
+                      aria-controls="hidden-text"
+                      aria-expanded={open}
+                      variant="light"
+                      >Demo version...</Button>
+                  </p>
 
-                <Collapse in={open}>
-                    <div className="hidden-text">
-                        <p>Any user may explore the demo version of the ClinGen interfaces by registering using the &quot;Login&quot; button, found in the header at <a href="https://curation-test.clinicalgenome.org" target="_blank" rel="noopener noreferrer">curation-test.clinicalgenome.org</a>. If you have questions about the demo site, please email us at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu <i className="icon icon-envelope"></i></a></p> 
-                    </div>
-                </Collapse>
+                  <Collapse in={open}>
+                      <div className="hidden-text">
+                          <p>Any user may explore the demo version of the ClinGen interfaces by registering using the &quot;Login&quot; button, found in the header at <a href="https://curation-test.clinicalgenome.org" target="_blank" rel="noopener noreferrer">curation-test.clinicalgenome.org</a>. If you have questions about the demo site, please email us at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu <i className="icon icon-envelope"></i></a></p> 
+                      </div>
+                  </Collapse>
+                </Col>
+
+                <Col xs={12} md={4}>
+                  <Alert variant="success" className="publication-alert">
+                    <Alert.Heading>Read our GCI paper!</Alert.Heading>
+                      <p>
+                        Curious about how our ClinGen gene curation systems work?<br/>
+                        See our latest peer-reviewed publication in the <i>Annual Review of Biomedical Data Science</i>:
+                      </p>
+                      <p>
+                        Wright MW et al. Generating Clinical-Grade Gene-Disease Validity Classifications Through the ClinGen Data Platforms.<br/>
+                        2024 Aug;7(1):31-50. PMID: <a href="https://pubmed.ncbi.nlm.nih.gov/38663031/" target="_blank" rel="noopener noreferrer">38663031</a>
+                      </p>
+                  </Alert>
+                </Col>
+              </Row>
             </Container>
         </Jumbotron>
 

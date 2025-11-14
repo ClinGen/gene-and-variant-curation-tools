@@ -83,7 +83,7 @@ const FourState = types.model('FourState', {
           if (!self.shouldHeartbeat()) return;
           try {
             await self.load();
-          } catch (err) { /* ignore */ };
+          } catch (err) { /* ignore */ }
         }, self.tickPeriod);
         self.heartbeatInterval = id;
       },

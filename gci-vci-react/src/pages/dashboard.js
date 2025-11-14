@@ -8,20 +8,18 @@ import { useAmplifyAPIRequestRecycler, AmplifyAPIRequestRecycler } from '../util
 
 function Dashboard(props) {
   const requestRecycler = useAmplifyAPIRequestRecycler();
+  const { auth } = props;
 
   // column names of variant and gene tables.
   const variantHeadersValue = [
       { key: 'variant', text: 'Variant', sort: true },
+      { key: 'variantId', text: 'Variant ID(s)', sort: true },
       { key: 'disease_modeInheritance', text: 'Disease/Mode of Inheritance', sort: true },
       { key: 'status', text: 'Status', sort: true },
       { key: 'pathogenicity', text: 'Classification', sort: true },
       { key: 'criteria', text: 'Met Criteria', sort: true },
       { key: 'date_created', text: 'Date Created', sort: true },
       { key: 'last_modified', text: 'Last Modified', sort: true },
-      // { key: 'created_by', text: 'Created By', sort: true }
-      //{ key: 'variant_fullname', text: 'Full Variant Name', sort: true } // For testing purposes. This column is hidden in table, but searchable.
-      // Remember to add to initialState.hiddenColumns to add more.
-      //{ key: 'modeInheritanceAdjective', text: 'Mode of Inheritance', sort: true }
   ]
   const geneHeadersValue = [
       { key: 'gene', text: 'Gene', sort: true },
@@ -43,33 +41,43 @@ function Dashboard(props) {
   useEffect(() => {
     setVariantTableLoading(true);
     setGeneTableLoading(true);
-    async function fetch() {
-      let [variants, genes] = await Promise.all([
-        get_interpretations('variant', false, props.auth, requestRecycler),
-        get_interpretations('gene', false, props.auth, requestRecycler)
-      ]);
-      if (auth.currentAffiliation) {
-        setVariantTableTitle('My Affiliation\'s Variant Interpretations');
-        setGeneTableTitle('My Affiliation\'s Gene-Disease Records');
-      } else {
-        setVariantTableTitle('My Variant Interpretations');
-        setGeneTableTitle('My Gene-Disease Records');
-      }
 
-      if (variants) {
-        setVariantTableData(variants);
+    async function fetchData() {
+      try {
+        const hasAffiliation = auth?.currentAffiliation;
+        const isGCEP = hasAffiliation && auth.currentAffiliation.subgroups?.hasOwnProperty("gcep");
+        
+        /* Checking if user has an affiliation and if that affiliation is a GCEP.
+        If GCEP, both tables will load. If unaffiliated, external working group, 
+        or VCEP, only VCEP table will load.
+        */
+        if (hasAffiliation) {
+          setVariantTableTitle("My Affiliation's Variant Interpretations");
+          if (isGCEP) {
+            setGeneTableTitle("My Affiliation's Gene-Disease Records");
+          }
+        } else {
+          setVariantTableTitle('My Variant Interpretations');
+        }
+
+        const variantPromise = get_interpretations('variant', false, auth, requestRecycler);
+        const genePromise = isGCEP
+          ? get_interpretations('gene', false, auth, requestRecycler)
+          : Promise.resolve([]); // Skip gene fetch if not GCEP
+
+        const [variants, genes] = await Promise.all([variantPromise, genePromise]);
+
+        setVariantTableData(variants || []);
+        setGeneTableData(genes || []);
+      } catch (error) {
+        AmplifyAPIRequestRecycler.defaultCatch(error);
+      } finally {
+        setVariantTableLoading(false);
+        setGeneTableLoading(false);
       }
-      if (genes) {
-        setGeneTableData(genes)
-      }
-      setVariantTableLoading(false);
-      setGeneTableLoading(false)
     }
-    fetch().catch(AmplifyAPIRequestRecycler.defaultCatch);
+    fetchData();
   }, [requestRecycler, props.auth])
-
-  const { auth } = props;
-
   return (
     <>
       <div className="jumbotron jumbotron-fluid">
@@ -88,23 +96,37 @@ function Dashboard(props) {
         </div>
       </div>
       <TableNavBar />
+      {/* Gene Table (Only if GCEP) */}
+      {auth?.currentAffiliation?.subgroups?.hasOwnProperty("gcep") && (
+        <div className="container my-5">
+          <Row noGutters>
+            <Col xs={12} className="pl-3">
+              <div className="card">
+                <div className="card-body p-0">
+                  <Table
+                    tableTitle={geneTableTitle}
+                    headers={geneHeadersValue}
+                    data={geneTableData}
+                    isLoading={geneTableLoading}
+                  />
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      )}
+      {/* Variant Table */}
       <div className="container mt-5">
         <Row noGutters>
           <Col xs={12} className="pl-3">
             <div className="card">
               <div className="card-body p-0">
-                <Table tableTitle={variantTableTitle} headers={variantHeadersValue} data={variantTableData} isLoading={variantTableLoading} />
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </div>
-      <div className="container my-5">
-        <Row noGutters>
-          <Col xs={12} className="pl-3">
-            <div className="card">
-              <div className="card-body p-0">
-                <Table tableTitle={geneTableTitle} headers={geneHeadersValue} data={geneTableData} isLoading={geneTableLoading} />
+                <Table
+                  tableTitle={variantTableTitle}
+                  headers={variantHeadersValue}
+                  data={variantTableData}
+                  isLoading={variantTableLoading}
+                />
               </div>
             </div>
           </Col>

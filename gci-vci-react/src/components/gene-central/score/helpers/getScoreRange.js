@@ -9,13 +9,14 @@ import SCORE_MAPS from '../constants/scoreMaps';
 import { getVariantDataString } from './getDefaultScore';
 
 
-export function getScoreRange(modeInheritance, variant, experimentalEvidenceType, defaultScore) {
+export function getScoreRange(modeInheritance, variant, isHomozygous=false, experimentalEvidenceType, defaultScore) {
   let range = [], filterRange = [], matched = '';
   const scoreKeys = Object.keys(SCORE_MAPS);
 
   if (modeInheritance && variant) {
     let variantData = getVariantDataString(variant);
-    matched = modeInheritance + '_' + variantData;
+    // For AR, proband is homozygous or not has different score range
+    matched = modeInheritance + '_' + variantData + (isHomozygous ? "_HMZ" : "");
     scoreKeys.forEach(key => {
       if (matched === key) {
         range = SCORE_MAPS[matched].SCORE_RANGE;

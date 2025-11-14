@@ -206,7 +206,9 @@ class CaseSegregation extends Component {
           subcategory: 'de-novo',
           tableName: <span>Curated Evidence (<i>de novo</i> occurrence)</span>,
           oldTableName: <span>Curated Literature Evidence (<i>de novo</i> occurrence) - Retired Format - {infoPopover}</span>
-        }
+        },
+        panelHelpText: <p className="alert alert-warning">Each de novo occurrence should only be counted under PM6 or PS2 but not both. 
+          The max weight from both criteria combined should not exceed Very Strong. <a className="external-link" target="_blank" rel="noreferrer" href="https://www.clinicalgenome.org/site/assets/files/3461/svi_proposal_for_de_novo_criteria_v1_1.pdf">Criteria Specification for PM6/PS2</a></p>
       },
       {
         title: <span>Allele data (<i>cis/trans</i>)</span>,
@@ -269,6 +271,7 @@ class CaseSegregation extends Component {
           criteria={filterCodeStripObjects(panel.criteria)}
           criteriaGroups={criteriaArray}
           cspecCriteria={cspecCriteria}
+          panelHelpText={panel.panelHelpText}
           criteriaCrossCheck={panel.criteriaCrossCheck}
           loading={loading[panel.loadingId]}
           alert={alert && alert.id === panel.loadingId ? alert : {}}

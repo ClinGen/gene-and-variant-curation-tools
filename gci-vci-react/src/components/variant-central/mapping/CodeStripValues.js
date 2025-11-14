@@ -139,7 +139,7 @@ export const codeStripValues =
     {       code: "PP5",
             class: "pathogenic-supporting",
             definition: "Reputable source = pathogenic",
-            definitionLong: "Reputable source recently reports variant as pathogenic, but the evidence is not available to the laboratory to perform an independent evalutation",
+            definitionLong: "Reputable source recently reports variant as pathogenic, but the evidence is not available to the laboratory to perform an independent evaluation",
             category: "segregation",
             diseaseDependent: true,
             tabIndex: 4

@@ -5,9 +5,6 @@ import uuid
 
 from src.db.ddb_client import Client as DynamoClient
 
-# cspec_data_raw = open('tests/data/cspec_data.json')
-# cspec_data = json.load(cspec_data_raw)
-
 # Create an instance of the database client for all db interactions.
 db = DynamoClient(
   os.environ['DB_TABLE_NAME'],
@@ -17,14 +14,16 @@ db = DynamoClient(
 def handle(event):
   httpMethod = event['httpMethod']
   if httpMethod == 'GET':
-    # Response below should be replaced with get()
-
     if event['pathParameters'] is not None and 'pk' in event.get('pathParameters', {}):
       response = find(event['pathParameters']['pk'])
     elif event['queryStringParameters'] is not None and 'affiliation' in event['queryStringParameters']:
       affiliation = event['queryStringParameters']['affiliation']
       if affiliation == 'none':
-        response = db.query_by_item_type('cspec')
+        # No affiliation - GET all cspec docs; due to payload limit, we are batching requests
+        # we batch by date_created, remove affiliation query parameter before passing date param
+        filters = event['queryStringParameters'].copy()
+        filters.pop('affiliation', None)
+        response = db.query_by_item_type('cspec', filters)
       else:
         response = db.query_by_affiliation(affiliation, {
           'item_type': 'cspec'

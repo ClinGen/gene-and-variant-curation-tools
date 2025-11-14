@@ -6,13 +6,45 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import Popover from "../../../common/Popover";
+import Alert from '../../../common/Alert';
 
 
+/**
+ * Returns a snippet of JSX to be inserted where you need to give the user
+ * information about creating labels and not including private health
+ * information (PHI) in those labels.
+ *
+ * @param {String} label - one of Individual, Family, Group, etc.
+ * @returns {JSX.Element} - note with label inserted
+ */
 export const renderLabelNote = (label) => {
   return (
-    <span className="curation-label-note">Please enter a label to help you keep track of this {label} within the interface - if possible, please use the label described in the paper.</span>
+    <span className="curation-label-note">
+      Note: Do not enter real names in this field. Please enter a label to help
+      you keep track of this {label} within the interface. We suggest using the
+      first author's last name and then the case descriptor used in the paper
+      (e.g. Smith Case 5). <b>DO NOT</b> reuse the identifier for another piece
+      of evidence within the curation.
+    </span>
   );
 };
+
+/**
+ * Returns a snippet of JSX to be inserted where you need a note that tells the
+ * user to enter phenotypes.
+ *
+ * @author Liam Mulhall
+ * @param {String} label - one of Individual, Family, or Group
+ * @returns {JSX.Element} - note with label inserted
+ */
+export const addPhenotypeNote = (label) => {
+  return (
+    <p>
+      Enter <span className="serious-text">phenotypes that are NOT present
+      in {label}</span> if they are specifically noted in the paper.
+    </p>
+  );
+}
 
 // Pull values from a list of comma-separated values that match the regular expression given in 're'.
 // If resulting values should be converted to uppercase, pass true in 'uppercase'.
@@ -31,9 +63,38 @@ const getIdsFromList = (list, re, uppercase = false) => {
   return null;
 };
 
+/**
+ * Pull values from a list of comma-separated values that do not match
+ * the regular expression given in 're'.
+ *
+ * @param {string} list - comma-separated values
+ * @param {string} re - given regular expression
+ * @Returns {array} - array of invalid values
+ */
+const getInvalidIdsFromList = (list, re) => {
+  if (list && list.length) {
+    const rawList = list.split(',');
+    const badList = rawList.filter(item => {
+      return re.exec(item) === null;
+    });
+    return badList;
+  }
+  return null;
+};
+
+// Find all the comma-separated invalid PMID occurrences. Return all invalid PMIDs in an array.
+export const getInvalidPmidsFromList = (list) => {
+  return getInvalidIdsFromList(list, /^\s*([1-9]{1}\d*)\s*$/);
+};
+
 // Find all the comma-separated PMID occurrences. Return all valid PMIDs in an array.
 export const getPmidsFromList = (list) => {
   return getIdsFromList(list, /^\s*([1-9]{1}\d*)\s*$/);
+};
+
+// Find all the comma-separated invalid gene-symbol occurrences. Return all invalid symbols in an array.
+export const getInvalidGenesFromList = (list) => {
+  return getInvalidIdsFromList(list, /^\s*([\w-]+)\s*$/, true);
 };
 
 // Find all the comma-separated gene-symbol occurrences. Return all valid symbols in an array.
@@ -82,7 +143,7 @@ export const renderLabelPhenoTerms = (not) => {
   return (
     <label>
       <span>
-        {not ? <span className="emphasis">NOT Phenotype(s)&nbsp;</span> : <span>Phenotype(s) in Common&nbsp;</span>}
+        {not ? <span className="emphasis"><span className="serious-text">NOT Phenotype(s)</span>&nbsp;</span> : <span>Phenotype(s) in Common&nbsp;</span>}
           (<span className="normal">free text</span>):
       </span>
     </label>
@@ -309,11 +370,15 @@ export const LabelCARVariant = () => {
   return <span><ExternalLink href={EXTERNAL_API_MAP['CAR']} title="ClinGen Allele Registry in a new tab">ClinGen Allele Registry</ExternalLink> ID:</span>;
 };
 
+export const LabelCACNVariant = () => {
+  return <span><ExternalLink href={EXTERNAL_API_MAP['CAR']} title="ClinGen Allele Registry in a new tab">ClinGen Allele Registry</ExternalLink> Copy Number ID:</span>
+};
+
 /**
  * Method to render a mouseover explanation for the variant title
  */
 export const renderVariantTitleExplanation = () => {
-  const explanation = 'For ClinVar alleles, this represents the ClinVar Preferred Title. For alleles not in ClinVar, this HGVS is based on the MANE Select transcript. If there is no MANE Select transcript then the HGVS is based on the transcript with the longest translation with no stop codons or, if no translation, the longest non-protein-coding transcript. If a single canonical transcript is not discernible the HGVS is based on the GRCh38 genomic coordinates.';
+  const explanation = 'The HGVS is based on the Community Standard Title provided by the ClinGen Allele Registry, if there is no Community Standard Title, then the ClinVar Preferred Title is used. If there is no ClinVar Preferred Title, then the HGVS is based on the GRCh38 genomic coordinates.';
   return (
     <span className="variant-title-explanation">
       <Popover
@@ -329,13 +394,15 @@ export const LabelVariantTitle = (variant, linkout) => {
   const clinVarVariantTitle = <span><ExternalLink href={EXTERNAL_API_MAP['ClinVar']} title="ClinVar home page at NCBI in a new tab">ClinVar</ExternalLink> Preferred Title:</span>;
   let variantLabel = "";
   if (lodashGet(variant, "clinvarVariantTitle", null)) {
-    variantLabel = linkout ? clinVarVariantTitle : 'ClinVar Preferred Title';
+    variantLabel = linkout ? clinVarVariantTitle : 'ClinVar Preferred Title:';
   } else if (lodashGet(variant, "maneTranscriptTitle", null)) {
-    variantLabel = 'MANE Transcript HGVS Title';
-  } else if (lodashGet(variant, "canonicalTranscriptTitle", null)) {
-    variantLabel = 'Canonical Transcript HGVS Title';
+    variantLabel = 'MANE Transcript HGVS Title:';
+  } else if (lodashGet(variant, "canonicalTranscriptTitle:", null)) {
+    variantLabel = 'Canonical Transcript HGVS Title:';
   } else if (lodashGet(variant, "hgvsNames", null) && (lodashGet(variant, "hgvsNames.GRCh38", null) || lodashGet(variant, "hgvsNames.GRCh37", null))) {
-    variantLabel = 'Genomic HGVS Title';
+    variantLabel = 'Genomic HGVS Title:';
+  } else {
+    variantLabel = 'Community Standard Title:';
   }
 
   return variantLabel;
@@ -367,3 +434,122 @@ export const renderVariantLabelAndTitle = (variant, linkout=false, showInHeader=
     );
   }
 };
+
+export const renderVariantOverlappingGenes = (variant) => {
+  if (variant && variant.overlappingGenes) {
+    return (
+      <div>
+        <ul>
+          {variant.overlappingGenes.map((symbol, i) => {
+            return (
+              <li key={i}>
+                {symbol}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  } else {
+    return (
+      <span> No overlapping genes available for this Copy Number Variant</span>
+    );
+  }
+};
+
+export const renderNotOwnerMessage = (ownerError) => {
+  const errorMessage = "<strong>You are not logged in with the same affiliation as the GDM owner so cannot do any modifications.</strong>";
+
+  if (ownerError) {
+    return (<Alert value={errorMessage} type="danger" className="mt-3"/>);
+  } else {
+    return null;
+  }
+};
+
+/**
+ * Return a snippet of JSX that show PMIDs related errors using given data
+ *
+ * @param {string} formError - input form error message
+ * @param {array} badPmids - bad PubMed ID list
+ * @param {array} preprintPmids - preprint PubMed ID list
+ * @returns {JSX.Element} - PMIDs related errors
+ */
+export const renderPmidsErrorMessage = (formError=null, badPmids=[], preprintPmids=[]) => {
+  if (formError || badPmids?.length || preprintPmids?.length) {
+    const prePrintText = "Preprint is not supported, please remove.";
+    return (
+      <>
+        {formError ? formError : null}
+        {badPmids.length
+          ? <div>PMID(s): {badPmids.join(', ')} cannot be found.</div>
+          : null
+        }
+        {preprintPmids.length
+          ? <span>Prepint(s): {preprintPmids.join(', ')}. {prePrintText}</span>
+          : null
+        }
+      </>
+    );
+  } else {
+    return null;
+  }
+}
+
+/**
+ * Return boolean flag if given GDM's MOI is "Semidominant" or
+ * "Typified by somatic mosaicism"
+ *
+ * @param {object} gdm - GDM object
+ * @returns {boolean} - true if MOI is matched else false
+ */
+export const isSemiOrSMo = (gdm) => {
+  const result = gdm && gdm.modeInheritance
+    ? (gdm.modeInheritance.indexOf('Semidominant') > -1
+      || gdm.modeInheritance.indexOf('somatic mosaicism') > -1)
+    : false;
+
+  return result;
+}
+
+/**
+ * Return boolean flag if given GDM's MOI is "Autosomal dominant"
+ *
+ * @param {object} gdm - GDM object
+ * @returns {boolean} - true if MOI is matched else false
+ */
+export const isAutoDom = (gdm) => {
+  const result = gdm && gdm.modeInheritance
+    ? gdm.modeInheritance.indexOf('Autosomal dominant') > -1
+    : false;
+
+  return result;
+}
+
+/**
+ * Return boolean flag if given GDM's MOI is "Autosomal recessive"
+ *
+ * @param {object} gdm - GDM object
+ * @returns {boolean} - true if MOI is matched else false
+ */
+export const isAutoRec = (gdm) => {
+  const result = gdm && gdm.modeInheritance
+    ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1
+    : false;
+
+  return result;
+}
+
+/**
+ * Return boolean flag if given GDM's MOI is "X-linked inheritance"
+ *
+ * @param {object} gdm - GDM object
+ * @returns {boolean} - true if MOI is matched else false
+ */
+export const isXLinked = (gdm) => {
+  const result = gdm && gdm.modeInheritance
+    ? gdm.modeInheritance.indexOf('X-linked inheritance') > -1
+    : false;
+
+  return result;
+}

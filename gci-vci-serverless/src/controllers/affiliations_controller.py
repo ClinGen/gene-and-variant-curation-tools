@@ -72,8 +72,9 @@ def get(multiValueFilters = {}):
 
   # Call from API to get affiliations list
   if 'target' in multiValueFilters and multiValueFilters['target'][0] == 'api':
-    # As of Jan 2022, the affiliations data is stored in a file.  So get data from file to support API request
-    affiliations = affiliation_helpers.load_affiliation_file()
+    # As of Jan 2025, the affiliations data is available via API request.
+    affiliation_helpers.load_affiliation_data()
+    affiliations = affiliation_helpers.affiliation_data
     response =  { 'statusCode': 200, 'body': json.dumps(affiliations) }
   else:
     try:

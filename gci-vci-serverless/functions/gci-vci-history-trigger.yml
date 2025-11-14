@@ -6,7 +6,7 @@ gci-vci-history-trigger:
       - '**'
     include:
       - 'history/**'
-  runtime: nodejs12.x
+  runtime: nodejs18.x
   environment:
     HISTORY_TABLE: ${self:custom.resources.history-table-name}
   events:
@@ -14,4 +14,3 @@ gci-vci-history-trigger:
         type: dynamodb
         arn: !GetAtt ClinGenTable.StreamArn
         batchWindow: 10
-        

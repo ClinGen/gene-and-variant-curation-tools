@@ -73,7 +73,7 @@ def process(event, context):
             variant=transform(variant)
             if 'event' in variant and variant['event'] == 'Add':
                 variant['PK']=str(uuid.uuid4())
-                variant['gr']=variant['hgnc'] + '_' + str(record['partition']) + '_' + str(count % 2)
+                variant['gr']=variant['hgnc'] + '_' + str(count % 100)
                 variant=db.put(variant)
             elif 'event' in variant and variant['event'] == 'Update':
                 db_variant=db.query_by_car_id(variant['carId'])
@@ -82,7 +82,7 @@ def process(event, context):
                 else:
                   print (f"CAID missing in DB {variant['carId']} {variant['hgnc']}")
                   variant['PK']=str(uuid.uuid4())
-                  variant['gr']=variant['hgnc'] + '_' + str(record['partition']) + '_' + str(count % 2)
+                  variant['gr']=variant['hgnc'] + '_' + str(count % 100)
                   variant=db.put(variant)
             else:
                 raise ValueError('event element missing') 

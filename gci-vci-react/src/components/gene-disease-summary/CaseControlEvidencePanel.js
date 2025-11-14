@@ -8,9 +8,8 @@ import {
 import CardPanel from '../common/CardPanel';
 import { TableContent } from '../common/TableComponents';
 import HpoTerms from '../../helpers/render_hpo_terms';
-import { getEvidenceAuthors } from '../../helpers/getEvidenceAuthors';
+import { EvidenceSourceDetail } from './EvidenceSourceDetail';
 import PointTotals from './PointsTotal';
-import EarliestPubIcon from './EarliestPubIcon';
 
 const CaseControlEvidencePanel = ({
   hpoTerms,
@@ -25,23 +24,31 @@ const CaseControlEvidencePanel = ({
           Header: 'Label',
           accessor: 'label',
           style: { width: 80, wordBreak: 'normal' },
-          disableSortBy: true
-        },
-        {
-          Header: 'Reference (PMID)',
-          accessor: d => {
-            if (d.authors && d.authors.length) {
-              return d.authors[0];
-            }
-            return 'reference';
-          },
-          // eslint-disable-next-line react/display-name
+          disableSortBy: true,
           Cell: ({ row }) => {
             const evidence = row.original;
-            const authors = getEvidenceAuthors(evidence);
             return (
-              <span>{authors}, <strong>{evidence.pubYear}</strong>, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a> {evidence.earliestPub ? <EarliestPubIcon /> : null}</span>
+                <span>
+                  {evidence.ccLink
+                    ? <a href={evidence.ccLink} target="_blank" rel="noopener noreferrer">{evidence.label}</a>
+                    : evidence.label}
+                </span>
             );
+          }
+        },
+        {
+          Header: 'Evidence Source',
+          accessor: 'pmid',
+          style: { minWidth: 80, maxWidth: 100 },
+          // eslint-disable-next-line react/display-name
+          Cell: ({ row }) => {
+            if (row?.original) {
+              return (
+                <EvidenceSourceDetail
+                  evidence={row.original}
+                />
+              );
+            }
           }
         },
         {
@@ -94,12 +101,12 @@ const CaseControlEvidencePanel = ({
       Header: 'Power',
       columns: [
         {
-          Header: '# of Cases Genotyped/Sequenced',
+          Header: '# of Cases Genotyped/ Sequenced',
           accessor: 'caseCohort_numberAllGenotypedSequenced',
           disableSortBy: true
         },
         {
-          Header: '# of Controls Genotyped/Sequenced',
+          Header: '# of Controls Genotyped/ Sequenced',
           accessor: 'controlCohort_numberAllGenotypedSequenced',
           disableSortBy: true
         }
@@ -110,7 +117,7 @@ const CaseControlEvidencePanel = ({
       Header: 'Statistics',
       columns: [
         {
-          Header: 'Cases with Variant in Gene / All Cases Genotyped/Sequenced',
+          Header: 'Cases with Variant in Gene / All Cases Genotyped/ Sequenced',
           accessor: 'caseCohort_numberWithVariant',
           style: { minWidth: 80, maxWidth: 120 },
           disableSortBy: true,
@@ -133,7 +140,7 @@ const CaseControlEvidencePanel = ({
           }
         },
         {
-          Header: 'Controls with Variant in Gene / All Cases Genotyped/Sequenced',
+          Header: 'Controls with Variant in Gene / All Cases Genotyped/ Sequenced',
           accessor: 'controlCohort_numberWithVariant',
           style: { minWidth: 80, maxWidth: 120 },
           disableSortBy: true,
@@ -168,7 +175,7 @@ const CaseControlEvidencePanel = ({
                 {evidence.statisticValueType
                   && <strong>{evidence.statisticValueType}: </strong>
                 }
-                {evidence.statisticValueTypeOther.length
+                {evidence.statisticValueTypeOther
                   && <span>{evidence.statisticValueTypeOther} - </span>
                 }
                 {evidence.statisticValue
@@ -188,13 +195,24 @@ const CaseControlEvidencePanel = ({
             const evidence = row.original;
             return (
               evidence.confidenceIntervalFrom && evidence.confidenceIntervalTo
-                && <span>{evidence.confidenceIntervalFrom}-{evidence.confidenceIntervalTo} (%)</span>
+                && <span>{evidence.confidenceIntervalFrom}-{evidence.confidenceIntervalTo}</span>
             );
           }
         }
       ]
     },
-    { Header: 'Points', accessor: 'score', disableSortBy: true, }
+    { Header: 'Score Status', accessor: 'scoreStatus', disableSortBy: true, },
+    { Header: 'Points', accessor: 'score', disableSortBy: true,
+      Cell: ({ row }) => {
+        const evidence = row.original;
+        return (
+          evidence.scoreStatus === 'Contradicts'
+            ? <span className={evidence.scoreStatus}>n/a</span>
+            : <span>{evidence.score}</span>
+        );
+      }
+    },
+    { Header: 'Explanation', accessor: 'scoreExplanation', disableSortBy: true, }
   ];
 
   // eslint-disable-next-line
@@ -225,8 +243,19 @@ const CaseControlEvidencePanel = ({
   const getTotalScore = (evidenceList) => {
     let allScores = [];
     evidenceList.forEach(item => {
-      if (typeof item.score === 'number') {
-        allScores.push(item.score);
+      // caseControl scores has 2 versions
+      // Old score object only has score point which by default has "Score" status
+      // New score object has scoreStatus, ScoreExplanation, and score
+      if ('scoreStatus' in item) {
+        if (item.scoreStatus.indexOf('Score') > -1) {
+          if (typeof item.score === 'number') {
+            allScores.push(parseFloat(item.score));
+          }
+        }
+      } else {
+        if (typeof item.score === 'number') {
+          allScores.push(parseFloat(item.score));
+        }
       }
     });
     const totalScore = allScores.reduce((a, b) => a + b, 0);

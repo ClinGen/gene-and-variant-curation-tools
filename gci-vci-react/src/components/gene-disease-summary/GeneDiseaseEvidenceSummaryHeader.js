@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import moment from 'moment';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import MDEditor from "@uiw/react-md-editor";
 
 import CardPanel from '../common/CardPanel';
-import { ExternalLink } from '../common/ExternalLink.js';
-import { EXTERNAL_API_MAP } from '../../constants/externalApis.js';
-import { getAffiliationName } from '../../helpers/get_affiliation_name.js';
+import { ExternalLink } from '../common/ExternalLink';
+import { EXTERNAL_API_MAP } from '../../constants/externalApis';
+import { AffilsContext, getAffiliationName } from '../../helpers/affiliationsHelpers';
 import { getApproverNames, getContributorNames } from '../../helpers/get_approver_names';
 import { renderAnimalOnlyTag } from '../../helpers/render_classification_animal_only_tag';
 import { determineSOPVersion } from '../../helpers/sop';
@@ -38,6 +38,7 @@ const GeneDiseaseEvidenceSummaryHeader = ({
       <i>{modeInheritanceAdjective ? modeInheritance + ' (' + modeInheritanceAdjective + ')' : modeInheritance}</i>
     </span>
   );
+  const { affiliationsData } = useContext(AffilsContext);
 
   return (
     <>
@@ -48,7 +49,7 @@ const GeneDiseaseEvidenceSummaryHeader = ({
             <strong>Classification owner: </strong>
             <span>
               {provisional.affiliation
-                ? getAffiliationName(provisional.affiliation)
+                ? getAffiliationName(provisional.affiliation, affiliationsData)
                 : (provisional && provisional.submitted_by) && `${provisional.submitted_by.name} ${provisional.submitted_by.family_name}`
               }
             </span>
@@ -57,7 +58,7 @@ const GeneDiseaseEvidenceSummaryHeader = ({
               <>
                 <div>
                   <strong>Classification Approver: </strong>
-                  <span>{getApproverNames(additionalApprover)}</span>
+                  <span>{getApproverNames(additionalApprover, affiliationsData)}</span>
                 </div>
                 <br />
               </>
@@ -66,7 +67,7 @@ const GeneDiseaseEvidenceSummaryHeader = ({
               <>
                 <div>
                   <strong>Classification Contributor(s): </strong>
-                  <span>{getContributorNames(classificationContributors).join(', ')}</span>
+                  <span>{getContributorNames(classificationContributors, affiliationsData).join(', ')}</span>
                 </div>
                 <br />
               </>
@@ -135,11 +136,13 @@ const GeneDiseaseEvidenceSummaryHeader = ({
             <span className="contradictory-evidence">
               Proband: <strong>{provisional && provisional.contradictingEvidence && provisional.contradictingEvidence.proband ? <span className='emphasis'>Yes</span> : <span>No</span>}</strong>
               {', '}
+              Case-Control: <strong>{provisional && provisional.contradictingEvidence && provisional.contradictingEvidence.caseControl ? <span className='emphasis'>Yes</span> : <span>No</span>}</strong>
+              {', '}
               Experimental: <strong>{provisional && provisional.contradictingEvidence && provisional.contradictingEvidence.experimental ? <span className='emphasis'>Yes</span> : <span>No</span>}</strong>
             </span>
             <br />
             <strong>Disease: </strong>
-            <span className="disease-term">{disease && disease.term ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.diseaseId} target="_blank">{disease.term}</ExternalLink> : null}</span>
+            <span className="disease-term">{disease && disease.term ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK} target="_blank">{disease.term}</ExternalLink> : null}</span>
           </Col>
         </Row>
       </CardPanel>

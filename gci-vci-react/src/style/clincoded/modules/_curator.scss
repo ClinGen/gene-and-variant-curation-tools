@@ -577,7 +577,7 @@
     }
 }
 
-.curation-pmid-summary {
+.curation-source-summary {
     margin-top: 5px;
     padding: 10px 20px 0 20px;
     background-color: $group-curation-bg;
@@ -990,6 +990,16 @@ section #PP2 {
             }
         }
     }
+}
+
+.curation-reasons-snapshot {
+  margin-top: 15px;
+}
+
+.publish-edit {
+  .control-label {
+    font-weight: bold;
+  }
 }
 
 .assessment-counting {
@@ -2115,6 +2125,66 @@ section #PP2 {
     margin-top: -5px;
 }
 
+/* VCI Population Tab - gnomAD GroupMax Filtering Allele Frequency table */
+.filtering-allele-frequency {
+    td {
+        padding: 3px 15px;
+    }
+
+    .faf-filter {
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+
+            li {
+                margin: 0px 3px;
+                padding: 3px 6px;
+                white-space: normal;
+
+                &.label {
+                    border-radius: .25em;
+                    color: $label-color;
+                    display: inline;
+                    font-size: 75%;
+                    font-weight: bold;
+                    padding: .2em .6em .3em;
+                    text-align: center;
+                }
+
+                &.label-danger {
+                    background-color: $brand-danger;
+                }
+
+                &.label-success {
+                    background-color: $brand-success;
+                }
+
+                &.label-warning {
+                    background-color: $brand-warning;
+                }
+            }
+        }
+    }
+
+    .faf-column-heading {
+        font-weight: bold;
+    }
+
+    .faf-row-heading {
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .faf-clingen-guidance {
+        margin-top: 20px;
+    }
+
+    .has-tooltip {
+        border-bottom-style: dashed;
+    }
+}
+
 .panel.panel-info {
     .panel-title {
         font-weight: bold;
@@ -2432,6 +2502,10 @@ dl.inline-dl {
         vertical-align: text-top;
     }
 
+    span.credit-ldh {
+        background: url(../../img/ldh_logo.png) 0 0 no-repeat;
+    }
+
     span.credit-mygene {
         background: url(../../img/mygene-logo.png) 0 0 no-repeat;
     }
@@ -2444,6 +2518,7 @@ dl.inline-dl {
         background: url(../../img/vep-logo.png) 0 0 no-repeat;
     }
 
+    span.credit-ldh,
     span.credit-mygene,
     span.credit-myvariant,
     span.credit-vep {

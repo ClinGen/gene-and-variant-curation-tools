@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 const PmidSummary = ({
   article,
   displayJournal,
+  displayAllAuthors,
   pmidLinkout,
   pmidLinkoutOnNewLine,
   className,
@@ -16,16 +17,26 @@ const PmidSummary = ({
       authorsAll = article.authors.join(', ') + '. ';
     }
 
+    const preprintWarningText = <p style={{color: "red", wordBreak: "normal"}}>
+      This PMID belongs to a preprint. Preprint PMIDs are not currently
+      supported in the GCI or VCI. If there is clinically relevant information
+      in this preprint, please add it as non-scorable evidence instead. Support
+      for the addition of preprint evidence to the GCI will be available in the future
+      via DOIs (not PMIDs). PMIDs are intended solely for the addition of
+      evidence from  peer-reviewed publications.
+    </p>;
+
     return (
       <>
         <p className={className}>
-            {displayJournal ? authorsAll : authors}
+            {displayAllAuthors ? authorsAll : authors}
             {article.title + ' '}
             {displayJournal ? <i>{article.journal + '. '}</i> : null}
             {
               date && date.length > 2 ? <><strong>{date[1]}</strong>{date[2]}</> : null
             }
             {pmidLinkout && !pmidLinkoutOnNewLine && <span>&nbsp;<a href={`https://www.ncbi.nlm.nih.gov/pubmed/${article.pmid}`} title={`PubMed entry for PMID: ${article.pmid} in new tab`} target="_blank" rel="noopener noreferrer">PMID: {article.pmid}</a></span>}
+            {article.is_preprint ? preprintWarningText : <></>}
         </p>
         {pmidLinkout && pmidLinkoutOnNewLine && <p className="mb-0">
           <strong><span>&nbsp;<a href={`https://www.ncbi.nlm.nih.gov/pubmed/${article.pmid}`} title={`PubMed entry for PMID: ${article.pmid} in new tab`} target="_blank" rel="noopener noreferrer">PMID: {article.pmid}</a></span></strong>

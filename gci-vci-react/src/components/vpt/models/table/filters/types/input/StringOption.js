@@ -49,7 +49,7 @@ const StringOption = types.model('StringOption', {
     if (!self.selected) return false;
     if (self.template && self.template.pass) {
       return self.template.pass({ item, filterModel: self.filterModel, inputModel: self, globals })
-    };
+    }
     const value = _.get(item, self.accessorPaths);
     const id = self.id;
     if (id === 'exists') return value !== undefined;

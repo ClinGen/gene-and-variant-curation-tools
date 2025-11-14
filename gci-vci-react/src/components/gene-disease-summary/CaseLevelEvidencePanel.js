@@ -50,18 +50,21 @@ const CaseLevelEvidencePanel = ({
         },
         {
           Header: 'Reference (PMID)',
-          accessor: d => {
-            if (d.authors && d.authors.length) {
-              return d.authors[0];
-            }
-            return 'reference';
-          },
+          accessor: 'pmid',
           // eslint-disable-next-line react/display-name
           Cell: ({ row }) => {
             const evidence = row.original;
             const authors = getEvidenceAuthors(evidence);
             return (
-              <span>{authors}, <strong>{evidence.pubYear}</strong>, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a></span>
+              evidence.pmid
+                ? <span>
+                    {authors
+                      ? authors
+                      : "No authors listed"}, {evidence.pubYear
+                        ? <strong>{evidence.pubYear}</strong>
+                        : null}, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a>
+                  </span>
+                : null
             );
           }
         },
@@ -74,7 +77,7 @@ const CaseLevelEvidencePanel = ({
           Cell: ({ row }) => {
             const evidence = row.original;
             return (
-              evidence.ageValue
+              evidence.ageValue >= 0
                 ? <span>{evidence.ageType
                   ? <strong>Age of {evidence.ageType}: </strong>
                   : null}{evidence.ageValue} {evidence.ageUnit.length

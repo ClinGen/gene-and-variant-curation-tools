@@ -58,3 +58,9 @@
 .preview-only-overlay {
     background: url(../../img/preview-bg.svg) 0px 40px;
 }
+
+#preview-only-banner {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+}

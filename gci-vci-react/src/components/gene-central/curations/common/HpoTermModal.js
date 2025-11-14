@@ -92,16 +92,20 @@ export const HpoTermModal = ({
     if (hpoIdList && hpoIdList.length) {
       hpoIdList.forEach(id => {
         const url = EXTERNAL_API_MAP['HPOApi'] + id;
+        const hpoNoTerm = `${id} (note: term not found)`;
         // Make call to fetch HPO term
         axios.get(url).then(result => {
-          const termLabel = result['data']['details']['name'];
-          const hpoWithTerm = `${termLabel} (${id})`;
-          setHpoWithTerms(hpoWithTerms => [...hpoWithTerms, hpoWithTerm]);
+          if (result?.data?.name) {
+            const hpoWithTerm = `${result.data.name} (${id})`;
+            setHpoWithTerms(hpoWithTerms => [...hpoWithTerms, hpoWithTerm]);
+          } else {
+            // No HPO term
+            setHpoWithTerms(hpoWithTerms => [...hpoWithTerms, hpoNoTerm]);
+          }
         }).catch(err => {
           // Unsuccessful retrieval
           console.warn('Error in fetching HPO data =: %o', err);
-          const hpoWithTerm = id + ' (note: term not found)';
-          setHpoWithTerms(hpoWithTerms => [...hpoWithTerms, hpoWithTerm]);
+          setHpoWithTerms(hpoWithTerms => [...hpoWithTerms, hpoNoTerm]);
         });
       });
       setIsLoadingHpoTerm(false);

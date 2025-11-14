@@ -4,7 +4,7 @@ import json
 import requests
 
 def find_mondo_disease(mondo_id):
-  mondo_search_url = 'https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/'
+  mondo_search_url = 'https://www.ebi.ac.uk/ols4/api/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/'
   
   try:
     res = requests.get(mondo_search_url + mondo_id, timeout=60)
@@ -25,17 +25,17 @@ def parse_mondo_disease(disease_data, mondo_id):
   terms_data = disease_data.get('_embedded', {}).get('terms', [])
   if len(terms_data) == 0:
     return None
-  definitions_list = terms_data[0].get('annotation', {}).get('def', [])
-  disease_definition = None
-  if len(definitions_list) != 0:
-    disease_definition = definitions_list[0]
+  descriptions_list = terms_data[0].get('description', [])
+  disease_description = None
+  if len(descriptions_list) != 0:
+    disease_description = descriptions_list[0]
   disease_label = terms_data[0].get('label', '')
-  disease_synonyms = terms_data[0].get('annotation', {}).get('hasExactSynonym')
+  disease_synonyms = terms_data[0].get('synonyms', [])
 
   disease = {}
   disease['PK'] = mondo_id
   disease['term'] = disease_label
-  disease['definition'] = disease_definition
+  disease['description'] = disease_description
   disease['synonyms'] = disease_synonyms
 
   return disease

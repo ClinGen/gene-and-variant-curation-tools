@@ -30,25 +30,25 @@ def from_xml(xml):
         element_variation_archive = element_clinvar_result_set.find('.//VariationArchive')
 
         if element_variation_archive is not None:
-            # Only interested in InterpretedRecord element
-            element_interpreted_record = element_variation_archive.find('.//InterpretedRecord')
+            # Only interested in ClassifiedRecord element
+            element_interpreted_record = element_variation_archive.find('.//ClassifiedRecord')
 
             if element_interpreted_record is not None:
-                attribute_IR_date_last_evaluated = attribute_number_of_submissions = element_IR_description = element_explanation = None
+                attribute_IR_date_last_evaluated = attribute_number_of_submissions = element_IR_description = element_explanation = element_IR_review_status = None
                 ref_trait_mapping = []
-                element_interpretations = element_interpreted_record.find('.//Interpretations')
-                element_IR_review_status = element_interpreted_record.find('.//ReviewStatus')
+                element_interpretations = element_interpreted_record.find('.//Classifications')
                 element_trait_mapping_list = element_interpreted_record.find('.//TraitMappingList')
                 element_clinical_assertion_list = element_interpreted_record.find('.//ClinicalAssertionList')
                 
                 # Retrieve summary data from the first Interpretation element within the first Interpretations element
                 if element_interpretations is not None:
-                    element_IR_interpretation = element_interpretations.find('.//Interpretation')
+                    element_IR_interpretation = element_interpretations.find('.//GermlineClassification')
 
                     if element_IR_interpretation is not None:
                         attribute_IR_date_last_evaluated = element_IR_interpretation.get('DateLastEvaluated')
-                        attribute_number_of_submissions = element_IR_interpretation.get('NumberOfSubmissions');
+                        attribute_number_of_submissions = element_IR_interpretation.get('NumberOfSubmissions')
                         element_IR_description = element_IR_interpretation.find('.//Description')
+                        element_IR_review_status = element_IR_interpretation.find('.//ReviewStatus')
 
                         if element_IR_description is not None:
                             element_explanation = element_IR_interpretation.find('.//Explanation')
@@ -98,7 +98,7 @@ def from_xml(xml):
                             attribute_submitter_name = element_clinvar_accession.get('SubmitterName')
                             attribute_CA_id = elements_clinical_assertion.get('ID')
                             element_CA_review_status = elements_clinical_assertion.find('.//ReviewStatus')
-                            element_CA_interpretation = elements_clinical_assertion.find('.//Interpretation')
+                            element_CA_interpretation = elements_clinical_assertion.find('.//Classification')
                             element_trait_set = elements_clinical_assertion.find('.//TraitSet')
                             elements_attribute_sets = elements_clinical_assertion.findall('.//AttributeSet')
 
@@ -133,7 +133,7 @@ def from_xml(xml):
 
                             # Save clinical significance and last evaluated date (from first Interpretation element)
                             if element_CA_interpretation is not None:
-                                element_CA_description = element_CA_interpretation.find('.//Description')
+                                element_CA_description = element_CA_interpretation.find('.//GermlineClassification')
 
                                 if element_CA_description is not None:
                                     attribute_CA_date_last_evaluated = element_CA_interpretation.get('DateLastEvaluated')

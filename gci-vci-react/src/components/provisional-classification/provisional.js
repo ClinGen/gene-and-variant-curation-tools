@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { get as lodashGet, isEmpty } from 'lodash';
-import { getAffiliationName } from '../../helpers/get_affiliation_name';
+import { get as lodashGet } from 'lodash';
+import { AffilsContext, getAffiliationName } from '../../helpers/affiliationsHelpers';
 import { getUserName } from '../../helpers/getUserName';
 import { connect } from 'react-redux';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -16,6 +16,7 @@ import { AmplifyAPIRequestRecycler } from '../../utilities/fetchUtilities';
 import { gdmPutParticipantsAndSetState, gdmProvisionalClassificationsReducer } from '../../utilities/gdmUtilities';
 
 class ProvisionalApproval extends Component {
+    static contextType = AffilsContext;
     constructor(props) {
         super(props);
         this.initialState = {
@@ -159,6 +160,15 @@ class ProvisionalApproval extends Component {
         e.preventDefault();
         e.stopPropagation();
 
+        // If the total genetic evidence score is zero, check with the user
+        // to ensure they intended to submit.
+        if (this.state.provisional?.classificationPoints?.geneticEvidenceTotal === 0) {
+            const confirmMessage = 'Warning: The total genetic evidence score is zero. Submit?';
+            if (!window.confirm(confirmMessage)) {
+                return;
+            }
+        }
+
         let newProvisional = this.state.provisional ? this.state.provisional : {};
         const nowUTC = moment().toISOString();
         newProvisional.classificationStatus = 'Provisional';
@@ -252,18 +262,16 @@ class ProvisionalApproval extends Component {
             );
         } else if (this.state.interpretation) {
             newProvisional.last_modified = nowUTC;
-            console.log('Provisional Save', newProvisional)
 
             // reference to parent interpretation
-            const resourceParentObj = {"interpretation": this.state.interpretation.PK}
-
+            const interpretationObj = this.state.interpretation;
+            const resourceParentObj = {"interpretation": this.state.interpretation.PK};
 
             let newSnapshot = {
                 resourceId: newProvisional.PK,
                 resourceType: 'interpretation',
                 approvalStatus: 'Provisioned',
                 resource: newProvisional,
-                //interpretation: this.state.interpretation.PK,
                 resourceParent: resourceParentObj,
                 cspec: this.state.interpretation.cspec ? this.state.interpretation.cspec : null,
                 disease: this.state.interpretation.disease ? this.state.interpretation.disease : null,
@@ -274,37 +282,42 @@ class ProvisionalApproval extends Component {
                 modified_by: lodashGet(this.props.auth, 'PK', null)
             };
 
-            const params = {body: {newSnapshot}}
-            const url = '/snapshots/?type=interpretation&action=provision';
+            interpretationObj.status = "Provisional";
+            interpretationObj.provisionalVariant = newProvisional;
+            interpretationObj.modified_by = newProvisional.modified_by;
 
-            API.post(API_NAME, url, params).then(response => {
-                let provisionalSnapshot = response;
-                this.props.approveProvisional('yes');
-                this.props.updateSnapshotList(provisionalSnapshot);
-                return Promise.resolve(provisionalSnapshot);
-            }).then(snapshot => {
-                // POST Provisional Snapshot, then update parent interpretation
-                const interpretationObj = this.state.interpretation;
-                interpretationObj.status = "Provisional";
-                interpretationObj.provisionalVariant = newProvisional;
-                interpretationObj.modified_by = newProvisional.modified_by;
-                //interpretationObj.snapshots = snapshot;
+            const interpParams = { body: { interpretationObj } };
 
-                // Update interpretation with latest snapshots PKs
-                let currentSnapshots = interpretationObj.snapshots || [];
-                let latestSnapshots = [snapshot.PK].concat(currentSnapshots);
-                interpretationObj.snapshots = latestSnapshots;
+            // Update parent interpretation, then POST Provisional snapshot
+            API.put(API_NAME, '/interpretations/' + interpretationObj.PK, interpParams).then(result => {
+                this.props.updateInterpretation(result);
+                return Promise.resolve(result);
+            }).then(updatedInterpretation => {
+              const params = { body: { newSnapshot } };
+              const url = '/snapshots/?type=interpretation&action=provision';
 
-                // Update parent interpretation
-                const params = {body: {interpretationObj}}
-                const url = '/interpretations/' + interpretationObj.PK;
-                API.put(API_NAME, url, params).then(data => {
-                    this.props.updateInterpretation(data);
-                    this.props.updateProvisionalObj(data.provisionalVariant);
-                })
-            }).catch(err => {
-                console.log('Saving provisional snapshot error = : %o', err);
-            });
+              API.post(API_NAME, url, params).then(response => {
+                  let provisionalSnapshot = response;
+                  this.props.approveProvisional('yes');
+                  this.props.updateSnapshotList(provisionalSnapshot);
+                  return Promise.resolve(provisionalSnapshot);
+              }).then(snapshot => {
+                  // Update interpretation with latest snapshots PKs
+                  let currentSnapshots = updatedInterpretation.snapshots || [];
+                  let latestSnapshots = [snapshot.PK].concat(currentSnapshots);
+                  updatedInterpretation.snapshots = latestSnapshots;
+
+                  // Update parent interpretation
+                  const params = { body: { updatedInterpretation } };
+                  const url = '/interpretations/' + updatedInterpretation.PK;
+                  API.put(API_NAME, url, params).then(data => {
+                      this.props.updateInterpretation(data);
+                      this.props.updateProvisionalObj(data.provisionalVariant);
+                  });
+              }).catch(err => {
+                  console.log('Saving provisional snapshot error = : %o', err);
+              });
+          });
         }
     }
 
@@ -320,6 +333,7 @@ class ProvisionalApproval extends Component {
         const currentUserAffiliation = lodashGet(this.props.auth, 'currentAffiliation.affiliation_fullname', null);
         const affiliation = lodashGet(provisional, 'affiliation', null) ? provisional.affiliation : lodashGet(this.props.auth, 'currentAffiliation.affiliation_id', null);
         const submitBusy = this.state.submitBusy;
+        const { affiliationsData } = this.context;
 
         return (
             <div className="provisional-approval-panel-content">
@@ -331,7 +345,7 @@ class ProvisionalApproval extends Component {
                                     <div className="provisional-affiliation">
                                         <dl className="inline-dl clearfix">
                                             <dt><strong>ClinGen Affiliation:</strong></dt>
-                                            <dd>{affiliation ? getAffiliationName(affiliation) : "--"}</dd>
+                                            <dd>{affiliation ? getAffiliationName(affiliation, affiliationsData) : "--"}</dd>
                                         </dl>
                                     </div>
                                     <div className="provisional-submitter">
@@ -369,6 +383,10 @@ class ProvisionalApproval extends Component {
                                       <dt><span>Specification Document:</span></dt>
                                       <dd><span className="text-pre-wrap">{cspecDocTitle ? cspecDocTitle : ''}</span></dd>
                                     </dl>
+                                    <dl className="inline-dl clearfix">
+                                      <dt><span>Specified Gene:</span></dt>
+                                      <dd><span className="text-pre-wrap">{lodashGet(interpretation, 'cspec.specifiedGene', 'None Selected')}</span></dd>
+                                    </dl>
                                   </div>
                                   : null}
                             </div>
@@ -384,7 +402,7 @@ class ProvisionalApproval extends Component {
                                     <div className="provisional-affiliation">
                                         <dl className="inline-dl clearfix">
                                             <dt><span>ClinGen Affiliation:</span></dt>
-                                            <dd>{affiliation ? getAffiliationName(affiliation) : "--"}</dd>
+                                            <dd>{affiliation ? getAffiliationName(affiliation, affiliationsData) : "--"}</dd>
                                         </dl>
                                     </div>
                                     <div className="provisional-submitter">
@@ -412,7 +430,8 @@ class ProvisionalApproval extends Component {
                                                     parseDate={parseDate}
                                                     placeholder={`${formatDate(new Date())}`}
                                                     dayPickerProps={{
-                                                        selectedDays: provisionalReviewDate ? parseDate(provisionalReviewDate) : undefined
+                                                        selectedDays: provisionalReviewDate ? parseDate(provisionalReviewDate) : undefined,
+                                                        disabledDays: { after: new Date() }
                                                     }}
                                                 />
                                         </div>
@@ -466,7 +485,7 @@ class ProvisionalApproval extends Component {
                   hideButtonText="Cancel"
                 >
                     <p className="alert alert-warning">You are currently curating an Interpretation under the wrong affiliation. You are logged in as <strong>{currentUserAffiliation ? currentUserAffiliation : "No Affiliation"}</strong> and
-                        curating an interpretation for <strong>{lodashGet(provisional, 'affiliation', null) ? getAffiliationName(provisional.affiliation) : 'No Affiliation'}</strong>. Either close this tab in your browser or redirect to the Dashboard below.
+                        curating an interpretation for <strong>{lodashGet(provisional, 'affiliation', null) ? getAffiliationName(provisional.affiliation, affiliationsData) : 'No Affiliation'}</strong>. Either close this tab in your browser or redirect to the Dashboard below.
                     </p>
                 </Modal>
             </div>

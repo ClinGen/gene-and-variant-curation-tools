@@ -1,0 +1,14 @@
+{   
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "ClinVarSubmissionBatchModel",
+    "type": "object",
+    "properties": {
+        "item_type": {
+            "type": "string",
+            "enum": ["clinvar-submission-batch"]
+        },
+        "PK": { "type": "string" },
+        "last_modified": { "type": "string" },
+        "date_created": { "type": "string" }
+    }
+}

@@ -31,6 +31,11 @@ export const RetiredVariantTable = ({
                   <><span className="control-label">ClinGen Allele Registry ID: </span><ExternalLink href={`${EXTERNAL_API_MAP['CARallele']}${variant.carId}.html`} title={`ClinGen Allele Registry entry for ${variant.carId} in new tab`}>{variant.carId}</ExternalLink></>
                 : null }
               </td>
+              <td key={`oldCacnid-${i}`}>
+                {variant.cacnId ?
+                  <><span className="control-label">ClinGen Allele Registry Copy Number ID: </span><ExternalLink href={`${EXTERNAL_API_MAP['CARcopy-number']}${variant.cacnId}`} title={`ClinGen Allele Registry entry for ${variant.cacnId} in new tab`}>{variant.cacnId}</ExternalLink></>
+                : null }
+              </td>
               <td key={`oldDesc-${i}`}>
                 {variant.otherDescription ?
                   <span>Other description: {variant.otherDescription}</span>

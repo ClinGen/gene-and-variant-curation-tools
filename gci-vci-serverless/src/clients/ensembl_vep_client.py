@@ -45,22 +45,30 @@ def find(hgvs_notation: str, grouping=True):
         
         # replace by only effective transcripts
         effective_vep_transcripts = get_effective_overlap_transcripts_from_ensembl_vep(response_data.get('transcript_consequences', []))
-
-        # get all transcripts that are MANE
-        mane_transcript_genomic_coordinate_set = set()
+        # Create a mapping from genomic coordinates to MANE types
+        mane_transcript_genomic_coordinate_dict = {}
         for transcript in effective_vep_transcripts:
-            if 'mane' in transcript and transcript['mane']:
-                mane_transcript_genomic_coordinate_set.add(transcript['mane'])
+            # If transcript has 'mane_select', add to dictionary
+            if 'mane_select' in transcript and transcript['mane_select']:
+                mane_coordinate = transcript['mane_select']
+                mane_transcript_genomic_coordinate_dict[mane_coordinate] = 'mane_select'
+            # If transcript has 'mane_plus_clinical', add to dictionary
+            if 'mane_plus_clinical' in transcript and transcript['mane_plus_clinical']:
+                mane_coordinate = transcript['mane_plus_clinical']
+                mane_transcript_genomic_coordinate_dict[mane_coordinate] = 'mane_plus_clinical'
         
-        # patch transcripts which are MANE but lacking `.mane` property
+        # Patch transcripts missing MANE properties based on part of 'hgvsc' field
         for transcript in effective_vep_transcripts:
             tokens = transcript['hgvsc'].split(':')
             if len(tokens) == 0:
                 raise EnsemblVEPClientError(f'transcript from ensembl has malformed hgvsc {transcript["hgvsc"]}', 500)
                 
             genomic_coordinate = tokens[0]
-            if genomic_coordinate and genomic_coordinate in mane_transcript_genomic_coordinate_set:
-                transcript['mane'] = genomic_coordinate
+            if genomic_coordinate and genomic_coordinate in mane_transcript_genomic_coordinate_dict:
+                mane_type = mane_transcript_genomic_coordinate_dict[genomic_coordinate]
+                # Check if the MANE type already exists in the transcript
+                if mane_type not in transcript:
+                    transcript[mane_type] = genomic_coordinate
 
         if not grouping:
             return effective_vep_transcripts

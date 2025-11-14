@@ -16,7 +16,17 @@ import { COUNTRY_CODES } from '../../../../constants/countryCodes';
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import LoadingSpinner from '../../../common/LoadingSpinner';
-import { renderLabelNote, renderLabelPhenoTerms, getGenesFromList, getPmidsFromList } from '../common/commonFunc';
+import {
+  renderLabelNote,
+  renderLabelPhenoTerms,
+  getGenesFromList,
+  getInvalidGenesFromList,
+  getPmidsFromList,
+  getInvalidPmidsFromList,
+  renderNotOwnerMessage,
+  addPhenotypeNote,
+  renderPmidsErrorMessage
+} from '../common/commonFunc';
 import { HpoTermModal } from '../common/HpoTermModal';
 import { MethodsPanel, createMethod } from '../common/Methods';
 import { DeleteCurationModal } from '../common/DeleteCurationModal';
@@ -24,6 +34,7 @@ import { GroupDisease } from '../disease/GroupDisease';
 
 import { gdmParticipantReducer } from '../../../../utilities/gdmUtilities';
 import { useAmplifyAPIRequestRecycler } from '../../../../utilities/fetchUtilities';
+import { isOwnedByCurrentCuratingEntity } from '../../../../utilities/ownershipUtilities';
 
 export const GroupCuration = ({
   editGroup = null,
@@ -55,6 +66,7 @@ export const GroupCuration = ({
   const [ formErrors, setFormErrors ] = useState({});
   const [ badGenes, setBadGenes ] = useState([]);
   const [ badPmids, setBadPmids ] = useState([]);
+  const [ preprintPmids, setPreprintPmids ] = useState([]);
   const [ isSubmitting, setIsSubmitting ] = useState(false);
   const [ submitError, setSubmitError ] = useState(null);
 
@@ -132,6 +144,7 @@ export const GroupCuration = ({
     }
     if (e.target.name === "otherpmids") {
       setBadPmids([]);
+      setPreprintPmids([]);
     }
 
     let newData = cloneDeep(formData);
@@ -213,7 +226,7 @@ export const GroupCuration = ({
         {formErrors["othergenevariants"]}
         </>
       );
-    } else if (badGenes.length > 0) {
+    } else if (badGenes?.length > 0) {
       return (
         <span>{badGenes.join(', ')} not found</span>
       );
@@ -231,7 +244,7 @@ export const GroupCuration = ({
         let i = 0;
         geneSymbols.forEach(symbol => {
           requestRecycler.capture(API.get(API_NAME, '/genes/' + symbol))
-          .then(result => {
+          .then(() => {
             i++;
             if (i === geneSymbols.length) {
               if (valid) {
@@ -240,7 +253,7 @@ export const GroupCuration = ({
                 reject(valid);
               }
             }
-          }).catch(err => {
+          }).catch(() => {
             setBadGenes(badGenes => [...badGenes, symbol]);
             valid = false;
             i++;
@@ -256,21 +269,9 @@ export const GroupCuration = ({
   };
 
   const renderPmidsError = () => {
-    if (formErrors["otherpmids"]) {
-      return (
-        <>
-        {formErrors["otherpmids"]}
-        </>
-      );
-    } else if (badPmids.length > 0) {
-      return (
-        <>
-        <span>{badPmids.join(', ')} not found</span>
-        </>
-      );
-    } else {
-      return null;
-    }
+    return (
+      renderPmidsErrorMessage(formErrors["otherpmids"], badPmids, preprintPmids)
+    );
   };
 
   const saveArticle = async (article) => {
@@ -294,31 +295,46 @@ export const GroupCuration = ({
     // At least one pmid entered; search the DB for them.
     return new Promise((resolve, reject) => {
       if (pmids && pmids.length) {
+        // Keep track of checked PMIDs count, only update when data has been processed
         let i = 0;
         pmids.forEach(pmid => {
-          requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid))
-          .then(article => {
-            i++;
-            if (!article.PK) {
-              saveArticle(article);
-            }
-            if (i === pmids.length) {
-              if (valid) {
-                resolve(valid);
+          if (pmid.length) {
+            requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid)).then(article => {
+              // If article is a preprint then cannot be added, add to error list
+              if(article?.is_preprint) {
+                setPreprintPmids(preprintPmids => [...preprintPmids, pmid]);
+                valid = false;
               } else {
+                // If article is valid but has no PK, save article to DB
+                if (!article.PK) {
+                  saveArticle(article);
+                }
+              }
+              i++;
+              // If all pmids have been checked, return
+              if (i === pmids.length) {
+                if (valid) {
+                  resolve(valid);
+                } else {
+                  reject(valid);
+                }
+              }
+            }).catch(() => {
+              // No article is found by this pmid, add to error list
+              setBadPmids(badPmids => [...badPmids, pmid]);
+              valid = false;
+              i++;
+              if (i === pmids.length) {
                 reject(valid);
               }
-            }
-          }).catch(err => {
+            });
+          } else {
+            // Empty pmid
             i++;
-            setBadPmids(badPmids => [...badPmids, pmid]);
-            valid = false;
-            if (i === pmids.length) {
-              reject(valid);
-            }
-          });
+          }
         })
       } else {
+        // No pmid
         resolve(valid);
       }
     });
@@ -343,26 +359,25 @@ export const GroupCuration = ({
     if (!diseaseObj || (diseaseObj && !diseaseObj['term'])) {
       has_disease = false;
     }
-    if (!has_disease && formData["phenoterms"] === '' && hpoWithTerms.length < 1) {
+    if (!has_disease && formData["phenoterms"] === '' && hpoWithTerms?.length < 1) {
       setDiseaseRequired(true);
       setDiseaseError("Enter disease term and/or HPO Id(s) and/or Phenotype free text disease.");
       errors["diseaseError"] = "Enter disease term and/or HPO Id(s) and/or Phenotype free text disease.";
       errors["phenoterms"] = "Enter disease term and/or HPO Id(s) and/or Phenotype free text phenoterms.";
     }
 
-    // Validate HPO ids in NOT Phenotype free text have proper format  
     // Validate gene symbols have the proper format (will check for existence later)
-    const geneSymbols = getGenesFromList(formData["othergenevariants"]);
-    if (geneSymbols && geneSymbols.length && geneSymbols.includes(null)) {
-      // Gene symbol list is bad
-      errors["othergenevariants"] = "Use gene symbols (e.g. SMAD3) separated by commas";
+    const badGeneSymbols = getInvalidGenesFromList(formData["othergenevariants"]);
+    if (badGeneSymbols?.length) {
+      // If bad Gene symbol(s) is found, set error for invalid gene symbol(s)
+      errors["othergenevariants"] = `Not valid Gene Symbol(s): ${badGeneSymbols.join(', ')}.  Use gene symbols (e.g. SMAD3) separated by commas.`;
     }
 
     // Validate pmids have the proper format (will check for existence later)
-    const pmids = getPmidsFromList(formData["otherpmids"]);
-    if (pmids && pmids.length && pmids.includes(null)) {
-      // PMID list is bad
-      errors["otherpmids"] = "Use PubMed IDs (e.g. 12345678) separated by commas";
+    const badPmids = getInvalidPmidsFromList(formData["otherpmids"]);
+    if (badPmids?.length) {
+      // Display error for invalid PMID list
+      errors["otherpmids"] = `Not valid PubMed ID(s): "${badPmids.join(', ')}".  Use PubMed IDs (e.g. 12345678) separated by commas.`;
     }
     
     if (Object.keys(errors).length > 0) {
@@ -550,19 +565,17 @@ export const GroupCuration = ({
     setSubmitError(null);
     setIsSubmitting(true);
 
-    if (!badGenes.length && !badPmids.length && validateFormFields()) {
+    if (!badGenes.length && !badPmids.length && !preprintPmids.length && validateFormFields()) {
       // validate genes list
-      validateGenes().then(res1 => {
+      validateGenes().then(() => {
         // validate pmids list
-        validatePmids()
-        .then(res2 => {
+        validatePmids().then(() => {
           createNewGroupData()
           .then(newGroup => {
             saveGroup(newGroup)
             .then(savedGroup => {
               // Save all form values from the DOM.
               // Navigate to Curation Central or Family Submit page, depending on previous page
-              // ??? if (this.queryValues.editShortcut) {
               const redirectUrl = (editGroup && editGroup.PK)
                 ? `/curation-central/${gdm.PK}/annotation/${annotation.PK}`
                 : (savedGroup && savedGroup.PK
@@ -572,28 +585,24 @@ export const GroupCuration = ({
               history.push(redirectUrl);
             }).catch(error => {
               if (API.isCancel(error)) {
-                //throw error;
-                console.log("Cancel");
                 setIsSubmitting(false);
+                return;
               }
               //throw new Error
-                handleSubmitError("Error in adding new group", error);
+              handleSubmitError("Error in adding new group", error);
             });
           }).catch(error => {
             if (API.isCancel(error)) {
-              //throw error;
-              console.log("Cancel");
               setIsSubmitting(false);
+              return;
             }
             //throw new Error
-              handleSubmitError("Error in creating new group object", error);
+            handleSubmitError("Error in creating new group object", error);
           });
-        }).catch(err => {
-          console.log('validatePmids : %o', err);
+        }).catch(() => {
           setIsSubmitting(false);
         });
-      }).catch(err => {
-        console.log('validateGenes : %o', err);
+      }).catch(() => {
         setIsSubmitting(false);
       });
     } else {
@@ -653,7 +662,7 @@ export const GroupCuration = ({
           </span>
         </Col>
         <Col sm="7" className="form-group hpo-term-container">
-          {hpoWithTerms.length ?
+          {hpoWithTerms?.length ?
             <ul>
               {hpoWithTerms.map((term, i) => {
                 return (
@@ -674,17 +683,17 @@ export const GroupCuration = ({
         label={renderLabelPhenoTerms(false)} labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7"
       />
       <Col sm={{ span: 7, offset: 5 }}>
-        <p>Enter <em>phenotypes that are NOT present in Group</em> if they are specifically noted in the paper.</p>
+        {addPhenotypeNote('Group')}
       </Col>
       <Row className="mb-3">
         <Col sm="5" className="control-label">
           <span>
-            <label className="">NOT Phenotype(s)&nbsp;</label>
+            <label className=""><span className="serious-text">NOT Phenotype(s)</span>&nbsp;</label>
             <span className="normal">(<ExternalLink href={`${EXTERNAL_API_MAP['HPOBrowser']}`} title="Open HPO Browser in a new tab">HPO</ExternalLink> ID(s))</span>:
           </span>
         </Col>
         <Col sm="7" className="form-group hpo-term-container">
-          {hpoElimWithTerms.length ?
+          {hpoElimWithTerms?.length ?
             <ul>
               {hpoElimWithTerms.map((term, i) => {
                 return (
@@ -849,7 +858,7 @@ export const GroupCuration = ({
   // HTML labels for inputs follow.
   const renderLabelOtherGenes = () => {
     return (
-      <span>Other genes found to have variants in them (<ExternalLink href={EXTERNAL_API_MAP['HGNCHome']} title="HGNC home page in a new tab">HGNC</ExternalLink> symbol):</span>
+      <span>Other genes found to have variants in them(<ExternalLink href={EXTERNAL_API_MAP['HGNCHome']} title="HGNC home page in a new tab">HGNC</ExternalLink> symbol; for multiple genes, enter the comma-separated list):</span>
     );
   };
 
@@ -891,12 +900,15 @@ export const GroupCuration = ({
     );
   };
 
-  const submitErrClass = 'submit-err float-right ' + (!isEmpty(formErrors) || badGenes.length > 0 || badPmids.length > 0 ? '' : ' hidden');
+  const submitErrClass = 'submit-err float-right ' +
+    (!isEmpty(formErrors) || badGenes?.length ||
+     badPmids?.length || preprintPmids?.length ? '' : ' hidden');
   const curationLink = (lodashGet(gdm, "PK", null) && lodashGet(annotation, "PK", null))
     ? `/curation-central/${gdm.PK}/annotation/${annotation.PK}`
     : (lodashGet(gdm, "PK", null))
       ? `/curation-central/${gdm.PK}`
       : null;
+  const ownerError = !isOwnedByCurrentCuratingEntity(gdm, auth);
 
   return (gdmIsLoading || annotationIsLoading) ? (
     <LoadingSpinner className="mt-4" />
@@ -912,6 +924,7 @@ export const GroupCuration = ({
       <Row className="group-curation-content">
         <Col sm="12">
           <form onSubmit={submitForm} className="form-horizontal mt-5">
+            {renderNotOwnerMessage(ownerError)}
             <CardPanel>
               {renderGroupName()}
             </CardPanel>
@@ -930,6 +943,7 @@ export const GroupCuration = ({
             <CardPanel title="Group — Additional Information" open>
               {renderGroupAdditional()}
             </CardPanel>
+            {renderNotOwnerMessage(ownerError)}
             <Row>
               <Col>
                 <LoadingButton
@@ -939,6 +953,7 @@ export const GroupCuration = ({
                   text="Save"
                   textWhenLoading="Submitting"
                   isLoading={isSubmitting}
+                  disabled={ownerError}
                 />
                 {gdm ?
                   <Button variant="secondary" className="float-right align-self-end mb-2 ml-2" onClick={() => handleCancel()} disabled={isSubmitting}>Cancel</Button>
@@ -948,7 +963,8 @@ export const GroupCuration = ({
                     gdm={gdm}
                     parent={annotation}
                     item={group}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || ownerError}
+                    ownerError={ownerError}
                   />
                 : null}
                 <div className={submitErrClass}>Please fix errors on the form and resubmit.</div>

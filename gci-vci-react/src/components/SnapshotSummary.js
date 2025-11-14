@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import moment from 'moment';
 import { API } from 'aws-amplify';
 import Button from 'react-bootstrap/Button';
 import { API_NAME } from '../utils';
 import { renderModeInheritanceLink } from '../helpers/render_mode_inheritance';
-import { getAffiliationName } from '../helpers/get_affiliation_name';
+import { AffilsContext, getAffiliationName } from '../helpers/affiliationsHelpers';
 import {codeStripValues} from '../components/variant-central/mapping/CodeStripValues';
 
 import CardPanel from '../components/common/CardPanel';
@@ -33,6 +33,7 @@ const SnapshotSummary = (props) => {
   const location = props.location;
   const urlQueryString = new URLSearchParams(location.search);
   const snapshotPK = urlQueryString.get('snapshot');
+  const { affiliationsData } = useContext(AffilsContext);
 
   useEffect(() => {
     const fetchSnapshotData = async (snapshotPK) => {
@@ -104,7 +105,7 @@ const SnapshotSummary = (props) => {
                 </h5>
                 : null}
               {interpretation && interpretation.affiliation ?
-                <h5><strong>Interpretation owner:</strong> {getAffiliationName(interpretation.affiliation)}</h5>
+                <h5><strong>Interpretation owner:</strong> {getAffiliationName(interpretation.affiliation, affiliationsData)}</h5>
                 : (interpretation && interpretation.submitted_by ? getUserName(interpretation.submitted_by) : null)
               }
               <h5><strong>Auto-calculated Classification:</strong> {provisionalVariant ? provisionalVariant.autoClassification : null}</h5>
@@ -128,6 +129,7 @@ const SnapshotSummary = (props) => {
               <h5><strong>Disease:</strong> {snapshot && snapshot.disease && snapshot.diseaseTerm ? <ExternalLink href={`${EXTERNAL_API_MAP["MondoSearch"]}${snapshot.disease.PK}`}>{snapshot.diseaseTerm}</ExternalLink> : 'None'}</h5>
               <h5><strong>Mode of Inheritance:</strong> {snapshot.modeInheritance ? renderModeInheritanceLink(snapshot.modeInheritance, snapshot.modeInheritanceAdjective) : "None"}</h5>
               <h5><strong>Specification Document:</strong> {snapshot && snapshot.cspec && snapshot.cspec.documentName ? snapshot.cspec.documentName : "None"}</h5>
+              <h5><strong>Specified Gene:</strong> {snapshot && snapshot.cspec && snapshot.cspec.specifiedGene ? snapshot.cspec.specifiedGene : "None selected"}</h5>
             </div>
           </div>
         </CardPanel>

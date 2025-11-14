@@ -1,6 +1,9 @@
 {
   "@context": "http://reg.genome.network/schema/allele.jsonld",
   "@id": "http://reg.genome.network/allele/CA913175340",
+  "communityStandardTitle": [
+    "NC_012920.1:m.15974A>G"
+  ],
   "genomicAlleles": [
     {
       "chromosome": "MT",

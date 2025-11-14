@@ -393,7 +393,7 @@ export function masterTable() {
         });
     });
     return fields;
-};
+}
 
 /**
  * Fields that are shared across all subcategories.

@@ -41,20 +41,23 @@ const GeneSearch = types.model('GeneSearch', {
       self.error = boom.badRequest('The gene name can not be empty');
       throw self.error;
     }
+    let filteredGenes = [
+      "AKT3", "APC", "ATM", "BRAF", "CDH23", "DEPDC5", 
+      "KCNQ1", "MYO6", "TCF12", "TCF4", "UBE3A", "USH2A"
+    ];
+    if (_.find(filteredGenes, gene => { return self.input === gene })) {
+      self.error = boom.badRequest('This gene is not yet supported for variant prioritization.');
+      throw self.error;
+    }
     self.processing = true;
     self.error = undefined;
     try {
       const requestRecycler = new AmplifyAPIRequestRecycler();
       let hgncGroupList = [];
-      let urlPartition1, urlPartition2, urlPartition3, urlPartition4, urlPartition5 = ""; // URLs are split by kafka partition number, iterate over set num of "pages"
-      for (let page = 0; page < 20; page++) {
-        urlPartition1 = `/vpt/search?hgnc_gr=${self.input}_${page}_0`;
-        urlPartition2 = `/vpt/search?hgnc_gr=${self.input}_${page}_1`;
-        urlPartition3 = `/vpt/search?hgnc_gr=${self.input}_${page}_2`;
-        urlPartition4 = `/vpt/search?hgnc_gr=${self.input}_${page}_3`;
-        urlPartition5 = `/vpt/search?hgnc_gr=${self.input}_${page}_4`;
-
-        hgncGroupList.push(urlPartition1, urlPartition2, urlPartition3, urlPartition4, urlPartition5);
+      let urlPartition = ""; // URLs are split by group index; 0-99 per gene
+      for (let batch = 0; batch < 100; batch++) {
+        urlPartition = `/vpt/search?hgnc_gr=${self.input}_${batch}`;
+        hgncGroupList.push(urlPartition);
       }
       const newPromise = async (hgnc_group) => {
         const response = await requestRecycler.capture(API.get(API_NAME, hgnc_group));

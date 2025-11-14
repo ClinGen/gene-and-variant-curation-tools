@@ -23,14 +23,14 @@ export const AssociatedVariants = ({ variantList }) => {
 
       <ListGroup className="mb-2">
         {!variantList.length && (
-          <ListGroup.Item className="gdm-curation-palette__card-list-group-item text-center text-muted">
+          <ListGroup.Item className="py-1 gdm-curation-palette__card-list-group-item text-center text-muted">
             No variants in any evidence yet
           </ListGroup.Item>
         )}
 
         {variantList.map((variant, index) => {
           return (
-            <ListGroup.Item key={index} className="gdm-curation-palette__card-list-group-item">
+            <ListGroup.Item key={index} className="py-1 gdm-curation-palette__card-list-group-item">
               <AssociatedVariantCardBody variant={variant} />
             </ListGroup.Item>
           );

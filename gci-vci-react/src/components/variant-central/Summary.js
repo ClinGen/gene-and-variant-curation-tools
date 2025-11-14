@@ -18,6 +18,8 @@ import CardPanel from '../common/CardPanel';
 import SummaryTable from './SummaryTable';
 import { useIsMyInterpretation } from '../../utilities/ownershipUtilities';
 import { allowPublishGlobal } from '../../helpers/allow_publish';
+import { displayObsoleteDiseaseIcon } from '../../utilities/diseaseUtilities';
+
 
 //import { sortListByDate } from '../../helpers/sort';
 
@@ -28,7 +30,9 @@ const {
     affiliation,
     updateSnapshotList,
     updateProvisionalObj,
-    cspecDoc
+    cspecDoc,
+    clinVarSubmissionBatches,
+    handleClinVarSubmissionBatches
 } = props;
 
 const dispatch = useDispatch();
@@ -59,6 +63,11 @@ const [provisionalVariant, setProvisionalVariant] = useState(props.provisionalVa
 const isAllowedToEdit = useIsMyInterpretation();
 const allowPublishButton = allowPublishGlobal(affiliation, 'interpretation'); // Need to add this for affiliation checks
 
+// Find specification document (CSpec) in interpretatation/snapshots (to inform approval process)
+const currentInterpretationCSpecID = lodashGet(interpretation, 'cspec.cspecId', null);
+const currentApprovedSnapshotCSpecID = lodashGet(sortedSnapshotList.find(snapshot => snapshot.approvalStatus === 'Approved'), 'cspec.cspecId', null);
+const publishedSnapshotCSpecID = lodashGet(sortedSnapshotList.find(snapshot => snapshot.approvalStatus === 'Approved' && snapshot.resource.publishClassification), 'cspec.cspecId', null);
+
 useEffect(()=>{
     setEvaluations(props.evaluations);
     setInterpretation(props.interpretation);
@@ -70,11 +79,6 @@ useEffect(()=>{
             setProvisionalPathogenicity("none")
         } else {
             setProvisionalPathogenicity(props.provisionalPathogenicity)
-
-            // Check to set reason is required if alteredClassification has valid value
-            if (lodashGet(props, "provisionalReason", null) === null) {
-                handleRequiredInput('setAttribute');
-            }
         }
     } else {
         setProvisionalPathogenicity("none")
@@ -429,7 +433,7 @@ const handleProvisionalApprovalVisibility = () => {
         const publishSnapshotListReady = props.publishSnapshotListReady;
         const publishClassification = lodashGet(provisionalVariant, 'publishClassification', null) ? provisionalVariant.publishClassification : false;
 
-        if (allowPublishButton) {
+        if (allowPublishButton && currentApprovedSnapshotCSpecID) {
 
             // Before displaying the publish panel, check that the current interpretation has not been published (!publishClassification)
             if (!publishClassification && (isPublishActive === 'yes' || isPublishActive === 'auto')) {
@@ -454,6 +458,13 @@ const handleProvisionalApprovalVisibility = () => {
                 setShowPublish(false);
                 setShowUnpublish(true);
             }
+
+        // Allow unpublish of published snapshot when current approved snapshot is not publishable
+        } else if (isUnpublishActive === 'yes') {
+            setShowProvisional(false);
+            setShowApproval(false);
+            setShowPublish(false);
+            setShowUnpublish(true);
 
         // End approval process (for users without publication rights)
         } else {
@@ -540,9 +551,13 @@ function addPublishState(snapshotPKValue, eventType) {
                             <h5><strong>Modified Classification:</strong> {modifiedPathogenicity ? modifiedPathogenicity : 'None'}</h5>
                         </div>
                         <div className="col-sm-6">
-                            <h5><strong>Disease:</strong> {interpretation.diseaseTerm ? interpretation.diseaseTerm : 'None'}</h5>
+                            <h5><strong>Disease:</strong>
+                                { displayObsoleteDiseaseIcon(lodashGet(interpretation, "diseaseTerm", ''), "interpretation") }
+                                { lodashGet(interpretation, "diseaseTerm") ? interpretation.diseaseTerm : 'None'}
+                            </h5>
                             <h5><strong>Mode of Inheritance:</strong> {renderSelectedModeInheritance(interpretation)}</h5>
                             <h5><strong>Specification Document:</strong> {cspecDoc.ruleSetDoc && cspecDoc.ruleSetDoc.cspecInfo ? cspecDoc.ruleSetDoc.cspecInfo.documentName : 'None'}</h5>
+                            <h5><strong>Specified Gene:</strong> {lodashGet(interpretation, 'cspec.specifiedGene', 'None Selected')}</h5>
                         </div>
                     </div>
                             
@@ -675,8 +690,7 @@ function addPublishState(snapshotPKValue, eventType) {
                             <div className="publish-approval-note">
                                 {publishActive === 'auto' ?
                                     <p className="alert alert-info">
-                                        <i className="icon icon-info-circle"></i> Publish the current (<i className="icon icon-flag"></i>)
-                                            Approved Interpretation to the Evidence Repository.
+                                        <i className="icon icon-info-circle"></i> Publishing the current (<i className="icon icon-flag"></i>) Approved Interpretation to the Evidence Repository. Please note: ClinVar submission buttons will only appear after ERepo publishing when applicable.
                                     </p>
                                     :
                                     <p className="alert alert-info">
@@ -705,7 +719,9 @@ function addPublishState(snapshotPKValue, eventType) {
                             </CardPanel>
                         </div>
                         : null}
-                    {!showProvisional && !showApproval && !allowPublishButton ?
+                    {!showProvisional && !showApproval &&
+                     (!allowPublishButton ||
+                      (allowPublishButton && !currentApprovedSnapshotCSpecID && !currentInterpretationCSpecID)) ?
                         <div className="alert alert-info mt-3">
                             <i className="icon icon-info-circle"></i> The option to publish an approved interpretation to the Evidence Repository is
                                 currently only available for VCEPs that have guidelines approved by the Sequence Variant Interpretation Working Group.
@@ -724,6 +740,8 @@ function addPublishState(snapshotPKValue, eventType) {
                                 allowPublishButton={allowPublishButton}
                                 showPublishLinkAlert={showPublishLinkAlert}
                                 clearPublishLinkAlert={clearPublishLinkAlert}
+                                clinVarSubmissionBatches={clinVarSubmissionBatches}
+                                handleClinVarSubmissionBatches={handleClinVarSubmissionBatches}
                             />
                         </CardPanel>
                         : null}

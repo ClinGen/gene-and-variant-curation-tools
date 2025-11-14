@@ -8,9 +8,8 @@ import {
 import CardPanel from '../common/CardPanel';
 import { TableContent } from '../common/TableComponents';
 import HpoTerms from '../../helpers/render_hpo_terms';
-import { getEvidenceAuthors } from '../../helpers/getEvidenceAuthors';
+import { EvidenceSourceDetail } from './EvidenceSourceDetail';
 import PointsTotal from './PointsTotal';
-import EarliestPubIcon from './EarliestPubIcon';
 
 const SegregationEvidencePanel = ({
   hpoTerms,
@@ -19,7 +18,7 @@ const SegregationEvidencePanel = ({
 
   const headers = [
     { key: 'label', text: 'Label' },
-    { key: 'authors', text: 'Reference' },
+    { key: 'source', text: 'Evidence Source' },
     { key: 'ethnicity', text: 'Family Ethnicity' },
     { key: 'phenotypes', text: 'Family Phenotypes' },
     { key: 'moiDisplayedForFamily', text: 'Family MOI' },
@@ -31,22 +30,35 @@ const SegregationEvidencePanel = ({
   ];
 
   const columns = headers.map((item) => {
-    if (item.key === 'authors') {
+    if (item.key === 'label') {
       return {
         Header: item.text,
-        accessor: d => {
-          if (d.authors && d.authors.length) {
-            return d.authors[0];
-          }
-          return item.key;
-        },
+        accessor: 'label',
         // eslint-disable-next-line react/display-name
         Cell: ({ row }) => {
           const evidence = row.original;
-          const authors = getEvidenceAuthors(evidence);
           return (
-            <span>{authors}, <strong>{evidence.pubYear}</strong>, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a> {evidence.earliestPub ? <EarliestPubIcon /> : null}</span>
+            <span>
+              {evidence.familyLink
+                ? <a href={evidence.familyLink} target="_blank" rel="noopener noreferrer">{evidence.label}</a>
+                : evidence.label}
+            </span>
           );
+        }
+      };
+    } else if (item.key === 'source') {
+      return {
+        Header: item.text,
+        accessor: 'pmid',
+        // eslint-disable-next-line react/display-name
+        Cell: ({ row }) => {
+          if (row?.original) {
+            return (
+              <EvidenceSourceDetail
+                evidence={row.original}
+              />
+            );
+          }
         }
       };
     } else if (item.key === 'phenotypes') {

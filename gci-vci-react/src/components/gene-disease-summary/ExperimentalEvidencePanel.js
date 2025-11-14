@@ -6,9 +6,8 @@ import {
 
 import CardPanel from '../common/CardPanel';
 import { TableContent } from '../common/TableComponents';
-import { getEvidenceAuthors } from '../../helpers/getEvidenceAuthors';
+import { EvidenceSourceDetail } from './EvidenceSourceDetail';
 import PointsTotal from './PointsTotal';
-import EarliestPubIcon from './EarliestPubIcon';
 
 const ExperimentalEvidencePanel = ({
   sopv8,
@@ -19,7 +18,7 @@ const ExperimentalEvidencePanel = ({
   const headers = [
     { key: 'label', text: 'Label', sort: true },
     { key: 'evidenceType', text: 'Experimental Category', sort: true },
-    { key: 'reference', text: 'Reference', sort: true },
+    { key: 'source', text: 'Evidence Source', sort: true },
     { key: 'explanation', text: 'Explanation', sort: true },
     { key: 'scoreStatus', text: 'Score Status', sort: true },
     { key: 'score', text: 'Points (default points)', sort: true },
@@ -27,7 +26,23 @@ const ExperimentalEvidencePanel = ({
   ];
 
   const columns = headers.map((item) => {
-    if (item.key === 'evidenceType') {
+    if (item.key === 'label') {
+      return {
+        Header: item.text,
+        accessor: d => d.label,
+        // eslint-disable-next-line react/display-name
+        Cell: ({ row }) => {
+          const evidence = row.original;
+          return (
+            <span>
+              {evidence.expLink
+                ? <a href={evidence.expLink} target="_blank" rel="noopener noreferrer">{evidence.label}</a>
+                : evidence.label}
+            </span>
+          );
+        }
+      };
+    } else if (item.key === 'evidenceType') {
       return {
         Header: item.text,
         accessor: d => d.evidenceType,
@@ -42,22 +57,19 @@ const ExperimentalEvidencePanel = ({
           );
         }
       };
-    } else if (item.key === 'reference') {
+    } else if (item.key === 'source') {
       return {
         Header: item.text,
-        accessor: d => {
-          if (d.authors && d.authors.length) {
-            return d.authors[0];
-          }
-          return item.key;
-        },
+        accessor: 'pmid',
         // eslint-disable-next-line react/display-name
         Cell: ({ row }) => {
-          const evidence = row.original;
-          const authors = getEvidenceAuthors(evidence);
-          return (
-            <span>{authors}, <strong>{evidence.pubYear}</strong>, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a> {evidence.earliestPub ? <EarliestPubIcon /> : null}</span>
-          );
+          if (row?.original) {
+            return (
+              <EvidenceSourceDetail
+                evidence={row.original}
+              />
+            );
+          }
         }
       };
     } else if (item.key === 'explanation') {

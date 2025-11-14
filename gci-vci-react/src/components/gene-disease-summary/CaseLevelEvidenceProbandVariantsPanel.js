@@ -8,9 +8,8 @@ import {
 import CardPanel from '../common/CardPanel';
 import { TableContent } from '../common/TableComponents';
 import HpoTerms from '../../helpers/render_hpo_terms';
-import { getEvidenceAuthors } from '../../helpers/getEvidenceAuthors';
+import { EvidenceSourceDetail } from './EvidenceSourceDetail';
 import PointTotals from './PointsTotal';
-import EarliestPubIcon from './EarliestPubIcon';
 
 const CaseLevelEvidenceVariantsProbandPanel = ({
   hpoTerms,
@@ -26,9 +25,20 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
           accessor: 'label',
           style: { minWidth: 80, wordBreak: 'normal' },
           disableSortBy: true,
-          enableRowSpan: true
+          enableRowSpan: true,
+          Cell: ({ row }) => {
+            const evidence = row.original;
+            return (
+                <span>
+                  {evidence.probandLink
+                    ? <a href={evidence.probandLink} target="_blank" rel="noopener noreferrer">{evidence.label}</a>
+                    : evidence.label}
+                </span>
+            );
+          }
         },
-        { Header: 'Variant Type',
+        {
+          Header: 'Variant Type',
           accessor: 'variantType',
           disableSortBy: true
         },
@@ -45,6 +55,9 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
                 {evidence.variant && evidence.variant.preferredTitle &&
                   <div>{evidence.variant.preferredTitle}</div>
                 }
+                {evidence.variant && evidence.variant.overlappingGenes &&
+                  <div>(overlapping genes: {evidence.variant.overlappingGenes.length})</div>
+                }
                 {evidence.probandIs &&
                   <span><strong>{evidence.probandIs}</strong></span>
                 }
@@ -53,21 +66,25 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
           }
         },
         {
-          Header: 'Reference (PMID)',
-          accessor: d => {
-            if (d.authors && d.authors.length) {
-              return d.authors[0];
-            }
-            return 'reference';
-          },
+          Header: 'Phase Status',
+          accessor: 'phaseStatus',
+          disableSortBy: true,
+          style: { minWidth: 90 },
+          enableRowSpan: true
+        },
+        {
+          Header: 'Evidence Source',
+          accessor: 'pmid',
+          style: { minWidth: 80, maxWidth: 100 },
           // eslint-disable-next-line react/display-name
           Cell: ({ row }) => {
-            const evidence = row.original;
-            const authors = getEvidenceAuthors(evidence);
-            return (
-              authors && evidence.pubYear && evidence.pmid &&
-              <span>{authors}, <strong>{evidence.pubYear}</strong>, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a> {evidence.earliestPub ? <EarliestPubIcon /> : null}</span>
-            );
+            if (row?.original) {
+              return (
+                <EvidenceSourceDetail
+                  evidence={row.original}
+                />
+              );
+            }
           },
           enableRowSpan: true
         },
@@ -80,7 +97,7 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
           Cell: ({ row }) => {
             const evidence = row.original;
             return (
-              evidence.ageValue
+              evidence.ageValue >= 0
                 ? <span>{evidence.ageType
                   ? <strong>Age of {evidence.ageType}: </strong>
                   : null}{evidence.ageValue} {evidence.ageUnit.length
@@ -218,7 +235,7 @@ const CaseLevelEvidenceVariantsProbandPanel = ({
 
     let rowSpanHeaders = [];
 
-    allColumns.forEach((column, i) => {
+    allColumns.forEach((column) => {
       const { id, enableRowSpan } = column;
 
       if (enableRowSpan !== undefined) {

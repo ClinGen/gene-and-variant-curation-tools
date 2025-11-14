@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Table from '../components/InterpretationsTable';
-import { get_interpretations } from '../helpers/get_interpretations';
+import { get_interpretations_all } from '../helpers/get_interpretations_all';
 import TableNavBar from '../components/common/TableNavBar';
 import { useAmplifyAPIRequestRecycler, AmplifyAPIRequestRecycler } from '../utilities/fetchUtilities';
 
@@ -28,12 +28,12 @@ function InterpretationAll(props) {
   const [isAllTable] = useState(true);
   const [InheritanceCount, setInheritanceCount] = useState(0);
 
-  // Retrieve the data using get_interpretations.
+  // Retrieve the data using get_interpretations_all.
   useEffect(() => {
     setTableLoading(true);
     async function fetch() {
 
-      let variants = await get_interpretations('variant', true, '', requestRecycler);
+      let variants = await get_interpretations_all(requestRecycler);
       if (variants) {
         setTableTitle('All Variant Interpretations')
         setTableData(variants);

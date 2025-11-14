@@ -101,6 +101,7 @@ export const TableContent = ({
   isStriped = true,
   isBordered = false,
   isCenterAligned = false,
+  footer
 }) => (
   <table {...getTableProps()} className={`table ${isBordered ? 'bordered' : ''} ${isStriped ? 'table-striped' : ''}`}>
     <thead>
@@ -210,6 +211,7 @@ export const TableContent = ({
           })
         ) : null }
     </tbody>
+    {footer ? footer : null}
   </table>
 );
 

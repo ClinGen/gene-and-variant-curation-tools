@@ -2,20 +2,29 @@ import React, { Component } from 'react';
 import Panel from '../../../common/CardPanel';
 import { connect } from 'react-redux';
 import { parseFloatShort } from '../../helpers/helpers';
-import { populationStatic, dictValuesToInt, normSInv, parseAlleleMyVariant, sortObjKeys } from '../../helpers/population_data';
+import { populationStatic, parseAlleleMyVariant, sortObjKeys } from '../../helpers/population_data';
 import { renderDataCredit } from '../../helpers/credit';
 import { getHgvsNotation } from '../../helpers/hgvs_notation';
 import PopulationEvaluation from './PopulationEvaluation';
 import { CompleteSection } from "../CompleteSection";
+import GnomADTable from './GnomADTable';
 import LoadingSpinner from '../../../common/LoadingSpinner';
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import Input from '../../../common/Input';
-import mock_page_data from '../mock_page_data.json';
 import axios from 'axios';
 
 import { AddArticleEvidenceTableView } from '../ArticleEvidenceTableView';
 
-const CI_DEFAULT = 95;
+// Supported categories of gnomAD data from LDH (with mapping to VCI display names)
+const gnomADv4Categories = [{
+  'DisplayName': 'Exomes',
+  'LDHProperty': 'GnomADExomesV4.1'
+}, {
+  'DisplayName': 'Genomes',
+  'LDHProperty': 'GnomADGenomesV4.1'
+}];
 
 class Population extends Component {
   constructor(props) {
@@ -23,48 +32,19 @@ class Population extends Component {
     this.initialState = {
       variant: this.props.variant,
       interpretation: this.props.interpretation,
-      ext_gnomadExac: false,
+      ext_gnomadv2: false,
       ext_myVariantInfo_metadata: null,
-      ext_ensemblVariation: null,
       ext_pageData: null,
       ext_singleNucleotide: true,
-      hasEspData: false, // flag to display ESP table
-      hasExacData: false, // flag to display ExAC table
       hasGnomadData: false, // flag to display gnomAD table
+      hasGnomADv4Data: false, // flag to display gnomAD v4 table
       hasPageData: false, // flag to display PAGE table
-      hasTGenomesData: false, // flag to display 1000 Genomes table
-      loading_ensemblVariation: true,
       loading_pageData: true,
-      desiredCI: CI_DEFAULT,
-      CILow: null,
-      CIHigh: null,
+      gnomADv4Data: {},
 
       populationObj: {
-        highestMAF: null,
-        desiredCI: 95,
-        mafCutoff: 5,
-        exac: {
-          _version: '', afr: {}, amr: {}, eas: {}, fin: {}, nfe: {}, oth: {}, sas: {}, _tot: {}, _extra: {}
-        },
         gnomAD: {
           _version: '', afr: {}, amr: {}, asj: {}, eas: {}, fin: {}, nfe: {}, oth: {}, sas: {}, _tot: {}, _extra: {}
-        },
-        tGenomes: {
-          afr: { ac: {}, af: {}, gc: {}, gf: {} },
-          amr: { ac: {}, af: {}, gc: {}, gf: {} },
-          eas: { ac: {}, af: {}, gc: {}, gf: {} },
-          eur: { ac: {}, af: {}, gc: {}, gf: {} },
-          sas: { ac: {}, af: {}, gc: {}, gf: {} },
-          espaa: { ac: {}, af: {}, gc: {}, gf: {} },
-          espea: { ac: {}, af: {}, gc: {}, gf: {} },
-          _tot: { ac: {}, af: {}, gc: {}, gf: {} },
-          _extra: {}
-        },
-        esp: {
-          aa: { ac: {}, gc: {} },
-          ea: { ac: {}, gc: {} },
-          _tot: { ac: {}, gc: {} },
-          _extra: {}
         }
       }
     };
@@ -75,23 +55,15 @@ class Population extends Component {
 
   componentDidMount() {
     this.fetchPopData();
-    if (this.state.interpretation) {
-      // set desired CI if previous data for it exists
-      this.getPrevSetDesiredCI(this.state.interpretation);
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.myVariantInfoData !== this.props.myVariantInfoData) {
-      this.parseEspData(this.props.myVariantInfoData);
-      this.parseExacData(this.props.myVariantInfoData, this.state.ext_myVariantInfo_metadata);
       this.parseGnomadData(this.props.myVariantInfoData, this.state.ext_myVariantInfo_metadata);
-      this.calculateHighestMAF();
     }
 
-    if (prevState.ext_ensemblVariation !== this.state.ext_ensemblVariation) {
-      this.parseTGenomesData(this.state.ext_ensemblVariation);
-      this.calculateHighestMAF();
+    if (prevProps.ldhData !== this.props.ldhData) {
+      this.parseLDHgnomADData(this.props.ldhData);
     }
   }
 
@@ -102,37 +74,11 @@ class Population extends Component {
   fetchPopData() {
     const variant = this.state.variant;
     if (variant) {
-      this.fetchEnsemblVariation(variant);
       this.fetchPageData(variant);
       this.parseVariantType(variant);
     }
     this.fetchMyVariantInfoMetadata();
   }
-
-  // Retrieve data from Ensembl Variation
-  fetchEnsemblVariation(variant) {
-    if (variant) {
-      // Extract only the number portion of the dbSNP id
-      const numberPattern = /\d+/g;
-      const rsid = (variant.dbSNPIds && variant.dbSNPIds.length > 0) ? variant.dbSNPIds[0].match(numberPattern) : null;
-      if (rsid) {
-        axios.get(EXTERNAL_API_MAP['EnsemblVariation'] + 'rs' + rsid + '?content-type=application/json;pops=1;population_genotypes=1', { cancelToken: this.axioCanceller.token })
-          .then(response => {
-            this.setState({ ext_ensemblVariation: response.data, loading_ensemblVariation: false });
-          })
-          .catch(err => {
-            if (axios.isCancel(err)) {
-              return;
-            }
-            this.setState({ loading_ensemblVariation: false });
-            console.log('Ensembl Fetch Error=: %o', err);
-          });
-      } else {
-        this.setState({ loading_ensemblVariation: false });
-      }
-    }
-  }
-
 
   // Retrieve MyVariantInfo metadata for the src_version
   fetchMyVariantInfoMetadata() {
@@ -179,209 +125,105 @@ class Population extends Component {
     }
   }
 
-  /* the following methods are related to the desired CI field and its related calculated values */
-  // method to determine desired CI value from previously saved interpretation
-  getPrevSetDesiredCI(interpretation) {
-    if (interpretation && interpretation.evaluations && interpretation.evaluations.length > 0) {
-      for (let i = 0; i < interpretation.evaluations.length; i++) {
-        if (interpretation.evaluations[i].criteria === 'BA1') {
-          let tempPopulationObj = this.state.populationObj;
-          tempPopulationObj.desiredCI = interpretation.evaluations[i].population.populationData.desiredCI;
-          this.setState({ populationObj: tempPopulationObj });
-          break;
+  // Update info related to selected data categories for gnomAD v4 table
+  changeGnomADv4AddInfo(categoryName) {
+    let gnomADv4Data = this.state.gnomADv4Data;
+    let categoriesChecked = [];
+
+    // Invert the status of the clicked checkbox
+    gnomADv4Data[categoryName].checkboxChecked = !gnomADv4Data[categoryName].checkboxChecked;
+    gnomADv4Data.Display = {};
+
+    // Find all checked data categories and add them to the display data object
+    gnomADv4Categories.forEach(gnomADv4Category => {
+      if (gnomADv4Data[gnomADv4Category.DisplayName]?.checkboxChecked) {
+        gnomADv4Data[gnomADv4Category.DisplayName].checkboxDisabled = false;
+
+        if (!gnomADv4Data[gnomADv4Category.DisplayName].noVariant) {
+          categoriesChecked.push(gnomADv4Category.DisplayName);
         }
+
+        gnomADv4Data.Display.DataRows = this.changeGnomADv4Table(gnomADv4Data[gnomADv4Category.DisplayName].DataRows,
+          gnomADv4Data.Display.DataRows, 'DataRows');
+        gnomADv4Data.Display.TotalRows = this.changeGnomADv4Table(gnomADv4Data[gnomADv4Category.DisplayName].TotalRows,
+          gnomADv4Data.Display.TotalRows, 'TotalRows');
       }
+    });
+
+    // If only one data category is checked, disable its checkbox (to prevent an empty table)
+    if (categoriesChecked.length === 1) {
+      gnomADv4Data[categoriesChecked[0]].checkboxDisabled = true;
     }
-    if (!this.state.populationObj.desiredCI) {
-      // previously saved value does not exist for some reason... set it to default value
-      let tempPopulationObj = this.state.populationObj;
-      tempPopulationObj.desiredCI = CI_DEFAULT;
-      this.setState({ populationObj: tempPopulationObj });
-    }
-    // update CI low and high values
-    this.changeDesiredCI();
+
+    this.setState({ gnomADv4Data: gnomADv4Data });
   }
 
-  // calculate highest MAF value and related info from external data
-  calculateHighestMAF() {
-    let populationObj = this.state.populationObj;
-    let highestMAFObj = { af: 0 };
-    // check gnomAD data
-    populationStatic.gnomAD._order.forEach(pop => {
-      if (populationObj.gnomAD[pop].af > highestMAFObj.af) {
-        highestMAFObj.pop = pop;
-        highestMAFObj.popLabel = populationStatic.gnomAD._labels[pop];
-        highestMAFObj.ac = populationObj.gnomAD[pop].ac;
-        highestMAFObj.ac_tot = populationObj.gnomAD[pop].an;
-        highestMAFObj.source = 'gnomAD';
-        highestMAFObj.af = populationObj.gnomAD[pop].af;
-      }
-    });
-    // check against exac data
-    populationStatic.exac._order.forEach(pop => {
-      if (populationObj.exac[pop].af && populationObj.exac[pop].af) {
-        if (populationObj.exac[pop].af > highestMAFObj.af) {
-          highestMAFObj.pop = pop;
-          highestMAFObj.popLabel = populationStatic.exac._labels[pop];
-          highestMAFObj.ac = populationObj.exac[pop].ac;
-          highestMAFObj.ac_tot = populationObj.exac[pop].an;
-          highestMAFObj.source = 'ExAC';
-          highestMAFObj.af = populationObj.exac[pop].af;
+  // Update display data in gnomAD v4 table
+  changeGnomADv4Table(categoryData, displayData, rowType) {
+    // If display data object is falsy (doesn't exist), assign input category data to it
+    if (!displayData) {
+      displayData = [];
+
+      // Loop through each genetic ancestry within the category data
+      for (let iCat = 0; iCat < categoryData.length; iCat++) {
+        displayData[iCat] = {
+          'AC': categoryData[iCat].AC,
+          'AF': categoryData[iCat].AF,
+          'AN': categoryData[iCat].AN,
+          'HOM': categoryData[iCat].HOM,
+          'ID': categoryData[iCat].ID,
+          'Name': categoryData[iCat].Name
+        };
+
+        // If category data is subdivided (e.g. by sex), use recursion to add it to the display data object
+        if (categoryData[iCat].subRows && rowType !== 'TotalRows') {
+          displayData[iCat].subRows = this.changeGnomADv4Table(categoryData[iCat].subRows,
+            displayData[iCat].subRows, rowType);
         }
       }
-    });
-    // check against esp data - done before 1000g's so that it takes precedence in case of tie
-    // due to 1000g also carrying esp data
-    populationStatic.esp._order.forEach(pop => {
-      // let alt = populationObj.esp._extra.alt;
-      if (populationObj.esp[pop].ac) {
-        let ref = populationObj.esp._extra.ref,
-          alt = populationObj.esp._extra.alt;
-        // esp does not report back frequencies, so we have to calculate it off counts
-        let tempMAF = parseFloat(populationObj.esp[pop].ac[alt] / (populationObj.esp[pop].ac[ref] + populationObj.esp[pop].ac[alt]));
-        if (tempMAF > highestMAFObj.af) {
-          highestMAFObj.pop = pop;
-          highestMAFObj.popLabel = populationStatic.esp._labels[pop];
-          highestMAFObj.ac = populationObj.esp[pop].ac[alt];
-          highestMAFObj.ac_tot = populationObj.esp[pop].ac[ref] + populationObj.esp[pop].ac[alt];
-          highestMAFObj.source = 'ESP';
-          highestMAFObj.af = tempMAF;
-        }
-      }
-    });
-    // check against 1000g data
-    populationStatic.tGenomes._order.forEach(pop => {
-      let ref = populationObj.tGenomes._extra.ref,
-        alt = populationObj.tGenomes._extra.alt;
-      if (populationObj.tGenomes[pop].af && populationObj.tGenomes[pop].af[alt]) {
-        if (populationObj.tGenomes[pop].af[alt] > highestMAFObj.af) {
-          highestMAFObj.pop = pop;
-          highestMAFObj.popLabel = populationStatic.tGenomes._labels[pop];
-          highestMAFObj.ac = populationObj.tGenomes[pop].ac[alt];
-          highestMAFObj.ac_tot = populationObj.tGenomes[pop].ac[ref] + populationObj.tGenomes[pop].ac[alt];
-          highestMAFObj.source = (pop === 'espaa' || pop === 'espea') ? 'ESP (provided by 1000 Genomes)' : '1000 Genomes';
-          highestMAFObj.af = populationObj.tGenomes[pop].af[alt];
-        }
-      }
-    });
-    // embed highest MAF and related data into population obj, and update to state
-    populationObj.highestMAF = highestMAFObj;
-    this.setState({ populationObj: populationObj }, () => {
-      this.changeDesiredCI(); // we have highest MAF data, so calculate the CI ranges
-    });
-  }
 
-  // wrapper function to calculateCI on value change
-  changeDesiredCI() {
-    if (this.state.desiredCI) {
-      this.calculateCI(parseInt(this.state.desiredCI), this.state.populationObj && this.state.populationObj.highestMAF ? this.state.populationObj.highestMAF : null);
-    }
-  }
-
-  // checking for empty text when clicking away from desired CI field
-  onBlurDesiredCI(event) {
-    let desiredCI = parseInt(this.state.desiredCIRef);
-    if (desiredCI === '' || isNaN(desiredCI)) {
-      // if the user clicks away from the desired CI field, but it is blank/filled with
-      // bad input, re-set it to the default value
-      let tempPopulationObj = this.state.populationObj;
-      this.setState({ desiredCI: CI_DEFAULT });
-      tempPopulationObj.desiredCI = CI_DEFAULT;
-      this.setState({ populationObj: tempPopulationObj });
-      this.changeDesiredCI();
-    }
-  }
-
-  // function to calculate confidence intervals (CI). Formula taken from Steven's excel spreadsheet
-  calculateCI(CIp, highestMAF) {
-    // store user-input desired CI value into population object
-    let populationObj = this.state.populationObj;
-    populationObj.desiredCI = CIp;
-    if (highestMAF) {
-      if (isNaN(CIp) || CIp < 0 || CIp > 100) {
-        // the field is blank... clear CI low and high values
-        // note that the user did not necessary navigate away from field just yet, so do not
-        // automatically set value to default here
-        this.setState({ populationObj: populationObj, CILow: null, CIHigh: null });
-      } else if (highestMAF.ac && highestMAF.ac_tot) {
-        // calculate CI
-        let xp = highestMAF.ac,
-          np = highestMAF.ac_tot;
-        let zp = -normSInv((1 - CIp / 100) / 2),
-          pp = xp / np,
-          qp = 1 - pp;
-        let CILow = ((2 * np * pp) + (zp * zp) - zp * Math.sqrt((zp * zp) + (4 * np * pp * qp))) / (2 * (np + (zp * zp))),
-          CIHigh = ((2 * np * pp) + (zp * zp) + zp * Math.sqrt((zp * zp) + (4 * np * pp * qp))) / (2 * (np + (zp * zp)));
-        this.setState({ populationObj: populationObj, CILow: CILow, CIHigh: CIHigh });
-      } else {
-        this.setState({ populationObj: populationObj, CILow: 'N/A', CIHigh: 'N/A' });
-      }
+    // Add input category data to display data object
     } else {
-      this.setState({ populationObj: populationObj, CILow: 'N/A', CIHigh: 'N/A' });
-    }
-  }
+      // Loop through each genetic ancestry within the category data
+      for (let iCat = 0; iCat < categoryData.length; iCat++) {
+        let iDisp = iCat;
 
-  // Method to assign ESP population data to global population object
-  parseEspData(response) {
-    // Not all variants return the evs{...} object from myvariant.info
-    if (response.evs) {
-      let populationObj = this.state.populationObj;
-      // get relevant numbers and extra information from ESP
-      populationObj.esp.aa.ac = dictValuesToInt(response.evs.allele_count.african_american);
-      populationObj.esp.aa.gc = dictValuesToInt(response.evs.genotype_count.african_american);
-      populationObj.esp.ea.ac = dictValuesToInt(response.evs.allele_count.european_american);
-      populationObj.esp.ea.gc = dictValuesToInt(response.evs.genotype_count.european_american);
-      populationObj.esp._tot.ac = dictValuesToInt(response.evs.allele_count.all);
-      populationObj.esp._tot.gc = dictValuesToInt(response.evs.genotype_count.all_genotype);
-      populationObj.esp._extra.avg_sample_read = response.evs.avg_sample_read;
-      populationObj.esp._extra.rsid = response.evs.rsid;
-      populationObj.esp._extra.chrom = response.evs.chrom + ''; // ensure that the chromosome is stored as a String
-      populationObj.esp._extra.hg19_start = parseInt(response.evs.hg19.start);
-      populationObj.esp._extra.ref = response.evs.ref;
-      populationObj.esp._extra.alt = response.evs.alt;
-      // update populationObj, and set flag indicating that we have ESP data
-      this.setState({ hasEspData: true, populationObj: populationObj });
-    }
-  }
+        // Check if genetic ancestry exists in display data object
+        if (!displayData[iCat]) {
+          iDisp = -1;
+        }  else if (categoryData[iCat].ID !== displayData[iCat].ID) {
+          iDisp = displayData.findIndex(dispElement => dispElement.ID === categoryData[iCat].ID);
+        }
 
-  // Method to assign ExAC population data to global population object
-  parseExacData(response, metadata) {
-    // Not all variants can be found in ExAC
-    // Do nothing if the exac{...} object is not returned from myvariant.info
-    if (response.exac) {
-      let populationObj = this.state.populationObj;
-      // get the allele count, allele number, and homozygote count for desired populations
-      populationStatic.exac._order.forEach(key => {
-        populationObj.exac[key].ac = parseInt(response.exac.ac['ac_' + key]);
-        populationObj.exac[key].an = parseInt(response.exac.an['an_' + key]);
-        populationObj.exac[key].hom = parseInt(response.exac.hom['hom_' + key]);
-        populationObj.exac[key].af = populationObj.exac[key].ac / populationObj.exac[key].an;
-      });
-      // get the allele count, allele number, and homozygote count totals
-      populationObj.exac._tot.ac = parseInt(response.exac.ac.ac_adj);
-      populationObj.exac._tot.an = parseInt(response.exac.an.an_adj);
-      populationObj.exac._tot.hom = response.exac.ac.ac_hom ? parseInt(response.exac.ac.ac_hom) : parseInt(response.exac.hom.ac_hom);
-      populationObj.exac._tot.af = populationObj.exac._tot.ac / populationObj.exac._tot.an;
-      // get extra ExAC information
-      populationObj.exac._extra.chrom = response.exac.chrom + ''; // ensure that the chromosome is stored as a String
-      populationObj.exac._extra.pos = parseInt(response.exac.pos);
-      populationObj.exac._extra.ref = response.exac.ref;
-      populationObj.exac._extra.alt = response.exac.alt;
-      // get filter information
-      if (response.exac.filter) {
-        if (Array.isArray(response.exac.filter)) {
-          populationObj.exac._extra.filter = response.exac.filter;
+        // Increment (or assign) category data to display data object
+        if (iDisp >= 0) {
+          displayData[iDisp].AC += categoryData[iCat].AC;
+          displayData[iDisp].AN += categoryData[iCat].AN;
+          displayData[iDisp].AF = displayData[iDisp].AC == 0 && displayData[iDisp].AN == 0
+            ? 0 : parseFloat(displayData[iDisp].AC / displayData[iDisp].AN);
+          displayData[iDisp].HOM += categoryData[iCat].HOM;
         } else {
-          populationObj.exac._extra.filter = [response.exac.filter];
+          const iDispLength = displayData.push({
+            'AC': categoryData[iCat].AC,
+            'AF': categoryData[iCat].AF,
+            'AN': categoryData[iCat].AN,
+            'HOM': categoryData[iCat].HOM,
+            'ID': categoryData[iCat].ID,
+            'Name': categoryData[iCat].Name
+          });
+
+          iDisp = iDispLength - 1;
+        }
+
+        // If category data is subdivided (e.g. by sex), use recursion to add it to the display data object
+        if (categoryData[iCat].subRows && rowType !== 'TotalRows') {
+          displayData[iDisp].subRows = this.changeGnomADv4Table(categoryData[iCat].subRows,
+            displayData[iDisp].subRows, rowType);
         }
       }
-      // get the source version
-      if (metadata && metadata.src && metadata.src.exac && metadata.src.exac.version) {
-        populationObj.exac._version = metadata.src.exac.version;
-      }
-      // update populationObj, and set flag indicating that we have ExAC data
-      this.setState({ hasExacData: true, populationObj: populationObj });
     }
+
+    return (displayData);
   }
 
   // Method to assign gnomAD population data to global population object
@@ -583,96 +425,407 @@ class Population extends Component {
     }
   }
 
-  // parse 1000Genome data
-  parseTGenomesData(response) {
-    // not all variants are SNPs. Do nothing if variant is not a SNP
-    if (response.var_class && response.var_class === 'SNP') {
-      let hgvs_GRCh37 = '';
-      let hgvs_GRCh38 = '';
-      let populationObj = this.state.populationObj;
-      let updated1000GData = false;
-      // FIXME: this GRCh vs gRCh needs to be reconciled in the data model and data import
-      // update off of this.props.data as it is more stable, and this.state.data does not contain relevant updates
-      if (this.state.variant && this.state.variant.hgvsNames) {
-        hgvs_GRCh37 = this.state.variant.hgvsNames.GRCh37 ? this.state.variant.hgvsNames.GRCh37 :
-          (this.state.variant.hgvsNames.gRCh37 ? this.state.variant.hgvsNames.gRCh37 : '');
-        hgvs_GRCh38 = this.state.variant.hgvsNames.GRCh38 ? this.state.variant.hgvsNames.GRCh38 :
-          (this.state.variant.hgvsNames.gRCh38 ? this.state.variant.hgvsNames.gRCh38 : '');
-      }
-      // get extra 1000Genome information
-      populationObj.tGenomes._extra.name = response.name;
-      populationObj.tGenomes._extra.var_class = response.var_class;
-      if (hgvs_GRCh37.indexOf('>') > -1 || hgvs_GRCh38.indexOf('>') > -1) {
-        // if SNP variant, extract allele information from hgvs names, preferring grch38
-        populationObj.tGenomes._extra.ref = hgvs_GRCh38 ? hgvs_GRCh38.charAt(hgvs_GRCh38.length - 3) : hgvs_GRCh37.charAt(hgvs_GRCh37.length - 3);
-        populationObj.tGenomes._extra.alt = hgvs_GRCh38 ? hgvs_GRCh38.charAt(hgvs_GRCh38.length - 1) : hgvs_GRCh37.charAt(hgvs_GRCh37.length - 1);
+  // Parse gnomAD population data from LDH
+  parseLDHgnomADPopData(gnomADSourcePopData) {
+    let gnomADv4PopData = {};
+
+    if (gnomADSourcePopData) {
+      // Save allele count, number and frequency, IDs and name
+      gnomADv4PopData.AC = 'focusAlleleCount' in gnomADSourcePopData ? gnomADSourcePopData.focusAlleleCount : '--';
+      gnomADv4PopData.AN = 'locusAlleleCount' in gnomADSourcePopData ? gnomADSourcePopData.locusAlleleCount : '--';
+      gnomADv4PopData.AF = 'alleleFrequency' in gnomADSourcePopData ? parseFloat(gnomADSourcePopData.alleleFrequency) : '--';
+      gnomADv4PopData.FAFID = 'id' in gnomADSourcePopData ? gnomADSourcePopData.id : '';
+
+      if (gnomADSourcePopData.cohort) {
+        gnomADv4PopData.ID = 'id' in gnomADSourcePopData.cohort ? gnomADSourcePopData.cohort.id : gnomADv4PopData.FAFID;
+        gnomADv4PopData.Name = Array.isArray(gnomADSourcePopData.cohort.characteristics) && gnomADSourcePopData.cohort.characteristics.length > 0
+          && 'value' in gnomADSourcePopData.cohort.characteristics[gnomADSourcePopData.cohort.characteristics.length - 1]
+          ? gnomADSourcePopData.cohort.characteristics[gnomADSourcePopData.cohort.characteristics.length - 1].value : '';
       } else {
-        // fallback for non-SNP variants
-        populationObj.tGenomes._extra.ref = response.ancestral_allele;
-        populationObj.tGenomes._extra.alt = response.minor_allele;
+        gnomADv4PopData.ID = '';
+        gnomADv4PopData.Name = '';
       }
-      // get the allele count and frequencies...
-      if (response.populations) {
-        response.populations.forEach(population => {
-          // extract 20 characters and forward to get population code (not always relevant)
-          let populationCode = population.population.substring(20).toLowerCase();
-          if (population.population.indexOf('1000GENOMES:phase_3') === 0 &&
-            populationStatic.tGenomes._order.indexOf(populationCode) > -1) {
-            // ... for specific populations =
-            populationObj.tGenomes[populationCode].ac[population.allele] = parseInt(population.allele_count);
-            populationObj.tGenomes[populationCode].af[population.allele] = parseFloat(population.frequency);
-            updated1000GData = true;
-          } else if (population.population === '1000GENOMES:phase_3:ALL') {
-            // ... and totals
-            populationObj.tGenomes._tot.ac[population.allele] = parseInt(population.allele_count);
-            populationObj.tGenomes._tot.af[population.allele] = parseFloat(population.frequency);
-            updated1000GData = true;
-          } else if (population.population === 'ESP6500:African_American') {
-            // ... and ESP AA
-            populationObj.tGenomes.espaa.ac[population.allele] = parseInt(population.allele_count);
-            populationObj.tGenomes.espaa.af[population.allele] = parseFloat(population.frequency);
-            updated1000GData = true;
-          } else if (population.population === 'ESP6500:European_American') {
-            // ... and ESP EA
-            populationObj.tGenomes.espea.ac[population.allele] = parseInt(population.allele_count);
-            populationObj.tGenomes.espea.af[population.allele] = parseFloat(population.frequency);
-            updated1000GData = true;
+
+      // Save number of homozygotes and filtering allele frequency data
+      if (gnomADSourcePopData.ancillaryResults) {
+        const gnomADSourcePopDataAR = gnomADSourcePopData.ancillaryResults;
+
+        gnomADv4PopData.HOM = 'homozygotes' in gnomADSourcePopDataAR ? gnomADSourcePopDataAR.homozygotes : '--';
+
+        if (gnomADSourcePopDataAR.grpMaxFAF95) {
+          gnomADv4PopData.GMFAF = {};
+          gnomADv4PopData.GMFAF.ID = 'groupId' in gnomADSourcePopDataAR.grpMaxFAF95 ? gnomADSourcePopDataAR.grpMaxFAF95.groupId : '';
+          gnomADv4PopData.GMFAF.CI = 'confidenceInterval' in gnomADSourcePopDataAR.grpMaxFAF95 ? gnomADSourcePopDataAR.grpMaxFAF95.confidenceInterval : '--';
+          gnomADv4PopData.GMFAF.FAF = 'frequency' in gnomADSourcePopDataAR.grpMaxFAF95 ? parseFloat(gnomADSourcePopDataAR.grpMaxFAF95.frequency) : '--';
+        }
+
+        if (gnomADSourcePopDataAR.jointGrpMaxFAF95) {
+          gnomADv4PopData.JGMFAF = {};
+          gnomADv4PopData.JGMFAF.ID = 'groupId' in gnomADSourcePopDataAR.jointGrpMaxFAF95 ? gnomADSourcePopDataAR.jointGrpMaxFAF95.groupId : '';
+          gnomADv4PopData.JGMFAF.CI = 'confidenceInterval' in gnomADSourcePopDataAR.jointGrpMaxFAF95 ? gnomADSourcePopDataAR.jointGrpMaxFAF95.confidenceInterval : '--';
+          gnomADv4PopData.JGMFAF.FAF = 'frequency' in gnomADSourcePopDataAR.jointGrpMaxFAF95 ? parseFloat(gnomADSourcePopDataAR.jointGrpMaxFAF95.frequency) : '--';
+        }
+
+        if (gnomADSourcePopDataAR.jointFreq) {
+          gnomADv4PopData.JFAF = {};
+          gnomADv4PopData.JFAF.AC = 'AC' in gnomADSourcePopDataAR.jointFreq ? gnomADSourcePopDataAR.jointFreq.AC : '';
+          gnomADv4PopData.JFAF.AN = 'AN' in gnomADSourcePopDataAR.jointFreq ? gnomADSourcePopDataAR.jointFreq.AN : '';
+          gnomADv4PopData.JFAF.AF = 'AF' in gnomADSourcePopDataAR.jointFreq ? gnomADSourcePopDataAR.jointFreq.AF : '';
+          gnomADv4PopData.JFAF.HOM = 'homozygote_count' in gnomADSourcePopDataAR.jointFreq ? gnomADSourcePopDataAR.jointFreq.homozygote_count : '';
+        }
+      } else {
+        gnomADv4PopData.HOM = '--';
+      }
+
+      // Check if source data is subdivided (e.g. by genetic ancestry or sex)
+      if (Array.isArray(gnomADSourcePopData.subcohortFrequency)) {
+        gnomADv4PopData.subRows = [];
+
+        // Use recursion to save subdivided data
+        gnomADSourcePopData.subcohortFrequency.forEach(gnomADv4SubCohort => {
+          const gnomADv4SubCohortData = this.parseLDHgnomADPopData(gnomADv4SubCohort);
+
+          gnomADv4PopData.subRows.push(gnomADv4SubCohortData);
+
+          // Check if source data is at sex subdivision (and save allele counts and homozygotes in sex totals)
+          if (gnomADv4SubCohortData.Name === 'XX' || gnomADv4SubCohortData.Name === 'XY') {
+            if (!gnomADv4PopData.sexTotals) {
+              gnomADv4PopData.sexTotals = [];
+            }
+
+            const gnomADv4SexSubTotal = {
+              'AC': Number(gnomADv4SubCohortData.AC) && gnomADv4SubCohortData.AC !== true ? Number(gnomADv4SubCohortData.AC) : 0,
+              'AN': Number(gnomADv4SubCohortData.AN) && gnomADv4SubCohortData.AN !== true ? Number(gnomADv4SubCohortData.AN) : 0,
+              'HOM': Number(gnomADv4SubCohortData.HOM) && gnomADv4SubCohortData.HOM !== true ? Number(gnomADv4SubCohortData.HOM) : 0,
+              'Name': gnomADv4SubCohortData.Name
+            };
+
+            gnomADv4PopData.sexTotals.push(gnomADv4SexSubTotal);
+
+          // If sex totals exist, source data expected to be at genetic ancestry subdivision
+          } else if (gnomADv4SubCohortData.sexTotals) {
+            // If IDs match, set filtering allele frequency name (to genetic ancestry)
+            if (gnomADv4PopData?.GMFAF?.ID === gnomADv4SubCohortData.FAFID) {
+              gnomADv4PopData.GMFAF.Name = gnomADv4SubCohortData.Name;
+            }
+
+            if (gnomADv4PopData?.JGMFAF?.ID === gnomADv4SubCohortData.FAFID) {
+              gnomADv4PopData.JGMFAF.Name = gnomADv4SubCohortData.Name;
+            }
+
+            // Add allele counts and homozygotes to sex totals
+            if (!gnomADv4PopData.sexTotals) {
+              gnomADv4PopData.sexTotals = gnomADv4SubCohortData.sexTotals;
+
+            } else {
+              for (let iSex = 0; iSex < gnomADv4SubCohortData.sexTotals.length; iSex++) {
+                let iTotal = iSex;
+
+                if (gnomADv4SubCohortData.sexTotals[iSex].Name !== gnomADv4PopData.sexTotals[iSex].Name) {
+                  iTotal = gnomADv4PopData.sexTotals.findIndex(sexElement =>
+                    sexElement.Name === gnomADv4SubCohortData.sexTotals[iSex].Name
+                  );
+                }
+
+                if (iTotal >= 0) {
+                  gnomADv4PopData.sexTotals[iTotal].AC += gnomADv4SubCohortData.sexTotals[iSex].AC;
+                  gnomADv4PopData.sexTotals[iTotal].AN += gnomADv4SubCohortData.sexTotals[iSex].AN;
+                  gnomADv4PopData.sexTotals[iTotal].HOM += gnomADv4SubCohortData.sexTotals[iSex].HOM;
+                } else {
+                  gnomADv4PopData.sexTotals.push(gnomADv4SubCohortData.sexTotals[iSex]);
+                }
+              }
+            }
           }
         });
       }
-      // get the genotype counts and frequencies...
-      if (response.population_genotypes) {
-        response.population_genotypes.forEach(population_genotype => {
-          // extract 20 characters and forward to get population code (not always relevant)
-          let populationCode = population_genotype.population.substring(20).toLowerCase();
-          if (population_genotype.population.indexOf('1000GENOMES:phase_3:') === 0 &&
-            populationStatic.tGenomes._order.indexOf(populationCode) > -1) {
-            // ... for specific populations
-            populationObj.tGenomes[populationCode].gc[population_genotype.genotype] = parseInt(population_genotype.count);
-            populationObj.tGenomes[populationCode].gf[population_genotype.genotype] = parseFloat(population_genotype.frequency);
-            updated1000GData = true;
-          } else if (population_genotype.population === '1000GENOMES:phase_3:ALL') {
-            // ... and totals
-            populationObj.tGenomes._tot.gc[population_genotype.genotype] = parseInt(population_genotype.count);
-            populationObj.tGenomes._tot.gf[population_genotype.genotype] = parseFloat(population_genotype.frequency);
-            updated1000GData = true;
-          } else if (population_genotype.population === 'ESP6500:African_American') {
-            // ... and ESP AA
-            populationObj.tGenomes.espaa.gc[population_genotype.genotype] = parseInt(population_genotype.count);
-            populationObj.tGenomes.espaa.gf[population_genotype.genotype] = parseFloat(population_genotype.frequency);
-            updated1000GData = true;
-          } else if (population_genotype.population === 'ESP6500:European_American') {
-            // ... and ESP EA
-            populationObj.tGenomes.espea.gc[population_genotype.genotype] = parseInt(population_genotype.count);
-            populationObj.tGenomes.espea.gf[population_genotype.genotype] = parseFloat(population_genotype.frequency);
-            updated1000GData = true;
-          }
-        });
+    }
+
+    return (gnomADv4PopData);
+  }
+
+  // Parse gnomAD data from LDH
+  parseLDHgnomADData(response) {
+    // Identify the data to pull out (by LDH ID)
+    const gnomADv4DatasetID = 'gnomAD4.1';
+    const gnomADv4TotalsID = 'ALL';
+
+    // Set saved data defaults
+    let gnomADv4Data = this.state.gnomADv4Data;
+    let categoriesChecked = [];
+    let FAFTotalColumn = {
+      'AC': 0,
+      'ACCalc': 0,
+      'AN': 0,
+      'ANCalc': 0,
+      'AF': 0,
+      'AFCalc': 0,
+      'Filter': [],
+      'HOM': 0,
+      'HOMCalc': 0,
+      'Name': 'Total',
+      'fromLDH': false
+    };
+    let getgnomADv4Metadata = true;
+    let gnomADv4MissingVariants = [];
+
+    gnomADv4Data.Display = {};
+    gnomADv4Data.FAF = [
+      [''],
+      ['Filters'],
+      ['Allele Count'],
+      ['Allele Number'],
+      ['Allele Frequency'],
+      [(<span key="grpmax-filter-af">Grpmax Filtering AF<a className="no-external-link"
+        href="https://gnomad.broadinstitute.org/help/faf" title="Filtering allele frequency help"
+        target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={faQuestionCircle}
+        className="ml-1 mr-1" /></a><br />(95% confidence)</span>)],
+      ['Grpmax Filtering AF Group'],
+      ['Number of homozygotes']
+    ];
+
+    if (response?.ld) {
+      // Find all supported data categories
+      gnomADv4Categories.forEach(gnomADv4Category => {
+        if (Array.isArray(response.ld[gnomADv4Category.LDHProperty])) {
+          // Looping through all elements of a category, but only expecting one
+          response.ld[gnomADv4Category.LDHProperty].forEach(gnomADv4Dataset => {
+            if (gnomADv4Dataset?.entContent?.gks_va_freq?.derivedFrom?.id === gnomADv4DatasetID) {
+              // Save metadata (only once)
+              if (getgnomADv4Metadata) {
+                gnomADv4Data.ID = 'entId' in gnomADv4Dataset ? gnomADv4Dataset.entId : '';
+                gnomADv4Data.DisplayID = gnomADv4Data.ID.match(/^chr/) ? gnomADv4Data.ID.substring(3) : gnomADv4Data.ID;
+                gnomADv4Data.IRI = 'entIri' in gnomADv4Dataset ? gnomADv4Dataset.entIri : '';
+                gnomADv4Data.Label = 'label' in gnomADv4Dataset.entContent.gks_va_freq.derivedFrom
+                  ? gnomADv4Dataset.entContent.gks_va_freq.derivedFrom.label : '';
+                gnomADv4Data.Version = 'version' in gnomADv4Dataset.entContent.gks_va_freq.derivedFrom
+                  ? gnomADv4Dataset.entContent.gks_va_freq.derivedFrom.version : '';
+
+                if (gnomADv4Dataset.entContent.locus) {
+                  gnomADv4Data.Chr = 'contig' in gnomADv4Dataset.entContent.locus
+                    ? gnomADv4Dataset.entContent.locus.contig.match(/^chr/)
+                      ? gnomADv4Dataset.entContent.locus.contig.substring(3) : gnomADv4Dataset.entContent.locus.contig
+                    : '';
+                  gnomADv4Data.Pos = 'position' in gnomADv4Dataset.entContent.locus
+                    ? gnomADv4Dataset.entContent.locus.position : '';
+                }
+
+                getgnomADv4Metadata = false;
+              }
+
+              // Save filtering allele frequency column name and filters
+              // For filters, if "qcFilters" is empty and "noVariant" is absent, default to "Pass"
+              let FAFColumn = {
+                'Name': gnomADv4Category.DisplayName,
+                'Filters': Array.isArray(gnomADv4Dataset.entContent.gks_va_freq?.qualityMeasures?.qcFilters)
+                  ? gnomADv4Dataset.entContent.gks_va_freq.qualityMeasures.qcFilters.length > 0
+                    ? gnomADv4Dataset.entContent.gks_va_freq.qualityMeasures.qcFilters
+                    : gnomADv4Dataset.entContent.noVariant ? 'No variant' : 'Pass'
+                  : gnomADv4Dataset.entContent.noVariant ? 'No variant' : ''
+              };
+
+              // Save population data
+              const gnomADv4CategoryData = this.parseLDHgnomADPopData(gnomADv4Dataset.entContent.gks_va_freq);
+
+              // If sex totals are present in population data, set allele frequency and ID for each
+              if (Array.isArray(gnomADv4CategoryData.sexTotals)) {
+                for (let sexElement of gnomADv4CategoryData.sexTotals) {
+                  sexElement.AF = sexElement.AC == 0 && sexElement.AN == 0
+                    ? 0 : parseFloat(sexElement.AC / sexElement.AN);
+                  sexElement.ID = 'Total.' + sexElement.Name;
+                }
+              }
+
+              // Save all category data together
+              gnomADv4Data[gnomADv4Category.DisplayName] = {
+                'DataRows': gnomADv4CategoryData.subRows ? gnomADv4CategoryData.subRows : [],
+                'Filters': FAFColumn.Filters,
+                'ID': gnomADv4CategoryData.ID,
+                'Name': gnomADv4CategoryData.Name,
+                'TotalRows': gnomADv4CategoryData.sexTotals ? gnomADv4CategoryData.sexTotals : []
+              };
+
+              // If group max is present in population data, save in filtering allele frequency column
+              if (gnomADv4CategoryData.GMFAF) {
+                FAFColumn.GMF = 'FAF' in gnomADv4CategoryData.GMFAF ? gnomADv4CategoryData.GMFAF.FAF : '';
+                FAFColumn.GMN = 'Name' in gnomADv4CategoryData.GMFAF ? gnomADv4CategoryData.GMFAF.Name : '';
+              }
+
+              // If joint group max is present in population data (and greater than previously-saved frequency),
+              // save in filtering allele frequency total column
+              if (gnomADv4CategoryData.JGMFAF) {
+                if (FAFTotalColumn.GMF) {
+                  if (Number(gnomADv4CategoryData.JGMFAF.FAF) && gnomADv4CategoryData.JGMFAF.FAF > FAFTotalColumn.GMF) {
+                    FAFTotalColumn.GMF = gnomADv4CategoryData.JGMFAF.FAF;
+                    FAFTotalColumn.GMN = 'Name' in gnomADv4CategoryData.JGMFAF ? gnomADv4CategoryData.JGMFAF.Name : '';
+                  }
+                } else {
+                  FAFTotalColumn.GMF = 'FAF' in gnomADv4CategoryData.JGMFAF ? gnomADv4CategoryData.JGMFAF.FAF : '';
+                  FAFTotalColumn.GMN = 'Name' in gnomADv4CategoryData.JGMFAF ? gnomADv4CategoryData.JGMFAF.Name : '';
+                }
+              }
+
+              // If joint frequency is present in population data, save in filtering allele frequency total column
+              if (gnomADv4CategoryData.JFAF && !FAFTotalColumn.fromLDH) {
+                FAFTotalColumn.AC = gnomADv4CategoryData.JFAF.AC;
+                FAFTotalColumn.AN = gnomADv4CategoryData.JFAF.AN;
+                FAFTotalColumn.AF = gnomADv4CategoryData.JFAF.AF;
+                FAFTotalColumn.HOM = gnomADv4CategoryData.JFAF.HOM;
+                FAFTotalColumn.fromLDH = true;
+              }
+
+              // Add display flags to category data
+              if (gnomADv4Data[gnomADv4Category.DisplayName].DataRows.length > 0) {
+                gnomADv4Data[gnomADv4Category.DisplayName].checkboxChecked = true;
+                gnomADv4Data[gnomADv4Category.DisplayName].checkboxDisabled = false;
+
+                if (gnomADv4Dataset.entContent.noVariant) {
+                  gnomADv4Data[gnomADv4Category.DisplayName].noVariant = true;
+                } else {
+                  categoriesChecked.push(gnomADv4Category.DisplayName);
+                }
+              } else {
+                gnomADv4Data[gnomADv4Category.DisplayName].checkboxChecked = false;
+                gnomADv4Data[gnomADv4Category.DisplayName].checkboxDisabled = true;
+              }
+
+              // Save allele and homozygote data as category and filtering allele frequency totals
+              // For the "all" category, there's no need to sum the data
+              if (gnomADv4CategoryData.ID === gnomADv4TotalsID) {
+                gnomADv4Data[gnomADv4Category.DisplayName].TotalRows.push({
+                  'AC': gnomADv4CategoryData.AC,
+                  'AN': gnomADv4CategoryData.AN,
+                  'AF': gnomADv4CategoryData.AF,
+                  'HOM': gnomADv4CategoryData.HOM,
+                  'ID': 'Total',
+                  'Name': 'Total'
+                });
+
+                FAFColumn.AC = gnomADv4CategoryData.AC;
+                FAFColumn.AN = gnomADv4CategoryData.AN;
+                FAFColumn.AF = gnomADv4CategoryData.AF;
+                FAFColumn.HOM = gnomADv4CategoryData.HOM;
+              } else {
+                let categoryTotals = {
+                  'AC': 0,
+                  'AN': 0,
+                  'AF': 0,
+                  'HOM': 0,
+                  'ID': 'Total',
+                  'Name': 'Total'
+                };
+
+                for (const categoryElement of gnomADv4CategoryData.subRows) {
+                  categoryTotals.AC += Number(categoryElement.AC) && categoryElement.AC !== true ? Number(categoryElement.AC) : 0;
+                  categoryTotals.AN += Number(categoryElement.AN) && categoryElement.AN !== true ? Number(categoryElement.AN) : 0;
+                  categoryTotals.HOM += Number(categoryElement.HOM) && categoryElement.HOM !== true ? Number(categoryElement.HOM) : 0;
+                }
+
+                categoryTotals.AF = categoryTotals.AC == 0 && categoryTotals.AN == 0
+                  ? 0 : parseFloat(categoryTotals.AC / categoryTotals.AN);
+                gnomADv4Data[gnomADv4Category.DisplayName].TotalRows.push(categoryTotals);
+
+                FAFColumn.AC = categoryTotals.AC;
+                FAFColumn.AN = categoryTotals.AN;
+                FAFColumn.AF = categoryTotals.AF;
+                FAFColumn.HOM = categoryTotals.HOM;
+              }
+
+              // Add filtering allele frequency totals (for category) to display array and total column
+              gnomADv4Data.FAF[0].push(FAFColumn.Name);
+              gnomADv4Data.FAF[1].push(FAFColumn.Filters);
+              gnomADv4Data.FAF[2].push(FAFColumn.AC);
+              gnomADv4Data.FAF[3].push(FAFColumn.AN);
+              gnomADv4Data.FAF[4].push(FAFColumn.AF);
+              gnomADv4Data.FAF[5].push('GMF' in FAFColumn ? FAFColumn.GMF : '');
+              gnomADv4Data.FAF[6].push('GMN' in FAFColumn ? FAFColumn.GMN : '');
+              gnomADv4Data.FAF[7].push(FAFColumn.HOM);
+
+              FAFTotalColumn.ACCalc += FAFColumn.AC;
+              FAFTotalColumn.ANCalc += FAFColumn.AN;
+              FAFTotalColumn.AFCalc = FAFTotalColumn.ACCalc == 0 && FAFTotalColumn.ANCalc == 0
+                ? 0 : parseFloat(FAFTotalColumn.ACCalc / FAFTotalColumn.ANCalc);
+              FAFTotalColumn.HOMCalc += FAFColumn.HOM;
+
+              gnomADv4Data.Display.DataRows = this.changeGnomADv4Table(gnomADv4Data[gnomADv4Category.DisplayName].DataRows,
+                gnomADv4Data.Display.DataRows, 'DataRows');
+              gnomADv4Data.Display.TotalRows = this.changeGnomADv4Table(gnomADv4Data[gnomADv4Category.DisplayName].TotalRows,
+                gnomADv4Data.Display.TotalRows, 'TotalRows');
+            }
+          });
+
+        // Data category not present, update display array and filtering allele frequency total column
+        } else {
+          gnomADv4MissingVariants.push(gnomADv4Data.FAF[0].length);
+
+          gnomADv4Data.FAF[0].push(gnomADv4Category.DisplayName);
+          gnomADv4Data.FAF[1].push('No data');
+          gnomADv4Data.FAF[2].push('');
+          gnomADv4Data.FAF[3].push('');
+          gnomADv4Data.FAF[4].push('');
+          gnomADv4Data.FAF[5].push('');
+          gnomADv4Data.FAF[6].push('');
+          gnomADv4Data.FAF[7].push('');
+
+          FAFTotalColumn.Filter.push('Not in ' + gnomADv4Category.DisplayName.toLowerCase());
+        }
+      });
+
+      // If filtering allele frequency totals provided (via joint frequency), only update allele data (of absent data category)
+      if (FAFTotalColumn.fromLDH) {
+        if (gnomADv4MissingVariants.length === 1) {
+          gnomADv4Data.FAF[2][gnomADv4MissingVariants[0]] = FAFTotalColumn.AC - FAFTotalColumn.ACCalc;
+          gnomADv4Data.FAF[3][gnomADv4MissingVariants[0]] = FAFTotalColumn.AN - FAFTotalColumn.ANCalc;
+        }
+
+      // Otherwise, add calculated totals to filtering allele frequency total column
+      } else {
+        FAFTotalColumn.AC = FAFTotalColumn.ACCalc;
+        FAFTotalColumn.AN = FAFTotalColumn.ANCalc;
+        FAFTotalColumn.AF = FAFTotalColumn.AFCalc;
+        FAFTotalColumn.HOM = FAFTotalColumn.HOMCalc;
       }
-      if (updated1000GData) {
-        // update populationObj, and set flag indicating that we have 1000Genomes data
-        this.setState({ hasTGenomesData: true, populationObj: populationObj });
+
+      // Add filtering allele frequency totals to display array
+      gnomADv4Data.FAF[0].push(FAFTotalColumn.Name);
+      gnomADv4Data.FAF[1].push(FAFTotalColumn.Filter);
+      gnomADv4Data.FAF[2].push(FAFTotalColumn.AC);
+      gnomADv4Data.FAF[3].push(FAFTotalColumn.AN);
+      gnomADv4Data.FAF[4].push(FAFTotalColumn.AF);
+      gnomADv4Data.FAF[5].push('GMF' in FAFTotalColumn ? FAFTotalColumn.GMF : '');
+      gnomADv4Data.FAF[6].push('GMN' in FAFTotalColumn ? FAFTotalColumn.GMN : '');
+      gnomADv4Data.FAF[7].push(FAFTotalColumn.HOM);
+
+      // If only one data category is checked, disable its checkbox (to prevent an empty table)
+      if (categoriesChecked.length === 1) {
+        gnomADv4Data[categoriesChecked[0]].checkboxDisabled = true;
       }
+    }
+
+    // If metadata not provided, get info for gnomAD link from variant object
+    if (getgnomADv4Metadata && this.state.variant?.hgvsNames?.GRCh38) {
+      const Chr = this.state.variant.hgvsNames.GRCh38.substring(7, 9);
+      const Pos = this.state.variant.hgvsNames.GRCh38.match(/:g.(\d+)\D/);
+
+      if (Chr) {
+        if (Chr.indexOf('0') === 0) {
+          gnomADv4Data.Chr = Chr.substring(1);
+        } else if (Chr === '23') {
+          gnomADv4Data.Chr = 'X';
+        } else if (Chr === '24') {
+          gnomADv4Data.Chr = 'Y';
+        } else {
+          gnomADv4Data.Chr = Chr;
+        }
+      }
+
+      if (Pos?.length > 1) {
+        gnomADv4Data.Pos = Pos[1];
+      }
+    }
+
+    if (Object.keys(gnomADv4Data.Display).length) {
+      this.setState({ hasGnomADv4Data: true, gnomADv4Data: gnomADv4Data });
     }
   }
 
@@ -695,7 +848,7 @@ class Population extends Component {
       // Then look into HGVS term for non-SNV type patterns
       if (variant.variationType) {
         if (popVariantTypes.indexOf(variant.variationType.toLowerCase()) > -1) {
-          this.setState({ ext_gnomadExac: true })
+          this.setState({ ext_gnomadv2: true })
         }
       }
       if (variant.variationType && variant.variationType !== 'single nucleotide variant') {
@@ -711,72 +864,10 @@ class Population extends Component {
     }
   }
 
-  // Method to render ESP population table header content
-  renderEspHeader(hasEspData, loading_myVariantInfo, esp, singleNucleotide) {
-    if (hasEspData && !loading_myVariantInfo && singleNucleotide) {
-      const variantEsp = esp._extra.rsid + '; ' + esp._extra.chrom + '.' + esp._extra.hg19_start + '; Alleles ' + esp._extra.ref + '>' + esp._extra.alt;
-      const linkoutEsp = EXTERNAL_API_MAP['ESP_EVS'] + 'searchBy=rsID&target=' + esp._extra.rsid + '&x=0&y=0';
-      return (
-        <div>Exome Sequencing Project (ESP): {variantEsp} (GRCh37)
-          <a href="#credit-myvariant-population" className="credit-myvariant" title="MyVariant.info"><span>MyVariant</span></a>
-          <a className="panel-subtitle ml-2" href={linkoutEsp} target="_blank" rel="noopener noreferrer">See data in ESP</a>
-        </div>
-      );
-    } else {
-      return (
-        <div>Exome Sequencing Project (ESP)
-          <a href="#credit-myvariant-population" className="credit-myvariant" title="MyVariant.info"><span>MyVariant</span></a>
-        </div>
-      );
-    }
-  }
-
-  // Method to render a row of data for the ESP table
-  renderEspRow(key, esp, espStatic, rowNameCustom, className) {
-    let rowName = espStatic._labels[key];
-    // generate genotype strings from reference and alt allele information
-    let g_ref = esp._extra.ref + esp._extra.ref,
-      g_alt = esp._extra.alt + esp._extra.alt,
-      g_mixed = esp._extra.alt + esp._extra.ref;
-    if (key === '_tot') {
-      rowName = rowNameCustom;
-    }
-    return (
-      <tr key={key} className={className ? className : ''}>
-        <td>{rowName}</td>
-        <td>{esp[key].ac[esp._extra.ref] || esp[key].ac[esp._extra.ref] === 0 ? esp._extra.ref + ': ' + esp[key].ac[esp._extra.ref] : '--'}</td>
-        <td>{esp[key].ac[esp._extra.alt] || esp[key].ac[esp._extra.alt] === 0 ? esp._extra.alt + ': ' + esp[key].ac[esp._extra.alt] : '--'}</td>
-        <td>{esp[key].gc[g_ref] || esp[key].gc[g_ref] ? g_ref + ': ' + esp[key].gc[g_ref] : '--'}</td>
-        <td>{esp[key].gc[g_alt] || esp[key].gc[g_alt] ? g_alt + ': ' + esp[key].gc[g_alt] : '--'}</td>
-        <td>{esp[key].gc[g_mixed] || esp[key].gc[g_mixed] ? g_mixed + ': ' + esp[key].gc[g_mixed] : '--'}</td>
-      </tr>
-    );
-  }
-
-  // Method to render additional information (data sources, filter status) in ExAC/gnomAD population table
+  // Method to render additional information (data sources, filter status) in gnomAD population tables
   // If filter(s) not provided by myvariant.info, assume there was a "Pass"; if no data is provided, assume there was a "No variant"
-  renderExacGnomadAddlInfo(dataset, datasetName) {
-    if (datasetName === 'ExAC') {
-      return (
-        <table className="table additional-info">
-          <tbody>
-            <tr>
-              <td className="filter">
-                <span>Filter:</span>
-                <ul>
-                  {dataset._extra.filter ?
-                    dataset._extra.filter.map((filter, index) => {
-                      return (this.renderExacGnomadFilter(filter, (filter + '-' + index), 'danger'));
-                    })
-                    :
-                    this.renderExacGnomadFilter('Pass', 'Pass', 'success')}
-                </ul>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      );
-    } else if (datasetName === 'gnomAD') {
+  renderGnomadAddlInfo(dataset, datasetName) {
+    if (datasetName === 'gnomAD') {
       return (
         <table className="table additional-info">
           <tbody>
@@ -788,10 +879,10 @@ class Population extends Component {
                   <ul>
                     {dataset._extra.exome_filter ?
                       dataset._extra.exome_filter.map((filter, index) => {
-                        return (this.renderExacGnomadFilter(filter, (filter + '-' + index), 'warning'));
+                        return (this.renderGnomadFilter(filter, (filter + '-' + index), 'warning'));
                       })
                       :
-                      this.renderExacGnomadFilter('Pass', 'Pass', 'success')}
+                      this.renderGnomadFilter('Pass', 'Pass', 'success')}
                   </ul>
                 </td>
               </tr>
@@ -800,7 +891,7 @@ class Population extends Component {
                 <td className="included-data"><i className="icon icon-times-circle" /><span>Exomes</span></td>
                 <td className="filter">
                   <span>Filter:</span>
-                  <ul>{this.renderExacGnomadFilter('No variant', 'No variant', 'danger')}</ul>
+                  <ul>{this.renderGnomadFilter('No variant', 'No variant', 'danger')}</ul>
                 </td>
               </tr>
             }{dataset._extra.hasGenomeData ?
@@ -811,10 +902,10 @@ class Population extends Component {
                   <ul>
                     {dataset._extra.genome_filter ?
                       dataset._extra.genome_filter.map((filter, index) => {
-                        return (this.renderExacGnomadFilter(filter, (filter + '-' + index), 'warning'));
+                        return (this.renderGnomadFilter(filter, (filter + '-' + index), 'warning'));
                       })
                       :
-                      this.renderExacGnomadFilter('Pass', 'Pass', 'success')}
+                      this.renderGnomadFilter('Pass', 'Pass', 'success')}
                   </ul>
                 </td>
               </tr>
@@ -823,10 +914,48 @@ class Population extends Component {
                 <td className="included-data"><i className="icon icon-times-circle" /><span>Genomes</span></td>
                 <td className="filter">
                   <span>Filter:</span>
-                  <ul>{this.renderExacGnomadFilter('No variant', 'No variant', 'danger')}</ul>
+                  <ul>{this.renderGnomadFilter('No variant', 'No variant', 'danger')}</ul>
                 </td>
               </tr>
             }
+          </tbody>
+        </table>
+      );
+    } else if (datasetName === 'gnomADv4') {
+      return (
+        <table className="table additional-info">
+          <tbody>
+            {gnomADv4Categories.map(gnomADv4Category => {
+              if (dataset[gnomADv4Category.DisplayName]) {
+                return (
+                  <tr key={'gnomADv4-checkbox-' + gnomADv4Category.DisplayName}>
+                    <td className="included-data">
+                      <Input type="checkbox" onChange={() => this.changeGnomADv4AddInfo(gnomADv4Category.DisplayName)}
+                        checked={dataset[gnomADv4Category.DisplayName].checkboxChecked}
+                        disabled={dataset[gnomADv4Category.DisplayName].checkboxDisabled} />
+                      <span>{gnomADv4Category.DisplayName}</span>
+                    </td>
+                    <td className="filter">
+                      <span>Filter:</span>
+                      {this.renderGnomADv4Filters(dataset[gnomADv4Category.DisplayName].Filters)}
+                    </td>
+                  </tr>
+                )
+              } else {
+                return (
+                  <tr key={'gnomADv4-checkbox-' + gnomADv4Category.DisplayName}>
+                    <td className="included-data">
+                      <Input type="checkbox" disabled />
+                      <span>{gnomADv4Category.DisplayName}</span>
+                    </td>
+                    <td className="filter">
+                      <span>Filter:</span>
+                      {this.renderGnomADv4Filters('No data')}
+                    </td>
+                  </tr>
+                )
+              }
+            })}
           </tbody>
         </table>
       );
@@ -835,69 +964,97 @@ class Population extends Component {
     }
   }
 
-  // Method to render a single filter status in ExAC/gnomAD population table
-  renderExacGnomadFilter(filter, filterKey, filterClass) {
+  // Method to render a single filter status in gnomAD population table
+  renderGnomadFilter(filter, filterKey, filterClass) {
     return (<li key={filterKey} className={'label label-' + filterClass}>{filter}</li>);
   }
 
-  // Method to render ExAC/gnomAD population table header content
-  renderExacGnomadHeader(datasetCheck, loading_myVariantInfo, dataset, gnomadExac, response, metadata, datasetName) {
+  // Method to render filters in gnomAD tables (filtering allele frequency and population)
+  renderGnomADv4Filters(filters) {
+    const gnomADv4FilterText = {
+      'AC0': 'Allele count is zero due to removal of low quality genotypes (GQ < 20; DP < 10; and AB < 0.2 for het calls) at this site',
+      'AS_VQSR': 'Failed allele-specific VQSR filter',
+      'discrepant_frequencies': 'Has discrepant frequencies between genomes and exomes',
+      'InbreedingCoeff': 'Has an inbreeding coefficient < -0.3',
+      'not_called_in_exomes': 'This variant was not called in the gnomAD exome callset; no exome samples had any genotype call (no reference or alternate calls)',
+      'not_called_in_genomes': 'This variant was not called in the gnomAD genome callset; no genome samples had any genotype call (no reference or alternate calls)',
+      'RF': 'Failed random forest filters'
+    };
+
+    if (Array.isArray(filters)) {
+      if (filters.length > 0) {
+        return (
+          <ul>
+            {filters.map((filter, i) => {
+              return (<li key={filter + '-' + i} className="label label-warning" title={filter in gnomADv4FilterText ? gnomADv4FilterText[filter] : ''}>{filter}</li>);
+            })}
+          </ul>
+        );
+      } else {
+        return ('');
+      }
+    } else if (filters !== '') {
+      const labelType = filters === 'Pass' ? 'success' : 'danger';
+
+      return (
+        <ul>
+          <li className={'label label-' + labelType}>{filters}</li>
+        </ul>
+      );
+    } else {
+      return ('');
+    }
+  }
+
+  // Method to render gnomAD v2 population table header content
+  renderGnomadHeader(datasetCheck, loading_myVariantInfo, dataset, gnomadv2, response, metadata, datasetName) {
     let datasetVariant = '';
     let datasetLink;
     let version;
 
     if (datasetCheck) {
-      datasetVariant = ' ' + dataset._extra.chrom + ':' + dataset._extra.pos + ' ' + dataset._extra.ref + '/' + dataset._extra.alt + ' (GRCh37)';
+      datasetVariant = ' ' + dataset._extra.chrom + '-' + dataset._extra.pos + '-' + dataset._extra.ref + '-' + dataset._extra.alt + ' (GRCh37)';
     } else if (response) {
       let alleleData = parseAlleleMyVariant(response);
 
       if (Object.keys(alleleData).length) {
-        datasetVariant = ' ' + alleleData.chrom + ':' + alleleData.pos + ' ' + alleleData.ref + '/' + alleleData.alt + ' (GRCh37)';
+        datasetVariant = ' ' + alleleData.chrom + '-' + alleleData.pos + '-' + alleleData.ref + '-' + alleleData.alt + ' (GRCh37)';
       }
     }
 
     // Set the source version
     if (metadata && metadata.src) {
-      version = (datasetName === 'ExAC' && metadata.src.exac && metadata.src.exac.version) ? metadata.src.exac.version :
-        (datasetName === 'gnomAD' && metadata.src.gnomad && metadata.src.gnomad.version) ? metadata.src.gnomad.version : '';
+      version = (datasetName === 'gnomAD' && metadata.src.gnomad && metadata.src.gnomad.version) ? '2.1.1 (' + metadata.src.gnomad.version + ')' : '';
     }
 
-    if (datasetCheck && !loading_myVariantInfo && gnomadExac) {
-      const datasetVariantURLKey = (datasetName === 'ExAC') ? 'EXACHome' : (datasetName === 'gnomAD') ? 'gnomADHome' : null;
-      const datasetURL = EXTERNAL_API_MAP[datasetVariantURLKey] + 'variant/' + dataset._extra.chrom + '-' + dataset._extra.pos + '-' + dataset._extra.ref + '-' + dataset._extra.alt;
+    if (datasetCheck && !loading_myVariantInfo && gnomadv2) {
+      const datasetParameterValue = (datasetName === 'gnomAD') ? 'gnomad_r2_1' : '';
+      const datasetURL = EXTERNAL_API_MAP['gnomADHome'] + 'variant/' + dataset._extra.chrom + '-' + dataset._extra.pos + '-' + dataset._extra.ref + '-' + dataset._extra.alt + '?dataset=' + datasetParameterValue;
       datasetLink = <a className="panel-subtitle ml-2" href={datasetURL} title={`${datasetName} v${version}`} target="_blank" rel="noopener noreferrer">See data in {datasetName}</a>
     }
 
     return (
       <div>
-        {datasetName}{datasetVariant} {version ? <span className="exac-gnomad-version">Version: {version}</span> : null}
+        {datasetName}{datasetVariant} {version ? <span className="gnomad-version">Version: {version}</span> : null}
         <a href="#credit-myvariant-population" className="credit-myvariant" title="MyVariant.info"><span>MyVariant</span></a>
         {datasetLink}
       </div>
     );
   }
 
-  // Method to render external ExAC/gnomAD linkout when no relevant population data is found
-  renderExacGnomadLinkout(response, datasetName) {
-    let datasetCheck, datasetLink, datasetRegionURLKey;
+  // Method to render external gnomAD linkout when no relevant population data is found
+  renderGnomadLinkout(response, datasetName) {
+    let datasetCheck, datasetLink, datasetParameterValue;
     let linkText = 'Search ' + datasetName;
-    // If no ExAC/gnomAD population data, construct external linkout for one of the following:
+    // If no gnomAD population data, construct external linkout for one of the following:
     // 1) clinvar/cadd data found & the variant type is substitution
     // 2) clinvar/cadd data found & the variant type is NOT substitution
     // 3) no data returned by myvariant.info
-    switch (datasetName) {
-      case 'ExAC':
-        datasetCheck = this.state.hasExacData;
-        datasetLink = EXTERNAL_API_MAP['EXACHome'];
-        datasetRegionURLKey = 'ExACRegion';
-        break;
-      case 'gnomAD':
-        datasetCheck = this.state.hasGnomadData;
-        datasetLink = EXTERNAL_API_MAP['gnomADHome'];
-        datasetRegionURLKey = 'gnomADRegion';
-        break;
-
-      // no default    
+    if (datasetName === 'gnomAD') {
+      datasetCheck = this.state.hasGnomadData;
+      datasetParameterValue = 'gnomad_r2_1';
+      // For "Search gnomAD" link, default to latest version (instead of v2)
+      datasetLink = EXTERNAL_API_MAP['gnomADHome'];
     }
     if (response) {
       let chrom = response.chrom;
@@ -909,9 +1066,9 @@ class Population extends Component {
           (response.cadd && response.cadd.hg19 ? parseInt(response.cadd.hg19.end) + 30 : ''));
 
       // Applies to 'Duplication', 'Deletion', 'Insertion', 'Indel' (deletion + insertion)
-      // Or there is no ExAC/gnomAD data object in the returned myvariant.info JSON response
-      if ((!this.state.ext_gnomadExac || !datasetCheck) && chrom && regionStart && regionEnd) {
-        datasetLink = EXTERNAL_API_MAP[datasetRegionURLKey] + chrom + '-' + regionStart + '-' + regionEnd;
+      // Or there is no gnomAD data object in the returned myvariant.info JSON response
+      if ((!this.state.ext_gnomadv2 || !datasetCheck) && chrom && regionStart && regionEnd) {
+        datasetLink = EXTERNAL_API_MAP['gnomADRegion'] + chrom + '-' + regionStart + '-' + regionEnd + '?dataset=' + datasetParameterValue;
         linkText = ' View the coverage of this region (+/- 30 bp) in ' + datasetName;
       }
     }
@@ -922,8 +1079,29 @@ class Population extends Component {
     );
   }
 
-  // Method to render a row of data for the ExAC/gnomAD table
-  renderExacGnomadRow(key, dataset, datasetStatic, rowNameCustom, className) {
+  // Method to render external link to gnomAD (when no population data is found)
+  renderGnomADv4Linkout(dataset) {
+    const datasetParameterValue = 'gnomad_r4';
+    const position = dataset?.Chr && parseInt(dataset?.Pos);
+    const bpSpread = 30;
+    let datasetLink = EXTERNAL_API_MAP['gnomADHome'];
+    let linkText = 'Search gnomAD';
+
+    if (!this.state.hasGnomADv4Data && position) {
+      datasetLink = EXTERNAL_API_MAP['gnomADRegion'] + dataset.Chr + '-' + (position - bpSpread) + '-'
+        + (position + bpSpread) + '?dataset=' + datasetParameterValue;
+      linkText = 'View the coverage of this region (+/- ' + bpSpread + ' bp) in gnomAD';
+    }
+
+    return (
+      <span>
+        <a href={datasetLink} target="_blank" rel="noopener noreferrer">{linkText}</a> for this variant.
+      </span>
+    );
+  }
+
+  // Method to render a row of data for the gnomAD v2 table
+  renderGnomadRow(key, dataset, datasetStatic, rowNameCustom, className) {
     let rowName = datasetStatic._labels[key];
     if (key === '_tot') {
       rowName = rowNameCustom;
@@ -983,117 +1161,95 @@ class Population extends Component {
     );
   }
 
-  // Method to render 1000 Genomes population table header content
-  renderTGenomesHeader(hasTGenomesData, loading_ensemblVariation, tGenomes, singleNucleotide) {
-    if (hasTGenomesData && !loading_ensemblVariation && singleNucleotide) {
-      const variantTGenomes = tGenomes._extra.name + ' ' + tGenomes._extra.var_class;
-      const linkoutEnsembl = EXTERNAL_API_MAP['EnsemblPopulationPage'] + tGenomes._extra.name;
-      return (
-        <div>1000 Genomes: {variantTGenomes} (GRCh38)
-          <a href="#credit-vep-population" className="credit-vep" title="VEP"><span>VEP</span></a>
-          <a className="panel-subtitle ml-2" href={linkoutEnsembl} target="_blank" rel="noopener noreferrer">See data in Ensembl</a>
-        </div>
-      );
-    } else {
-      return (
-        <div>1000 Genomes
-          <a href="#credit-vep-population" className="credit-vep" title="VEP"><span>VEP</span></a>
-        </div>
-      );
-    }
-  }
-
-  // Method to render a row of data for the 1000Genomes table
-  renderTGenomesRow(key, tGenomes, tGenomesStatic, rowNameCustom, className) {
-    let rowName = tGenomesStatic._labels[key];
-    // for when generating difference object:
-    //let tGenomesDiff = this.state.populationObjDiff && this.state.populationObjDiff.tGenomes ? this.state.populationObjDiff.tGenomes : null; // this null creates issues when populationObjDiff is not set because it compraes on null later
-    // generate genotype strings from reference and alt allele information
-    let g_ref = tGenomes._extra.ref + '|' + tGenomes._extra.ref,
-      g_alt = tGenomes._extra.alt + '|' + tGenomes._extra.alt,
-      g_mixed = tGenomes._extra.ref + '|' + tGenomes._extra.alt;
-    if (key === '_tot') {
-      rowName = rowNameCustom;
-    }
-    return (
-      <tr key={key} className={className ? className : ''}>
-        <td>{rowName}</td>
-        <td>{tGenomes[key].af[tGenomes._extra.ref] || tGenomes[key].af[tGenomes._extra.ref] === 0 ? tGenomes._extra.ref + ': ' + parseFloatShort(tGenomes[key].af[tGenomes._extra.ref]) : '--'}{tGenomes[key].ac[tGenomes._extra.ref] ? ' (' + tGenomes[key].ac[tGenomes._extra.ref] + ')' : ''}</td>
-        <td>{tGenomes[key].af[tGenomes._extra.alt] || tGenomes[key].af[tGenomes._extra.alt] === 0 ? tGenomes._extra.alt + ': ' + parseFloatShort(tGenomes[key].af[tGenomes._extra.alt]) : '--'}{tGenomes[key].ac[tGenomes._extra.alt] ? ' (' + tGenomes[key].ac[tGenomes._extra.alt] + ')' : ''}</td>
-        <td>{tGenomes[key].gf[g_ref] || tGenomes[key].gf[g_ref] === 0 ? g_ref + ': ' + parseFloatShort(tGenomes[key].gf[g_ref]) : '--'}{tGenomes[key].gc[g_ref] ? ' (' + tGenomes[key].gc[g_ref] + ')' : ''}</td>
-        <td>{tGenomes[key].gf[g_alt] || tGenomes[key].gf[g_alt] === 0 ? g_alt + ': ' + parseFloatShort(tGenomes[key].gf[g_alt]) : '--'}{tGenomes[key].gc[g_alt] ? ' (' + tGenomes[key].gc[g_alt] + ')' : ''}</td>
-        <td>{tGenomes[key].gf[g_mixed] || tGenomes[key].gf[g_mixed] === 0 ? g_mixed + ': ' + parseFloatShort(tGenomes[key].gf[g_mixed]) : '--'}{tGenomes[key].gc[g_mixed] ? ' (' + tGenomes[key].gc[g_mixed] + ')' : ''}</td>
-      </tr>
-    );
-  }
-
   render() {
-    const espStatic = populationStatic.esp;
-    const exacStatic = populationStatic.exac;
     const gnomADStatic = populationStatic.gnomAD;
-    const tGenomesStatic = populationStatic.tGenomes;
-    const gnomadExac = this.state.ext_gnomadExac;
+    const gnomadv2 = this.state.ext_gnomadv2;
     const singleNucleotide = this.state.ext_singleNucleotide;
-    const highestMAF = this.state.populationObj && this.state.populationObj.highestMAF ? this.state.populationObj.highestMAF : null;
-    const desiredCI = this.state.populationObj && this.state.populationObj.desiredCI ? this.state.populationObj.desiredCI : CI_DEFAULT;
-    const esp = this.state.populationObj && this.state.populationObj.esp ? this.state.populationObj.esp : null; // Get ESP data from global population object
-    const exac = this.state.populationObj && this.state.populationObj.exac ? this.state.populationObj.exac : null; // Get ExAC data from global population object
     const gnomAD = this.state.populationObj && this.state.populationObj.gnomAD ? this.state.populationObj.gnomAD : null; // Get gnomAD data from global population object
     const pageData = this.state.ext_pageData && this.state.ext_pageData.data ? this.state.ext_pageData.data : []; // Get PAGE data from response
     const pageVariant = this.state.ext_pageData && this.state.ext_pageData.variant ? this.state.ext_pageData.variant : null; // Get PAGE data from response
-    const tGenomes = this.state.populationObj && this.state.populationObj.tGenomes ? this.state.populationObj.tGenomes : null; // Get 1000 Genomes data from global population object
-    const exacSortedAlleleFrequency = sortObjKeys(exac);
     const gnomADSortedAlleleFrequency = sortObjKeys(gnomAD);
 
 
     return (
       <>
         <PopulationEvaluation {...this.props} populationData={this.state.populationObj} variant={this.state.variant} />
-        <div className="bs-callout bs-callout-info clearfix">
-          <h4>Subpopulation with Highest Minor Allele Frequency</h4>
-          <p className="header-note">Note: this calculation does not currently include PAGE study minor allele data</p>
-          <p>This reflects the highest MAF observed, as calculated by the interface, across all subpopulations in the versions of gnomAD, ExAC, 1000 Genomes, and ESP shown below.</p>
-          <div className="clearfix">
-            <div className="bs-callout-content-container">
-              <dl className="inline-dl clearfix">
-                <dt>Subpopulation: </dt><dd>{highestMAF && highestMAF.popLabel ? highestMAF.popLabel : 'N/A'}</dd>
-                <dt># Variant Alleles: </dt><dd>{highestMAF && highestMAF.ac ? highestMAF.ac : 'N/A'}</dd>
-                <dt>Total # Alleles Tested: </dt><dd>{highestMAF && highestMAF.ac_tot ? highestMAF.ac_tot : 'N/A'}</dd>
-              </dl>
-            </div>
-            <div className="bs-callout-content-container">
-              <dl className="inline-dl clearfix">
-                <dt>Source: </dt><dd>{highestMAF && highestMAF.source ? highestMAF.source : 'N/A'}</dd>
-                <dt>Allele Frequency: </dt><dd>{highestMAF && (highestMAF.af || highestMAF.af === 0) ? parseFloatShort(highestMAF.af) : 'N/A'}</dd>
-                {(this.state.interpretation && highestMAF) ?
-                  <span>
-                    <dt className="dtFormLabel">Desired CI:</dt>
-                    <dd className="ddFormInput">
-                      <Input type="number" className="desired-ci-input" value={desiredCI} onChange={this.changeDesiredCI} disabled={true}
-                        onBlur={this.onBlurDesiredCI} minval={0} maxval={100} maxLength="2" placeholder={CI_DEFAULT.toString()} />
-                    </dd>
-                    <dt>CI - lower: </dt><dd>{this.state.CILow || this.state.CILow === 0 ? parseFloatShort(this.state.CILow) : ''}</dd>
-                    <dt>CI - upper: </dt><dd>{this.state.CIHigh || this.state.CIHigh === 0 ? parseFloatShort(this.state.CIHigh) : ''}</dd>
-                  </span>
-                  : null}
-              </dl>
-            </div>
+        <div className="bs-callout bs-callout-info clearfix filtering-allele-frequency">
+          <h4>gnomAD v4 GroupMax Filtering Allele Frequency</h4>
+          {this.state.hasGnomADv4Data && this.state.gnomADv4Data.FAF ?
+            <table>
+              <tbody>
+                {this.state.gnomADv4Data.FAF.map((FAFRow, i) => (
+                  <tr key={"FAF-Row-" + i} className={i === 0 ? "faf-column-heading" : ""}>
+                    {i === 1 ?
+                      FAFRow.map((FAFCol, j) => (
+                        j === 0 ?
+                          <td key={"FAF-Col-" + i + "-" + j} className={j === 0 ? "faf-row-heading" : ""}>{FAFCol}</td>
+                          :
+                          <td key={"FAF-Col-" + i + "-" + j} className="faf-filter">{this.renderGnomADv4Filters(FAFCol)}</td>
+                      ))
+                      :
+                      FAFRow.map((FAFCol, j) => (
+                        <td key={"FAF-Col-" + i + "-" + j} className={j === 0 ? "faf-row-heading" : ""}>{FAFCol}</td>
+                      ))
+                    }
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            :
+            <span>No population data was found for this allele in gnomAD.</span>
+          }
+          <div className="faf-clingen-guidance">
+            <a href="https://clinicalgenome.org/docs/clingen-guidance-to-vceps-regarding-the-use-of-gnomad-v4/"
+              title="ClinGen guidance for using gnomAD v4 data" target="_blank"
+              rel="noopener noreferrer">ClinGen guidance for using gnomAD v4 data</a>
           </div>
-          <br />
-          <p className="exac-pop-note">Note: ExAC Constraint Scores displayed on the Gene-centric tab</p>
         </div>
         <section className="population-table">
-          <Panel title={this.renderExacGnomadHeader(this.state.hasGnomadData, this.props.isLoadingMyVariantInfo, gnomAD, gnomadExac, this.props.myVariantInfoData, this.state.ext_myVariantInfo_metadata, 'gnomAD')}>
+          <Panel title={
+            this.state.hasGnomADv4Data ?
+              <div>gnomAD {this.state.gnomADv4Data.DisplayID} {this.state.gnomADv4Data.Version >= 3 ? '(GRCh38) ' : '(GRCh37) '}
+                <span className="gnomad-version">Version: {this.state.gnomADv4Data.Version} </span>
+                <a href="#credit-ldh-population" className="credit-ldh" title="ClinGen Linked Data Hub"><span>ClinGen Linked Data Hub</span></a>
+                <a className="panel-subtitle ml-2" href={this.state.gnomADv4Data.IRI} title={this.state.gnomADv4Data.Label}
+                  target="_blank" rel="noopener noreferrer">See data in gnomAD</a>
+              </div>
+              :
+              <div>gnomAD v4
+                <a href="#credit-ldh-population" className="credit-ldh" title="ClinGen Linked Data Hub"><span>ClinGen Linked Data Hub</span></a>
+              </div>
+          }>
+            {this.props.isLoadingLDHData ? LoadingSpinner(this.props) : null}
+            <div>
+              {this.state.hasGnomADv4Data ?
+                <div>
+                  {this.renderGnomadAddlInfo(this.state.gnomADv4Data, 'gnomADv4')}
+                  <GnomADTable gnomADv4Data={this.state.gnomADv4Data.Display.DataRows} gnomADv4Totals={this.state.gnomADv4Data.Display.TotalRows} />
+                </div>
+                :
+                <div className="no-pop-data">
+                  <span>
+                    No population data was found for this allele in gnomAD. {
+                      this.renderGnomADv4Linkout(this.state.gnomADv4Data)}
+                  </span>
+                </div>
+              }
+            </div>
+          </Panel>
+        </section>
+        <section className="population-table">
+          <Panel title={this.renderGnomadHeader(this.state.hasGnomadData, this.props.isLoadingMyVariantInfo, gnomAD, gnomadv2, this.props.myVariantInfoData, this.state.ext_myVariantInfo_metadata, 'gnomAD')}>
             {this.props.isLoadingMyVariantInfo ? LoadingSpinner(this.props) : null}
-            {!gnomadExac ?
+            {!gnomadv2 ?
               <div className="no-pop-data">
-                <span>Data is currently only returned for single nucleotide variants and for some small duplications, insertions, and deletions. {this.renderExacGnomadLinkout(this.props.myVariantInfoData, 'gnomAD')}</span>
+                <span>Data is currently only returned for single nucleotide variants and for some small duplications, insertions, and deletions. {this.renderGnomadLinkout(this.props.myVariantInfoData, 'gnomAD')}</span>
               </div>
               :
               <div>
                 {this.state.hasGnomadData ?
                   <div>
-                    {this.renderExacGnomadAddlInfo(gnomAD, 'gnomAD')}
+                    {this.renderGnomadAddlInfo(gnomAD, 'gnomAD')}
                     <table className="table">
                       <thead>
                         <tr>
@@ -1106,11 +1262,11 @@ class Population extends Component {
                       </thead>
                       <tbody>
                         {gnomADSortedAlleleFrequency.map(key => {
-                          return (this.renderExacGnomadRow(key, gnomAD, gnomADStatic));
+                          return (this.renderGnomadRow(key, gnomAD, gnomADStatic));
                         })}
                       </tbody>
                       <tfoot>
-                        {this.renderExacGnomadRow('_tot', gnomAD, gnomADStatic, 'Total', 'count')}
+                        {this.renderGnomadRow('_tot', gnomAD, gnomADStatic, 'Total', 'count')}
                       </tfoot>
                     </table>
                   </div>
@@ -1118,49 +1274,8 @@ class Population extends Component {
                   <div className="no-pop-data">
                     <span>
                       No population data was found for this allele in gnomAD.
-                      {this.renderExacGnomadLinkout(this.props.myVariantInfoData, 'gnomAD')}
+                      {this.renderGnomadLinkout(this.props.myVariantInfoData, 'gnomAD')}
                     </span>
-                  </div>
-                }
-              </div>
-            }
-          </Panel>
-        </section>
-        <section className="population-table">
-          <Panel title={this.renderExacGnomadHeader(this.state.hasExacData, this.props.isLoadingMyVariantInfo, exac, gnomadExac, this.props.myVariantInfoData, this.state.ext_myVariantInfo_metadata, 'ExAC')}>
-            {this.props.isLoadingMyVariantInfo ? LoadingSpinner(this.props) : null}
-            {!gnomadExac ?
-              <div className="no-pop-data">
-                <span>Data is currently only returned for single nucleotide variants and for some small duplications, insertions, and deletions. {this.renderExacGnomadLinkout(this.props.myVariantInfoData, 'ExAC')}</span>
-              </div>
-              :
-              <div>
-                {this.state.hasExacData ?
-                  <div>
-                    {this.renderExacGnomadAddlInfo(exac, 'ExAC')}
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Population</th>
-                          <th>Allele Count</th>
-                          <th>Allele Number</th>
-                          <th>Number of Homozygotes</th>
-                          <th>Allele Frequency</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {exacSortedAlleleFrequency.map(key => {
-                          return (this.renderExacGnomadRow(key, exac, exacStatic));
-                        })}
-                      </tbody>
-                      <tfoot>
-                        {this.renderExacGnomadRow('_tot', exac, exacStatic, 'Total', 'count')}
-                      </tfoot>
-                    </table>
-                  </div>
-                  :
-                  <div className="no-pop-data">
-                    <span>No population data was found for this allele in ExAC. {this.renderExacGnomadLinkout(this.props.myVariantInfoData, 'ExAC')}</span>
                   </div>
                 }
               </div>
@@ -1208,79 +1323,6 @@ class Population extends Component {
             }
           </Panel>
         </section>
-        <section className="population-table">
-          <Panel title={this.renderTGenomesHeader(this.state.hasTGenomesData, this.state.loading_ensemblVariation, tGenomes, singleNucleotide)}>
-            {this.state.loading_ensemblVariation ? LoadingSpinner(this.props) : null}
-            {!singleNucleotide ?
-              <div className="no-pop-data">
-                <span>Data is currently only returned for single nucleotide variants. <a href={EXTERNAL_API_MAP['1000GenomesHome']} target="_blank" rel="noopener noreferrer">Search 1000 Genomes</a> for this variant.</span>
-              </div>
-              :
-              <div className="datasource-1000G">
-                {this.state.hasTGenomesData ?
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Population</th>
-                        <th colSpan="2">Allele Frequency (count)</th>
-                        <th colSpan="3">Genotype Frequency (count)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {this.renderTGenomesRow('_tot', tGenomes, tGenomesStatic, 'ALL')}
-                      {tGenomesStatic._order.map(key => {
-                        return (this.renderTGenomesRow(key, tGenomes, tGenomesStatic));
-                      })}
-                    </tbody>
-                  </table>
-                  :
-                  <div className="no-pop-data">
-                    <span>No population data was found for this allele in 1000 Genomes. <a href={EXTERNAL_API_MAP['1000GenomesHome']} target="_blank" rel="noopener noreferrer">Search 1000 Genomes</a> for this variant.</span>
-                  </div>
-                }
-              </div>
-            }
-          </Panel>
-        </section>
-        <section className="population-table">
-          <Panel title={this.renderEspHeader(this.state.hasEspData, this.props.isLoadingMyVariantInfo, esp, singleNucleotide)}>
-            {this.props.isLoadingMyVariantInfo ? LoadingSpinner(this.props) : null}
-            {!singleNucleotide ?
-              <div className="no-pop-data">
-                <span>Data is currently only returned for single nucleotide variants. <a href={EXTERNAL_API_MAP['SPHome']} target="_blank" rel="noopener noreferrer">Search ESP</a> for this variant.</span>
-              </div>
-              :
-              <div className="datasource-ESP">
-                {this.state.hasEspData ?
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Population</th>
-                        <th colSpan="2">Allele Count</th>
-                        <th colSpan="3">Genotype Count</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {espStatic._order.map(key => {
-                        return (this.renderEspRow(key, esp, espStatic));
-                      })}
-                      {this.renderEspRow('_tot', esp, espStatic, 'All Allele', 'count')}
-                    </tbody>
-                    <tfoot>
-                      <tr className="count">
-                        <td colSpan="6">Average Sample Read Depth: {esp._extra.avg_sample_read}</td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                  :
-                  <div className="no-pop-data">
-                    <span>No population data was found for this allele in ESP. <a href={EXTERNAL_API_MAP['ESPHome']} target="_blank" rel="noopener noreferrer">Search ESP</a> for this variant.</span>
-                  </div>
-                }
-              </div>
-            }
-          </Panel>
-        </section>
         <section>
           <Panel title="Curated Literature Evidence (Population)">
             <AddArticleEvidenceTableView 
@@ -1294,11 +1336,11 @@ class Population extends Component {
           <CompleteSection tabName="population" updateTab={this.props.updateTab} />
         )}
 
+        {renderDataCredit('ldh', 'population')}
+
         {renderDataCredit('pagestudy', 'population')}
 
         {renderDataCredit('myvariant', 'population')}
-
-        {renderDataCredit('vep', 'population')}
       </>
     )
   }

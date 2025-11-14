@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Container from 'react-bootstrap/Container';
@@ -6,26 +6,18 @@ import { default as lodashGet } from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
 import Button from 'react-bootstrap/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons';
-import { API } from 'aws-amplify';
 
-import { API_NAME } from '../utils';
-import CardPanel from '../components/common/CardPanel';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import PmidSummary from "../components/common/article/PmidSummary";
 import { GdmHeader } from '../components/gene-central/GdmHeader';
 import { ExternalLink } from '../components/common/ExternalLink';
 import { useAmplifyAPIRequestRecycler } from '../utilities/fetchUtilities';
-import { renderVariantLabelAndTitle } from '../components/gene-central/curations/common/commonFunc';
+import { renderVariantLabelAndTitle, renderVariantOverlappingGenes } from '../components/gene-central/curations/common/commonFunc';
+import { renderAnnotationSourceSummary, } from "../helpers/renderAnnotationSourceSummary";
 import { EXTERNAL_API_MAP } from '../constants/externalApis';
 
 const GdmVariantCuration = (props) => {
   const history = useHistory();
   const requestRecycler = useAmplifyAPIRequestRecycler();
-
-  const [formData, setFormData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const auth = useSelector(state => state.auth);
   const gdm = useSelector(state => state.gdm.entity);
@@ -171,6 +163,34 @@ const GdmVariantCuration = (props) => {
     return allAssociations.length ? allAssociations : null;
   };
 
+  const renderReference = (annotation) => {
+    if (annotation.article) {
+      return (
+        <>
+          {'PMID: '}
+          <ExternalLink
+            href={`${EXTERNAL_API_MAP['PubMed']}${annotation.article.PK}`}
+            title="PubMed article in a new tab"
+          >
+            {annotation.article.PK}
+          </ExternalLink>
+        </>
+      );
+    } else if (annotation.scv) {
+      return (
+        <>
+          {'ClinVar: '}
+          <ExternalLink
+            href={`${EXTERNAL_API_MAP['ClinVarSearch']}${annotation.scv.vcvId}`}
+            title="ClinVar record in a new tab"
+          >
+            {annotation.scv.scvId}
+          </ExternalLink>
+        </>
+      );
+    }
+  }
+
   const renderAssociations = () => {
     return annotationsList.map((annotation) => {
       const associations = variant ? collectVariantAssociations(annotation, variant) : null;
@@ -185,14 +205,7 @@ const GdmVariantCuration = (props) => {
         return (
           <div key={annotation.PK} className="pmid-association-header">
             <span>
-              {'PMID: '}
-              <ExternalLink
-                href={`${EXTERNAL_API_MAP['PubMed']}${annotation.article.PK}`}
-                title="PubMed article in a new tab"
-              >
-                {annotation.article.PK}
-              </ExternalLink>
-              <FontAwesomeIcon icon={faLongArrowAltRight} className="mx-2" />
+              {renderReference(annotation)}
             </span>
             {sortedAssociations.map((association, i) => {
               const associationType = association['item_type'];
@@ -254,6 +267,23 @@ const GdmVariantCuration = (props) => {
             </span>
           </span>
         }
+        {variant.cacnId &&
+          <span>
+            <span className="term-name"> &#x2F;&#x2F; ClinGen Allele Registry Copy Number ID: </span>
+            <span className="term-value">
+              <ExternalLink
+                href={`${EXTERNAL_API_MAP['CARcopy-number']}${variant.cacnId}`}
+                title={`ClinGen Allele Registry entry for ${variant.cacnId} in new tab`}
+              >
+                {variant.cacnId}
+              </ExternalLink>
+            </span>
+            <div>
+              <span>Overlapping Genes:</span>
+              {renderVariantOverlappingGenes(variant)}
+            </div>
+          </span>
+        }
       </div>
       <div>
         {renderVariantLabelAndTitle(variant, false, true)}
@@ -261,29 +291,15 @@ const GdmVariantCuration = (props) => {
     </>
   );
 
-  const geneImpactMap = {
-   'lof': 'Predicted or observed null',
-   'non-lof': 'Other variant with gene impact',
-   'insufficient': 'Insufficient evidence for gene impact'
-  };
-  const geneImpact = geneImpactMap[formData.geneImpact] || 'none';
-  const supportExperimental = formData.supportExperimental || 'none';
-  const supportSegregation = formData.supportSegregation || 'none';
-  const supportAllelic = formData.supportAllelic || 'none';
-  const supportComputational = formData.supportComputational || 'none';
-  const comments = formData.comments || '';
-
   return (
-    gdm && !isLoading
+    gdm
       ? (
         <>
           <GdmHeader />
           <Container>
-            {activeAnnotation && activeAnnotation.article &&
-              <div className="curation-pmid-summary mb-2">
-                <PmidSummary article={activeAnnotation.article} displayJournal pmidLinkout />
-              </div>
-            }
+            <div className="curation-source-summary mb-2">
+                {renderAnnotationSourceSummary(activeAnnotation, true, true, false, false)}
+            </div>
             <h2>View Variant Information</h2>
             {affiliation
               ? <h4>{`Curator: ${affiliation.affiliation_fullname}`}</h4>

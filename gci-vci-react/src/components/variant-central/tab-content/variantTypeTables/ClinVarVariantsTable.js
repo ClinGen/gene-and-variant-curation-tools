@@ -27,7 +27,7 @@ const ClinVarVariantsTable = ({
                       <dl>
                         <b className="mr-3">{`Additional ClinVar variants found in the same codon: ${codonCount-1}`}</b>
                         (<a
-                          href={`https://www.ncbi.nlm.nih.gov/clinvar/?term=${codonTerm}+%5Bvariant+name%5D+and+${codonSymbol}`}
+                          href={`https://www.ncbi.nlm.nih.gov/clinvar/?term=${codonTerm}%5Bvariant+name%5D+and+${codonSymbol}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { get as lodashGet } from "lodash";
 import { Button, Row, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -9,7 +9,7 @@ import PmidSummary from "../../common/article/PmidSummary";
 import { DeleteArticleEvidenceModalButton } from "./DeleteArticleEvidenceModalButton";
 import { ArticleEvidencePropTypes } from "../../../propTypes/articlePropTypes";
 import { CODE_STRIP_LOOKUP_TABLE } from "../mapping/CodeStripValues";
-import { getAffiliationName } from "../../../helpers/get_affiliation_name";
+import { AffilsContext, getAffiliationName } from "../../../helpers/affiliationsHelpers";
 import { getUserName } from "../../../helpers/getUserName";
 
 const ARTICLE_COLUMN_WIDTH = "27%";
@@ -93,8 +93,9 @@ const ArticleEvidenceRow = ({
     CODE_STRIP_LOOKUP_TABLE[articleEvidence.evidenceCriteria] 
     : articleEvidence.evidenceCriteria
   ) : null;
-  const affiliation = lodashGet(articleEvidence, "affiliation", null) ? getAffiliationName(articleEvidence.affiliation) : null;
-  const submittedBy = affiliation ? `${affiliation} (${getUserName(articleEvidence.submitted_by)})` : `${getUserName(articleEvidence.submitted_by)}`;
+  const { affiliationsData } = useContext(AffilsContext);
+  const affiliation = lodashGet(articleEvidence, "affiliation", null) ? getAffiliationName(articleEvidence.affiliation, affiliationsData) : null;
+  const modifiedBy = affiliation ? `${affiliation} (${getUserName(articleEvidence.modified_by)})` : `${getUserName(articleEvidence.modified_by)}`;
 
   // Check if need to add 'Add in New Format' button for case segregation tab tables
   let addCaseSegNewFormatButton = null;
@@ -126,9 +127,9 @@ const ArticleEvidenceRow = ({
       <td style={{ width: EVIDENCE_COLUMN_WIDTH }}>
         <p className="word-break text-pre-wrap">{articleEvidence.evidenceDescription}</p>
       </td>
-      <td>{submittedBy}</td>
+      <td>{modifiedBy}</td>
       <td>
-        {moment(articleEvidence.date_created).format("YYYY MMM DD, h:mm a")}
+        {moment(articleEvidence.last_modified).format("YYYY MMM DD, h:mm a")}
       </td>
       {!readOnly ? <td>
         {(category !== "case-segregation") && (

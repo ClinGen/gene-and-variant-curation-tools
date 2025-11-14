@@ -47,24 +47,29 @@ class VariantView extends Component {
             interpretation: this.props.interpretation,
             variant: this.props.variant,
             evaluations: JSON.parse(JSON.stringify(defaultForms)),
+            loadingEvaluations: true,
             savedEvaluations: JSON.parse(JSON.stringify(defaultForms)),
             showCspecModal: false,
             showDiseaseModal: false, // 'Disease' or 'Inheritance'
             showInheritanceModal: false,
             myVariantInfoData: {},
+            ldhData: {},
             isLoadingMyVariantInfo: false,
-            calculatedPathogenicity: '',
+            isLoadingLDHData: false,
+            isLoadingCARData: false,
+            alleleRegistryGeneData: {},
+            calculatedPathogenicity: '-',
             provisionalPathogenicity: '',
             publishProvisionalReady: false,
             publishSnapshotListReady: false,
             classificationStatus: '',
             classificationSnapshots: [],
             lovdLink: '',
-            civicData: {},
+            litVarData: {},
             hasBrcaData: false,
             isLoadingLovd: false,
             isLoadingBrca: false,
-            isLoadingCivic: false,
+            isLoadingLitVar: false
         };
         this.state = this.initialState;
         this.requestRecycler = new AmplifyAPIRequestRecycler();
@@ -75,42 +80,52 @@ class VariantView extends Component {
         this._mounted = true; // Boolean used to unsubuscribe
         
         this.fetchMyVariantInfo();
+        this.fetchLDHData();
+        this.fetchAlleleRegistryData();
         this.fetchLovdLink();
         this.fetchBrcaData();
-        this.fetchCivicData();
+        this.fetchLitVarData();
 
         // Check for evaluations in interpretations object, 
         // then loop through the PK values and pre-populate forms accordingly
         if (this.props.interpretation && this.props.interpretation.evaluations && this._mounted){
-            this.props.interpretation.evaluations.forEach(val=>{
-                const url ='/evaluations/' + val;
-                this.requestRecycler.capture(API.get(API_NAME, url))
-                .then(res => {
-                    if (res){
-                        const currentValues = cloneDeep(this.state.evaluations);
-                        if (currentValues[res.criteria]){
-                            currentValues[res.criteria].value = res.criteriaStatus !== 'met' ? 
-                                (res.criteriaStatus === 'not-met' ? 'not-met' : 'not-evaluated') 
-                                : (!res.criteriaModifier ? 'met' : res.criteriaModifier);
-                            currentValues[res.criteria].criteriaStatus = res.criteriaStatus;
-                            currentValues[res.criteria].criteriaModifier = res.criteriaModifier;
-                            currentValues[res.criteria].explanation = res.explanation;
-                            currentValues[res.criteria].functional = res.functional;
-                            currentValues[res.criteria].population = res.population;
-                            currentValues[res.criteria].computational = res.computational;
-                            currentValues[res.criteria].PK = res.PK;
-                            this.setState({
-                                evaluations: currentValues,
-                                savedEvaluations: currentValues
-                            });
-                        }
+            const evalPromises = this.props.interpretation.evaluations.map(val=>{
+              const url ='/evaluations/' + val;
+              return this.requestRecycler.capture(API.get(API_NAME, url))
+            });
+
+            Promise.all(evalPromises)
+              .then(evaluations => {
+                if (evaluations){
+                  evaluations.forEach(res => {
+                    const currentValues = cloneDeep(this.state.evaluations);
+                    if (currentValues[res.criteria]){
+                        currentValues[res.criteria].value = res.criteriaStatus !== 'met' ? 
+                            (res.criteriaStatus === 'not-met' ? 'not-met' : 'not-evaluated') 
+                            : (!res.criteriaModifier ? 'met' : res.criteriaModifier);
+                        currentValues[res.criteria].criteriaStatus = res.criteriaStatus;
+                        currentValues[res.criteria].criteriaModifier = res.criteriaModifier;
+                        currentValues[res.criteria].explanation = res.explanation;
+                        currentValues[res.criteria].functional = res.functional;
+                        currentValues[res.criteria].population = res.population;
+                        currentValues[res.criteria].computational = res.computational;
+                        currentValues[res.criteria].PK = res.PK;
+                        this.setState({
+                            evaluations: currentValues,
+                            savedEvaluations: currentValues
+                        });
                     }
-                })
-                .catch(AmplifyAPIRequestRecycler.defaultCatch);
-            })
+                  });
+                }
+              })
+              .then(() => {
+                this.setState({ loadingEvaluations: false })
+              })
+              .catch(AmplifyAPIRequestRecycler.defaultCatch);
         }
         else{
             this.resetEvaluationForms();
+            this.setState({ loadingEvaluations: false });
         }
 
         // Get Provisional Variant Object via PK in interpretation
@@ -159,9 +174,7 @@ class VariantView extends Component {
 
     /**
      * Retrieve data from MyVariantInfo
-     * REVEL data is no longer queried from Bustamante lab
-     * Since REVEL data is now available in the myvariant.info response
-     * So we can access its data object via response['dbnsfp']['revel']
+     *
      * @param {object} variant - The variant data object
      */
     fetchMyVariantInfo() {
@@ -171,7 +184,10 @@ class VariantView extends Component {
         if (hgvs_notation) {
             axios.get(`https://myvariant.info/v1/variant/${hgvs_notation}`, { cancelToken: this.axioCanceller.token })
                 .then(response => {
-                    this.setState({ myVariantInfoData: response.data, isLoadingMyVariantInfo: false });
+                    this.setState({ 
+                      myVariantInfoData: response.data, 
+                      isLoadingMyVariantInfo: false
+                    });
                 })
                 .catch(err => {
                     if (axios.isCancel(err)) {
@@ -185,6 +201,83 @@ class VariantView extends Component {
         }
     }
 
+    /**
+     * Retrieve variant information from the LDH (Linked Data Hub)
+     */
+    fetchLDHData() {
+        this.setState({ isLoadingLDHData: true });
+        const carId = lodashGet(this.props.variant, 'carId', null);
+
+        if (carId) {
+            axios.get(`https://ldh.clinicalgenome.org/ldh/Variant/id/${carId}`, { cancelToken: this.axioCanceller.token })
+                .then(response => {
+                    this.setState({ ldhData: lodashGet(response.data, 'data', {}), isLoadingLDHData: false });
+                })
+                .catch(err => {
+                    if (axios.isCancel(err)) {
+                        return;
+                    }
+                    this.setState({ isLoadingLDHData: false });
+                    console.log('LDH Fetch Error=: %o', err);
+                });
+        } else {
+            this.setState({ isLoadingLDHData: false });
+        }
+    }
+
+    /**
+     * Retrieve variant information from the CAR (ClinGen Allele Registry)
+     */
+    async fetchAlleleRegistryData() {
+      this.setState({ isLoadingCARData: true });
+      const { variant } = this.props;
+      const carId = lodashGet(variant, 'carId');
+      const clinvarId = lodashGet(variant, 'clinvarVariantId');
+  
+      try {
+          let response;
+          if (carId) {
+              response = await axios.get(`https://reg.genome.network/allele/${carId}`, { cancelToken: this.axioCanceller.token });
+          } else if (clinvarId) {
+              response = await axios.get(`https://reg.genome.network/alleles?ClinVar.variationId=${clinvarId}`, { cancelToken: this.axioCanceller.token });
+          }
+
+          if (response?.data) {
+            // ClinVar ID query returns arr; CAR ID query returns obj
+            const allele = Array.isArray(response.data) ? response.data[0] : response.data;
+            const geneInfo = this.getGeneInfoFromCAR(allele);
+            this.setState({
+              alleleRegistryGeneData: geneInfo,
+              isLoadingCARData: false
+            });
+          } else {
+            this.setState({ isLoadingCARData: false });
+          }
+      } catch (error) {
+          if (axios.isCancel(error)) return;
+          console.log('Allele Registry fetch failed:', error);
+          this.setState({ isLoadingCARData: false });
+      }
+    }
+
+    /**
+     * Get gene info from CAR response; for CSpec modal gene validation
+     */
+    getGeneInfoFromCAR(alleleJson) {
+      const transcripts = lodashGet(alleleJson, 'transcriptAlleles', []);
+      if (!transcripts.length) return {};
+  
+      const manePreferred = transcripts.find(
+          t => t.MANE && t.MANE.maneStatus === 'MANE Select'
+      );
+  
+      const transcript = manePreferred || transcripts[0];
+      return {
+          geneSymbol : lodashGet(transcript, 'geneSymbol', null),
+          ncbiGeneId : lodashGet(transcript, 'geneNCBI_id', null)
+      };
+    }
+  
     // Query LOVD `whole_genome` and `shared` to decide which link to display
     fetchLovdLink() {
         this.setState({ isLoadingLovd: true });
@@ -214,33 +307,10 @@ class VariantView extends Component {
         }
     }
 
-    // Query CIViC for link in Other Evidence table - Basic info
-    fetchCivicData() {
-      this.setState({ isLoadingCivic: true });
-      const clinvarVariantId = lodashGet(this.props.variant, 'clinvarVariantId');
-      const carId = lodashGet(this.props.variant, 'carId');
-      const url = carId
-        ? `https://civicdb.org/api/variants/${carId}?identifier_type=allele_registry`
-        : `https://civicdb.org/api/variants/${clinvarVariantId}?identifier_type=clinvar`;
-
-      axios.get(url, { cancelToken: this.axioCanceller.token })
-        .then(response => {
-            this.setState({ civicData: response.data[0], isLoadingCivic: false });
-        })
-        .catch(err => {
-            if (axios.isCancel(err)) {
-                return;
-            }
-            this.setState({ isLoadingCivic: false });
-            console.log('CIViC Fetch Error=: %o', err);
-        });
-    }
-
     fetchBrcaData() {
       this.setState({ isLoadingBrca: true });
       const carId = lodashGet(this.props.variant, 'carId');
-      // This long URL should be replaced when BRCA Exchange implements &include=all querystring action
-      const url = `https://brcaexchange.org/backend/data/?format=json&search_term=${carId}&include=Variant_in_ENIGMA&include=Variant_in_ClinVar&include=Variant_in_1000_Genomes&include=Variant_in_ExAC&include=Variant_in_LOVD&include=Variant_in_BIC&include=Variant_in_ESP&include=Variant_in_exLOVD&include=Variant_in_ENIGMA_BRCA12_Functional_Assays&include=Variant_in_GnomAD`;
+      const url = `https://brcaexchange.org/backend/data/?format=json&search_term=${carId}&include=all`;
       
       axios.get(url, { cancelToken: this.axioCanceller.token })
       .then(response => {
@@ -256,7 +326,28 @@ class VariantView extends Component {
           this.setState({ isLoadingBrca: false });
           console.log('BRCA Exchange Fetch Error=: %o', err);
       });
+    }
 
+    fetchLitVarData() {
+      this.setState({ isLoadingLitVar: true });
+      const rsId = lodashGet(this.props.variant, 'dbSNPIds[0]', null);
+
+      if (rsId) {
+        const url = `/variants?litvar=true&rsId=${rsId}`;
+        this.requestRecycler.capture(API.get(API_NAME, url))
+            .then(result => {
+                this.setState({ litVarData: result, isLoadingLitVar: false });
+            })
+            .catch(err => {
+                if (API.isCancel(err)) {
+                    return;
+                }
+                console.log('LitVar error', err);
+                this.setState({ isLoadingLitVar: false });
+            });
+      } else {
+          this.setState({ isLoadingLitVar: false });
+      }
     }
 
     // For Cspec, Disease, and Inheritance Modal
@@ -296,10 +387,11 @@ class VariantView extends Component {
         this.setState({ evaluations: JSON.parse(JSON.stringify(defaultForms))})
     }
     render(){
-        const { interpretation, cspecDoc, handleInterpretationUpdate } = this.props;
+        const { interpretation, cspecDoc, handleInterpretationUpdate, clinVarSubmissionBatches, handleClinVarSubmissionBatches } = this.props;
         const isMyInterpretation = isOwnedByCurrentCuratingEntity(interpretation, this.props.auth);
         const inheritanceButtonStyle = interpretation && (interpretation.modeInheritance || interpretation.modeInheritanceAdjective)
             ? 'info' : 'secondary';
+        const cspecButtonStyle = interpretation && interpretation.cspec ? 'primary' : 'secondary';
         const cspecCriteria = cspecDoc && cspecDoc.ruleSetDoc && cspecDoc.ruleSetDoc.criteria ? cspecDoc.ruleSetDoc.criteria : [];
 
     // Variant Type Tab combines 4 groups
@@ -310,7 +402,7 @@ class VariantView extends Component {
                     <h3 className="mb-3">Variant Interpretation Record</h3>
                 </div>
                 {isMyInterpretation ? <div className="col-sm-6 text-right">
-                    <button className="btn btn-secondary mr-1" onClick={() => this.setShowModal('Cspec', true)}>Specification Document  <FontAwesomeIcon icon={!isEmpty(cspecDoc) ? faEdit : faPlus} /></button>
+                    <button className={`btn btn-${cspecButtonStyle} mr-1`} onClick={() => this.setShowModal('Cspec', true)}>Specification Document  <FontAwesomeIcon icon={!isEmpty(cspecDoc) ? faEdit : faPlus} /></button>
                     {interpretation && interpretation.disease
                         ? <button className="btn btn-danger mr-1" onClick={this.handleDeleteDisease}>Disease <FontAwesomeIcon icon={faTrashAlt} /></button>
                         : <button className="btn btn-secondary mr-1" onClick={() => this.setShowModal('Disease', true)}>Disease <FontAwesomeIcon icon={faPlus} /></button>
@@ -343,6 +435,7 @@ class VariantView extends Component {
                     <InterpretationHeader />
                     <PathogenicityCalculator interpretation={this.state.interpretation} 
                         evaluations={Object.values(this.state.savedEvaluations)}
+                        loadingEvaluations={this.state.loadingEvaluations}
                         setCalculatedPathogenicity={this.setCalculatedPathogenicity} 
                     />
                     <CodeStrip onSetTab={this.setTab} evaluations={this.state.savedEvaluations} />
@@ -371,10 +464,10 @@ class VariantView extends Component {
                         GRCh38={gRCh38}
                         lovdLink={this.state.lovdLink}
                         hasBrcaData={this.state.hasBrcaData}
-                        civicData={this.state.civicData}
+                        litVarData={this.state.litVarData}
                         isLoadingBrca={this.state.isLoadingBrca}
-                        isLoadingCivic={this.state.isLoadingCivic}
                         isLoadingLovd={this.state.isLoadingLovd}
+                        isLoadingLitVar={this.state.isLoadingLitVar}
                         externalAPIData={this.props.basicInfoTabExternalAPIData} 
                         basicInfoTabExternalAPILoadingStatus={this.props.basicInfoTabExternalAPILoadingStatus}
                         internalAPIData={this.props.interpretationsWithSnapshots}
@@ -388,6 +481,8 @@ class VariantView extends Component {
                         {...evaluationProps}
                         myVariantInfoData = {this.state.myVariantInfoData}
                         isLoadingMyVariantInfo = {this.state.isLoadingMyVariantInfo}
+                        ldhData = {this.state.ldhData}
+                        isLoadingLDHData = {this.state.isLoadingLDHData}
                         updateTab = {this.setTab}
                     />
                 </TabPanel>
@@ -401,6 +496,8 @@ class VariantView extends Component {
                         subTabHandler = {this.setSubTab}
                         myVariantInfoData = {this.state.myVariantInfoData}
                         isLoadingMyVariantInfo = {this.state.isLoadingMyVariantInfo}
+                        ldhData = {this.state.ldhData}
+                        isLoadingLDHData = {this.state.isLoadingLDHData}
                         updateTab = {this.setTab}
                     />
                 </TabPanel>
@@ -427,22 +524,22 @@ class VariantView extends Component {
                     />
                 </TabPanel>
             </Tabs>
-              {this.state.showCspecModal &&
                 <CspecModal
                     show={this.state.showCspecModal}
                     onHide={() => this.setShowModal('Cspec', false)}
                     id="addCspecModal"
                     title="Add a specification document to this curation"
                     handleCspecUpdate={this.props.handleCspecUpdate}
+                    setIsLoadingCspecDoc={this.props.setIsLoadingCspecDoc}
                     parentEndpoint="interpretations"
                     parentToInsertCspec={interpretation}
                     deleteButtonText="Remove document from interpretation"
                     saveButtonText="Save and apply"
                     updateParentObj={handleInterpretationUpdate}
                     affiliation={this.state.affiliation}
+                    alleleRegistryGeneData={this.state.alleleRegistryGeneData}
                     userPK={this.props.auth ? this.props.auth.PK : null}
                 />
-              }
 
                 <DiseaseModal
                     show={this.state.showDiseaseModal}
@@ -492,6 +589,8 @@ class VariantView extends Component {
                 publishProvisionalReady={this.state.publishProvisionalReady}
                 publishSnapshotListReady={this.state.publishSnapshotListReady}
                 resetPublishReadyState={this.resetPublishReadyState}
+                clinVarSubmissionBatches={clinVarSubmissionBatches}
+                handleClinVarSubmissionBatches={handleClinVarSubmissionBatches}
             />
             </>
         )
@@ -528,7 +627,7 @@ class VariantView extends Component {
 
     // Method to set the calculated pathogenicity state for summary page
     setCalculatedPathogenicity = (assertion) => {
-        if (assertion && this.state.calculatedPathogenicity !== assertion) {
+        if (assertion !== null && this.state.calculatedPathogenicity !== assertion) {
             this.setState({calculatedPathogenicity: assertion});
             this.props.setCalculatedPathogenicity(assertion)
         }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import cloneDeep from 'lodash/cloneDeep';
+import { cloneDeep, get as lodashGet } from "lodash";
 import { Row, Col, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,8 @@ import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import DiseaseModal from '../../../common/DiseaseModal';
-import { renderDiseaseData } from './commonFunc';
+import { renderDiseaseData, renderCannotCopyText } from './commonFunc';
+import { isDiseaseObsolete } from '../../../../utilities/diseaseUtilities';
 
 /**
  * Component for adding/copying/deleting disease when creating a new group evidence
@@ -28,12 +29,6 @@ export const GroupDisease = ({
   const [formError, setFormError] = useState(error);
 
   useEffect(() => {
-    /* ???
-    if (group && group.commonDiagnosis && group.commonDiagnosis.length) {
-      // setDisease(cloneDeep(group.commonDiagnosis[0]));
-      setDisease(group.commonDiagnosis[0]);
-    }
-    */
     setDisease(diseaseObj);
   }, [diseaseObj]);
 
@@ -92,6 +87,8 @@ export const GroupDisease = ({
     clearErrorInParent();
   };
 
+  const obsoleteGdmDisease = gdm && isDiseaseObsolete(lodashGet(gdm, "disease.term", ""));
+
   return (
     <>
     <Row className="form-group add-disease-group">
@@ -119,10 +116,14 @@ export const GroupDisease = ({
           </div>
           :
           <ul className={formError ? "add-disease-button-group float-right" : "add-disease-button-group"}>
-            <li>
-              {renderCopyDiseaseButton()}
-            </li>
-            <li>- or -</li>
+              {obsoleteGdmDisease ?
+                <li>{renderCannotCopyText()}</li>
+                :
+                <>
+                  <li>{renderCopyDiseaseButton()}</li>
+                  <li>- or -</li>
+                </>
+              }
             <li>
               <Button variant="primary" onClick={e=>handleDiseaseModal(e)}>Disease <FontAwesomeIcon className="mr-3" icon={faPlusCircle} /></Button> 
             </li>

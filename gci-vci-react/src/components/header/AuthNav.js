@@ -48,13 +48,14 @@ const AuthNav = () => {
                         Help
                         </a>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a className="dropdown-item" href="https://github.com/ClinGen/clincoded/wiki/GCI-Curation-Help" target="_blank" rel="noopener noreferrer">Help - GCI</a>
-                        <a className="dropdown-item" href="https://github.com/ClinGen/clincoded/wiki/VCI-Curation-Help" target="_blank" rel="noopener noreferrer">Help - VCI</a>
                         <a className="dropdown-item" href="mailto:clingen-helpdesk@lists.stanford.edu" target="_blank" rel="noopener noreferrer">Contact Helpdesk</a>
-                        <a className="dropdown-item" href="https://www.clinicalgenome.org/curation-activities/gene-disease-validity/educational-and-training-materials/standard-operating-procedures/" target="_blank" rel="noopener noreferrer">SOP - GCI</a>
+                        <a className="dropdown-item" href="https://clingen.gitbook.io/vci-gci-docs" target="_blank" rel="noopener noreferrer">Help - VCI/GCI</a>
                         <a className="dropdown-item" href="https://clinicalgenome.org/curation-activities/variant-pathogenicity/training-materials/" target="_blank" rel="noopener noreferrer">SOP - VCI</a>
+                        <a className="dropdown-item" href="https://www.clinicalgenome.org/curation-activities/gene-disease-validity/educational-and-training-materials/standard-operating-procedures/" target="_blank" rel="noopener noreferrer">SOP - GCI</a>
+                        <a className="dropdown-item" href="https://clinicalgenome.org/site/assets/files/6773/vcep_general_standardized_summary_text_v2_jan_11_2022.pdf">Standardized Text - VCI</a>
                         <a className="dropdown-item" href="http://gene-tracker.clinicalgenome.org" target="_blank" rel="noopener noreferrer">GeneTracker</a>
                         <Link to="/terms-of-use" className="dropdown-item" target="_blank" rel="noopener noreferrer">Terms of Use</Link>
+                        <a className="dropdown-item" href="https://clingen.gitbook.io/vci-gci-docs/about-us/about-us" target="_blank" rel="noopener noreferrer">About Us</a>
                         </div>
                     </li>
 

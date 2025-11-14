@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from "react-redux";
-import { getAffiliationName } from "../helpers/get_affiliation_name";
+import { AffilsContext, getAffiliationName } from "../helpers/affiliationsHelpers";
 import { getUserName } from "../helpers/getUserName";
 
 
@@ -9,11 +9,11 @@ export const isActiveUser = (auth) => {
 }
 
 export const OwnerTextDisplay = ({ object }) => {
+    const { affiliationsData } = useContext(AffilsContext);
     return (
         <>
-            {/* TODO: change to use embed affiliation and remove use hard-coded affiliation json */}
             {object.affiliation ?
-                <span>{getAffiliationName(object.affiliation)}</span>
+                <span>{getAffiliationName(object.affiliation, affiliationsData)}</span>
                 :
                 object.submitted_by ?
                 <a href={'mailto:' + object.submitted_by.email}>{getUserName(object.submitted_by)}</a>

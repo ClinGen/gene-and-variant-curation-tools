@@ -6,7 +6,14 @@
 // ########  For Experimental evidence #########
 // # Parameter: Experimental Evidence type (e.g. FUNCTION_BIOCHEMICAL_FUNCTION, MODELS_SYSTEMS_ANIMAL_MODEL)
 
-import { AUTOSOMAL_DOMINANT, AUTOSOMAL_RECESSIVE, MITOCHONDRIAL, X_LINKED, SEMIDOMINANT } from '../constants/evidenceTypes';
+import {
+  AUTOSOMAL_DOMINANT,
+  AUTOSOMAL_RECESSIVE,
+  MITOCHONDRIAL,
+  X_LINKED,
+  SEMIDOMINANT,
+  SOMATIC_MOSAICISM
+} from '../constants/evidenceTypes';
 import SCORE_MAPS from '../constants/scoreMaps';
 
 // Determine mode of inheritance type via modeInheritance
@@ -24,6 +31,8 @@ export const getModeInheritanceType = (moi) => {
         moiType = SEMIDOMINANT;
       } else if (moi.indexOf('Mitochondrial inheritance') > -1) {
         moiType = MITOCHONDRIAL;
+      } else if (moi.indexOf('Typified by somatic mosaicism') > -1) {
+        moiType = SOMATIC_MOSAICISM;
       } else {
         // Mode of Inheritance is not either AD, AR, SD, or X-Linked
         moiType = '';
@@ -38,9 +47,11 @@ export const getScoreMOIString = (modeInheritance, probandIs) => {
 
   if (modeInheritance && probandIs) {
     moiType = modeInheritance;
-    // For SemiDom, if probandIs is "Monoallelic heterozygous" or "Hemizygous" then AUTOSOMAL_DOMINANT
+    // For SD or SM,
+    // if probandIs is "Monoallelic heterozygous" or "Hemizygous" then AUTOSOMAL_DOMINANT
     // if "Biallelic homozygous" or "Biallelic compound heterozygous" then AUTOSOMAL_RECESSIVE
-    if (moiType.indexOf('SEMIDOMINANT') > -1) {
+    if (moiType.indexOf('SEMIDOMINANT') > -1 ||
+        moiType.indexOf('SOMATIC_MOSAICISM') > -1) {
       moiType = probandIs === "Monoallelic heterozygous" || probandIs === "Hemizygous"
         ? AUTOSOMAL_DOMINANT
         : AUTOSOMAL_RECESSIVE;

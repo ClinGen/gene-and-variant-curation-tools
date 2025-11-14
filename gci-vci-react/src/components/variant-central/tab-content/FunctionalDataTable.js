@@ -78,6 +78,7 @@ const FunctionalDataTable = ({
                             <PmidSummary
                               article={pubmedSource}
                               displayJournal
+                              displayAllAuthors
                             />
                           </span>
                         </div>

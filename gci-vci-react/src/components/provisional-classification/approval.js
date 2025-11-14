@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { get as lodashGet, isEmpty } from 'lodash';
+import { get as lodashGet } from 'lodash';
 
 import moment from 'moment';
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../../utils';
 import { connect } from 'react-redux';
 
-import { getAffiliationName, getAllAffliations, getAffiliationSubgroups } from '../../helpers/get_affiliation_name';
-import { getAffiliationApprover } from '../../helpers/get_affiliation_approver';
+import { AffilsContext, getAffiliationName, getAllAffiliations, getAffiliationSubgroups, getAffiliationApprover } from '../../helpers/affiliationsHelpers';
 import { getUserName } from '../../helpers/getUserName';
 
 import { getApproverNames, getContributorNames } from '../../helpers/get_approver_names';
@@ -25,6 +24,8 @@ import { AmplifyAPIRequestRecycler } from '../../utilities/fetchUtilities';
 
 class ClassificationApproval extends Component {
 
+    static contextType = AffilsContext;
+
     constructor(props) {
         super(props);
         this.initialState = {
@@ -32,7 +33,6 @@ class ClassificationApproval extends Component {
             approversList: [],
             classificationContributors: this.props.provisional && this.props.provisional.classificationContributors ? this.props.provisional.classificationContributors : [],
             additionalApprover: this.props.provisional && this.props.provisional.additionalApprover ? this.props.provisional.additionalApprover : '',
-            //retainSelectedApprover: this.props.provisional && this.props.provisional.retainSelectedApprover ? this.props.provisional.retainSelectedApprover : [],
             retainSelectedContributor: this.props.provisional && this.props.provisional.retainSelectedContributor ? this.props.provisional.retainSelectedContributor : [],
             contributorComment: this.props.provisional && this.props.provisional.contributorComment ? this.props.provisional.contributorComment : '',
             approvalReviewDate: this.props.provisional && this.props.provisional.approvalReviewDate ? this.props.provisional.approvalReviewDate : undefined,
@@ -44,9 +44,10 @@ class ClassificationApproval extends Component {
             isApprovalPreview: this.props.provisional && this.props.provisional.classificationStatus === 'Approved' ? true : false,
             isApprovalEdit: false,
             showAttributionForm: false,
-            sopVersion: this.props.provisional && this.props.provisional.sopVersion ? this.props.provisional.sopVersion : '8',
+            sopVersion: this.props.provisional && this.props.provisional.sopVersion ? this.props.provisional.sopVersion : sopVersions[0],
             submitBusy: false, // Flag to indicate that the submit button is in a 'busy' state
             approverError: null,
+            approvalReviewDateError: null,
             isModalOpen: false
         };
         this.state = this.initialState;
@@ -65,7 +66,8 @@ class ClassificationApproval extends Component {
 
     // Method to get full affiliations list and reformat obj so it's compatible w/ react-select
     parseAffiliationsList() {
-        const affiliationsList = getAllAffliations();
+        const { affiliationsData } = this.context;
+        const affiliationsList = getAllAffiliations(affiliationsData);
         if (affiliationsList) {
             const parsedAffiliations = affiliationsList.map(affiliation => {
                 return {
@@ -80,8 +82,9 @@ class ClassificationApproval extends Component {
 
     // Method to get affiliation subgroups and pass to react-select
     parseApproversList() {
+        const { affiliationsData } = this.context;
         const parsedApprovers = [];
-        const approverList = getAffiliationSubgroups();
+        const approverList = getAffiliationSubgroups(affiliationsData);
         if (approverList) {
             approverList.forEach(approver => {
                 if (approver.gcep) {
@@ -121,12 +124,13 @@ class ClassificationApproval extends Component {
     }
 
     getAffiliationApprovers = () => {
+        const { affiliationsData } = this.context;
         const provisional = this.props.provisional;
         let provisionalAffiliation = provisional && provisional.affiliation ? provisional.affiliation : null;
         let userAffiliation = this.props.affiliation ? this.props.affiliation.affiliation_id : null;
         if ((provisionalAffiliation || userAffiliation) && !provisional.approvedClassification) {
             let affiliationId = provisionalAffiliation ? provisionalAffiliation : userAffiliation;
-            let approvers = getAffiliationApprover(affiliationId);
+            let approvers = getAffiliationApprover(affiliationId, affiliationsData);
             if (approvers.length > 0) {
                 this.setState({ affiliationApprovers: approvers.sort() }, () => {
                     if (provisional && provisional.classificationApprover) {
@@ -139,15 +143,35 @@ class ClassificationApproval extends Component {
                 if (provisional && provisional.classificationApprover) {
                     this.setState({ classificationApprover: provisional.classificationApprover });
                 } else {
-                    this.setState({ classificationApprover: getAffiliationName(affiliationId) });
+                    this.setState({ classificationApprover: getAffiliationName(affiliationId, affiliationsData) });
                 }
             }
         }
     }
 
     handleReviewDateChange = (approvalReviewDate) => {
-        this.setState({ approvalReviewDate });
-    }
+      const currentDate = new Date();
+      const inputDate = new Date(approvalReviewDate);
+  
+      // Resetting time components to only compare date parts
+      currentDate.setHours(0, 0, 0, 0);
+      inputDate.setHours(0, 0, 0, 0);
+  
+      if (inputDate > currentDate) {
+          // Set error if the input date is in the future
+          this.setState({
+              approvalReviewDateError: "The review date cannot be in the future."
+          });
+          return false;
+      } else {
+          // If the date is not in the future, update the state normally
+          this.setState({
+              approvalReviewDate,
+              approvalReviewDateError: null
+          });
+      }
+    };
+
     // Set state of approver comments set in textarea
     handleApproverCommentsChange = (value) => {
         this.setState({ approvalComment: value });
@@ -205,7 +229,7 @@ class ClassificationApproval extends Component {
       const provisionalAffiliation = lodashGet(this.props.provisional, 'affiliation', null);
       const currentUserAffiliation = lodashGet(this.props.auth, 'currentAffiliation.affiliation_id', null);
       let approver = this.state.classificationApprover ? this.state.classificationApprover : 'none';
-      //let formErr = false;
+      const finalApprovalDate = this.state.approvalReviewDate ? this.state.approvalReviewDate : 'none';
 
       // Trigger alert modal if affiliations do not match 
       if (currentUserAffiliation !== provisionalAffiliation) {
@@ -217,18 +241,22 @@ class ClassificationApproval extends Component {
 
       // If has affiliation approvers, require to select one
       if (!this.state.affiliationApprovers || (this.state.affiliationApprovers && approver && approver !== 'none')) {
-        this.setState({
-          approvalSubmitter: getUserName(this.props.auth),
-        }, () => {
-            this.setState({ isApprovalPreview: true });
-            //formErr = false;
-        });
-        //formErr = false;
+        // Final Approval data is required for both the GCI and VCI
+        if ((finalApprovalDate != 'none')) {
+          this.setState({
+            approvalSubmitter: getUserName(this.props.auth),
+          }, () => {
+              this.setState({ isApprovalPreview: true });
+          });
+        } else {
+          this.setState({ approvalReviewDateError: 'Select a final approval date' });
+          return false;
+        }
       } else {
-        //formErr = true;
         this.setState({ approverError: 'Select an approver' });
         return false;
       }
+
     }
 
     /**
@@ -241,12 +269,11 @@ class ClassificationApproval extends Component {
             approvalReviewDate: this.props.provisional && this.props.provisional.approvalReviewDate ? this.props.provisional.approvalReviewDate : undefined,
             approvalComment: this.props.provisional && this.props.provisional.approvalComment ? this.props.provisional.approvalComment : undefined,
             classificationApprover: this.props.provisional && this.props.provisional.classificationApprover ? this.props.provisional.classificationApprover : undefined,
-            //retainSelectedApprover: this.props.provisional && this.props.provisional.retainSelectedApprover ? this.props.provisional.retainSelectedApprover : null,
             retainSelectedContributor: this.props.provisional && this.props.provisional.retainSelectedContributor ? this.props.provisional.retainSelectedContributor : [],
             classificationContributors: this.props.provisional && this.props.provisional.classificationContributors ? this.props.provisional.classificationContributors : null,
             additionalApprover: this.props.provisional && this.props.provisional.additionalApprover ? this.props.provisional.additionalApprover : null,
             contributorComment: this.props.provisional && this.props.provisional.contributorComment ? this.props.provisional.contributorComment : null,
-            sopVersion: this.props.provisional && this.props.provisional.sopVersion ? this.props.provisional.sopVersion : '8',
+            sopVersion: this.props.provisional && this.props.provisional.sopVersion ? this.props.provisional.sopVersion : sopVersions[0],
             isApprovalPreview: false
         });
     }
@@ -264,6 +291,7 @@ class ClassificationApproval extends Component {
      * @param {object} provisional - provisional classification object
      */
     sendToDataExchange = (provisional) => {
+        const { affiliationsData } = this.context;
         const approvalSubmitter = this.props.auth;
         // Get all contributors
         const contributors = this.props.getContributors();
@@ -287,7 +315,7 @@ class ClassificationApproval extends Component {
         // Add secondary approver (affiliation) to contributors list
         if (provisional.additionalApprover) {
             contributors.push({
-                name: getApproverNames(provisional.additionalApprover),
+                name: getApproverNames(provisional.additionalApprover, affiliationsData),
                 roles: ['secondary approver']
             });
         }
@@ -296,8 +324,8 @@ class ClassificationApproval extends Component {
             provisional.classificationContributors.forEach(contributorId => {
                 contributors.push({
                     id: contributorId,
-                    name: getAffiliationName(contributorId),
-                    roles: ['secondary approver']
+                    name: getAffiliationName(contributorId, affiliationsData),
+                    roles: ['secondary contributor']
                 });
             });
         }
@@ -308,7 +336,7 @@ class ClassificationApproval extends Component {
         const uncData = this.props.setUNCData(provisional, 'approved', reviewDate, approvalDate, approvalSubmitter, contributors);
 
         // Post approval data to Data Exchange
-        this.props.postTrackData(uncData).then(response => {
+        this.props.postTrackData(uncData).then(() => {
             console.log('Successfully sent approval data to Data Exchange for provisional %s at %s', provisional.PK, moment(approvalDate).toISOString());
         }).catch(error => {
             console.log('Error sending approval data to Data Exchange for provisional %s at %s - Error: %o', provisional.PK, moment(approvalDate).toISOString(), error);
@@ -427,27 +455,16 @@ class ClassificationApproval extends Component {
                 })
             );
         } else if (this.props.interpretation) {
-            // To avoid provisional/snapshot data nesting, remove old snapshots from provisional to be added to the new snapshot
-            // !!! TO-DO: GET /snapshots here or in parent to first get current list of snapshots
-            // let previousSnapshots;
-            // if (result && result.associatedInterpretationSnapshots) {
-            //     previousSnapshots = result.associatedInterpretationSnapshots;
-            //     delete result['associatedInterpretationSnapshots'];
-            // }
-
             // Update classification data and its parent interpretation
+            newProvisional.last_modified = nowUTC;
+
             const interpretationObj = this.props.interpretation;
-            const provisionalVariantObj = this.props.provisional;
 
             // reference to parent interpretation
-            const resourceParentObj = {"interpretation": interpretationObj.PK}
-
-
-            newProvisional.last_modified = nowUTC;
+            const resourceParentObj = {"interpretation": interpretationObj.PK};
 
             // Create Approved Snapshot Obj
             const snapshotObj = {
-                //resourceId: provisionalVariantObj.PK, // Not needed bc prov Variant object directly inside interpretation
                 resourceType: 'interpretation',
                 approvalStatus: 'Approved',
                 resource: newProvisional,
@@ -463,49 +480,40 @@ class ClassificationApproval extends Component {
                 modified_by: lodashGet(this.props.auth, 'PK', null)
             };
 
-            // POST Approval snapshot
-            const params = {body: {snapshotObj}}
-            const url = '/snapshots/?type=interpretation&action=approve';
-            API.post(API_NAME, url, params).then(response => {
-                let approvalSnapshot = response;
-                this.props.updateSnapshotList(approvalSnapshot, true);
-                return Promise.resolve(approvalSnapshot);
-            }).then(snapshot => {
-                // Return old snapshots to provisional before adding latest snapshot
-                /* ???
-                if (previousSnapshots) {
-                    snapshot.associatedInterpretationSnapshots = previousSnapshots;
-                }
-                */
+            interpretationObj.status = "Approved";
+            interpretationObj.modified_by = newProvisional.modified_by;
+            interpretationObj.provisionalVariant = newProvisional;
 
-                //let newClassification = snapshot.resource;
-                //let newSnapshot = snapshot;
+            const interpParams = { body: { interpretationObj } };
 
-                // Update status of provisional variant + interpretation to "Approved"
-                provisionalVariantObj.classificationStatus = "Approved";
-                interpretationObj.status = "Approved";
-                interpretationObj.modified_by = newProvisional.modified_by;
+            // Update interpretation with it's new provisionalVariant obj before saving snapshots
+            API.put(API_NAME, '/interpretations/' + interpretationObj.PK, interpParams).then(result => {
+                this.props.updateInterpretation(result);
+                return Promise.resolve(result);
+            }).then((updatedInterpretation) => {
+              // POST Approval snapshot
+              const params = { body: { snapshotObj } };
+              const url = '/snapshots/?type=interpretation&action=approve';
 
-                //interpretationObj.snapshot = snapshotObj;
+              API.post(API_NAME, url, params).then(response => {
+                  let approvalSnapshot = response;
+                  this.props.updateSnapshotList(approvalSnapshot, true);
+                  return Promise.resolve(approvalSnapshot);
+              }).then(snapshot => {
+                  // Update interpretation with latest snapshots PKs
+                  let currentSnapshots = updatedInterpretation.snapshots || [];
+                  let latestSnapshots = [snapshot.PK].concat(currentSnapshots);
+                  updatedInterpretation.snapshots = latestSnapshots;
 
-                // Update interpretation with latest snapshots PKs
-                let currentSnapshots = interpretationObj.snapshots || [];
-                let latestSnapshots = [snapshot.PK].concat(currentSnapshots);
-                interpretationObj.snapshots = latestSnapshots;
-
-                // And update provisional Variant
-                interpretationObj.provisionalVariant = provisionalVariantObj;
-
-                const params = {body: {interpretationObj}}
-
-                API.put(API_NAME, '/interpretations/' + interpretationObj.PK, params).then(result => {
-                    this.props.updateInterpretation(result);
-                    this.props.updateProvisionalObj(result.provisionalVariant, true);
-                })
-            }).catch(err => {
-                console.log('Saving approval snapshot error = : %o', err);
-            });
-
+                  const params = { body: { updatedInterpretation } };
+                  API.put(API_NAME, '/interpretations/' + updatedInterpretation.PK, params).then(result => {
+                      this.props.updateInterpretation(result);
+                      this.props.updateProvisionalObj(result.provisionalVariant, true);
+                  });
+              }).catch(err => {
+                  console.log('Saving approval snapshot error = : %o', err);
+              });
+          });
         }
     }
 
@@ -535,8 +543,8 @@ class ClassificationApproval extends Component {
         const approverHelpText = 'In the event that another affiliation approved the final approved classification, please select that affiliation from the dropdown menu.';
         const approversList = this.state.approversList ? this.state.approversList : [];
         const cspecDocTitle = lodashGet(this.props.cspecDoc, 'ruleSetDoc.cspecInfo.documentName', null);
-        //const classification = this.props.classification;
         const currentUserAffiliation = lodashGet(this.props.auth, 'currentAffiliation.affiliation_fullname', null);
+        const { affiliationsData } = this.context;
 
         return (
             <div className="final-approval-panel-content">
@@ -545,7 +553,7 @@ class ClassificationApproval extends Component {
                         <>
                             <div className="row">
                                 <div className="col-sm-4">
-                                    <h5><strong>ClinGen Affiliation:</strong> {affiliation ? getAffiliationName(affiliation) : null}</h5>
+                                    <h5><strong>ClinGen Affiliation:</strong> {affiliation ? getAffiliationName(affiliation, affiliationsData) : null}</h5>
                                             
                                     <h5><strong>Approved Classification entered by:</strong> {approvalSubmitter ? approvalSubmitter : null}</h5>
                                     {affiliation && affiliation.length ?
@@ -553,25 +561,29 @@ class ClassificationApproval extends Component {
                                     {gdm ?
                                         <div className="pt-3 pb-3">
                                             <h5><strong>SOP Version:</strong> {sopVersion}</h5>
-                                            <h5><strong>Classification Contributor(s):</strong> {classificationContributors ? getContributorNames(classificationContributors).join(', ') : null}</h5>
+                                            <h5><strong>Classification Contributor(s):</strong> {classificationContributors ? getContributorNames(classificationContributors, affiliationsData).join(', ') : null}</h5>
                                             <h5><span className="text-pre-wrap"><strong>Contributor Comments:</strong> {contributorComment}</span></h5>
                                         </div>
                                     : null}
                                     {interpretation ? 
-                                        <h5>
-                                          <strong>Specification Document: </strong>
-                                          {cspecDocTitle ? cspecDocTitle : ''}
-                                        </h5>
+                                        <>
+                                          <h5>
+                                            <strong>Specification Document: </strong>
+                                            {cspecDocTitle ? cspecDocTitle : ''}
+                                          </h5>
+                                          <h5>
+                                            <strong>Specified Gene: </strong>
+                                            {lodashGet(interpretation, 'cspec.specifiedGene', 'None Selected')}
+                                          </h5>
+                                        </>
                                     : null}
                                 </div>
-                                
-
                                 <div className="col-sm-5">
                                     <h5><strong>Date saved as Approved:</strong> {approvalDate ? formatDate(parseDate(approvalDate), "YYYY MMM DD, h:mm a") : null}</h5>
                                     <h5><strong>Final Approval Date:</strong> {approvalReviewDate ? formatDate(parseDate(approvalReviewDate), "YYYY MMM DD") : null}</h5>
                                     <h5><span className="text-pre-wrap"><strong>Approver Comments:</strong> {approvalComment ? approvalComment : null}</span></h5>
                                     {gdm ?
-                                        <h5><strong>Classification Approver:</strong> {additionalApprover ? getApproverNames(additionalApprover) : null}</h5>
+                                        <h5><strong>Classification Approver:</strong> {additionalApprover ? getApproverNames(additionalApprover, affiliationsData) : null}</h5>
                                     : null}
                                 </div>
                             </div>
@@ -588,7 +600,7 @@ class ClassificationApproval extends Component {
                         <div className="approval-edit">
                             <div className="row">
                                 <div className="col-sm-4">
-                                    <h5><strong>ClinGen Affiliation:</strong> {affiliation ? getAffiliationName(affiliation) : null}</h5>
+                                    <h5><strong>ClinGen Affiliation:</strong> {affiliation ? getAffiliationName(affiliation, affiliationsData) : null}</h5>
                                     <h5><strong>Entered by:</strong><br/>
                                         {approvalSubmitter ?
                                             approvalSubmitter
@@ -602,7 +614,7 @@ class ClassificationApproval extends Component {
                                         <div className="classification-approver">
                                             {affiliationApprovers && affiliationApprovers.length ?
                                             <>
-                                                <label><strong>Select Approver:</strong> </label>
+                                                <label><strong>Select Approver: *</strong></label>
                                                 <select placeholder="Affiliation Approver:"
                                                     className="form-control"
                                                     value={this.state.classificationApprover}
@@ -616,12 +628,12 @@ class ClassificationApproval extends Component {
                                                 { this.state.approverError && <span style={{ color: 'red', fontSize: 12 }}>{ this.state.approverError }</span>}
                                             </>
                                                 :
-                                                <h5><strong>Affiliation Approver:</strong> {getAffiliationName(affiliation)}</h5>
+                                                <h5><strong>Affiliation Approver:</strong> {getAffiliationName(affiliation, affiliationsData)}</h5>
                                             }
                                         </div>
                                         : null}
                                     <div className="approval-review-date form-group">
-                                        <label className="control-label"><strong>Final Approval Date:</strong></label><br/>
+                                        <label className="control-label"><strong>Final Approval Date: *</strong></label><br/>
                                             <DayPickerInput
                                                 value={approvalReviewDate}
                                                 onDayChange={this.handleReviewDateChange}
@@ -630,10 +642,12 @@ class ClassificationApproval extends Component {
                                                 inputProps={{ className: "form-control" }}
                                                 placeholder={`${formatDate(new Date())}`}
                                                 dayPickerProps={{
-                                                    selectedDays: approvalReviewDate ? parseDate(approvalReviewDate) : undefined
+                                                    selectedDays: approvalReviewDate ? parseDate(approvalReviewDate) : undefined,
+                                                    disabledDays: { after: new Date() }
                                                 }}
                                             />
                                     </div>
+                                    { this.state.approvalReviewDateError && <span style={{ color: 'red', fontSize: 12 }}>{ this.state.approvalReviewDateError }</span>}
                                 </div>
                                 {gdm ? 
                                     <div className="col-sm-4 sop-version">
@@ -656,7 +670,7 @@ class ClassificationApproval extends Component {
                                 {(classificationContributorsList && classificationContributorsList.length) && this.state.showAttributionForm ?
                                     <div className="col-md-6 contributor-form">
                                         <div className="contributor-form">
-                                            <label className="control-label"><strong>Classification Contributor(s):</strong></label>
+                                            <label className="control-label"><strong>Secondary Classification Contributor(s):</strong></label>
                                             <span className="text-info contextual-help" data-toggle="tooltip" data-placement="top" data-tooltip={contributorHelpText}>
                                                 <i className="icon icon-info-circle secondary-approvers-help ml-1"></i>
                                             </span>
@@ -674,13 +688,13 @@ class ClassificationApproval extends Component {
                                 {this.state.showAttributionForm ?
                                     <div className="col-md-6 approval-form">
                                         <div className="curation-approvers approval-form">
-                                            <label className="control-label"><strong>Classification Approver:</strong></label>
+                                            <label className="control-label"><strong>Secondary Classification Approver:</strong></label>
                                             <span className="text-info contextual-help" data-toggle="tooltip" data-placement="top" data-tooltip={approverHelpText}>
                                                 <i className="icon icon-info-circle secondary-approvers-help ml-1"></i>
                                             </span>
                                             <select value={additionalApprover} className="form-control"
                                                 onChange={e => this.handleClassificationApproverSelect(e.currentTarget.value)}>
-                                                <option value="none">Select Classification Approver</option>
+                                                <option value="none">Select Secondary Classification Approver</option>
                                                 {approversList.map((approver, i) => {
                                                     return <option key={i} value={approver.value}>{approver.label}</option>;
                                                 })}
@@ -692,6 +706,9 @@ class ClassificationApproval extends Component {
                                                 placeholder="Approver Comments" value={this.state.approvalComment} rows="5" 
                                                 className="form-control control-label mt-4" />
                                         </div>
+                                        <span className="text-muted">
+                                          Note: If your Affiliation is the only Approver for this Classification, then do not select it in the dropdown because it will be selected by default
+                                        </span>
                                     </div>
                                     : null}
                             </div>
@@ -701,6 +718,7 @@ class ClassificationApproval extends Component {
                                     <span className="text-info contextual-help" data-toggle="tooltip" data-placement="top" data-tooltip={formHelpText}>
                                         <i className="secondary-approvers-help icon icon-info-circle ml-1"></i>
                                     </span>
+                                    <span className="text-muted ml-1">Acknowledge Other Contributors if other groups have contributed to the supporting curation and/or approval of your Classification</span>
                                 </div>
                                 : null}
                         </div>
@@ -741,7 +759,7 @@ class ClassificationApproval extends Component {
                   hideButtonText="Cancel"
                 >
                     <p className="alert alert-warning">You are currently curating an Interpretation under the wrong affiliation. You are logged in as <strong>{currentUserAffiliation ? currentUserAffiliation : "No Affiliation"}</strong> and
-                        curating an interpretation for <strong>{lodashGet(provisional, 'affiliation', null) ? getAffiliationName(provisional.affiliation) : 'No Affiliation'}</strong>. Either close this tab in your browser or redirect to the Dashboard below.
+                        curating an interpretation for <strong>{lodashGet(provisional, 'affiliation', null) ? getAffiliationName(provisional.affiliation, affiliationsData) : 'No Affiliation'}</strong>. Either close this tab in your browser or redirect to the Dashboard below.
                     </p>
                 </Modal>
             </div>

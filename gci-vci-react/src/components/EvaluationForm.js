@@ -22,6 +22,7 @@ function EvaluationForm(props) {
         className, 
         disabled = false,
         criteriaCrossCheck,
+        panelHelpText
     } = props;
 
     
@@ -35,7 +36,7 @@ function EvaluationForm(props) {
         // Break criteria objects into grouped arrays
         const groupCriteriaObjects = (groups) => {
             setGroupedCriteria([])
-            groups.forEach((group, i) => {
+            groups.forEach((group) => {
                 const tempArray = [];
                 group.forEach(item => {
                     criteria.forEach(object => {
@@ -44,7 +45,7 @@ function EvaluationForm(props) {
                           if (cspecCriteria && cspecCriteria.length) {
                             cspecCriteria.forEach(doc => {
                               if (doc.code === object.code) {
-                                object.cspecLink = doc.criteriaCodeUiLink;
+                                object.cspecLink = doc.criteriaCodeVersionUiLink ? doc.criteriaCodeVersionUiLink : doc.criteriaCodeUiLink;
                               }
                             });
                           } else {
@@ -94,8 +95,10 @@ function EvaluationForm(props) {
 
     
     if (groupedCriteria){
+        const veryStrongCodes = ['PS2', 'PM3', 'PS3', 'PS4', 'PM6'];
         return isMyInterpretation ? (
             <section className={`mb-5 ${className || ""}`}>
+                {panelHelpText ? panelHelpText : null}
                 <h2>{title}</h2>
                 <p className="lead text-secondary">{subTitle}</p>
 
@@ -131,7 +134,7 @@ function EvaluationForm(props) {
                                                 {criteria.code.charAt(0) === 'P' && criteria.code.charAt(1) !== 'M' ? <option value='moderate'>{criteria.code}_Moderate</option> : null}
                                                 {criteria.code.charAt(1) === 'S' ? null : <option value='strong'>{criteria.code}_Strong</option>}
                                                 {(criteria.code.charAt(0) === 'B' && criteria.code.charAt(1) !== 'A') ? <option value='stand-alone'>{criteria.code}_Stand-alone</option> : null}
-                                                {(criteria.code === 'PS2' || criteria.code === 'PM3') ? <option value='very-strong'>{criteria.code}_Very strong</option> : null}
+                                                {veryStrongCodes.includes(criteria.code) ? <option value='very-strong'>{criteria.code}_Very strong</option> : null}
                                             </select>
                                         </div>
                                         <div className="col-sm-8">

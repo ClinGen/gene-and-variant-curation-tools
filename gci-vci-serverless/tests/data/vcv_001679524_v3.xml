@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ClinVarResult-Set><VariationArchive RecordType="classified" VariationID="1679524" VariationName="NM_001127222.2(CACNA1A):c.4031T&gt;C (p.Leu1344Pro)" VariationType="single nucleotide variant" Accession="VCV001679524" Version="3" NumberOfSubmissions="3" NumberOfSubmitters="3" DateLastUpdated="2023-12-25" DateCreated="2022-05-07" MostRecentSubmission="2023-07-22">
+  <RecordStatus>current</RecordStatus>
+  <Species>Homo sapiens</Species>
+  <ClassifiedRecord>
+    <SimpleAllele AlleleID="1671444" VariationID="1679524">
+      <GeneList>
+        <Gene Symbol="CACNA1A" FullName="calcium voltage-gated channel subunit alpha1 A" GeneID="773" HGNC_ID="HGNC:1388" Source="submitted" RelationshipType="within single gene">
+          <Location>
+            <CytogeneticLocation>19p13.13</CytogeneticLocation>
+            <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="19" Accession="NC_000019.10" start="13206442" stop="13506479" display_start="13206442" display_stop="13506479" Strand="-"/>
+            <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="19" Accession="NC_000019.9" start="13317255" stop="13617273" display_start="13317255" display_stop="13617273" Strand="-"/>
+          </Location>
+          <OMIM>601011</OMIM>
+          <Haploinsufficiency last_evaluated="2017-05-21" ClinGen="https://www.ncbi.nlm.nih.gov/projects/dbvar/ISCA/isca_gene.cgi?sym=CACNA1A">Sufficient evidence for dosage pathogenicity</Haploinsufficiency>
+          <Triplosensitivity last_evaluated="2017-05-21" ClinGen="https://www.ncbi.nlm.nih.gov/projects/dbvar/ISCA/isca_gene.cgi?sym=CACNA1A">No evidence available</Triplosensitivity>
+        </Gene>
+      </GeneList>
+      <Name>NM_001127222.2(CACNA1A):c.4031T&gt;C (p.Leu1344Pro)</Name>
+      <CanonicalSPDI>NC_000019.10:13262791:A:G</CanonicalSPDI>
+      <VariantType>single nucleotide variant</VariantType>
+      <Location>
+        <CytogeneticLocation>19p13.13</CytogeneticLocation>
+        <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" forDisplay="true" AssemblyStatus="current" Chr="19" Accession="NC_000019.10" start="13262792" stop="13262792" display_start="13262792" display_stop="13262792" variantLength="1" positionVCF="13262792" referenceAlleleVCF="A" alternateAlleleVCF="G"/>
+        <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="19" Accession="NC_000019.9" start="13373606" stop="13373606" display_start="13373606" display_stop="13373606" variantLength="1" positionVCF="13373606" referenceAlleleVCF="A" alternateAlleleVCF="G"/>
+      </Location>
+      <ProteinChange>L1344P</ProteinChange>
+      <ProteinChange>L1345P</ProteinChange>
+      <ProteinChange>L1348P</ProteinChange>
+      <HGVSlist>
+        <HGVS Assembly="GRCh38" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000019.10" sequenceAccession="NC_000019" sequenceVersion="10" change="g.13262792A&gt;G" Assembly="GRCh38">
+            <Expression>NC_000019.10:g.13262792A&gt;G</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Assembly="GRCh37" Type="genomic, top-level">
+          <NucleotideExpression sequenceAccessionVersion="NC_000019.9" sequenceAccession="NC_000019" sequenceVersion="9" change="g.13373606A&gt;G" Assembly="GRCh37">
+            <Expression>NC_000019.9:g.13373606A&gt;G</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="genomic">
+          <NucleotideExpression sequenceAccessionVersion="NG_011569.1" sequenceAccession="NG_011569" sequenceVersion="1" change="g.248669T&gt;C">
+            <Expression>NG_011569.1:g.248669T&gt;C</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_000068.4" sequenceAccession="NM_000068" sequenceVersion="4" change="c.4043T&gt;C">
+            <Expression>NM_000068.4:c.4043T&gt;C</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_000059.3" sequenceAccession="NP_000059" sequenceVersion="3" change="p.Leu1348Pro">
+            <Expression>NP_000059.3:p.Leu1348Pro</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_001127221.2" sequenceAccession="NM_001127221" sequenceVersion="2" change="c.4034T&gt;C">
+            <Expression>NM_001127221.2:c.4034T&gt;C</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_001120693.1" sequenceAccession="NP_001120693" sequenceVersion="1" change="p.Leu1345Pro">
+            <Expression>NP_001120693.1:p.Leu1345Pro</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_001127222.2" sequenceAccession="NM_001127222" sequenceVersion="2" change="c.4031T&gt;C" MANESelect="true">
+            <Expression>NM_001127222.2:c.4031T&gt;C</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_001120694.1" sequenceAccession="NP_001120694" sequenceVersion="1" change="p.Leu1344Pro">
+            <Expression>NP_001120694.1:p.Leu1344Pro</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_001174080.2" sequenceAccession="NM_001174080" sequenceVersion="2" change="c.4034T&gt;C">
+            <Expression>NM_001174080.2:c.4034T&gt;C</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_001167551.1" sequenceAccession="NP_001167551" sequenceVersion="1" change="p.Leu1345Pro">
+            <Expression>NP_001167551.1:p.Leu1345Pro</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_023035.3" sequenceAccession="NM_023035" sequenceVersion="3" change="c.4043T&gt;C">
+            <Expression>NM_023035.3:c.4043T&gt;C</Expression>
+          </NucleotideExpression>
+          <ProteinExpression sequenceAccessionVersion="NP_075461.2" sequenceAccession="NP_075461" sequenceVersion="2" change="p.Leu1348Pro">
+            <Expression>NP_075461.2:p.Leu1348Pro</Expression>
+          </ProteinExpression>
+          <MolecularConsequence ID="SO:0001583" Type="missense variant" DB="SO"/>
+        </HGVS>
+        <HGVS Type="genomic">
+          <NucleotideExpression sequenceAccessionVersion="LRG_7" sequenceAccession="LRG_7">
+            <Expression>LRG_7:g.248669T&gt;C</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="NM_001127221.1" sequenceAccession="NM_001127221" sequenceVersion="1" change="c.4034T&gt;C">
+            <Expression>NM_001127221.1:c.4034T&gt;C</Expression>
+          </NucleotideExpression>
+        </HGVS>
+        <HGVS Type="coding">
+          <NucleotideExpression sequenceAccessionVersion="LRG_7t1" sequenceAccession="LRG_7t1">
+            <Expression>LRG_7t1:c.4034T&gt;C</Expression>
+          </NucleotideExpression>
+        </HGVS>
+      </HGVSlist>
+      <XRefList>
+        <XRef Type="rs" ID="2144773045" DB="dbSNP"/>
+      </XRefList>
+    </SimpleAllele>
+    <RCVList>
+      <RCVAccession Title="NM_001127222.2(CACNA1A):c.4031T&gt;C (p.Leu1344Pro) AND multiple conditions" Accession="RCV002227403" Version="1">
+        <ClassifiedConditionList TraitSetID="74646">
+          <ClassifiedCondition DB="MedGen" ID="C4479236">Developmental and epileptic encephalopathy, 52</ClassifiedCondition>
+          <ClassifiedCondition DB="MedGen" ID="C1720416">Episodic ataxia type 2</ClassifiedCondition>
+          <ClassifiedCondition DB="MedGen" ID="C1832884">Migraine, familial hemiplegic, 1</ClassifiedCondition>
+          <ClassifiedCondition DB="MedGen" ID="C0752124">Spinocerebellar ataxia type 6</ClassifiedCondition>
+        </ClassifiedConditionList>
+        <RCVClassifications>
+          <GermlineClassification>
+            <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+            <Description DateLastEvaluated="2022-03-20" SubmissionCount="1">Likely pathogenic</Description>
+          </GermlineClassification>
+        </RCVClassifications>
+      </RCVAccession>
+      <RCVAccession Title="NM_001127222.2(CACNA1A):c.4031T&gt;C (p.Leu1344Pro) AND multiple conditions" Accession="RCV003234171" Version="1">
+        <ClassifiedConditionList TraitSetID="9459">
+          <ClassifiedCondition DB="MedGen" ID="C1720416">Episodic ataxia type 2</ClassifiedCondition>
+          <ClassifiedCondition DB="MedGen" ID="C1832884">Migraine, familial hemiplegic, 1</ClassifiedCondition>
+          <ClassifiedCondition DB="MedGen" ID="C0752124">Spinocerebellar ataxia type 6</ClassifiedCondition>
+        </ClassifiedConditionList>
+        <RCVClassifications>
+          <GermlineClassification>
+            <ReviewStatus>no classification provided</ReviewStatus>
+            <Description SubmissionCount="1">not provided</Description>
+          </GermlineClassification>
+        </RCVClassifications>
+      </RCVAccession>
+      <RCVAccession Title="NM_001127222.2(CACNA1A):c.4031T&gt;C (p.Leu1344Pro) AND CACNA1A-associated disorder" Accession="RCV003314034" Version="1">
+        <ClassifiedConditionList TraitSetID="85691">
+          <ClassifiedCondition>CACNA1A-associated disorder</ClassifiedCondition>
+        </ClassifiedConditionList>
+        <RCVClassifications>
+          <GermlineClassification>
+            <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+            <Description DateLastEvaluated="2023-04-20" SubmissionCount="1">Pathogenic</Description>
+          </GermlineClassification>
+        </RCVClassifications>
+      </RCVAccession>
+    </RCVList>
+    <Classifications>
+      <GermlineClassification DateLastEvaluated="2023-04-20" NumberOfSubmissions="3" NumberOfSubmitters="3" DateCreated="2022-05-07" MostRecentSubmission="2023-07-22">
+        <ReviewStatus>criteria provided, multiple submitters, no conflicts</ReviewStatus>
+        <Description>Pathogenic/Likely pathogenic</Description>
+        <DescriptionHistory Dated="2023-07-18">
+          <Description>Likely pathogenic</Description>
+        </DescriptionHistory>
+        <ConditionList>
+          <TraitSet ID="9459" Type="Disease" ContributesToAggregateClassification="false">
+            <Trait ID="1620" Type="Disease">
+              <Name>
+                <ElementValue Type="Alternate">Episodic ataxia with nystagmus</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Nystagmus-associated episodic ataxia</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Preferred">Episodic ataxia type 2</ElementValue>
+                <XRef ID="Episodic+Ataxia+with+Nystagmus/2620" DB="Genetic Alliance"/>
+                <XRef ID="MONDO:0007163" DB="MONDO"/>
+                <XRef ID="420932006" DB="SNOMED CT"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Cerebellopathy, hereditary paroxysmal</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Ataxia, familial, paroxysmal</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Acetazolamide-responsive, hereditary, paroxysmal, cerebellar ataxia</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Acetazolamide-responsive episodic ataxia syndrome</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Cerebellar ataxia, paroxysmal, Acetazolamide-responsive</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">EA2</ElementValue>
+                <XRef Type="MIM" ID="108500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">APCA</ElementValue>
+                <XRef Type="MIM" ID="108500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">CAPA</ElementValue>
+                <XRef Type="MIM" ID="108500" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="9602"/>
+                <XRef ID="9602" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301317</ID>
+                <ID Source="BookShelf">NBK1138</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS, 2010">
+                <ID Source="PubMed">20050888</ID>
+              </Citation>
+              <XRef ID="97" DB="Orphanet"/>
+              <XRef ID="C1720416" DB="MedGen"/>
+              <XRef ID="MONDO:0007163" DB="MONDO"/>
+              <XRef Type="MIM" ID="108500" DB="OMIM"/>
+            </Trait>
+            <Trait ID="5542" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Migraine, familial hemiplegic, 1</ElementValue>
+                <XRef ID="MONDO:0020756" DB="MONDO"/>
+                <XRef ID="MONDO:0007714" DB="MONDO"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Migraine, familial hemiplegic 1, with progressive cerebellar ataxia</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Alternate">FHM1</ElementValue>
+                <XRef Type="MIM" ID="141500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">FHM</ElementValue>
+                <XRef Type="MIM" ID="141500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">MHP1</ElementValue>
+                <XRef Type="MIM" ID="141500" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">Familial hemiplegic migraine (FHM) falls within the category of migraine with aura. In migraine with aura (including FHM) the neurologic symptoms of aura are unequivocally localizable to the cerebral cortex or brain stem and include visual disturbance (most common), sensory loss (e.g., numbness or paresthesias of the face or an extremity), and dysphasia (difficulty with speech). FHM must include motor involvement, such as hemiparesis (weakness of an extremity). Hemiparesis occurs with at least one other symptom during FHM aura. Neurologic deficits with FHM attacks can be prolonged for hours to days and may outlast the associated migrainous headache. FHM is often earlier in onset than typical migraine, frequently beginning in the first or second decade; the frequency of attacks tends to decrease with age. Approximately 40%-50% of families with CACNA1A-FHM have cerebellar signs ranging from nystagmus to progressive, usually late-onset mild ataxia.</Attribute>
+                <XRef ID="NBK1388" DB="GeneReviews"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="2638"/>
+                <XRef ID="2638" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301562</ID>
+                <ID Source="BookShelf">NBK1388</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS, 2010">
+                <ID Source="PubMed">20298421</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="Orphanet, 2013">
+                <URL>https://www.orpha.net/data/patho/Pro/en/Emergency_HemiplegicMigraine-enPro1031.pdf</URL>
+                <CitationText>Orphanet, Hemiplegic Migraine (HM), 2013</CitationText>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="NICE, 2021">
+                <URL>https://www.nice.org.uk/guidance/cg150</URL>
+                <CitationText>UK NICE Guideline CG150, Headaches in over 12s: diagnosis and management, 2021</CitationText>
+              </Citation>
+              <XRef ID="569" DB="Orphanet"/>
+              <XRef ID="C1832884" DB="MedGen"/>
+              <XRef ID="MONDO:0020756" DB="MONDO"/>
+              <XRef Type="MIM" ID="141500" DB="OMIM"/>
+            </Trait>
+            <Trait ID="4438" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Spinocerebellar ataxia type 6</ElementValue>
+                <XRef ID="MONDO:0008457" DB="MONDO"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">SCA6</ElementValue>
+                <XRef Type="MIM" ID="183086" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">Spinocerebellar ataxia type 6 (SCA6) is characterized by adult-onset, slowly progressive cerebellar ataxia, dysarthria, and nystagmus. The age of onset ranges from 19 to 73 years; mean age of onset is between 43 and 52 years. Initial symptoms are gait unsteadiness, stumbling, and imbalance (in ~90%) and dysarthria (in ~10%). Eventually all persons have gait ataxia, upper-limb incoordination, intention tremor, and dysarthria. Dysphagia and choking are common. Visual disturbances may result from diplopia, difficulty fixating on moving objects, horizontal gaze-evoked nystagmus, and vertical nystagmus. Hyperreflexia and extensor plantar responses occur in up to 40%-50%. Basal ganglia signs, including dystonia and blepharospasm, occur in up to 25%. Mentation is generally preserved.</Attribute>
+                <XRef ID="NBK1140" DB="GeneReviews"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="10351"/>
+                <XRef ID="10351" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301319</ID>
+                <ID Source="BookShelf">NBK1140</ID>
+              </Citation>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301317</ID>
+                <ID Source="BookShelf">NBK1138</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS, 2010">
+                <ID Source="PubMed">20050888</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS/ENS, 2014">
+                <ID Source="PubMed">24418350</ID>
+              </Citation>
+              <XRef ID="98758" DB="Orphanet"/>
+              <XRef ID="C0752124" DB="MedGen"/>
+              <XRef ID="MONDO:0008457" DB="MONDO"/>
+              <XRef Type="MIM" ID="183086" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="85691" Type="Disease" ContributesToAggregateClassification="true">
+            <Trait ID="68203" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">CACNA1A-associated disorder</ElementValue>
+              </Name>
+            </Trait>
+          </TraitSet>
+          <TraitSet ID="74646" Type="Disease" ContributesToAggregateClassification="true">
+            <Trait ID="36944" Type="Disease">
+              <Name>
+                <ElementValue Type="Alternate">Epileptic encephalopathy, early infantile, 52</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Preferred">Developmental and epileptic encephalopathy, 52</ElementValue>
+                <XRef ID="MONDO:0033361" DB="MONDO"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">DEE52</ElementValue>
+                <XRef Type="MIM" ID="617350" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="16223"/>
+                <XRef ID="16223" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <XRef ID="C4479236" DB="MedGen"/>
+              <XRef ID="MONDO:0033361" DB="MONDO"/>
+              <XRef Type="MIM" ID="617350" DB="OMIM"/>
+            </Trait>
+            <Trait ID="1620" Type="Disease">
+              <Name>
+                <ElementValue Type="Alternate">Episodic ataxia with nystagmus</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Nystagmus-associated episodic ataxia</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Preferred">Episodic ataxia type 2</ElementValue>
+                <XRef ID="Episodic+Ataxia+with+Nystagmus/2620" DB="Genetic Alliance"/>
+                <XRef ID="MONDO:0007163" DB="MONDO"/>
+                <XRef ID="420932006" DB="SNOMED CT"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Cerebellopathy, hereditary paroxysmal</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Ataxia, familial, paroxysmal</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Acetazolamide-responsive, hereditary, paroxysmal, cerebellar ataxia</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Acetazolamide-responsive episodic ataxia syndrome</ElementValue>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Cerebellar ataxia, paroxysmal, Acetazolamide-responsive</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">EA2</ElementValue>
+                <XRef Type="MIM" ID="108500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">APCA</ElementValue>
+                <XRef Type="MIM" ID="108500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">CAPA</ElementValue>
+                <XRef Type="MIM" ID="108500" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="9602"/>
+                <XRef ID="9602" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301317</ID>
+                <ID Source="BookShelf">NBK1138</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS, 2010">
+                <ID Source="PubMed">20050888</ID>
+              </Citation>
+              <XRef ID="97" DB="Orphanet"/>
+              <XRef ID="C1720416" DB="MedGen"/>
+              <XRef ID="MONDO:0007163" DB="MONDO"/>
+              <XRef Type="MIM" ID="108500" DB="OMIM"/>
+            </Trait>
+            <Trait ID="5542" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Migraine, familial hemiplegic, 1</ElementValue>
+                <XRef ID="MONDO:0020756" DB="MONDO"/>
+                <XRef ID="MONDO:0007714" DB="MONDO"/>
+              </Name>
+              <Name>
+                <ElementValue Type="Alternate">Migraine, familial hemiplegic 1, with progressive cerebellar ataxia</ElementValue>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Alternate">FHM1</ElementValue>
+                <XRef Type="MIM" ID="141500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">FHM</ElementValue>
+                <XRef Type="MIM" ID="141500" DB="OMIM"/>
+              </Symbol>
+              <Symbol>
+                <ElementValue Type="Alternate">MHP1</ElementValue>
+                <XRef Type="MIM" ID="141500" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">Familial hemiplegic migraine (FHM) falls within the category of migraine with aura. In migraine with aura (including FHM) the neurologic symptoms of aura are unequivocally localizable to the cerebral cortex or brain stem and include visual disturbance (most common), sensory loss (e.g., numbness or paresthesias of the face or an extremity), and dysphasia (difficulty with speech). FHM must include motor involvement, such as hemiparesis (weakness of an extremity). Hemiparesis occurs with at least one other symptom during FHM aura. Neurologic deficits with FHM attacks can be prolonged for hours to days and may outlast the associated migrainous headache. FHM is often earlier in onset than typical migraine, frequently beginning in the first or second decade; the frequency of attacks tends to decrease with age. Approximately 40%-50% of families with CACNA1A-FHM have cerebellar signs ranging from nystagmus to progressive, usually late-onset mild ataxia.</Attribute>
+                <XRef ID="NBK1388" DB="GeneReviews"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="2638"/>
+                <XRef ID="2638" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301562</ID>
+                <ID Source="BookShelf">NBK1388</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS, 2010">
+                <ID Source="PubMed">20298421</ID>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="Orphanet, 2013">
+                <URL>https://www.orpha.net/data/patho/Pro/en/Emergency_HemiplegicMigraine-enPro1031.pdf</URL>
+                <CitationText>Orphanet, Hemiplegic Migraine (HM), 2013</CitationText>
+              </Citation>
+              <Citation Type="practice guideline" Abbrev="NICE, 2021">
+                <URL>https://www.nice.org.uk/guidance/cg150</URL>
+                <CitationText>UK NICE Guideline CG150, Headaches in over 12s: diagnosis and management, 2021</CitationText>
+              </Citation>
+              <XRef ID="569" DB="Orphanet"/>
+              <XRef ID="C1832884" DB="MedGen"/>
+              <XRef ID="MONDO:0020756" DB="MONDO"/>
+              <XRef Type="MIM" ID="141500" DB="OMIM"/>
+            </Trait>
+            <Trait ID="4438" Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">Spinocerebellar ataxia type 6</ElementValue>
+                <XRef ID="MONDO:0008457" DB="MONDO"/>
+              </Name>
+              <Symbol>
+                <ElementValue Type="Preferred">SCA6</ElementValue>
+                <XRef Type="MIM" ID="183086" DB="OMIM"/>
+              </Symbol>
+              <AttributeSet>
+                <Attribute Type="public definition">Spinocerebellar ataxia type 6 (SCA6) is characterized by adult-onset, slowly progressive cerebellar ataxia, dysarthria, and nystagmus. The age of onset ranges from 19 to 73 years; mean age of onset is between 43 and 52 years. Initial symptoms are gait unsteadiness, stumbling, and imbalance (in ~90%) and dysarthria (in ~10%). Eventually all persons have gait ataxia, upper-limb incoordination, intention tremor, and dysarthria. Dysphagia and choking are common. Visual disturbances may result from diplopia, difficulty fixating on moving objects, horizontal gaze-evoked nystagmus, and vertical nystagmus. Hyperreflexia and extensor plantar responses occur in up to 40%-50%. Basal ganglia signs, including dystonia and blepharospasm, occur in up to 25%. Mentation is generally preserved.</Attribute>
+                <XRef ID="NBK1140" DB="GeneReviews"/>
+              </AttributeSet>
+              <AttributeSet>
+                <Attribute Type="GARD id" integerValue="10351"/>
+                <XRef ID="10351" DB="Office of Rare Diseases"/>
+              </AttributeSet>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301319</ID>
+                <ID Source="BookShelf">NBK1140</ID>
+              </Citation>
+              <Citation Type="review" Abbrev="GeneReviews">
+                <ID Source="PubMed">20301317</ID>
+                <ID Source="BookShelf">NBK1138</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS, 2010">
+                <ID Source="PubMed">20050888</ID>
+              </Citation>
+              <Citation Type="general" Abbrev="EFNS/ENS, 2014">
+                <ID Source="PubMed">24418350</ID>
+              </Citation>
+              <XRef ID="98758" DB="Orphanet"/>
+              <XRef ID="C0752124" DB="MedGen"/>
+              <XRef ID="MONDO:0008457" DB="MONDO"/>
+              <XRef Type="MIM" ID="183086" DB="OMIM"/>
+            </Trait>
+          </TraitSet>
+        </ConditionList>
+      </GermlineClassification>
+    </Classifications>
+    <ClinicalAssertionList>
+      <ClinicalAssertion ID="4902194" SubmissionDate="2022-05-05" DateLastUpdated="2022-05-07" DateCreated="2022-05-07">
+        <ClinVarSubmissionID localKey="p.Leu1344Pro" localKeyIsSubmitted="1" submittedAssembly="GRCh38"/>
+        <ClinVarAccession Accession="SCV002506532" DateUpdated="2022-05-07" DateCreated="2022-05-07" Type="SCV" Version="1" SubmitterName="Wendy Chung Laboratory, Columbia University Medical Center" OrgID="506632" OrganizationCategory="laboratory" OrgAbbreviation="WCL"/>
+        <RecordStatus>current</RecordStatus>
+        <Classification DateLastEvaluated="2022-03-20">
+          <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+          <GermlineClassification>Likely pathogenic</GermlineClassification>
+        </Classification>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+          <Citation>
+            <ID Source="PubMed">25741868</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>de novo</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+            <TraitSet DateLastEvaluated="2022-03-08" Type="Finding">
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0002133"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001250"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0002076"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001251"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0012758"/>
+              </Trait>
+            </TraitSet>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="CACNA1A"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <Location>
+            <SequenceLocation Assembly="GRCh38" Chr="19" alternateAllele="G" referenceAllele="A" start="13262792" stop="13262792" variantLength="1"/>
+          </Location>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="617350" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="108500" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="141500" Type="MIM"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="OMIM" ID="183086" Type="MIM"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB11328478</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="7349060" SubmissionDate="2023-05-25" DateLastUpdated="2023-06-17" DateCreated="2023-06-17">
+        <ClinVarSubmissionID localKey="genomeconnect_28527" localKeyIsSubmitted="1" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV003931173" DateUpdated="2023-06-17" DateCreated="2023-06-17" Type="SCV" Version="1" SubmitterName="GenomeConnect - Brain Gene Registry" OrgID="508359" OrganizationCategory="patient registry" OrgAbbreviation="GenomeConnect - BGR"/>
+        <RecordStatus>current</RecordStatus>
+        <Classification>
+          <ReviewStatus>no classification provided</ReviewStatus>
+          <GermlineClassification>not provided</GermlineClassification>
+          <Comment>Variant classified as Likely pathogenic and reported on 12-16-2017 by GeneDx. Assertions are reported exactly as they appear on the patient provided laboratory report. GenomeConnect does not attempt to reinterpret the variant. The IDDRC-CTSA National Brain Gene Registry (BGR) is a study funded by the U.S. National Center for Advancing Translational Sciences (NCATS) and includes 13 Intellectual and Developmental Disability Research Center (IDDRC) institutions. The study is led by Principal Investigator Dr. Philip Payne?from Washington University. The BGR is a data commons of gene variants paired with subject clinical information. This database helps scientists learn more about genetic changes and their impact on the brain and behavior. Participation in the Brain Gene Registry requires participation in GenomeConnect. More information about the Brain Gene Registry can be found on the study website - https://braingeneregistry.wustl.edu/.</Comment>
+        </Classification>
+        <Assertion>variation to disease</Assertion>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>de novo</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <Age Type="minimum" age_unit="years">0</Age>
+              <Age Type="maximum" age_unit="years">9</Age>
+              <AffectedStatus>yes</AffectedStatus>
+              <NumberTested>1</NumberTested>
+              <Gender>female</Gender>
+              <Indication Type="Indication">
+                <Trait Type="Finding">
+                  <Name>
+                    <ElementValue Type="Preferred">Diagnostic</ElementValue>
+                  </Name>
+                </Trait>
+              </Indication>
+            </Sample>
+            <Method>
+              <Description>Gene Panel Sequencing</Description>
+              <MethodType>phenotyping only</MethodType>
+              <ObsMethodAttribute>
+                <Attribute Type="TestingLaboratory" dateValue="2017-12-16" integerValue="26957">GeneDx</Attribute>
+                <Comment>Likely pathogenic</Comment>
+              </ObsMethodAttribute>
+            </Method>
+            <ObservedData>
+              <Attribute Type="SingleHeterozygote" integerValue="1"/>
+            </ObservedData>
+            <ObservedData>
+              <Attribute Type="SampleLocalID">genomeconnect_28527</Attribute>
+            </ObservedData>
+            <TraitSet DateLastEvaluated="2023-04-04" Type="Finding">
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0000496"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0000504"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0000545"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0000707"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0100543"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0011443"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0002353"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001298"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001290"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0100022"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001250"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0010674"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001382"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001385"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0011804"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0009127"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0003011"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0011968"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0002577"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0002242"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001877"/>
+              </Trait>
+              <Trait ClinicalFeaturesAffectedStatus="present" Type="Finding">
+                <XRef DB="HP" ID="HP:0001881"/>
+              </Trait>
+            </TraitSet>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="CACNA1A"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_001127221.1:c.4034T&gt;C</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease" multipleConditionExplanation="Uncertain">
+          <Trait Type="Disease">
+            <XRef DB="MedGen" ID="C1720416" Type="CUI"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="MedGen" ID="C1832884" Type="CUI"/>
+          </Trait>
+          <Trait Type="Disease">
+            <XRef DB="MedGen" ID="C0752124" Type="CUI"/>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>BGR - GenomeConnect h19 5.2023</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+      <ClinicalAssertion ID="7512238" SubmissionDate="2023-07-17" DateLastUpdated="2023-07-22" DateCreated="2023-07-20">
+        <ClinVarSubmissionID localKey="53623629|CACNA1A-associated disorder" submittedAssembly="GRCh37"/>
+        <ClinVarAccession Accession="SCV004013412" DateUpdated="2023-07-22" DateCreated="2023-07-20" Type="SCV" Version="2" SubmitterName="Greenwood Genetic Center Diagnostic Laboratories, Greenwood Genetic Center" OrgID="1019" OrganizationCategory="laboratory" OrgAbbreviation="GGC-MDL"/>
+        <RecordStatus>current</RecordStatus>
+        <Classification DateLastEvaluated="2023-04-20">
+          <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+          <GermlineClassification>Pathogenic</GermlineClassification>
+          <Comment>PS1, PS4_Supporting, PM1, PM2, PP2, PP3</Comment>
+        </Classification>
+        <Assertion>variation to disease</Assertion>
+        <AttributeSet>
+          <Attribute Type="AssertionMethod">ACMG Guidelines, 2015</Attribute>
+          <Citation>
+            <ID Source="PubMed">25741868</ID>
+          </Citation>
+        </AttributeSet>
+        <ObservedInList>
+          <ObservedIn>
+            <Sample>
+              <Origin>germline</Origin>
+              <Species TaxonomyId="9606">human</Species>
+              <AffectedStatus>yes</AffectedStatus>
+            </Sample>
+            <Method>
+              <MethodType>clinical testing</MethodType>
+            </Method>
+            <ObservedData>
+              <Attribute Type="Description">not provided</Attribute>
+            </ObservedData>
+          </ObservedIn>
+        </ObservedInList>
+        <SimpleAllele>
+          <GeneList>
+            <Gene Symbol="CACNA1A"/>
+          </GeneList>
+          <VariantType>Variation</VariantType>
+          <AttributeSet>
+            <Attribute Type="HGVS">NM_001127221.1:c.4034T&gt;C</Attribute>
+          </AttributeSet>
+        </SimpleAllele>
+        <TraitSet Type="Disease">
+          <Trait Type="Disease">
+            <Name>
+              <ElementValue Type="Preferred">CACNA1A-associated disorder</ElementValue>
+            </Name>
+          </Trait>
+        </TraitSet>
+        <SubmissionNameList>
+          <SubmissionName>SUB13685737</SubmissionName>
+        </SubmissionNameList>
+      </ClinicalAssertion>
+    </ClinicalAssertionList>
+    <TraitMappingList>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0010674" MappingRef="HP">
+        <MedGen CUI="C4023747" Name="Abnormal curvature of the vertebral column"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001250" MappingRef="HP">
+        <MedGen CUI="C0036572" Name="Seizure"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Finding" MappingType="XRef" MappingValue="HP:0012758" MappingRef="HP">
+        <MedGen CUI="C4022738" Name="Neurodevelopmental delay"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0011968" MappingRef="HP">
+        <MedGen CUI="C0232466" Name="Feeding difficulties"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Disease" MappingType="XRef" MappingValue="C1720416" MappingRef="MedGen">
+        <MedGen CUI="C1720416" Name="Episodic ataxia type 2"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0002353" MappingRef="HP">
+        <MedGen CUI="C0151611" Name="EEG abnormality"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001881" MappingRef="HP">
+        <MedGen CUI="C0152009" Name="Abnormal leukocyte morphology"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0000496" MappingRef="HP">
+        <MedGen CUI="C0497202" Name="Abnormality of eye movement"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Disease" MappingType="XRef" MappingValue="183086" MappingRef="OMIM">
+        <MedGen CUI="C0752124" Name="Spinocerebellar ataxia type 6"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001251" MappingRef="HP">
+        <MedGen CUI="C0007758" Name="Cerebellar ataxia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001382" MappingRef="HP">
+        <MedGen CUI="C1844820" Name="Joint hypermobility"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0011443" MappingRef="HP">
+        <MedGen CUI="C4023353" Name="Abnormality of coordination"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Disease" MappingType="XRef" MappingValue="C1832884" MappingRef="MedGen">
+        <MedGen CUI="C1832884" Name="Migraine, familial hemiplegic, 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0003011" MappingRef="HP">
+        <MedGen CUI="C4021745" Name="Abnormality of the musculature"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0000707" MappingRef="HP">
+        <MedGen CUI="C0497552" Name="Abnormality of the nervous system"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001250" MappingRef="HP">
+        <MedGen CUI="C0036572" Name="Seizure"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001877" MappingRef="HP">
+        <MedGen CUI="C0391870" Name="Abnormal erythrocyte morphology"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Disease" MappingType="XRef" MappingValue="141500" MappingRef="OMIM">
+        <MedGen CUI="C1832884" Name="Migraine, familial hemiplegic, 1"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0100022" MappingRef="HP">
+        <MedGen CUI="C0026650" Name="Abnormality of movement"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0009127" MappingRef="HP">
+        <MedGen CUI="C4024582" Name="Abnormality of the musculature of the limbs"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0000504" MappingRef="HP">
+        <MedGen CUI="C4025846" Name="Abnormality of vision"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Disease" MappingType="XRef" MappingValue="C0752124" MappingRef="MedGen">
+        <MedGen CUI="C0752124" Name="Spinocerebellar ataxia type 6"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Finding" MappingType="XRef" MappingValue="HP:0002076" MappingRef="HP">
+        <MedGen CUI="C0149931" Name="Migraine"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0100543" MappingRef="HP">
+        <MedGen CUI="C0338656" Name="Cognitive impairment"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Finding" MappingType="XRef" MappingValue="HP:0002133" MappingRef="HP">
+        <MedGen CUI="C0038220" Name="Status epilepticus"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001385" MappingRef="HP">
+        <MedGen CUI="C4551649" Name="Hip dysplasia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0000545" MappingRef="HP">
+        <MedGen CUI="C0027092" Name="Myopia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001290" MappingRef="HP">
+        <MedGen CUI="C1858120" Name="Generalized hypotonia"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Disease" MappingType="XRef" MappingValue="108500" MappingRef="OMIM">
+        <MedGen CUI="C1720416" Name="Episodic ataxia type 2"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0002242" MappingRef="HP">
+        <MedGen CUI="C4316788" Name="Abnormal intestine morphology"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0011804" MappingRef="HP">
+        <MedGen CUI="C4023182" Name="Abnormal muscle physiology"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7512238" TraitType="Disease" MappingType="Name" MappingValue="CACNA1A-associated disorder" MappingRef="Preferred">
+        <MedGen CUI="None" Name="CACNA1A-associated disorder"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0001298" MappingRef="HP">
+        <MedGen CUI="C0085584" Name="Encephalopathy"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="7349060" TraitType="Finding" MappingType="XRef" MappingValue="HP:0002577" MappingRef="HP">
+        <MedGen CUI="C4025699" Name="Abnormal stomach morphology"/>
+      </TraitMapping>
+      <TraitMapping ClinicalAssertionID="4902194" TraitType="Disease" MappingType="XRef" MappingValue="617350" MappingRef="OMIM">
+        <MedGen CUI="C4479236" Name="Developmental and epileptic encephalopathy, 52"/>
+      </TraitMapping>
+    </TraitMappingList>
+  </ClassifiedRecord>
+</VariationArchive>
+</ClinVarResult-Set>

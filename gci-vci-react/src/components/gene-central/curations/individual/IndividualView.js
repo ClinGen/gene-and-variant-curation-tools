@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Jumbotron, Container, Row, Col } from "react-bootstrap";
 import { useSelector } from 'react-redux'
 import { Link } from "react-router-dom";
@@ -9,11 +9,19 @@ import CardPanel from "../../../common/CardPanel";
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import LoadingSpinner from '../../../common/LoadingSpinner';
-import { renderHPOList, renderPMIDList, renderVariantLabelAndTitle } from '../common/commonFunc';
+import {
+  renderHPOList,
+  renderPMIDList,
+  renderVariantLabelAndTitle,
+  renderVariantOverlappingGenes,
+  isSemiOrSMo
+} from '../common/commonFunc';
 import VARIANT_SCORE_VARIANT_TYPES from '../../score/constants/variantScoreTypes';
-import { getAffiliationName } from '../../../../helpers/get_affiliation_name.js';
+import VARIANT_PHASE_STATUSES from '../../score/constants/variantPhaseStatuses';
+import { AffilsContext, getAffiliationName } from '../../../../helpers/affiliationsHelpers.js';
 import { getUserName } from '../../../../helpers/getUserName.js';
 import { getEvidenceByPKFromActiveAnnotation } from "../../../../utilities/gdmEvidenceUtilities";
+import { convertDiseasePKToMondoId, displayObsoleteDiseaseIcon } from '../../../../utilities/diseaseUtilities';
 
 
 export const IndividualView = ({
@@ -28,6 +36,7 @@ export const IndividualView = ({
   })
   const annotationIsLoading = useSelector(state => state.annotations.isLoading);
   const annotations = useSelector(state => state.annotations);
+  const { affiliationsData } = useContext(AffilsContext);
 
   /**
    * HTML labels for inputs follow.
@@ -68,7 +77,7 @@ export const IndividualView = ({
   let probandLabel = (individual && individual.proband ? <i className="icon icon-proband"></i> : null);
 
   var probandIs = individual && individual.probandIs;
-  const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
+  const isSDSM = isSemiOrSMo(gdm);
   const gdmPK = lodashGet(gdm, "PK", null);
   const annotationPK = lodashGet(annotation, "PK", null);
 
@@ -96,7 +105,7 @@ export const IndividualView = ({
               <div>
                 <dt>Common Diagnosis</dt>
                 <dd>{individual.diagnosis && individual.diagnosis.map(function(disease, i) {
-                  return <span key={disease.PK}>{i > 0 ? ', ' : ''}{disease.term} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{disease.PK.replace('_', ':')}</ExternalLink> : null}</span>;
+                  return <span key={disease.PK}>{i > 0 ? ', ' : ''}{displayObsoleteDiseaseIcon(disease.term, "gdm")}{disease.term} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{convertDiseasePKToMondoId(disease.PK)}</ExternalLink> : null}</span>;
                 })}</dd>
               </div>
 
@@ -212,7 +221,7 @@ export const IndividualView = ({
           </CardPanel>
 
           <CardPanel title={getLabelPanelTitleView('', true)} className="individual-view-panel">
-            {semiDom ?
+            {isSDSM ?
               <div>
                 <dl className="dl-horizontal">
                   <dt>The proband is</dt>
@@ -223,11 +232,15 @@ export const IndividualView = ({
             <div>
               <dl className="dl-horizontal">
                 <dt>Curator</dt>
-                <dd>{individual.affiliation ? getAffiliationName(individual.affiliation) : getUserName(individual.submitted_by)}</dd>
+                <dd>{individual.affiliation ? getAffiliationName(individual.affiliation, affiliationsData) : getUserName(individual.submitted_by)}</dd>
               </dl>
               <dl className="dl-horizontal">
                 <dt>Zygosity</dt>
                 <dd>{individual && individual.recessiveZygosity ? individual.recessiveZygosity : "None selected"}</dd>
+              </dl>
+              <dl className="dl-horizontal">
+                <dt>Phase Status</dt>
+                <dd>{individual && individual.phaseStatus ? VARIANT_PHASE_STATUSES[individual.phaseStatus] : "N/A"}</dd>
               </dl>
             </div>
             {variants.map((variant, i) => {
@@ -247,7 +260,19 @@ export const IndividualView = ({
                         <dd><ExternalLink href={`${EXTERNAL_API_MAP['CARallele']}${variant.carId}.html`} title={`ClinGen Allele Registry entry for ${variant.carId} in new tab`}>{variant.carId}</ExternalLink></dd>
                       </div>
                     : null }
+                    {variant.cacnId ?
+                      <div>
+                        <dt>ClinGen Allele Registry Copy Number ID</dt>
+                        <dd><ExternalLink href={`${EXTERNAL_API_MAP['CARcopy-number']}${variant.cacnId}`} title={`ClinGen Allele Registry entry for ${variant.cacnId} in new tab`}>{variant.cacnId}</ExternalLink></dd>
+                      </div>
+                    : null }
                     {renderVariantLabelAndTitle(variant)}
+                    {variant.cacnId ? 
+                      <div>
+                        <span><strong>Overlapping Genes:</strong></span>
+                        {renderVariantOverlappingGenes(variant)}
+                      </div>
+                    : null}
                     {variant.otherDescription ?
                       <div>
                         <dt>Other description</dt>
@@ -277,7 +302,19 @@ export const IndividualView = ({
                         <dd><ExternalLink href={`${EXTERNAL_API_MAP['CARallele']}${variant.carId}.html`} title={`ClinGen Allele Registry entry for ${variant.carId} in new tab`}>{variant.carId}</ExternalLink></dd>
                       </div>
                     : null }
+                    {variant.cacnId ?
+                      <div>
+                        <dt>ClinGen Allele Registry Copy Number ID</dt>
+                        <dd><ExternalLink href={`${EXTERNAL_API_MAP['CARcopy-number']}${variant.cacnId}`} title={`ClinGen Allele Registry entry for ${variant.cacnId} in new tab`}>{variant.cacnId}</ExternalLink></dd>
+                      </div>
+                    : null }
                     {renderVariantLabelAndTitle(variant)}
+                    {variant.cacnId ? 
+                        <div>
+                          <span><strong>Overlapping Genes:</strong></span>
+                          {renderVariantOverlappingGenes(variant)}
+                        </div>
+                    : null}
                     {variant.otherDescription ?
                       <div>
                         <dt>Other description</dt>

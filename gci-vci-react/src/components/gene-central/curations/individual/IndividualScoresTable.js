@@ -15,7 +15,8 @@ export const IndividualScoresTable = ({
   // Check if any variantScore has been added
   if (variantScores && variantScores.length > 0) {
     let moiType = getModeInheritanceType(lodashGet(gdm, "modeInheritance", null));
-    // For SemiDom, if probandIs is "Monoallelic heterozygous" or "Hemizygous" then AUTOSOMAL_DOMINANT
+    // For Semidominant or Typified by somatic mosaicism,
+    // if probandIs is "Monoallelic heterozygous" or "Hemizygous" then AUTOSOMAL_DOMINANT
     // if "Biallelic homozygous" or "Biallelic compound heterozygous" then AUTOSOMAL_RECESSIVE
 
     let scoreCount = 0;

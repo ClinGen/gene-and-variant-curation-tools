@@ -1,0 +1,1041 @@
+{
+  "@context": "http://reg.genome.network/schema/allele.jsonld",
+  "@id": "http://reg.genome.network/allele/CA293234",
+  "communityStandardTitle": [
+    "NM_001040142.2(SCN2A):c.2389-18A>C (p.=)"
+  ],
+  "externalRecords": {
+    "ClinVarAlleles": [
+      {
+        "@id": "http://www.ncbi.nlm.nih.gov/clinvar/?term=142710[alleleid]",
+        "alleleId": 142710,
+        "preferredName": "NM_001040142.2(SCN2A):c.2389-18A>C"
+      }
+    ],
+    "ClinVarVariations": [
+      {
+        "@id": "http://www.ncbi.nlm.nih.gov/clinvar/variation/139007",
+        "RCV": [
+          "RCV000127916"
+        ],
+        "variationId": 139007
+      }
+    ],
+    "ExAC": [
+      {
+        "@id": "http://exac.broadinstitute.org/variant/2-166198788-A-C",
+        "id": "2-166198788-A-C",
+        "variant": "2:166198788 A / C"
+      }
+    ],
+    "MyVariantInfo_hg19": [
+      {
+        "@id": "http://myvariant.info/v1/variant/chr2:g.166198788A>C?assembly=hg19",
+        "id": "chr2:g.166198788A>C"
+      }
+    ],
+    "MyVariantInfo_hg38": [
+      {
+        "@id": "http://myvariant.info/v1/variant/chr2:g.165342278A>C?assembly=hg38",
+        "id": "chr2:g.165342278A>C"
+      }
+    ],
+    "dbSNP": [
+      {
+        "@id": "http://www.ncbi.nlm.nih.gov/snp/376273827",
+        "rs": 376273827
+      }
+    ],
+    "gnomAD": [
+      {
+        "@id": "http://gnomad.broadinstitute.org/variant/2-166198788-A-C",
+        "id": "2-166198788-A-C",
+        "variant": "2:166198788 A / C"
+      }
+    ]
+  },
+  "genomicAlleles": [
+    {
+      "chromosome": "2",
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 165342278,
+          "referenceAllele": "A",
+          "start": 165342277
+        }
+      ],
+      "hgvs": [
+        "NC_000002.12:g.165342278A>C",
+        "CM000664.2:g.165342278A>C"
+      ],
+      "referenceGenome": "GRCh38",
+      "referenceSequence": "http://reg.genome.network/refseq/RS000050"
+    },
+    {
+      "chromosome": "2",
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 166198788,
+          "referenceAllele": "A",
+          "start": 166198787
+        }
+      ],
+      "hgvs": [
+        "NC_000002.11:g.166198788A>C",
+        "CM000664.1:g.166198788A>C"
+      ],
+      "referenceGenome": "GRCh37",
+      "referenceSequence": "http://reg.genome.network/refseq/RS000026"
+    },
+    {
+      "chromosome": "2",
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 165907034,
+          "referenceAllele": "A",
+          "start": 165907033
+        }
+      ],
+      "hgvs": [
+        "NC_000002.10:g.165907034A>C"
+      ],
+      "referenceGenome": "NCBI36",
+      "referenceSequence": "http://reg.genome.network/refseq/RS000002"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 107877,
+          "referenceAllele": "A",
+          "start": 107876
+        }
+      ],
+      "hgvs": [
+        "NG_008143.1:g.107877A>C"
+      ],
+      "referenceSequence": "http://reg.genome.network/refseq/RS000889"
+    }
+  ],
+  "transcriptAlleles": [
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2666,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2666,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000631182.3:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000486885.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS826623",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Plus Clinical",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000631182.3:c.2389-18A>C"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001371246.1:c.2389-18A>C"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000486885.1:p.="
+          },
+          "RefSeq": {
+            "hgvs": "NP_001358175.1:p.="
+          }
+        }
+      }
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2666,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2666,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000375437.7:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000364586.2:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS751612",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000375437.7:c.2389-18A>C"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001040142.2:c.2389-18A>C"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000364586.2:p.="
+          },
+          "RefSeq": {
+            "hgvs": "NP_001035232.1:p.="
+          }
+        }
+      }
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2765,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2765,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000636071.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000490107.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS762851"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2687,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2687,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000636135.1:c.*708-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000489821.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS762897"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2891,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2891,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000636384.2:c.*376-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000490765.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS763075"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 3340,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 3340,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000636662.2:c.*2912-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000489873.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS763290"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2621,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2621,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000636769.1:c.*331-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000490800.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS763366"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2740,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2740,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000636985.2:c.1993-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000490849.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS763522"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2494,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2494,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000637266.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000490866.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS763740"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 239,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 239,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000674133.1:n.240-18A>C"
+      ],
+      "referenceSequence": "http://reg.genome.network/refseq/RS774151"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2544,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2544,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000283256.10:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000283256.6:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS253151"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2439,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2439,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000375427.4:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000364576.2:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS270704"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2678,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2678,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000375437.6:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000364586.2:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS270710"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2531,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2531,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000480032.4:n.2532-18A>C"
+      ],
+      "referenceSequence": "http://reg.genome.network/refseq/RS320280"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2592,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2592,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "ENST00000631182.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000486885.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS407485"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2678,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2678,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_001040142.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001035232.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS009521"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2439,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2439,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_001040143.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001035233.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS009522"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2744,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2744,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_021007.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_066287.2:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS036761"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2568,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2568,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_005246750.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_005246807.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS057775"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2688,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2688,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_005246753.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_005246810.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS057776"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2581,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2581,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_005246754.3:c.2359-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_005246811.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS057777"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 1777,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 1777,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_005246755.3:c.1636-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_005246812.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS057778"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2828,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2828,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_011511608.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_011509910.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS078869"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2721,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2721,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_011511609.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_011509911.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS078870"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2694,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2694,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_005246753.3:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_005246810.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS532689"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2649,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2649,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_017004656.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_016860145.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS560106"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2546,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2546,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_017004657.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_016860146.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS560107"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2858,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2858,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_017004658.1:c.1636-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_016860147.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS560108"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 1776,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 1776,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_017004659.1:c.187-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_016860148.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS560109"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2602,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2602,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "XM_024453037.1:c.1636-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "XP_024308805.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS586424"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2666,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2666,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_001040142.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001035232.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS663144",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000375437.7:c.2389-18A>C"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001040142.2:c.2389-18A>C"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000364586.2:p.="
+          },
+          "RefSeq": {
+            "hgvs": "NP_001035232.1:p.="
+          }
+        }
+      }
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2785,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2785,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_001040143.2:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001035233.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS675962"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2666,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2666,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_001371246.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001358175.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS692751",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Plus Clinical",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000631182.3:c.2389-18A>C"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001371246.1:c.2389-18A>C"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000486885.1:p.="
+          },
+          "RefSeq": {
+            "hgvs": "NP_001358175.1:p.="
+          }
+        }
+      }
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2494,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2494,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_001371247.1:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001358176.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS692752"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 2520,
+          "endIntronDirection": "-",
+          "endIntronOffset": 17,
+          "referenceAllele": "A",
+          "start": 2520,
+          "startIntronDirection": "-",
+          "startIntronOffset": 18
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN010588",
+      "geneNCBI_id": 6326,
+      "geneSymbol": "SCN2A",
+      "hgvs": [
+        "NM_021007.3:c.2389-18A>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_066287.2:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS698348"
+    }
+  ],
+  "type": "nucleotide"
+}
+

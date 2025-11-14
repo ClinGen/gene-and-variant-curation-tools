@@ -9,9 +9,8 @@ import LoadingSpinner from '../../common/LoadingSpinner';
 import Input from "../../common/Input";
 import { LoadingButton } from "../../common/LoadingButton";
 import { ExternalLink } from "../../common/ExternalLink";
-import { AUTOSOMAL_DOMINANT, AUTOSOMAL_RECESSIVE, MITOCHONDRIAL, X_LINKED, SEMIDOMINANT } from './constants/evidenceTypes';
 import CASE_INFO_TYPES from './constants/caseInfoTypes';
-import { getDefaultScore } from './helpers/getDefaultScore';
+import { getModeInheritanceType, getDefaultScore } from './helpers/getDefaultScore';
 import { getScoreRange } from './helpers/getScoreRange';
 import { getUserScore } from './helpers/getUserScore';
 import { getUserAffiliatedScore } from './helpers/getUserAffiliatedScore';
@@ -184,30 +183,6 @@ export const IndividualScore = ({
     setFormData(data);
   };
 
-  // Determine mode of inheritance type via modeInheritance
-  const getModeInheritanceType = (moi) => {
-    let moiType = '';
-
-    if (moi && moi.length) {
-      if (moi.indexOf('Autosomal dominant inheritance') > -1) {
-        moiType = AUTOSOMAL_DOMINANT;
-      } else if (moi.indexOf('Autosomal recessive inheritance') > -1) {
-        moiType = AUTOSOMAL_RECESSIVE;
-      } else if (moi.indexOf('X-linked') > -1) {
-        moiType = X_LINKED;
-      } else if (moi.indexOf('Semidominant inheritance') > -1) {
-        moiType = SEMIDOMINANT;
-      } else if (moi.indexOf('Mitochondrial inheritance') > -1) {
-        moiType = MITOCHONDRIAL;
-      } else {
-        // Mode of Inheritance is not either AD, AR, SD, or X-Linked
-        moiType = '';
-      }
-    }
-
-    return moiType;
-  };
-
   // Find the group of Case Information types given the Mode of Inheritance
   const getCaseInfoTypeGroup = (moiType) => {
     // Put CASE_INFO_TYPES object keys into an array
@@ -250,8 +225,9 @@ export const IndividualScore = ({
   const getCalcScoreRange = (moiType, caseInfoType, useDefaultScore) => {
     let calcScoreRange = [];
 
-    if (getScoreRange(moiType, caseInfoType, null, useDefaultScore).length) {
-      calcScoreRange = getScoreRange(moiType, caseInfoType, null, useDefaultScore);
+    // Added isHomozygous param to getScoreRange(), set to false for previous individual
+    if (getScoreRange(moiType, caseInfoType, false, null, useDefaultScore).length) {
+      calcScoreRange = getScoreRange(moiType, caseInfoType, false, null, useDefaultScore);
     }
 
     return calcScoreRange;
@@ -441,7 +417,7 @@ export const IndividualScore = ({
   };
 
 
-  // TRUE if Mode of Inheritance is either AUTOSOMAL_DOMINANT, AUTOSOMAL_RECESSIVE, MITOCHONDRIAL, SEMIDOMINANT, or X_LINKED
+  // TRUE if Mode of Inheritance is either AUTOSOMAL_DOMINANT, AUTOSOMAL_RECESSIVE, MITOCHONDRIAL, SEMIDOMINANT, X_LINKED, or SOMATIC_MOSAICISM
   const shouldCalcScore = modeInheritanceType && modeInheritanceType.length;
   const variants = variantInfo && !isEmpty(variantInfo) ? variantInfo : []; 
 

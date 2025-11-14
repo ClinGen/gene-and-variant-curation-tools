@@ -75,7 +75,11 @@ const UserTable = () => {
       setValue(initialValue)
     }, [initialValue])
 
-    return <input type="text" className="border-0 bg-transparent w-100" value={value || ''} onChange={onChange} onBlur={onBlur} />
+    return <textarea 
+      className="border-0 bg-transparent w-100" 
+      value={value || ''} rows="4"
+      onChange={onChange} onBlur={onBlur} 
+      style={{height: "auto", resize: "none"}} />
   }
 
   const columns = headers.map((item) => {
@@ -91,7 +95,7 @@ const UserTable = () => {
         style: { width: 210 },
         // eslint-disable-next-line react/display-name
         Cell: ({ value, row, column, updateData }) => {
-          const valueString = Array.isArray(value) ? value.join(', ') : value;
+          const valueString = Array.isArray(value) ? value.sort((a,b)=> a-b).join(', ') : value;
           return EditableCell({ value: valueString, column, row, updateData });
         }
       };
@@ -197,6 +201,9 @@ const UserTable = () => {
     user[id] = value;
     if (id === 'affiliations') {
       user[id] = value ? value.replace(/\s/g, '').split(',') : null;
+    }
+    if (id === 'family_name' || id === 'name') {
+      user[id] = value ? value.replace(/[\r\n]+/gm, '') : null;
     }
     setModifiedUsers(prevModifiedUsers => {
       const existingRowIndex = prevModifiedUsers.findIndex(obj => obj.PK === user.PK);

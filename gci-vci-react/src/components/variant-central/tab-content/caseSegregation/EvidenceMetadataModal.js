@@ -232,6 +232,17 @@ export const EvidenceMetadataModal = ({
       ongoingRequests.add(retrieveArticleRequest);
       try {
         const article = await retrieveArticleRequest;
+
+        // Check if PMID belongs to a preprint article.
+        if(article?.is_preprint) {
+          setIsLoadingPmid(false);
+          const errors = {};
+          errors['pmid'] = `The PMID ${pmid} belongs to a preprint article so can't be added as a PMID.`;
+          setFormErrors(errors);
+          setPmidResult(null);
+          return;
+        }
+
         setPmidResult(article);
       } catch (error) {
         if (!API.isCancel(error)) {
@@ -346,6 +357,7 @@ export const EvidenceMetadataModal = ({
           <PmidSummary
             article={pmidResult}
             displayJournal
+            displayAllAuthors
             pmidLinkout
           />
         </span>

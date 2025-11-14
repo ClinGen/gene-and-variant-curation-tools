@@ -30,7 +30,7 @@ def acked(err, msg):
         print("produced to: {} [{}] @ {}".format(msg.topic(), msg.partition(), msg.offset()))
 
 def execute_stream(vpt):
-    p.produce('ldh-test', value=json.dumps(vpt), callback=acked)
+    p.produce('', value=json.dumps(vpt), callback=acked)
     p.poll(0)
 
 def execute_post(vpt):
@@ -56,7 +56,7 @@ def execute_stream():
             stream_data.append(vpt)
     count=0
     for vpt in stream_data:
-        p.produce('ldh-test', value=json.dumps(vpt), callback=acked)
+        p.produce('', value=json.dumps(vpt), callback=acked)
         p.poll(0)
         count= count + 1
     print ('Total number pushed = %s' %count )

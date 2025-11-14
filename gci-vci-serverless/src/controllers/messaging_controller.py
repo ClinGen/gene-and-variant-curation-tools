@@ -2,7 +2,6 @@
 import simplejson as json
 import os
 from copy import deepcopy
-
 from src.db.ddb_client import Client as DynamoClient
 
 from src.helpers import snapshot_helpers
@@ -116,6 +115,7 @@ def publish(pk):
       evidence_to_publish = messaging_data['resourceParent']['gdm']
       publishing_affiliation = messaging_data['resource']['affiliation']
       evidence_counts_to_publish = messaging_data['resource']['classificationPoints']
+      is_republishing = messaging_data['resource'].get('isRepublish', False)
 
     else:
       raise Exception
@@ -124,8 +124,6 @@ def publish(pk):
     print('\n**** Messaging Error: publish - Data to be published missing expected elements \n Data - %s \n ****\n' % messaging_data)
     print('\n**** Messaging Error: publish - Return Error: ' + str(e) + ' ****\n')
     return { 'statusCode': 400, 'body': json.dumps({ 'error': 'Data to be published missing expected elements' }) }
-
-  # Check that message should be sent? (approved status? permission to publish?)
 
   # Construct message
   try:
@@ -146,6 +144,9 @@ def publish(pk):
       classification_points = deepcopy(evidence_counts_to_publish)
       messaging_helpers.add_data_to_message_template(messaging_data, messaging_helpers.gather_evidence(evidence_to_publish, publishing_affiliation, templateVersion),
         messaging_helpers.gather_evidence_counts(classification_points, True, templateVersion), message_template)
+      
+      if is_republishing:
+        message_template['statusPublishFlag'] = 'Publish'
       message = json.dumps(message_template, separators=(',', ':'))
 
   except Exception as e:

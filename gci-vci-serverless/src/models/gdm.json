@@ -39,6 +39,7 @@
                 "Mitochondrial inheritance (HP:0001427)",
                 "Multifactorial inheritance (HP:0001426)",
                 "Semidominant inheritance (HP:0032113)",
+                "Somatic Mosaicism inheritance (HP:0001442)",
                 "Somatic mutation (HP:0001428)",
                 "X-linked inheritance (HP:0001417)",
                 "Y-linked inheritance (HP:0001450)",
@@ -87,7 +88,7 @@
         "finalClassification": { "type": "string" },
         "modeInheritanceAdjective": { "type": "string" },
         "earliestPublications": {
-          "description": "PK of evidence (annotations) which article is selected as earliest publication",
+          "description": "PK of evidence (annotations) which source is selected as earliest publication",
           "type": "array",
           "items": { "type": "string" }
         }

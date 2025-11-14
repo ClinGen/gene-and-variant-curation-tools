@@ -58,7 +58,7 @@ class LoadDialogBase extends React.Component {
     this.submitting = false;
     this.response = undefined;
     // this.includes = [];
-  };
+  }
 
   getSearchSession() {
     return this.props.searchSession;

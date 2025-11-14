@@ -5,7 +5,7 @@
         border-color: $panel-heading-border;
     }
 
-    .exac-gnomad-version {
+    .gnomad-version {
         margin-left: 5px;
     }
 
@@ -24,7 +24,8 @@
         line-height: 17.5px;
     }
 
-    .table tfoot .count:first-child td {
+    .table tfoot .count:first-child td,
+    .table tfoot .count.final td {
         border-top: 2px solid #333;
         color: #333;
     }
@@ -94,8 +95,16 @@
         border-radius: .25em;
     }
 
+    .label-danger {
+        background-color: $brand-danger;
+    }
+
     .label-success {
         background-color: $brand-success;
+    }
+
+    .label-warning {
+        background-color: $brand-warning;
     }
 
     a.credit-mygene {

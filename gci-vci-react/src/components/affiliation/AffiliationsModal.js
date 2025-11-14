@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { updateCurrentAffiliation } from '../../actions/actions';
 import Modal from '../common/Modal';
 
 import { useAmplifyAPIRequestRecycler } from '../../utilities/fetchUtilities';
-import { getAffiliationByID } from '../../helpers/get_affiliation_name';
+import { AffilsContext, getAffiliationByID } from '../../helpers/affiliationsHelpers';
 
 const AffiliationsModal = ({
   auth,
@@ -16,29 +16,17 @@ const AffiliationsModal = ({
   const [affiliation, setAffiliation] = useState(defaultAffiliation);
   const [affiliationOptions, setAffiliationOptions] = useState([]);
   const [isLoadingSave, setLoadingSave] = useState(false);
+  const { affiliationsData } = useContext(AffilsContext);
 
   const requestRecycler = useAmplifyAPIRequestRecycler();
 
   useEffect(() => {
     const getAffiliationOptions = () => {
-      if (auth && auth.affiliations && auth.affiliations.length) {
-        // TODO: refactor when affiliation objects are embeded and available; remove affiliation json file
-        // try {
-        //   const affiliationsUrl = `/affiliations?`;
-        //   let affiliationsQueryString = '';
-        //   auth.affiliations.forEach((affiliationId, i) => {
-        //     affiliationsQueryString += `${i > 0 ? '&' : ''}affiliation_id=${affiliationId}`
-        //   });
-        //   const affiliationsResponse = await requestRecycler.capture(API.get(API_NAME, affiliationsUrl + affiliationsQueryString));
-        //   if (affiliationsResponse && affiliationsResponse.length) {
-        //     setAffiliationOptions(affiliationsResponse);
-        //   }
-        // } catch(error) {
-        //   console.log(JSON.parse(JSON.stringify(error)));
-        // }
+      if (auth && auth.affiliations && auth.affiliations.length && affiliationsData) {
         // Map over users affiliations and filter out any potential undefined values (due to typos or incorrect aff in Users Table, avoids crashes)
-        const myAffiliations = auth.affiliations.map(affiliation_id => getAffiliationByID(affiliation_id)).filter(aff => aff !== undefined);
+        const myAffiliations = auth.affiliations.map(affiliation_id => getAffiliationByID(affiliation_id, affiliationsData)).filter(aff => aff !== undefined);
         myAffiliations.sort((first, second) => first.affiliation_fullname.localeCompare(second.affiliation_fullname));
+
         setAffiliationOptions(myAffiliations);
       }
     };

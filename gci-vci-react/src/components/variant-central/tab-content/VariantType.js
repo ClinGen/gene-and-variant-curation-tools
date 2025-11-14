@@ -18,7 +18,6 @@ import {
   compareFormGroupValues,
   filterCodeStripObjects,
   evaluationsByGroup,
-  parseKeyValue,
   setContextLinks,
   getGenomicLinkouts,
 } from '../helpers/helpers';
@@ -53,10 +52,10 @@ class VariantType extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (this.props.myVariantInfoData !== prevProps.myVariantInfoData) {
-      const { myVariantInfoData } = this.props;
-      if (myVariantInfoData) {
-        const computationalObj = this.buildComputationalObj(myVariantInfoData);
+    if (this.props.myVariantInfoData !== prevProps.myVariantInfoData || this.props.ldhData !== prevProps.ldhData) {
+      const { myVariantInfoData, ldhData } = this.props;
+      if (myVariantInfoData || ldhData) {
+        const computationalObj = this.buildComputationalObj(myVariantInfoData, ldhData);
         this.setState({ computationalObj });
       }
     }
@@ -127,10 +126,20 @@ class VariantType extends Component {
     }
   }
 
-  buildComputationalObj = (myVariantInfoData) => {
-    const objWithOtherPred = this.parseOtherPredData(myVariantInfoData);
-    const objWithConservation = this.parseConservationData(myVariantInfoData, objWithOtherPred);
-    const completeComputationalObj = this.parseClingenPredData(myVariantInfoData, objWithConservation);
+  buildComputationalObj = (myVariantInfoData, ldhData) => {
+    let completeComputationalObj = {};
+
+    if (myVariantInfoData) {
+      const objWithOtherPred = this.parseOtherPredData(myVariantInfoData);
+      const objWithConservation = this.parseConservationData(myVariantInfoData, objWithOtherPred);
+
+      if (ldhData) {
+        completeComputationalObj = this.parseClingenPredData(ldhData, objWithConservation);
+      }
+    } else {
+      completeComputationalObj = this.parseClingenPredData(ldhData, this.state.computationalObj);
+    }
+
     return completeComputationalObj;
   }
 
@@ -204,28 +213,12 @@ class VariantType extends Component {
       const computationalObj = cloneDeep(compObj);
       const { dbnsfp } = myVariantInfoData;
       // get scores from dbnsfp
-      computationalObj.conservation.phylop7way = (lodashGet(dbnsfp, 'phylo.p7way', null))
-        ? this.numToString(dbnsfp.phylo.p7way.vertebrate)
-        : lodashGet(dbnsfp, 'phylo.p100way.vertebrate', null)
-          ? this.numToString(dbnsfp.phylo.p100way.vertebrate)
-          : null;
-      computationalObj.conservation.phylop20way = (lodashGet(dbnsfp, 'phylo.p20way', null))
-        ? this.numToString(dbnsfp.phylo.p20way.mammalian)
-        : lodashGet(dbnsfp, 'phylo.p30way.mammalian', null)
-          ? this.numToString(dbnsfp.phylo.p30way.mammalian)
-          : null;
-      computationalObj.conservation.phastconsp7way = (lodashGet(dbnsfp, "phastcons['7way']", null))
-        ? this.numToString(dbnsfp.phastcons['7way'].vertebrate)
-        : lodashGet(dbnsfp, "phastcons['100way']", null)
-          ? this.numToString(dbnsfp.phastcons['100way'].vertebrate)
-          : null;
-      computationalObj.conservation.phastconsp20way = (lodashGet(dbnsfp, "phastcons['20way']", null))
-        ? this.numToString(dbnsfp.phastcons['20way'].mammalian)
-        : lodashGet(dbnsfp, "phastcons['30way']", null)
-          ? this.numToString(dbnsfp.phastcons['30way'].mammalian)
-          : null;
-      computationalObj.conservation.gerp = dbnsfp['gerp++'] ? this.numToString(dbnsfp['gerp++'].rs) : null;
-      computationalObj.conservation.siphy = dbnsfp.siphy_29way ? this.numToString(dbnsfp.siphy_29way.logodds) : null;
+      computationalObj.conservation.phylop7way = this.numToString(lodashGet(dbnsfp, 'phylop.100way_vertebrate.score', null));
+      computationalObj.conservation.phylop20way = this.numToString(lodashGet(dbnsfp, 'phylop.30way_mammalian.score', null));
+      computationalObj.conservation.phastconsp7way = this.numToString(lodashGet(dbnsfp, 'phastcons.100way_vertebrate.score', null));
+      computationalObj.conservation.phastconsp20way = this.numToString(lodashGet(dbnsfp, 'phastcons.30way_mammalian.score', null));
+      computationalObj.conservation.gerp = this.numToString(lodashGet(dbnsfp, 'gerp++.rs', null));
+      computationalObj.conservation.siphy = this.numToString(lodashGet(dbnsfp, 'siphy_29way.logodds_score', null));
       return computationalObj;
     }
     return compObj;
@@ -233,27 +226,33 @@ class VariantType extends Component {
 
   /**
      * Method to assign clingen predictors data to global computation object
-     * REVEL data is now parsed from myvariant.info response
-     * It can be accessed via response['dbnsfp']['revel'] or using
-     * the 'parseKeyValue()' helper function which traverse the tree down to 2nd level
+     * REVEL data is now parsed from LDH response
      * 
-     * TBD on where the CFTR data is queried from after Bustamante lab is no longer the source
-     * And thus the CFTR data parsing in this method needs to be altered in the future
-     * 
-     * @param {object} myVariantInfoData - The response object returned by myvariant.info
+     * @param {object} ldhData - The response object returned by the LDH
+     * @param {object} compObj - Any previously-collected predictor and conservation data
      */
-  parseClingenPredData = (myVariantInfoData, compObj) => {
+  parseClingenPredData = (ldhData, compObj) => {
     const computationalObj = cloneDeep(compObj);
-    const revel = parseKeyValue(myVariantInfoData, 'revel'),
-      cftr = parseKeyValue(myVariantInfoData, 'cftr');
-    if (revel) {
-      computationalObj.clingen.revel.score = (revel.score) && this.numToString(revel.score);
+    const revel = cloneDeep(lodashGet(ldhData, 'ld.RevelScore', null));
+
+    if (Array.isArray(revel)) {
+      revel.forEach(revelElement => {
+        // Confirm source of data (by URL)
+        if (revelElement.entContentSrc?.url === 'https://sites.google.com/site/revelgenomics/') {
+          if (Array.isArray(revelElement.entContent)) {
+            revelElement.entContent.forEach(revelScore => {
+              revelScore.score = (revelScore.score) && this.numToString(revelScore.score);
+
+              if (revelScore.mane) {
+                computationalObj.clingen.revel.mane_scores.push(revelScore);
+              } else {
+                computationalObj.clingen.revel.non_mane_scores.push(revelScore);
+              }
+            });
+          }
+        }
+      });
     }
-    if (cftr) {
-      computationalObj.clingen.cftr.score = (cftr.score) && this.numToString(cftr.score);
-      computationalObj.clingen.cftr.visible = (cftr.score) ? true : false;
-    }
-    // update computationalObj, and set flag indicating that we have clingen predictors data
     return computationalObj;
   }
 
@@ -435,6 +434,7 @@ class VariantType extends Component {
       evaluations,
       cspecCriteria,
       isLoadingMyVariantInfo,
+      isLoadingLDHData,
       onSubmitEval
     } = this.props;
 
@@ -523,7 +523,8 @@ class VariantType extends Component {
               clinGenPred={clinGenPred}
               clinGenPredStatic={clinGenPredStatic}
               isSingleNucleotide={isSingleNucleotide}
-              isLoadingMyVariantInfo={isLoadingMyVariantInfo}
+              isLoadingLDHData={isLoadingLDHData}
+              canExpand={clinGenPred.revel.mane_scores.length > 0 && clinGenPred.revel.non_mane_scores.length > 0}
             />
 
             <OtherPredictorsTable
@@ -690,6 +691,7 @@ class VariantType extends Component {
         )}
         <br/>
         <span className="credits">Predictor values shown are based on the GRCh38 genomic coordinates when available.</span>
+        {renderDataCredit('ldh', 'variant-type')}
         {renderDataCredit('myvariant', 'variant-type')}
       </section>
     );

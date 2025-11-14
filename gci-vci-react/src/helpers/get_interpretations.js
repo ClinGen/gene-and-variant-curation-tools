@@ -2,26 +2,12 @@ import { convertDiseasePKToMondoId, isFreeTextDisease } from '../utilities/disea
 import { getFormattedDateTime } from '../utilities/dateTimeUtilities';
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../utils';
-// import { getAffiliationName } from './get_affiliation_name';
-// import { getUserName } from './getUserName';
 
 // curationType can be 'variant' or 'gene'.
 // If all interpretations are desired, getAllInterps = false.
 // else if only user's interpretations are desired, getAllInterps = true.
 // auth from redux store. Not used when getAllInterps is true, only needed for filtering for user data.
 export async function get_interpretations(curationType, getAllInterps, auth, requestRecycler)  {
-
-  // Return Variant preferredTitle Value
-  /* async function getVariantFromPK(id, requestRecycler) {
-    const url = '/variants/' + id
-    const data = await requestRecycler.capture(API.get(API_NAME, url));
-    if (data.preferredTitle){
-      return data.preferredTitle;
-    }
-    return "--";
-  }
-  */
-
   // Create URL for GET call based on table type (variant vs. gene)
   let url = ''
   if (curationType === 'variant') {
@@ -33,17 +19,13 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
 
   // filter if only user's interpretations are wanted.
   if (!getAllInterps) {
-      // If an affiliation is selected, get those interpretations.
-      // TODO: Otherwise, get user's created interpretations that have no affiliation.
-      // ^^ Look into range query to do this.
+    // If an affiliation is selected, get those interpretations.
+    // Otherwise, get user's created interpretations that have no affiliation.
     if (auth.currentAffiliation !== null) {
       url += `?affiliation=${auth.currentAffiliation.affiliation_id}`
     }
     else {
       url += `?submitted_by=${auth.PK}`
-      // url += `?submitted_by=${props.auth.PK}&affiliation=null`
-      // url += `?submitted_by=7b555d35-5431-4f10-b760-6e6f6d0c3ebf` // variant Check
-      // url += `?submitted_by=59dc49a3-92fa-442f-8fa9-043094fe7b7c` // gene check
     }
 
     if (curationType === 'variant') {
@@ -57,11 +39,33 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
 
   // Retrieves, relabels, and sorts the data.
   async function fetch() {
-    const data = await requestRecycler.capture(API.get(API_NAME, url));
+    let data = [];
+    if (curationType === 'variant') {
+      if (auth.currentAffiliation !== null) {
+        // Fetch interpretations created by affiliation
+        // Some VCI affiliation interpretations fetch reach API Gateway limit
+        // Split into multiple query requests
+        const url1 = url += '&date_created[between]=2016-01-01T00:00,2023-12-31T24:00';
+        const url2 = url += '&date_created[between]=2024-01-01T00:00,2024-12-31T24:00';
+        const url3 = url += '&date_created[between]=2025-01-01T00:00,2025-12-31T24:00';
+        let [batch1, batch2, batch3] = await Promise.all([
+          requestRecycler.capture(API.get(API_NAME, url1)),
+          requestRecycler.capture(API.get(API_NAME, url2)),
+          requestRecycler.capture(API.get(API_NAME, url3))
+        ]);
+        data = [...batch1, ...batch2, ...batch3];
+      } else {
+        // Fetch interpretations created by user
+        data = await requestRecycler.capture(API.get(API_NAME, url));
+      }
+    } else {
+      // Get GDMs
+      data = await requestRecycler.capture(API.get(API_NAME, url));
+    }
+
     const updatedData = data.map((item) => {
       // if item.disease is PK (VCI table)
       const diseaseDisplayText = typeof item.disease === 'string' ? (
-        // `${item.diseaseTerm || ''}${!isFreeTextDisease(item.disease) ? ` (${convertDiseasePKToMondoId(item.disease)})` : ''}`
         !item.disease && !item.diseaseTerm
           ? '--'
           : `${item.diseaseTerm || ''}${item.disease && !isFreeTextDisease(item.disease) ? ` (${convertDiseasePKToMondoId(item.disease)})` : ''}`
@@ -70,6 +74,9 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
 
       const modeInheritanceDisplayText = item.modeInheritance ? item.modeInheritance.replace(/ *\([^)]*\) */g, "") : '';
       const pathogenicityDisplayText = item.alteredClassification ? item.alteredClassification.split('-')[0] : (item.autoClassification ? item.autoClassification.split('-')[0] : '');
+      const variantIdDisplayText = item.carId && item.clinvarVariantId 
+        ? `${item.carId},${item.clinvarVariantId}` 
+        : `${item.carId || ''}${item.clinvarVariantId || ''}`;
       // Created by - Uncommented for alphatest, needs to be reimplemented at a later time
       // const submitted_by_displayText = getUserName(item.submitted_by);
       // const created_by_displayText = `${submitted_by_displayText}${item.affiliation ? ` (${getAffiliationName(item.affiliation)})` : ''}`;
@@ -82,6 +89,7 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
         return {
           variant: (item.preferredTitle || '--'), // check that variantData[idx] is defined
           variantPK: item.variant, // for displaying link to interpretation page
+          variantId: variantIdDisplayText,
           interpretationPK: item.PK, // for displaying link to interpretation page while specifying the interpretation PK
           disease_modeInheritance: `${diseaseDisplayText || '--'} / ${modeInheritanceDisplayText || '--'}`,
           snapshot: item.snapshotStatuses && item.snapshotStatuses.length ? item.snapshotStatuses : item, // for displaying all matching statuses
@@ -97,7 +105,7 @@ export async function get_interpretations(curationType, getAllInterps, auth, req
           showPathogenicity = false;
         }
         let classification = item.alteredClassification && item.alteredClassification !== 'No Modification' ? item.alteredClassification : item.autoClassification;
-        
+
         return {
           gene: (item.gene.PK ? item.gene.PK : (item.gene || '--')),
           gdmPK: item.PK, // for displaying link to gdm page

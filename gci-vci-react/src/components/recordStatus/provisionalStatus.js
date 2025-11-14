@@ -4,6 +4,8 @@ import { Button } from 'react-bootstrap';
 
 import { sortListByDate } from '../../helpers/sort';
 import { Link } from 'react-router-dom';
+import { isDiseaseObsolete } from '../../utilities/diseaseUtilities';
+
 
 /**
  * Method to render the provisional status of a given GDM's classification
@@ -97,8 +99,10 @@ export function renderProvisionalLink(snapshot, resourceType, gdm, isMyClassific
         // generate href and title
         let provisionalLinkHref;
         let provisionalLinkTitle;
+        const obsoleteDisease = gdm && gdm.disease && isDiseaseObsolete(gdm.disease.term);
         // Even if isMyClassification, the snapshot might be created by another affiliation previously so link to read only
-        if (!isMyClassification) {
+        // If GDM is associated with an obsolete disease, also read only link
+        if (!isMyClassification || obsoleteDisease) {
             // render as others classification's link to evidence summary (read-only)
 
             if (!snapshot) {

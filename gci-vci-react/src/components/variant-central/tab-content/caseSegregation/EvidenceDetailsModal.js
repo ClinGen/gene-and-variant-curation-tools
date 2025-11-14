@@ -341,16 +341,19 @@ export const EvidenceDetailsModal = ({
       clearFieldError('proband_hpo_ids');
       validatedHpoList.forEach(id => {
         const url = EXTERNAL_API_MAP['HPOApi'] + id;
+        const hpoNoTerm = {hpoId: id, hpoTerm: 'Term not found'};
         axios.get(url).then(result => {
-          const term = result['data']['details']['name'];
-          const hpo = {hpoId: id, hpoTerm: term};
-          setNewHpoTerm(hpo);
+          if (result?.data?.name) {
+            const hpo = {hpoId: id, hpoTerm: result.data.name};
+            setNewHpoTerm(hpo);
+          } else {
+            // No HPO term
+            setNewHpoTerm(hpoNoTerm);
+          }
         }).catch(err => {
           // Unsuccessful retrieval
           console.warn('Error in fetching HPO data =: %o', err);
-          const term = 'Term not found';
-          const hpo = {hpoId: id, hpoTerm: term};
-          setNewHpoTerm(hpo);
+          setNewHpoTerm(hpoNoTerm);
         });
       });
     }

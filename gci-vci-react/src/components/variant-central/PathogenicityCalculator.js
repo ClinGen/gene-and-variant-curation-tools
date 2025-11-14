@@ -7,18 +7,18 @@ const PathogenicityCalculator = (props) => {
 
     useEffect(()=>{
         setEvaluations(props.evaluations);
-        if (evaluations){
+        if (evaluations && !props.loadingEvaluations){
             let result = calculatePathogenicity(evaluations);
             if (result){
                 setCalculatedResult(result);
-                if (result.assertion){
+                if (result.assertion !== null){
                     props.setCalculatedPathogenicity(result.assertion);
                 }
                 
             }
         }
         
-    }, [props, props.evaluations, evaluations])
+    }, [props, props.evaluations, props.loadingEvaluations, evaluations])
 
     // Sets calculatedResult by checking current evaluations
     function calculatePathogenicity(evaluationObjList) {

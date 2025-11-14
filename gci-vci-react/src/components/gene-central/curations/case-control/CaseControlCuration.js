@@ -21,12 +21,24 @@ import { setGdmAction } from "../../../../actions/gdmActions";
 import { updateAnnotationAction } from "../../../../actions/annotationActions";
 import { MethodsPanel, createMethod } from '../common/Methods';
 import { ExternalLink } from "../../../common/ExternalLink";
-import { renderLabelNote, renderLabelPhenoTerms, renderAlleleFrequency, getGenesFromList, getPmidsFromList } from '../common/commonFunc';
+import {
+  renderLabelNote,
+  renderLabelPhenoTerms,
+  renderAlleleFrequency,
+  getGenesFromList,
+  getPmidsFromList,
+  getInvalidGenesFromList,
+  getInvalidPmidsFromList,
+  renderNotOwnerMessage,
+  addPhenotypeNote,
+  renderPmidsErrorMessage
+} from '../common/commonFunc';
 import CardPanel from "../../../common/CardPanel";
 import Input from "../../../common/Input";
 
 import { gdmParticipantReducer } from '../../../../utilities/gdmUtilities';
 import { useAmplifyAPIRequestRecycler } from '../../../../utilities/fetchUtilities';
+import { isOwnedByCurrentCuratingEntity } from '../../../../utilities/ownershipUtilities';
 
 export const CaseControlCuration = ({
   editCaseControl = null
@@ -56,17 +68,19 @@ export const CaseControlCuration = ({
   const [caseCohortGenotyping2Disabled, setCaseCohortGenotyping2Disabled] = useState(true); // True if genotyping method 2 dropdown disabled
   const [controlCohortGenotyping2Disabled, setControlCohortGenotyping2Disabled] = useState(true); // True if genotyping method 2 dropdown disabled
 
-  const [userScore, setUserScore] = useState(null);
+  const [userScore, setUserScore] = useState({});
 
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [badCaseCohortPmids, setBadCaseCohortPmids ] = useState([]);
+  const [preprintCaseCohortPmids, setPreprintCaseCohortPmids ] = useState([]);
   const [badControlCohortPmids, setBadControlCohortPmids ] = useState([]);
+  const [preprintControlCohortPmids, setPreprintControlCohortPmids ] = useState([]);
   const [badGenes, setBadGenes] = useState([]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [scoreDisabled, setScoreDisabled] = useState(true);
+  const [scoreDisabled, setScoreDisabled] = useState(false);
 
   const [hpoWithTerms, setHpoWithTerms] = useState([]);
   const [hpoElimWithTerms, setHpoElimWithTerms] = useState([]);
@@ -100,9 +114,6 @@ export const CaseControlCuration = ({
     if (caseCohort && caseCohort.hpoIdInElimination) {
       setHpoElimWithTerms(caseCohort.hpoIdInElimination);
     }
-    // ??? control cohort has no data
-    // ???data['controlCohort_phenoTerms'] = caseCohort && caseCohort.termsInDiagnosis ? caseCohort.termsInDiagnosis : '';
-    // ???data['controlCohort_notPhenoterms'] = caseCohort && caseCohort.termsInElimination ? caseCohort.termsInElimination : '';
 
     // Demographics
     data['caseCohort_maleCount'] = caseCohort && caseCohort.numberOfMale ? caseCohort.numberOfMale : '';
@@ -185,18 +196,11 @@ export const CaseControlCuration = ({
     data['comments'] = caseControl && caseControl.comments ? caseControl.comments : '';
 
     setFormData(data);
+
   };
 
   const handleCancel = () => {
     // define where pressing the Cancel button should take you to
-    /* ??? need to identify editShortcut if click on edit group button
-    // If created new group, go to /group-submit, else back to /curation-central
-    if (gdm) {
-      cancelUrl = (!this.queryValues.groupUuid || this.queryValues.editShortcut) ?
-      '/curation-central/?gdm=' + gdm.uuid + (pmid ? '&pmid=' + pmid : '')
-      : '/group-submit/?gdm=' + gdm.uuid + (group ? '&group=' + group.uuid : '') + (annotation ? '&evidence=' + annotation.uuid : '');
-    }
-    */
     const cancelUrl = lodashGet(gdm, "PK", null) && lodashGet(annotation, "PK", null)
       ? `/curation-central/${gdm.PK}/annotation/${annotation.PK}`
       : "/dashboard";
@@ -246,9 +250,13 @@ export const CaseControlCuration = ({
       return (
         <>
         {formErrors["caseCohort_otherGeneVariants"]}
+        {badGenes?.length
+          ? <div>Invalid Gene(s): {badGenes.join(', ')}</div>
+          : null
+        }
         </>
       );
-    } else if (badGenes.length > 0) {
+    } else if (badGenes?.length > 0) {
       return (
         <span>{badGenes.join(', ')} not found</span>
       );
@@ -266,7 +274,7 @@ export const CaseControlCuration = ({
         let i = 0;
         geneSymbols.forEach(symbol => {
           requestRecycler.capture(API.get(API_NAME, '/genes/' + symbol))
-          .then(result => {
+          .then(() => {
             i++;
             if (i === geneSymbols.length) {
               if (valid) {
@@ -275,7 +283,7 @@ export const CaseControlCuration = ({
                 reject(valid);
               }
             }
-          }).catch(err => {
+          }).catch(() => {
             setBadGenes(badGenes => [...badGenes, symbol]);
             valid = false;
             i++;
@@ -291,30 +299,18 @@ export const CaseControlCuration = ({
   };
 
   const renderPmidsError = (groupType) => {
-    let otherPmids = '';
-    let badPmids = [];
     if (groupType === 'case-cohort') {
-      otherPmids = 'caseCohort_otherPmids';
-      badPmids = badCaseCohortPmids;
-    }
-    if (groupType === 'control-cohort') {
-      otherPmids = 'controlCohort_otherPmids';
-      badPmids = badControlCohortPmids;
-    }
-    if (formErrors[otherPmids]) {
       return (
-        <>
-        {formErrors[otherPmids]}
-        </>
-      );
-    } else if (badPmids.length > 0) {
-      return (
-        <>
-        <span>{badPmids.join(', ')} not found</span>
-        </>
+        renderPmidsErrorMessage(formErrors['caseCohort_otherPmids'],
+          badCaseCohortPmids,
+          preprintCaseCohortPmids)
       );
     } else {
-      return null;
+      return (
+        renderPmidsErrorMessage(formErrors['controlCohort_otherPmids'],
+          badControlCohortPmids,
+          preprintControlCohortPmids)
+      );
     }
   };
 
@@ -347,35 +343,55 @@ export const CaseControlCuration = ({
     // At least one pmid entered; search the DB for them.
     return new Promise((resolve, reject) => {
       if (pmids && pmids.length) {
+        // Keep track of checked PMIDs count, only update when data has been processed
         let i = 0;
         pmids.forEach(pmid => {
-          requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid))
-          .then(article => {
-            i++;
-            if (!article.PK) {
-              saveArticle(article);
-            }
-            if (i === pmids.length) {
-              if (valid) {
-                resolve(valid);
+          if (pmid.length) {
+            requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid)).then(article => {
+              // If article is a preprint then cannot be added, add to error list
+              if (article?.is_preprint) {
+                if (groupType === 'case-cohort') {
+                  setPreprintCaseCohortPmids(preprintCaseCohortPmids => [...preprintCaseCohortPmids, pmid]);
+                } else if (groupType === 'control-cohort') {
+                  setPreprintControlCohortPmids(preprintControlCohortPmids => [...preprintControlCohortPmids, pmid]);
+                }
+                valid = false;
               } else {
+                // If article is valid but has no PK, save article to DB
+                if (!article?.PK) {
+                  saveArticle(article);
+                }
+              }
+              i++;
+              // If all pmids have been checked, return
+              if (i === pmids.length) {
+                if (valid) {
+                  resolve(valid);
+                } else {
+                  reject(valid);
+                }
+              }
+            }).catch(() => {
+              // No article is found by this pmid, add to error list
+              if (groupType === 'case-cohort') {
+                setBadCaseCohortPmids(badCaseCohortPmids => [...badCaseCohortPmids, pmid]);
+              } else {
+                setBadControlCohortPmids(badCohortPmidsPmids => [...badCohortPmidsPmids, pmid]);
+              }
+              valid = false;
+              i++;
+              // If all pmids have been checked, return
+              if (i === pmids.length) {
                 reject(valid);
               }
-            }
-          }).catch(err => {
+            });
+          } else {
+            // Empty pmid
             i++;
-            if (groupType === 'case-cohort') {
-              setBadCaseCohortPmids(badCaseCohortPmids => [...badCaseCohortPmids, pmid]);
-            } else {
-              setBadControlCohortPmids(badCohortPmidsPmids => [...badCohortPmidsPmids, pmid]);
-            }
-            valid = false;
-            if (i === pmids.length) {
-              reject(valid);
-            }
-          });
+          }
         })
       } else {
+        // No pmid
         resolve(valid);
       }
     });
@@ -401,7 +417,7 @@ export const CaseControlCuration = ({
     if (!diseaseObj || (diseaseObj && !diseaseObj['term'])) {
       has_disease = false;
     }
-    if (!has_disease && formData["caseCohort_phenoTerms"] === '' && hpoWithTerms.length < 1) {
+    if (!has_disease && formData["caseCohort_phenoTerms"] === '' && hpoWithTerms?.length < 1) {
       setDiseaseRequired(true);
       setDiseaseError("Enter disease term and/or HPO Id(s) and/or Phenotype free text disease.");
       errors["diseaseError"] = "Enter disease term and/or HPO Id(s) and/or Phenotype free text disease.";
@@ -424,22 +440,33 @@ export const CaseControlCuration = ({
     }
 
     // Validate gene symbols have the proper format (will check for existence later)
-    const geneSymbols = getGenesFromList(formData["caseCohort_otherGeneVariants"]);
-    if (geneSymbols && geneSymbols.length && geneSymbols.includes(null)) {
-      // Gene symbol list is bad
-      errors["caseCohort_otherGeneVariants"] = "Use gene symbols (e.g. SMAD3) separated by commas";
+    const badGeneSymbols = getInvalidGenesFromList(formData["caseCohort_otherGeneVariants"]);
+    if (badGeneSymbols?.length) {
+      // If bad Gene symbol(s) is found, set error for invalid gene symbol(s)
+      errors["caseCohort_otherGeneVariants"] = `Not valid Gene Symbol(s): ${badGeneSymbols.join(', ')}.  Use gene symbols (e.g. SMAD3) separated by commas.`;
     }
 
     // Validate pmids have the proper format (will check for existence later)
-    let pmids = getPmidsFromList(formData["caseCohort_otherPmids"]);
-    if (pmids && pmids.length && pmids.includes(null)) {
-      // PMID list is bad
-      errors["caseCohort_otherPmids"] = "Use PubMed IDs (e.g. 12345678) separated by commas";
+    // Check the case cohort PubMed IDs
+    let badPmids = getInvalidPmidsFromList(formData["caseCohort_otherPmids"]);
+    if (badPmids?.length) {
+      // Display error for invalid PMID list
+      errors["caseCohort_otherPmids"] = `Not valid PubMed ID(s): "${badPmids.join(', ')}".  Use PubMed IDs (e.g. 12345678) separated by commas.`;
     }
-    pmids = getPmidsFromList(formData["controlCohort_otherPmids"]);
-    if (pmids && pmids.length && pmids.includes(null)) {
-      // PMID list is bad
-      errors["controlCohort_otherPmids"] = "Use PubMed IDs (e.g. 12345678) separated by commas";
+    // Check the control cohort PubMed IDs
+    badPmids = getInvalidPmidsFromList(formData["controlCohort_otherPmids"]);
+    if (badPmids?.length) {
+      // Display error for invalid PMID list
+      errors["controlCohort_otherPmids"] = `Not valid PubMed ID(s): "${badPmids.join(', ')}".  Use PubMed IDs (e.g. 12345678) separated by commas`;
+    }
+
+    // Validate score
+    if (formData['studyType'] !== 'none') {
+      if ("scoreStatus" in userScore && (userScore.scoreStatus === "Score" || userScore.scoreStatus === "Review")) {
+        if (lodashGet(userScore, "score", null) === null || userScore.score === "none") {
+          errors["score"] = "Please select a score or change the status";
+        }
+      }
     }
 
     if (!isEmpty(errors)) {
@@ -463,9 +490,11 @@ export const CaseControlCuration = ({
     }
     if (fieldName === "caseCohort_otherPmids") {
       setBadCaseCohortPmids([]);
+      setPreprintCaseCohortPmids([]);
     }
     if (fieldName === "controlCohort_otherPmids") {
       setBadControlCohortPmids([]);
+      setPreprintControlCohortPmids([]);
     }
 
     // Disable the Genotyping Method 2 if Genotyping Method 1 has no value
@@ -625,7 +654,8 @@ export const CaseControlCuration = ({
 
   const saveScore = async () => {
     const existingScores = lodashGet(caseControl, "scores", null) ? caseControl.scores : [];
-    if (formData['studyType'] !== 'none' && lodashGet(userScore, "score", null) !== null && userScore.score >= 0) {
+    if (formData['studyType'] !== 'none' &&
+      (lodashGet(userScore, "scoreStatus") !== null && userScore.scoreStatus !== "none")) {
       // Update or create score object when the score object has the scoreStatus key/value pair
       let scoreResult;
       const isNew = userScore.PK ? false : true;
@@ -713,7 +743,6 @@ export const CaseControlCuration = ({
   };
 
   const setEvaluationData = (newCaseControl) => {
-    // ??? save even when not selected
     const statisticalValuesObj = {
       valueType: formData['statisticValueType'] !== 'none' ? formData['statisticValueType'] : null,
       otherType: formData['statisticOtherType'] !== 'none' ? formData['statisticOtherType'] : null,
@@ -763,7 +792,6 @@ export const CaseControlCuration = ({
     // Update scores array
     newCaseControl.scores = newScores;
 
-    // ??? set affiliation even when editing
     // Add affiliation if the user is associated with an affiliation
     // and if the data object has no affiliation
     if (lodashGet(auth, "currentAffiliation.affiliation_id", null)) {
@@ -916,22 +944,25 @@ export const CaseControlCuration = ({
   const submitForm = async (e) => {
     e.preventDefault(); e.stopPropagation();
 
-    console.log(formData);
-
     setIsSubmitting(true);
 
-    if (badGenes.length === 0  && badCaseCohortPmids.length === 0  && badControlCohortPmids.length === 0  && validateFormFields()) {
+    if (badGenes?.length === 0  &&
+      badCaseCohortPmids?.length === 0 &&
+      badControlCohortPmids?.length === 0 &&
+      preprintCaseCohortPmids?.length === 0 &&
+      preprintControlCohortPmids?.length === 0 &&
+      validateFormFields()) {
       // validate genes list
-      validateGenes().then(res1 => {
+      validateGenes().then(() => {
         // validate pmids list
-        validatePmids('case-cohort').then(res2 => {
-          validatePmids('control-cohort').then(res3 => {
+        validatePmids('case-cohort').then(() => {
+          validatePmids('control-cohort').then(() => {
             saveCohortGroup('case-cohort').then(newCaseCohort => {
               saveCohortGroup('control-cohort').then(newControlCohort => {
                 saveScore().then(newScores => {
                   createNewCaseControlData(lodashGet(newCaseCohort, "PK", null), lodashGet(newControlCohort, "PK", null), newScores).then(newCaseControl => {
                     saveCaseControl(newCaseControl).then(savedCaseControl => {
-                      updateScoreWithCaseControl(savedCaseControl).then((results) => {
+                      updateScoreWithCaseControl(savedCaseControl).then(() => {
                         // Save all form values from the DOM.
                         // Navigate to Curation Central or Submit page, depending on previous page
                         const redirectUrl = (editCaseControl && editCaseControl.PK)
@@ -966,32 +997,23 @@ export const CaseControlCuration = ({
                     handleSubmitError("Error in creating new case control object", error);
                   });
                 }).catch(error => {
-                  // console.log('save evidenceScore : %o', error);
-                  // setIsSubmitting(false);
                   //throw new Error
                   handleSubmitError("Error in adding/updating evidence score object", error);
                 });
               }).catch(error => {
-                // console.log('save control cohort group : %o', error);
-                // setIsSubmitting(false);
                 //throw new Error
                 handleSubmitError("Error in adding/updating control cohort group object", error);
               });
             }).catch(error => {
-              // console.log('validatePmids : %o', error);
-              //setIsSubmitting(false);
               handleSubmitError("Error in adding/updating case cohort group object", error);
             });
-          }).catch(error => {
-            // console.log('validatePmids : %o', error);
+          }).catch(() => {
             setIsSubmitting(false);
           });
-        }).catch(err => {
-          // console.log('validatePmids : %o', error);
+        }).catch(() => {
           setIsSubmitting(false);
         });
-      }).catch(error => {
-        // console.log('validateGenes : %o', error);
+      }).catch(() => {
         setIsSubmitting(false);
       });
     } else {
@@ -1003,9 +1025,19 @@ export const CaseControlCuration = ({
   const renderCaseControlName = () => {
     return (
       <div>
-        <Input type="text" label="Case-Control Label" onChange={handleChange} name="caseControlName"
-          value={formData['caseControlName']} error={formErrors['caseControlName']}
-          labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-6" groupClassName="row mb-3" required />
+        <Input
+          type="text"
+          label="Case-Control Label"
+          maxLength="60"
+          onChange={handleChange}
+          name="caseControlName"
+          value={formData['caseControlName']}
+          error={formErrors['caseControlName']}
+          labelClassName="col-sm-5 control-label"
+          wrapperClassName="col-sm-6"
+          groupClassName="row mb-3"
+          required
+        />
       </div>
     );
   };
@@ -1070,7 +1102,7 @@ export const CaseControlCuration = ({
             </span>
           </Col>
           <Col sm="7" className="form-group hpo-term-container">
-            {hpoWithTerms.length ?
+            {hpoWithTerms?.length ?
               <ul>
                 {hpoWithTerms.map((term, i) => {
                   return (
@@ -1080,7 +1112,7 @@ export const CaseControlCuration = ({
               </ul>
               : null}
             <HpoTermModal
-              isNew={hpoWithTerms && hpoWithTerms.length ? false : true}
+              isNew={hpoWithTerms?.length ? false : true}
               passHpoToParent={updateHpo}
               savedHpo={hpoWithTerms}
             />
@@ -1091,17 +1123,17 @@ export const CaseControlCuration = ({
           label={renderLabelPhenoTerms(false)} labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7"
         />
         <Col sm={{ span: 7, offset: 5 }}>
-          <p>Enter <em>phenotypes that are NOT present in {cohortLabel}</em> if they are specifically noted in the paper.</p>
+          {addPhenotypeNote(cohortLabel)}
         </Col>
         <Row className="mb-3">
           <Col sm="5" className="control-label">
             <span>
-              <label className="emphasis">NOT Phenotype(s)&nbsp;</label>
+              <label className="emphasis"><span className="serious-text">NOT Phenotype(s)</span>&nbsp;</label>
               <span className="normal">(<ExternalLink href={`${EXTERNAL_API_MAP['HPOBrowser']}`} title="Open HPO Browser in a new tab">HPO</ExternalLink> ID(s))</span>:
             </span>
           </Col>
           <Col sm="7" className="form-group hpo-term-container">
-            {hpoElimWithTerms.length ?
+            {hpoElimWithTerms?.length ?
               <ul>
                 {hpoElimWithTerms.map((term, i) => {
                   return (
@@ -1111,7 +1143,7 @@ export const CaseControlCuration = ({
               </ul>
               : null}
             <HpoTermModal
-              isNew={hpoElimWithTerms && hpoElimWithTerms.length ? false : true}
+              isNew={hpoElimWithTerms?.length ? false : true}
               passHpoToParent={updateElimHpo}
               savedHpo={hpoElimWithTerms}
             />
@@ -1266,7 +1298,7 @@ export const CaseControlCuration = ({
   // HTML labels for inputs follow.
   const renderLabelOtherGenes = () => {
     return (
-      <span>Other genes found to have variants in them (<ExternalLink href={EXTERNAL_API_MAP['HGNCHome']} title="HGNC home page in a new tab">HGNC</ExternalLink> symbol):</span>
+      <span>Other genes found to have variants in them (<ExternalLink href={EXTERNAL_API_MAP['HGNCHome']} title="HGNC home page in a new tab">HGNC</ExternalLink> symbol; for multiple genes, enter the comma-separated list):</span>
     );
   };
 
@@ -1416,6 +1448,7 @@ export const CaseControlCuration = ({
   // Called by child function props to update user score obj
   const handleUserScoreObj = (newUserScoreObj) => {
     setUserScore(newUserScoreObj);
+    clearFieldError("score");
   }
 
   /**
@@ -1477,12 +1510,17 @@ export const CaseControlCuration = ({
     );
   };
 
-  const submitErrClass = 'submit-err float-right ' + (!isEmpty(formErrors) || badGenes.length > 0 || badCaseCohortPmids.length > 0 || badControlCohortPmids.length > 0 ? '' : ' hidden');
+  const submitErrClass = 'submit-err float-right ' +
+    (!isEmpty(formErrors) || badGenes?.length ||
+     badCaseCohortPmids?.length || badControlCohortPmids?.length ||
+     preprintCaseCohortPmids?.length || preprintControlCohortPmids?.length
+     ? '' : ' hidden');
   const curationLink = (lodashGet(gdm, "PK", null) && lodashGet(annotation, "PK", null))
   ? `/curation-central/${gdm.PK}/annotation/${annotation.PK}`
     : (lodashGet(gdm, "PK", null))
       ? `/curation-central/${gdm.PK}`
       : null;
+  const ownerError = !isOwnedByCurrentCuratingEntity(gdm, auth);
 
   return (gdmIsLoading || annotationIsLoading) ? (
     <LoadingSpinner className="mt-4" />
@@ -1497,6 +1535,7 @@ export const CaseControlCuration = ({
     </div>
     <Row className="case-control-curation-content"><Col sm="12">
       <form onSubmit={submitForm} className="row group-curation-content">
+        {renderNotOwnerMessage(ownerError)}
         <div className="col-sm-12 case-control-label">
           <CardPanel title="Case-Control Label" className="case-control-label-panel">
             {renderCaseControlName()}
@@ -1523,8 +1562,10 @@ export const CaseControlCuration = ({
               handleUserScoreObj={handleUserScoreObj}
               isDisabled={scoreDisabled}
               isSubmitting={isSubmitting}
+              error={formErrors["score"]}
             />
           </CardPanel>
+          {renderNotOwnerMessage(ownerError)}
           <div className="curation-submit clearfix">
             <LoadingButton
               type="submit"
@@ -1533,6 +1574,7 @@ export const CaseControlCuration = ({
               text="Save"
               textWhenLoading="Submitting"
               isLoading={isSubmitting}
+              disabled={ownerError}
             />
             {gdm ?
               <Button variant="secondary" className="float-right align-self-end mb-2 ml-2" onClick={() => handleCancel()} disabled={isSubmitting}>Cancel</Button>
@@ -1542,7 +1584,8 @@ export const CaseControlCuration = ({
                 gdm={gdm}
                 parent={annotation}
                 item={caseControl}
-                disabled={isSubmitting}
+                disabled={isSubmitting || ownerError}
+                ownerError={ownerError}
               />
               : null}
             <div className={submitErrClass}>Please fix errors on the form and resubmit.</div>

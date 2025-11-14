@@ -15,8 +15,8 @@ export const IndividualVariantScore = ({
   gdm,
   index,
   variantScore,
-  probandSelected,
   probandIs,
+  isHomozygous,
   updateVariantScore,
   scoreErrors,
 }) => {
@@ -36,11 +36,13 @@ export const IndividualVariantScore = ({
     loadVariantScoreData();
   }, []);
 
+  // Load variant score data
+  // Reload data to reset score range if isHomozygous is changed
   useEffect(() => {
     if (variantScore) {
       loadVariantScoreData();
     }
-  }, [variantScore]);
+  }, [variantScore, isHomozygous]);
 
   const loadVariantScoreData = () => {
     let data = {};
@@ -63,7 +65,7 @@ export const IndividualVariantScore = ({
         (data["deNovo"] === "No" || data["deNovo"] === "Unknown" || (data["deNovo"] === "Yes" && data["maternityPaternityConfirmed"] !== "none")) &&
         (data["functionalDataSupport"] === "No" || (data["functionalDataSupport"] === "Yes" && data["functionalDataExplanation"] !== ""))) {
         calcDefaultScore = getDefaultScore(getScoreMOIString(moiType, probandIs), data);
-        calcScoreRange = getScoreRange(getScoreMOIString(moiType, probandIs), data, null, parseFloat(calcDefaultScore));
+        calcScoreRange = getScoreRange(getScoreMOIString(moiType, probandIs), data, isHomozygous, null, parseFloat(calcDefaultScore));
         data['calculatedScore'] = calcDefaultScore;
         setScoreRange(calcScoreRange);
       }
@@ -167,7 +169,7 @@ export const IndividualVariantScore = ({
       (newData["deNovo"] === "No" || newData["deNovo"] === "Unknown" || (newData["deNovo"] === "Yes" && newData["maternityPaternityConfirmed"] !== "none")) &&
       (newData["functionalDataSupport"] === "No" || (newData["functionalDataSupport"] === "Yes" && newData["functionalDataExplanation"] !== ""))) {
       const calcDefaultScore = getDefaultScore(getScoreMOIString(modeInheritanceType, probandIs), newData);
-      const calcScoreRange = getScoreRange(getScoreMOIString(modeInheritanceType, probandIs), newData, null, parseFloat(calcDefaultScore));
+      const calcScoreRange = getScoreRange(getScoreMOIString(modeInheritanceType, probandIs), newData, isHomozygous, null, parseFloat(calcDefaultScore));
       newData['calculatedScore'] = calcDefaultScore;
       setScoreRange(calcScoreRange);
       setDisableScoreStatus(false);
@@ -242,7 +244,7 @@ export const IndividualVariantScore = ({
   };
 
   const renderVariantScore = () => {
-    // TRUE if Mode of Inheritance is either AUTOSOMAL_DOMINANT, AUTOSOMAL_RECESSIVE, MITOCHONDRIAL, SEMIDOMINANT, or X_LINKED
+    // TRUE if Mode of Inheritance is either AUTOSOMAL_DOMINANT, AUTOSOMAL_RECESSIVE, MITOCHONDRIAL, SEMIDOMINANT, X_LINKED, or SOMATIC_MOSAICISM
     const shouldCalcScore = modeInheritanceType && modeInheritanceType.length;
     const isMatPatRequired = formData["deNovo"] ? formData["deNovo"] === "Yes" : false;
     const isFuncExpRequired = formData["functionalDataSupport"] ? formData["functionalDataSupport"] === "Yes" : false;

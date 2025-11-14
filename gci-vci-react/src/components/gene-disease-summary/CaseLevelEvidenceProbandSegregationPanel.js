@@ -8,8 +8,7 @@ import {
 import CardPanel from '../common/CardPanel';
 import { TableContent } from '../common/TableComponents';
 import HpoTerms from '../../helpers/render_hpo_terms';
-import { getEvidenceAuthors } from '../../helpers/getEvidenceAuthors';
-import EarliestPubIcon from './EarliestPubIcon';
+import { EvidenceSourceDetail } from './EvidenceSourceDetail';
 
 const CaseLevelEvidenceSegregationProbandPanel = ({
   hpoTerms,
@@ -25,23 +24,30 @@ const CaseLevelEvidenceSegregationProbandPanel = ({
           accessor: 'segLabel',
           style: { minWidth: 80, wordBreak: 'normal' },
           disableSortBy: true,
-          enableRowSpan: true
-        },
-        {
-          Header: 'Reference (PMID)',
-          accessor: d => {
-            if (d.authors && d.authors.length) {
-              return d.authors[0];
-            }
-            return 'reference';
-          },
-          // eslint-disable-next-line react/display-name
+          enableRowSpan: true,
           Cell: ({ row }) => {
             const evidence = row.original;
-            const authors = getEvidenceAuthors(evidence);
             return (
-              <span>{authors}, <strong>{evidence.pubYear}</strong>, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a> {evidence.earliestPub ? <EarliestPubIcon /> : null}</span>
+                <span>
+                  {evidence.familyLink
+                    ? <a href={evidence.familyLink} target="_blank" rel="noopener noreferrer">{evidence.segLabel}</a>
+                    : evidence.segLabel}
+                </span>
             );
+          }
+        },
+        {
+          Header: 'Evidence Source',
+          accessor: 'pmid',
+          // eslint-disable-next-line react/display-name
+          Cell: ({ row }) => {
+            if (row?.original) {
+              return (
+                <EvidenceSourceDetail
+                  evidence={row.original}
+                />
+              );
+            }
           },
           enableRowSpan: true
         },

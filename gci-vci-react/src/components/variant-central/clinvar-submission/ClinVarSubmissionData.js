@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { API } from 'aws-amplify';
-import { API_NAME } from '../../utils';
+import { API_NAME } from '../../../utils';
 
-import { Modal } from 'react-bootstrap';
-import LoadingSpinner from '../common/LoadingSpinner';
+import { Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
+import LoadingSpinner from '../../common/LoadingSpinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+
 
 class ClinVarSubmissionData extends Component {
   constructor(props) {
@@ -15,7 +18,7 @@ class ClinVarSubmissionData extends Component {
       failureMessage: null,
       elementIDToCopy: null
     };
-  };
+  }
 
   /**
    * Method to set state to show/hide modal
@@ -39,6 +42,7 @@ class ClinVarSubmissionData extends Component {
       // Highlight and copy (to clipboard) ClinVar submission data
       dataElement.contentEditable = 'true';
       window.getSelection().selectAllChildren(dataElement);
+      document.execCommand('RemoveFormat', false, null);
       document.execCommand('copy');
     } catch (error) {
       console.log('Copying data to clipboard failed');
@@ -171,10 +175,20 @@ class ClinVarSubmissionData extends Component {
    */
   render = () => {
     const disableCopyButton = this.state.elementIDToCopy ? false : true;
+    const infoText = "Generate ClinVar Submission Data for this individual approved interpretation.  This will NOT add this interpretation to any ClinVar batch."
 
     return (
       <>
-        <button className="btn bg-warning text-white mx-2" onClick={() => this.setShowModal(true)}>ClinVar Submission Data</button>
+        <button className="btn bg-warning text-white mx-2 mb-2" onClick={() => this.setShowModal(true)}>
+            Generate Individual Data
+            <OverlayTrigger
+                overlay={
+                    <Tooltip>{infoText}</Tooltip>
+                }
+            >
+                <FontAwesomeIcon icon={faInfoCircle} color="#007bff" className="ml-2" />
+            </OverlayTrigger>
+        </button>
         <Modal className="clinvar-submission-modal" scrollable="true" show={this.state.showModal} onHide={this.setShowModal}>
           <Modal.Header className="bg-warning">
             <Modal.Title>ClinVar Submission Data</Modal.Title>

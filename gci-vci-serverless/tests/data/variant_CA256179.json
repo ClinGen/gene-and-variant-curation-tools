@@ -1,12 +1,15 @@
 {
   "@context": "http://reg.genome.network/schema/allele.jsonld",
   "@id": "http://reg.genome.network/allele/CA256179",
+  "communityStandardTitle": [
+    "NM_000151.4(G6PC1):c.1039C>T (p.Gln347Ter)"
+  ],
   "externalRecords": {
     "ClinVarAlleles": [
       {
         "@id": "http://www.ncbi.nlm.nih.gov/clinvar/?term=27039[alleleid]",
         "alleleId": 27039,
-        "preferredName": "NM_000151.3(G6PC):c.1039C>T (p.Gln347Ter)"
+        "preferredName": "NM_000151.4(G6PC1):c.1039C>T (p.Gln347Ter)"
       }
     ],
     "ClinVarVariations": [
@@ -14,7 +17,8 @@
         "@id": "http://www.ncbi.nlm.nih.gov/clinvar/variation/12000",
         "RCV": [
           "RCV000012780",
-          "RCV000199372"
+          "RCV000199372",
+          "RCV001027894"
         ],
         "variationId": 12000
       }
@@ -124,6 +128,88 @@
       "coordinates": [
         {
           "allele": "T",
+          "end": 1117,
+          "referenceAllele": "C",
+          "start": 1116
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN004056",
+      "geneNCBI_id": 2538,
+      "geneSymbol": "G6PC1",
+      "hgvs": [
+        "ENST00000253801.7:c.1039C>T"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000253801.1:p.Gln347Ter",
+        "hgvsWellDefined": "ENSP00000253801.1:p.Gln347Ter"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS741623",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000253801.7:c.1039C>T"
+          },
+          "RefSeq": {
+            "hgvs": "NM_000151.4:c.1039C>T"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000253801.1:p.Gln347Ter"
+          },
+          "RefSeq": {
+            "hgvs": "NP_000142.2:p.Gln347Ter"
+          }
+        }
+      }
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "T",
+          "end": 1118,
+          "referenceAllele": "C",
+          "start": 1117
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN004056",
+      "geneNCBI_id": 2538,
+      "geneSymbol": "G6PC1",
+      "hgvs": [
+        "ENST00000253801.6:c.1039C>T"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000253801.1:p.Gln347Ter",
+        "hgvsWellDefined": "ENSP00000253801.1:p.Gln347Ter"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS249958"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "T",
+          "end": 1000,
+          "referenceAllele": "C",
+          "start": 999
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN004056",
+      "geneNCBI_id": 2538,
+      "geneSymbol": "G6PC1",
+      "hgvs": [
+        "ENST00000585489.1:c.*431C>T"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000466202.1:p.="
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS388755"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "T",
           "end": 1119,
           "referenceAllele": "C",
           "start": 1118
@@ -131,7 +217,7 @@
       ],
       "gene": "http://reg.genome.network/gene/GN004056",
       "geneNCBI_id": 2538,
-      "geneSymbol": "G6PC",
+      "geneSymbol": "G6PC1",
       "hgvs": [
         "NM_000151.3:c.1039C>T"
       ],
@@ -152,7 +238,7 @@
       ],
       "gene": "http://reg.genome.network/gene/GN004056",
       "geneNCBI_id": 2538,
-      "geneSymbol": "G6PC",
+      "geneSymbol": "G6PC1",
       "hgvs": [
         "NM_001270397.1:c.*431C>T"
       ],
@@ -172,7 +258,7 @@
       ],
       "gene": "http://reg.genome.network/gene/GN004056",
       "geneNCBI_id": 2538,
-      "geneSymbol": "G6PC",
+      "geneSymbol": "G6PC1",
       "hgvs": [
         "NM_000151.4:c.1039C>T"
       ],
@@ -180,7 +266,27 @@
         "hgvs": "NP_000142.2:p.Gln347Ter",
         "hgvsWellDefined": "NP_000142.2:p.Gln347Ter"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS674728"
+      "referenceSequence": "http://reg.genome.network/refseq/RS674728",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000253801.7:c.1039C>T"
+          },
+          "RefSeq": {
+            "hgvs": "NM_000151.4:c.1039C>T"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000253801.1:p.Gln347Ter"
+          },
+          "RefSeq": {
+            "hgvs": "NP_000142.2:p.Gln347Ter"
+          }
+        }
+      }
     },
     {
       "coordinates": [
@@ -193,7 +299,7 @@
       ],
       "gene": "http://reg.genome.network/gene/GN004056",
       "geneNCBI_id": 2538,
-      "geneSymbol": "G6PC",
+      "geneSymbol": "G6PC1",
       "hgvs": [
         "NM_001270397.2:c.*431C>T"
       ],
@@ -201,41 +307,6 @@
         "hgvs": "NP_001257326.1:p.="
       },
       "referenceSequence": "http://reg.genome.network/refseq/RS681003"
-    },
-    {
-      "coordinates": [
-        {
-          "allele": "T",
-          "end": 1118,
-          "referenceAllele": "C",
-          "start": 1117
-        }
-      ],
-      "hgvs": [
-        "ENST00000253801.6:c.1039C>T"
-      ],
-      "proteinEffect": {
-        "hgvs": "ENSP00000253801.1:p.Gln347Ter",
-        "hgvsWellDefined": "ENSP00000253801.1:p.Gln347Ter"
-      },
-      "referenceSequence": "http://reg.genome.network/refseq/RS249958"
-    },
-    {
-      "coordinates": [
-        {
-          "allele": "T",
-          "end": 1000,
-          "referenceAllele": "C",
-          "start": 999
-        }
-      ],
-      "hgvs": [
-        "ENST00000585489.1:c.*431C>T"
-      ],
-      "proteinEffect": {
-        "hgvs": "ENSP00000466202.1:p.="
-      },
-      "referenceSequence": "http://reg.genome.network/refseq/RS388755"
     }
   ],
   "type": "nucleotide"

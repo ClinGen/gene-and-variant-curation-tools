@@ -159,15 +159,17 @@ def getAllMetCriteriaStatuses_by_affiliation(db,filters):
       'criteriaStatus': "met",
       'item_type': 'evaluation'
     })
-    filters = {"affiliation": affiliation, "criteriaStatus": "met"}
+    # Set localFilters to be used in this function
+    localFilters = {"affiliation": affiliation, "criteriaStatus": "met"}
   elif 'submitted_by' in filters:
-    filters = {"submitted_by": filters['submitted_by'], "criteriaStatus": "met"}
-    evaluations = db.query_by_item_type('evaluation', filters, projections)
+    # Set localFilters to be used in this function
+    localFilters = {"submitted_by": filters['submitted_by'], "criteriaStatus": "met"}
+    evaluations = db.query_by_item_type('evaluation', localFilters, projections)
 
   for evaluation in evaluations:
     if 'criteriaModifier' in evaluation:
       evaluation['criteria'] = evaluation['criteria'] + '_' + evaluation['criteriaModifier']
-  if ('affiliation' not in filters):
+  if ('affiliation' not in localFilters):
     evaluations = [x for x in evaluations if 'affiliation' not in x]
   return evaluations
 
@@ -329,7 +331,7 @@ def appendSnapshotStatusesTest(db, interpretations, filters):
   
 
 def getAllVariantsWithTitle (db):
-  projections= 'PK,preferredTitle'
+  projections= 'PK,preferredTitle,clinvarVariantId,carId'
   #filters = {"criteriaStatus":"met"}
   filters={}
   variants = db.query_by_item_type('variant',filters,projections)
@@ -360,7 +362,7 @@ def append_variant_title_all_interp (db,interpretations):
   pd.set_option('display.max_rows', None)
   pd.set_option('display.max_columns', None)
   pd.set_option('display.width', None)
-  pd.set_option('display.max_colwidth', -1)
+  pd.set_option('display.max_colwidth', None)
 
   variants=getAllVariantsWithTitle(db)
   print (f' all Number of variants returned = {len(variants)}')
@@ -429,10 +431,21 @@ def get_interpretations(db, filters, projections):
   }, projections)
 
 @timer.timeit
-def get_interpretations_by_affiliation(db, affiliation, projections):
-  return db.query_by_affiliation(affiliation, filters={
+def get_interpretations_by_affiliation(db, filters, projections):
+  affiliation = None
+  # Set localFilters to be used in this function
+  localFilters = filters.copy()
+
+  if 'affiliation' in filters:
+    # Remove affiliation from localFilters
+    affiliation = filters['affiliation']
+    del localFilters['affiliation']
+
+  # Add given filters without affiliation filter
+  return db.query_by_affiliation(affiliation, {
     'status!': 'deleted',
-    'item_type': 'interpretation'
+    'item_type': 'interpretation',
+    **(localFilters if isinstance(localFilters, dict) else {})
   }, projections=projections)
 
 def warmup(db, filters, projections):
@@ -448,6 +461,8 @@ def getDereferenced(db, query_params):
   provisionalVariant,diseaseTerm, #status, modeInheritance,\
   last_modified,date_created,pathogenicity,modifiedPathogenicity, evaluations'
 
+  minProjections = 'PK,variant,disease,affiliation,diseaseTerm,modeInheritance,date_created'
+
   if (bool(query_params) and 'projections' in query_params):
     projections=query_params['projections']
     del query_params['projections']
@@ -458,7 +473,6 @@ def getDereferenced(db, query_params):
     del query_params['action']
 
   filters = query_params
-  print ('Interpretation projections: [%s], filters [%s], action [%s]' %(projections, filters, action))
 
   ## Call this method (which takes time) but should warm up the connection
   ## and have a more accurate comparison of times. This will make the full
@@ -467,18 +481,26 @@ def getDereferenced(db, query_params):
     warmup(db, filters, projections)
 
   ###### Get the interpretations
-  # If an affiliation was the only filter provided, use the affiliation index to query.
+  # If an affiliation filter is provided, use the affiliation index to query.
   # Otherwise, query using the item type index.
   interpretations = []
-  if filters is not None and 'affiliation' in filters and len(filters) == 1:
-    interpretations = get_interpretations_by_affiliation(db, filters['affiliation'], projections)
-  else:
+  # If affiliation is in filters, query by affiliation index
+  if filters is not None and 'affiliation' in filters:
+    print ('Call get_interpretations_by_affiliation() projections: [%s], filters [%s], action [%s]' %(projections, filters, action))
+    interpretations = get_interpretations_by_affiliation(db, filters, projections)
+  elif action is not None and action == 'myinterpretations':
+    print ('Call get_interpretations() projections: [%s], filters [%s], action [%s]' %(projections, filters, action))
     interpretations = get_interpretations(db, filters, projections)
+  else:
+    # Fetch minimum data that's needed to display all interpretations page
+    print ('Fetch All Interpretation projections: [%s], filters [%s], action [%s]' %(minProjections, filters, action))
+    interpretations = get_interpretations(db, filters, minProjections)
   
   if (interpretations is not None and len(interpretations) > 0 ):
-    if (filters is not None and 'affiliation' not in filters):
+    # If getting data for dashboard and individual user, keep interpretations without affiliation
+    if (action == 'myinterpretations' and filters is not None and 'affiliation' not in filters):
       interpretations = [x for x in interpretations if 'affiliation' not in x]
-    
+
     dfie=None
     if action == 'myinterpretations': #dashboard
       appendSnapshotStatuses(db,interpretations,filters)
@@ -491,3 +513,78 @@ def getDereferenced(db, query_params):
       return interpretations_with_prefTitle
   else:
     return interpretations
+
+# Summarize status information down to a list of labels and dates
+def summarize_status(db, interpretation):
+  try:
+    appendSnapshotStatuses(db, [interpretation], {})
+
+  except Exception as e:
+    print('ERROR: Failed to append snapshot status info:\n%s' %e)
+    raise
+
+  latest_provisional = {}
+  latest_approved = {}
+  latest_published = {}
+  status_list = []
+
+  try:
+    # Find the most recent update to each status
+    for snapshot_status in interpretation['snapshotStatuses']:
+      classification_status = snapshot_status.get('classificationStatus', '')
+
+      if classification_status == 'Provisional' or classification_status == 'Provisioned':
+        if snapshot_status.get('provisionalDate', '') > latest_provisional.get('provisionalDate', ''):
+          latest_provisional = snapshot_status
+
+      elif classification_status == 'Approved':
+        if snapshot_status.get('approvalDate', '') > latest_approved.get('approvalDate', ''):
+          latest_approved = snapshot_status
+
+        if snapshot_status.get('publishClassification', ''):
+          if snapshot_status.get('classificationDate', '') > latest_published.get('classificationDate', ''):
+            latest_published = snapshot_status
+
+    # Add status based on most recent updates (relative to one another)
+    if not latest_provisional:
+      status_list.append({
+        "label": "In Progress"
+      })
+
+    elif not latest_approved:
+      status_list.append({
+        "date": latest_provisional.get('provisionalDate', ''),
+        "label": "Provisional"
+      })
+
+    else:
+      status_list.append({
+        "date": latest_approved.get('approvalDate', ''),
+        "label": "Approved"
+      })
+
+      if latest_provisional.get('provisionalDate', '') > latest_approved.get('approvalDate', ''):
+        status_list.append({
+          "date": latest_provisional.get('provisionalDate', ''),
+          "label": "New Provisional"
+        })
+
+      if latest_published:
+        if latest_approved.get('approvalDate', '') > latest_published.get('publishDate', ''):
+          status_list.append({
+            "date": latest_published.get('publishDate', ''),
+            "label": "Published",
+            "warning": True
+          })
+
+        else:
+          status_list.append({
+            "date": latest_published.get('publishDate', ''),
+            "label": "Published"
+          })
+
+  except Exception as e:
+    print('ERROR: Failed to generate status list:\n%s' %e)
+    raise
+
+  return status_list

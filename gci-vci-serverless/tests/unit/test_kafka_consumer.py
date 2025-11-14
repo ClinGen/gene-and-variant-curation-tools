@@ -8,12 +8,12 @@ c = Consumer({
     'security.protocol': 'SASL_SSL',
     'sasl.username': 'XXXX',
     'sasl.password': 'XXXX',
-    'group.id': 'StanfordStaging-6',  # this will create a new consumer group on each invocation.
+    'group.id': '',  # this will create a new consumer group on each invocation.
     'auto.offset.reset': 'earliest'
 })
 
-c.subscribe(['ldh-test'])
-#c.seek(TopicPartition("ldh-test", 0, 0))
+c.subscribe([''])
+#c.seek(TopicPartition("", 0, 0))
 
 try:
     count = 0

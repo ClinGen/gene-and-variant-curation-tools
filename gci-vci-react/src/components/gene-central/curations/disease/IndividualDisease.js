@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import cloneDeep from 'lodash/cloneDeep';
+import { cloneDeep, get as lodashGet } from "lodash";
 import { Row, Col, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,8 @@ import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import DiseaseModal from '../../../common/DiseaseModal';
-import { renderDiseaseData } from './commonFunc';
+import { renderDiseaseData, renderCannotCopyText } from './commonFunc';
+import { isDiseaseObsolete } from '../../../../utilities/diseaseUtilities';
 
 /**
  * Component for adding/copying/deleting disease when creating a new individual evidence
@@ -45,16 +46,16 @@ export const IndividualDisease = ({
   /**
    * Method to render the copy button given the curated evidence
    */
-  const renderCopyDiseaseButton = () => {
-    if (group && !family) {
-      return (
-        <Button className="group-disease-copy btn-copy" onClick={e=>handleCopyGroupDisease(e)}>Copy disease term from Assocated Group</Button>
-      );
-    } else if (family && family.commonDiagnosis && family.commonDiagnosis.length) {
+  const renderCopyDiseaseButton = (obsoleteGdmDisease, obsoleteGroupDisease, obsoleteFamilyDisease) => {
+    if (lodashGet(family, "commonDiagnosis", []).length && !obsoleteFamilyDisease) {
       return (
         <Button className="family-disease-copy btn-copy" onClick={e=>handleCopyFamilyDisease(e)}>Copy disease term from Assocated Family</Button>
       );
-    } else {
+    } else if (lodashGet(group, "commonDiagnosis", []).length && !obsoleteGroupDisease) {
+      return (
+        <Button className="group-disease-copy btn-copy" onClick={e=>handleCopyGroupDisease(e)}>Copy disease term from Assocated Group</Button>
+      );
+    } else if (!obsoleteGdmDisease) {
       return (
         <Button className="gdm-disease-copy btn-copy" onClick={e=>handleCopyGdmDisease(e)}>Copy disease term from Gene-Disease Record</Button>
       );
@@ -133,6 +134,13 @@ export const IndividualDisease = ({
     clearErrorInParent();
   };
 
+  const gdmDiseaseTerm = lodashGet(gdm, "disease.term", '');
+  const obsoleteGdmDisease = isDiseaseObsolete(gdmDiseaseTerm);
+  const groupDiseaseTerm = lodashGet(group, "commonDiagnosis", []).length ? lodashGet(group, "commonDiagnosis[0].term") : "";
+  const obsoleteGroupDisease = isDiseaseObsolete(groupDiseaseTerm);
+  const familyDiseaseTerm = lodashGet(family, "commonDiagnosis", []).length ? lodashGet(family, "commonDiagnosis[0].term") : "";
+  const obsoleteFamilyDisease = isDiseaseObsolete(familyDiseaseTerm);
+
   return (
     <>
     <Row className="form-group add-disease-group">
@@ -160,10 +168,14 @@ export const IndividualDisease = ({
           </div>
           :
           <ul className={formError ? "add-disease-button-group float-right" : "add-disease-button-group"}>
-            <li>
-              {renderCopyDiseaseButton()}
-            </li>
-            <li>- or -</li>
+            {(familyDiseaseTerm && !obsoleteFamilyDisease) || (groupDiseaseTerm && !obsoleteGroupDisease) || (gdmDiseaseTerm && !obsoleteGdmDisease) ?
+              <>
+                <li>{renderCopyDiseaseButton(obsoleteGdmDisease, obsoleteGroupDisease, obsoleteFamilyDisease)}</li>
+                <li>- or -</li>
+              </>
+              :
+              <li>{renderCannotCopyText()}</li>
+            }
             <li>
               <Button variant="primary" onClick={e=>handleDiseaseModal(e)}>Disease <FontAwesomeIcon className="mr-3" icon={faPlusCircle} /></Button> 
             </li>

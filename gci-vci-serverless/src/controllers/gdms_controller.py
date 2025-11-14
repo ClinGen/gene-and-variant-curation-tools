@@ -114,7 +114,10 @@ def get(filters = {}):
     """Queries and returns all gdm objects"""
 
     try:
-        gdms = db.query_by_item_type('gdm', filters)
+        gdms = db.query_by_item_type('gdm', {
+            'status!': 'deleted',
+            **(filters if isinstance(filters, dict) else {})
+        })
     except (PopulatorException, NormalizerException) as error:
         return { 'statusCode': 500, 'body': json.dumps({ 'error': str(error) }) }
     except Exception as e:

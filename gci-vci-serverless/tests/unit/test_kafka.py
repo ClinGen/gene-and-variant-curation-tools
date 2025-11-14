@@ -37,7 +37,7 @@ for vpt in data:
         del vpt['caid']
     else:
         print ('No caid in %s \n ' %vpt)
-    p.produce('ldh-test', value=json.dumps(vpt), callback=acked)
+    p.produce('', value=json.dumps(vpt), callback=acked)
     p.poll(0)
 print ('Total number pushed = %s' %count )
 # flush() is typically called when the producer is done sending messages to wait

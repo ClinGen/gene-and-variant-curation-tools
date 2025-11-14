@@ -6,7 +6,7 @@ import simplejson as json
 
 from decimal import Decimal
 from . import snapshot_helpers
-from . import affiliation_file
+from . import affiliation_helpers
 from .csvTextBuilder import CsvTextBuilder
 
 
@@ -100,7 +100,7 @@ def get_SOP_version(classification):
     return classification['sopVersion']
   else:
     # Determine SOP version by classification point as in gci-vci-react/src/helpers/sop.js
-    if classificationPoints in classification:
+    if 'classificationPoints' in classification:
       classificationPoints = classification['classificationPoints']
       if 'autosomalRecessiveDisorder' in classificationPoints and 'probandWithOtherVariantType' in classificationPoints['autosomalRecessiveDisorder']:
         return '8'
@@ -263,7 +263,7 @@ def gather_gdm_proband_individuals(snapshot, curation, aff, status):
   list = []
   useVariantScore = False
 
-  if classificationPoints in snapshot['resource']: 
+  if 'classificationPoints' in snapshot['resource']:
     useVariantScore = use_variantScores(snapshot['resource']['classificationPoints'])
 
   # Loop through annotations to gather proband individual evidences
@@ -354,7 +354,7 @@ def get_gdm_data_and_total_points(gdm, classification, aff):
   data['Gene'] = gdm['gene']['PK']
   data['Disease'] = gdm['disease']['term']
   data['Mode of Inheritance'] = gdm['modeInheritance']
-  data['GCEP Affiliation'] = affiliation_file.lookup_affiliation_data(aff, 'fullname', 'gcep')
+  data['GCEP Affiliation'] = affiliation_helpers.lookup_affiliation_data(aff, 'fullname', 'gcep')
 
   if 'affiliation' in classification and classification['affiliation'] == aff:
     data['SOP Version'] = get_SOP_version(classification)
@@ -444,8 +444,12 @@ def annotation_has_scored_case_control_evidence(annotation, aff):
       if hasScoredCC == False and 'scores' in caseControl:
         for score in caseControl['scores']:
           if hasScoredCC == False and 'affiliation' in score and score['affiliation'] == aff:
-            if 'scoreStatus' in score and score['scoreStatus'] == 'Score':
-              hasScoredCC = True
+            # caseControl scores has 2 versions
+            # Old score object only has score point which by default has "Score" status
+            # New score object has scoreStatus, ScoreExplanation, and score
+            if 'score' in score:
+              if 'scoreStatus' not in score or ('scoreStatus' in score and score['scoreStatus'] == 'Score'):
+                hasScoredCC = True
 
   return hasScoredCC
 

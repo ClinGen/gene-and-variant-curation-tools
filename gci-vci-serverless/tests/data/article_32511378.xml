@@ -1,0 +1,786 @@
+<PubmedArticleSet>
+    <PubmedArticle>
+        <MedlineCitation Status="PubMed-not-MEDLINE" VersionID="2"
+                         Owner="NLM">
+            <PMID Version="2">32511378</PMID>
+            <DateRevised>
+                <Year>2022</Year>
+                <Month>11</Month>
+                <Day>04</Day>
+            </DateRevised>
+            <Article PubModel="Electronic">
+                <Journal>
+                    <JournalIssue CitedMedium="Internet">
+                        <PubDate>
+                            <Year>2020</Year>
+                            <Month>Jan</Month>
+                            <Day>06</Day>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>bioRxiv : the preprint server for biology
+                    </Title>
+                    <ISOAbbreviation>bioRxiv</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>Boceprevir, GC-376, and calpain inhibitors
+                    II, XII inhibit SARS-CoV-2 viral replication by
+                    targeting the viral main protease.
+                </ArticleTitle>
+                <ELocationID EIdType="pii" ValidYN="Y">
+                    2020.04.20.051581
+                </ELocationID>
+                <ELocationID EIdType="doi" ValidYN="Y">
+                    10.1101/2020.04.20.051581
+                </ELocationID>
+                <Abstract>
+                    <AbstractText>
+                        A novel coronavirus SARS-CoV-2, also called
+                        novel coronavirus 2019 (nCoV-19), started to
+                        circulate among humans around December 2019, and
+                        it is now widespread as a global pandemic. The
+                        disease caused by SARS-CoV-2 virus is called
+                        COVID-19, which is highly contagious and has an
+                        overall mortality rate of 6.96% as of May 4,
+                        2020. There is no vaccine or antiviral available
+                        for SARS-CoV-2. In this study, we report our
+                        discovery of inhibitors targeting the SARS-CoV-2
+                        main protease (M
+                        <sup>pro</sup>
+                        ). Using the FRET-based enzymatic assay, several
+                        inhibitors including boceprevir, GC-376, and
+                        calpain inhibitors II, and XII were identified
+                        to have potent activity with single-digit to
+                        submicromolar IC
+                        <sub>50</sub>
+                        values in the enzymatic assay. The mechanism of
+                        action of the hits was further characterized
+                        using enzyme kinetic studies, thermal shift
+                        binding assays, and native mass spectrometry.
+                        Significantly, four compounds (boceprevir,
+                        GC-376, calpain inhibitors II and XII) inhibit
+                        SARS-CoV-2 viral replication in cell culture
+                        with EC
+                        <sub>50</sub>
+                        values ranging from 0.49 to 3.37 μM. Notably,
+                        boceprevir, calpain inhibitors II and XII
+                        represent novel chemotypes that are distinct
+                        from known M
+                        <sup>pro</sup>
+                        inhibitors. A complex crystal structure of
+                        SARS-CoV-2 M
+                        <sup>pro</sup>
+                        with GC-376, determined at 2.15 Å resolution
+                        with three monomers per asymmetric unit,
+                        revealed two unique binding configurations,
+                        shedding light on the molecular interactions and
+                        protein conformational flexibility underlying
+                        substrate and inhibitor binding by M
+                        <sup>pro</sup>
+                        . Overall, the compounds identified herein
+                        provide promising starting points for the
+                        further development of SARS-CoV-2 therapeutics.
+                    </AbstractText>
+                </Abstract>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Ma</LastName>
+                        <ForeName>Chunlong</ForeName>
+                        <Initials>C</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Pharmacology and
+                                Toxicology, College of Pharmacy, The
+                                University of Arizona, Tucson, AZ,
+                                85721, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Sacco</LastName>
+                        <ForeName>Michael D</ForeName>
+                        <Initials>MD</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Molecular
+                                Medicine, Morsani College of Medicine,
+                                University of South Florida, Tampa, FL,
+                                33612, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Hurst</LastName>
+                        <ForeName>Brett</ForeName>
+                        <Initials>B</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Institute for Antiviral
+                                Research, Utah State University, Logan,
+                                UT, 84322, USA.
+                            </Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Animal, Dairy and
+                                Veterinary Sciences, Utah State
+                                University, Logan, UT, 84322, USA.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Townsend</LastName>
+                        <ForeName>Julia A</ForeName>
+                        <Initials>JA</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Chemistry and
+                                Biochemistry, The University of Arizona,
+                                Tucson, AZ, 85721, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Hu</LastName>
+                        <ForeName>Yanmei</ForeName>
+                        <Initials>Y</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Pharmacology and
+                                Toxicology, College of Pharmacy, The
+                                University of Arizona, Tucson, AZ,
+                                85721, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Szeto</LastName>
+                        <ForeName>Tommy</ForeName>
+                        <Initials>T</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Pharmacology and
+                                Toxicology, College of Pharmacy, The
+                                University of Arizona, Tucson, AZ,
+                                85721, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Zhang</LastName>
+                        <ForeName>Xiujun</ForeName>
+                        <Initials>X</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Molecular
+                                Medicine, Morsani College of Medicine,
+                                University of South Florida, Tampa, FL,
+                                33612, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Tarbet</LastName>
+                        <ForeName>Bart</ForeName>
+                        <Initials>B</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Institute for Antiviral
+                                Research, Utah State University, Logan,
+                                UT, 84322, USA.
+                            </Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Animal, Dairy and
+                                Veterinary Sciences, Utah State
+                                University, Logan, UT, 84322, USA.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Marty</LastName>
+                        <ForeName>Michael T</ForeName>
+                        <Initials>MT</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Chemistry and
+                                Biochemistry, The University of Arizona,
+                                Tucson, AZ, 85721, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Chen</LastName>
+                        <ForeName>Yu</ForeName>
+                        <Initials>Y</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Molecular
+                                Medicine, Morsani College of Medicine,
+                                University of South Florida, Tampa, FL,
+                                33612, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Wang</LastName>
+                        <ForeName>Jun</ForeName>
+                        <Initials>J</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Pharmacology and
+                                Toxicology, College of Pharmacy, The
+                                University of Arizona, Tucson, AZ,
+                                85721, United States.
+                            </Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <GrantList CompleteYN="Y">
+                    <Grant>
+                        <GrantID>N01AI30048</GrantID>
+                        <Acronym>AI</Acronym>
+                        <Agency>NIAID NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>R01 AI147325</GrantID>
+                        <Acronym>AI</Acronym>
+                        <Agency>NIAID NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>R35 GM128624</GrantID>
+                        <Acronym>GM</Acronym>
+                        <Agency>NIGMS NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                </GrantList>
+                <PublicationTypeList>
+                    <PublicationType UI="D000076942">Preprint
+                    </PublicationType>
+                </PublicationTypeList>
+                <ArticleDate DateType="Electronic">
+                    <Year>2020</Year>
+                    <Month>01</Month>
+                    <Day>06</Day>
+                </ArticleDate>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>United States</Country>
+                <MedlineTA>bioRxiv</MedlineTA>
+                <NlmUniqueID>101680187</NlmUniqueID>
+            </MedlineJournalInfo>
+            <CommentsCorrectionsList>
+                <CommentsCorrections RefType="UpdateIn">
+                    <RefSource>Cell Res. 2020 Aug;30(8):678-692
+                    </RefSource>
+                    <PMID Version="1">32541865</PMID>
+                </CommentsCorrections>
+            </CommentsCorrectionsList>
+            <KeywordList Owner="NOTNLM">
+                <Keyword MajorTopicYN="N">3CL protease</Keyword>
+                <Keyword MajorTopicYN="N">COVID-19</Keyword>
+                <Keyword MajorTopicYN="N">GC-376</Keyword>
+                <Keyword MajorTopicYN="N">SARS-CoV-2</Keyword>
+                <Keyword MajorTopicYN="N">boceprevir</Keyword>
+                <Keyword MajorTopicYN="N">calpain inhibitors</Keyword>
+                <Keyword MajorTopicYN="N">main protease</Keyword>
+            </KeywordList>
+            <CoiStatement>Competing interests J. W. and C. M. are
+                inventors of a pending patent that claims the use of the
+                identified compounds for COVID-19.
+            </CoiStatement>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="entrez">
+                    <Year>2020</Year>
+                    <Month>6</Month>
+                    <Day>9</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>2020</Year>
+                    <Month>6</Month>
+                    <Day>9</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="medline">
+                    <Year>2020</Year>
+                    <Month>6</Month>
+                    <Day>9</Day>
+                    <Hour>6</Hour>
+                    <Minute>1</Minute>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>epublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">32511378</ArticleId>
+                <ArticleId IdType="pmc">PMC7263507</ArticleId>
+                <ArticleId IdType="doi">10.1101/2020.04.20.051581
+                </ArticleId>
+                <ArticleId IdType="pii">2020.04.20.051581</ArticleId>
+            </ArticleIdList>
+            <ReferenceList>
+                <Reference>
+                    <Citation>
+                        https://www.who.int/emergencies/diseases/novel-coronavirus-2019.
+                    </Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Mahase E. Coronavirus: covid-19 has killed
+                        more people than SARS and MERS combined, despite
+                        lower case fatality rate. BMJ 2020; 368:m641.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">32071063</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Lu R, Zhao X, Li J et al. Genomic
+                        characterisation and epidemiology of 2019 novel
+                        coronavirus: implications for virus origins and
+                        receptor binding. Lancet 2020; 395:565–574.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7159086</ArticleId>
+                        <ArticleId IdType="pubmed">32007145</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Wu A, Peng Y, Huang B et al. Genome
+                        Composition and Divergence of the Novel
+                        Coronavirus (2019-nCoV) Originating in China.
+                        Cell Host Microbe 2020; 27:325–328.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7154514</ArticleId>
+                        <ArticleId IdType="pubmed">32035028</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Coronaviridae Study Group of the
+                        International Committee on Taxonomy of V. The
+                        species Severe acute respiratory
+                        syndrome-related coronavirus: classifying
+                        2019-nCoV and naming it SARS-CoV-2. Nat
+                        Microbiol 2020; 5:536–544.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7095448</ArticleId>
+                        <ArticleId IdType="pubmed">32123347</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Tang B, Bragazzi NL, Li Q, Tang S, Xiao Y,
+                        Wu J. An updated estimation of the risk of
+                        transmission of the novel coronavirus
+                        (2019-nCov). Infect Dis Model 2020; 5:248–255.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7029158</ArticleId>
+                        <ArticleId IdType="pubmed">32099934</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Li G, De Clercq E. Therapeutic options for
+                        the 2019 novel coronavirus (2019-nCoV). Nat Rev
+                        Drug Discov 2020; 19:149–150.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">32127666</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Xia S, Liu MQ, Wang C et al. Inhibition of
+                        SARS-CoV-2 (previously 2019-nCoV) infection by a
+                        highly potent pan-coronavirus fusion inhibitor
+                        targeting its spike protein that harbors a high
+                        capacity to mediate membrane fusion. Cell Res
+                        2020; 30:343–355.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7104723</ArticleId>
+                        <ArticleId IdType="pubmed">32231345</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Zhang L, Lin D, Sun X et al. Crystal
+                        structure of SARS-CoV-2 main protease provides a
+                        basis for design of improved alpha-ketoamide
+                        inhibitors. Science 2020; 368:409–412.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7164518</ArticleId>
+                        <ArticleId IdType="pubmed">32198291</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Anand K, Ziebuhr J, Wadhwani P, Mesters
+                        JR, Hilgenfeld R. Coronavirus main proteinase
+                        (3CLpro) structure: basis for design of
+                        anti-SARS drugs. Science 2003; 300:1763–1767.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">12746549</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Jin Z, Du X, Xu Y et al. Structure of
+                        M(pro) from COVID-19 virus and discovery of its
+                        inhibitors. Nature 2020, asap.
+                    </Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Dai W, Zhang B, Su H et al.
+                        Structure-based design of antiviral drug
+                        candidates targeting the SARS-CoV-2 main
+                        protease. Science 2020, asap.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7179937</ArticleId>
+                        <ArticleId IdType="pubmed">32321856</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Pedersen NC, Kim Y, Liu H et al. Efficacy
+                        of a 3C-like protease inhibitor in treating
+                        various forms of acquired feline infectious
+                        peritonitis. J Feline Med Surg 2018; 20:378–392.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC5871025</ArticleId>
+                        <ArticleId IdType="pubmed">28901812</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Kim Y, Liu H, Galasiti Kankanamalage AC et
+                        al. Reversal of the Progression of Fatal
+                        Coronavirus Infection in Cats by a
+                        Broad-Spectrum Coronavirus Protease Inhibitor.
+                        PLoS Pathog 2016; 12:e1005531.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC4814111</ArticleId>
+                        <ArticleId IdType="pubmed">27027316</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Kim Y, Lovell S, Tiew KC et al.
+                        Broad-spectrum antivirals against 3C or 3C-like
+                        proteases of picornaviruses, noroviruses, and
+                        coronaviruses. J Virol 2012; 86:11754–11762.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC3486288</ArticleId>
+                        <ArticleId IdType="pubmed">22915796</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hayden FG, Turner RB, Gwaltney JM et al.
+                        Phase II, randomized, double-blind,
+                        placebo-controlled studies of ruprintrivir nasal
+                        spray 2-percent suspension for prevention and
+                        treatment of experimentally induced rhinovirus
+                        colds in healthy volunteers. Antimicrob Agents
+                        Chemother 2003; 47:3907–3916.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC296196</ArticleId>
+                        <ArticleId IdType="pubmed">14638501</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Shie JJ, Fang JM, Kuo TH et al. Inhibition
+                        of the severe acute respiratory syndrome 3CL
+                        protease by peptidomimetic
+                        alpha,beta-unsaturated esters. Bioorg Med Chem
+                        2005; 13:5240–5252.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7119063</ArticleId>
+                        <ArticleId IdType="pubmed">15994085</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Musharrafieh R, Ma C, Zhang J et al.
+                        Validating Enterovirus D68-2A(pro) as an
+                        Antiviral Drug Target and the Discovery of
+                        Telaprevir as a Potent D68-2A(pro) Inhibitor. J
+                        Virol 2019; 93, e02221–18.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6430540</ArticleId>
+                        <ArticleId IdType="pubmed">30674624</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Kuo CJ, Shie JJ, Fang JM et al. Design,
+                        synthesis, and evaluation of 3C protease
+                        inhibitors as anti-enterovirus 71 agents. Bioorg
+                        Med Chem 2008; 16:7388–7398.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7125518</ArticleId>
+                        <ArticleId IdType="pubmed">18583140</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Bonuccelli G, Sotgia F, Schubert W et al.
+                        Proteasome inhibitor (MG-132) treatment of mdx
+                        mice rescues the expression and membrane
+                        localization of dystrophin and
+                        dystrophin-associated proteins. Am J Pathol
+                        2003; 163:1663–1675.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC1868305</ArticleId>
+                        <ArticleId IdType="pubmed">14507673</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Mani SK, Shiraishi H, Balasubramanian S et
+                        al. In vivo administration of calpeptin
+                        attenuates calpain activation and cardiomyocyte
+                        loss in pressure-overloaded feline myocardium.
+                        Am J Physiol Heart Circ Physiol 2008;
+                        295:H314–326.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC2494745</ArticleId>
+                        <ArticleId IdType="pubmed">18487434</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Peng S, Kuang Z, Zhang Y, Xu H, Cheng Q.
+                        The protective effects and potential mechanism
+                        of Calpain inhibitor Calpeptin against focal
+                        cerebral ischemia-reperfusion injury in rats.
+                        Mol Biol Rep 2011; 38:905–912.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">20473717</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Akdemir O, Ucankale M, Karaoglan A et al.
+                        Therapeutic efficacy of SJA6017, a calpain
+                        inhibitor, in rat spinal cord injury. J Clin
+                        Neurosci 2008; 15:1130–1136.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">18656362</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Li SZ, Zhang HH, Zhang JN et al. ALLN
+                        hinders HCT116 tumor growth through
+                        Bax-dependent apoptosis. Biochem Biophys Res
+                        Commun 2013; 437:325–330.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">23831472</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Delli Pizzi S, Rossi C, Di Matteo V et al.
+                        Morphological and metabolic changes in the
+                        nigro-striatal pathway of synthetic proteasome
+                        inhibitor (PSI)-treated rats: a MRI and MRS
+                        study. PLoS One 2013; 8:e56501.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC3576393</ArticleId>
+                        <ArticleId IdType="pubmed">23431380</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Wang M, Cao R, Zhang L et al. Remdesivir
+                        and chloroquine effectively inhibit the recently
+                        emerged novel coronavirus (2019-nCoV) in vitro.
+                        Cell Res 2020; 30:269–271.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7054408</ArticleId>
+                        <ArticleId IdType="pubmed">32020029</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Xue X, Yu H, Yang H et al. Structures of
+                        two coronavirus main proteases: implications for
+                        substrate binding and antiviral drug design. J
+                        Virol 2008; 82:2515–2527.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC2258912</ArticleId>
+                        <ArticleId IdType="pubmed">18094151</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Yang H, Yang M, Ding Y et al. The crystal
+                        structures of severe acute respiratory syndrome
+                        virus main protease and its complex with an
+                        inhibitor. Proc Natl Acad Sci U S A 2003;
+                        100:13190–13195.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC263746</ArticleId>
+                        <ArticleId IdType="pubmed">14585926</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Muramatsu T, Takemoto C, Kim Y-T et al.
+                        SARS-CoV 3CL protease cleaves its C-terminal
+                        autoprocessing site by novel subsite
+                        cooperativity. Proc Natl Acad Sci U S A 2016;
+                        113:12997–13002.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC5135343</ArticleId>
+                        <ArticleId IdType="pubmed">27799534</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Li C, Qi Y, Teng X et al. Maturation
+                        mechanism of severe acute respiratory syndrome
+                        (SARS) coronavirus 3C-like proteinase. J Biol
+                        Chem 2010; 285:28134–28140.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC2934678</ArticleId>
+                        <ArticleId IdType="pubmed">20489209</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Anand K, Palm GJ, Mesters JR, Siddell SG,
+                        Ziebuhr J, Hilgenfeld R. Structure of
+                        coronavirus main proteinase reveals combination
+                        of a chymotrypsin fold with an extra
+                        alpha-helical domain. EMBO J 2002; 21:3213–3224.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC126080</ArticleId>
+                        <ArticleId IdType="pubmed">12093723</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Zhang L, Lin D, Kusov Y et al.
+                        alpha-Ketoamides as Broad-Spectrum Inhibitors of
+                        Coronavirus and Enterovirus Replication:
+                        Structure-Based Design, Synthesis, and Activity
+                        Assessment. J Med Chem 2020, asap.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">32045235</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Chuck CP, Chong LT, Chen C, Chow HF, Wan
+                        DC, Wong KB. Profiling of substrate specificity
+                        of SARS-CoV 3CL. PloS one 2010; 5:e13197.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC2950840</ArticleId>
+                        <ArticleId IdType="pubmed">20949131</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hegyi A, Ziebuhr J. Conservation of
+                        substrate specificities among coronavirus main
+                        proteases. J Gen Virol 2002; 83:595–599.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">11842254</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Grein J, Ohmagari N, Shin D et al.
+                        Compassionate Use of Remdesivir for Patients
+                        with Severe Covid-19. N Eng J Med 2020, asap.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7169476</ArticleId>
+                        <ArticleId IdType="pubmed">32275812</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Holshue ML, DeBolt C, Lindquist S et al.
+                        First Case of 2019 Novel Coronavirus in the
+                        United States. N Engl J Med 2020; 382:929–936.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7092802</ArticleId>
+                        <ArticleId IdType="pubmed">32004427</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Cao B, Wang Y, Wen D et al. A Trial of
+                        Lopinavir-Ritonavir in Adults Hospitalized with
+                        Severe Covid-19. N Eng J Med 2020, asap.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7121492</ArticleId>
+                        <ArticleId IdType="pubmed">32187464</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Zumla A, Chan JF, Azhar El, Hui DS, Yuen
+                        KY. Coronaviruses - drug discovery and
+                        therapeutic options. Nat Rev Drug Discov 2016;
+                        15:327–347.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7097181</ArticleId>
+                        <ArticleId IdType="pubmed">26868298</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Simmons G, Gosalia DN, Rennekamp AJ,
+                        Reeves JD, Diamond SL, Bates P. Inhibitors of
+                        cathepsin L prevent severe acute respiratory
+                        syndrome coronavirus entry. Proc Natl Acad Sci U
+                        S A 2005; 102:11876–11881.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC1188015</ArticleId>
+                        <ArticleId IdType="pubmed">16081529</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Schneider M, Ackermann K, Stuart M et al.
+                        Severe acute respiratory syndrome coronavirus
+                        replication is severely impaired by MG132 due to
+                        proteasome-independent inhibition of M-calpain.
+                        J Virol 2012; 86:10112–10122.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC3446591</ArticleId>
+                        <ArticleId IdType="pubmed">22787216</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Barnard DL, Hubbard VD, Burton J et al.
+                        Inhibition of severe acute respiratory
+                        syndrome-associated coronavirus (SARSCoV) by
+                        calpain inhibitors and
+                        beta-D-N4-hydroxycytidine. Antivir Chem
+                        Chemother 2004; 15:15–22.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">15074711</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ono Y, Saido TC, Sorimachi H. Calpain
+                        research for drug discovery: challenges and
+                        potential. Nat Rev Drug Discov 2016; 15:854–876.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">27833121</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hoffmann M, Kleine-Weber H, Schroeder S et
+                        al. SARS-CoV-2 Cell Entry Depends on ACE2 and
+                        TMPRSS2 and Is Blocked by a Clinically Proven
+                        Protease Inhibitor. Cell 2020; 181:271–280 e278.
+                    </Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC7102627</ArticleId>
+                        <ArticleId IdType="pubmed">32142651</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+            </ReferenceList>
+        </PubmedData>
+    </PubmedArticle>
+</PubmedArticleSet>

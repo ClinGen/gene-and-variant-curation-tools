@@ -36,6 +36,7 @@ import {
   getGenesFromList,
   getHpoIdsFromList,
   getUberonIdsFromList,
+  renderNotOwnerMessage
 } from '../components/gene-central/curations/common/commonFunc';
 import {
   validate,
@@ -43,6 +44,7 @@ import {
   getExperimentalEvidenceType
 } from '../components/gene-central/curations/experimental-data/utils';
 import { gdmParticipantReducer } from "../utilities/gdmUtilities";
+import { isOwnedByCurrentCuratingEntity } from '../utilities/ownershipUtilities';
 
 
 const ExperimentalCuration = ({
@@ -215,10 +217,12 @@ const ExperimentalCuration = ({
           count += 1;
           return ({
             'clinvarVariantId': variant.clinvarVariantId ? variant.clinvarVariantId : null,
-            'clinvarVariantTitle': data.clinvarVariantTitle ? variant.clinvarVariantTitle : null,
+            'clinvarVariantTitle': variant.clinvarVariantTitle ? variant.clinvarVariantTitle : null,
             'carId': variant.carId ? variant.carId : null,
+            'cacnId': variant.cacnId ? variant.cacnId : null,
             'canonicalTranscriptTitle': variant.canonicalTranscriptTitle ? variant.canonicalTranscriptTitle : null,
             'maneTranscriptTitle': variant.maneTranscriptTitle ? variant.maneTranscriptTitle : null,
+            'overlappingGenes': variant.overlappingGenes ? variant.overlappingGenes : null,
             'hgvsNames': variant.hgvsNames ? variant.hgvsNames : null,
             'preferredTitle' : variant.preferredTitle ? variant.preferredTitle : null,
             'PK': variant.PK
@@ -279,7 +283,7 @@ const ExperimentalCuration = ({
     newData[e.target.name] = e.target.type === 'checkbox'
       ? !newData[e.target.name]
       : e.target.value;
-      
+
     if (e.target.name === "bfGenes" || e.target.name === 'piInteractingGenes') {
       setBadGenes([]);
     }
@@ -316,6 +320,18 @@ const ExperimentalCuration = ({
     setFormData(newData);
   };
 
+  // Handle case of react-select for nonHumanModelOrganism inputs; event returns {value, label, type}, not target
+  const handleSelectChange = (e) => {
+    const newData = cloneDeep(formData);
+    if (e.type && e.value) {
+      let inputType = `${e.type}NonHumanModel`;
+      newData[inputType] = e.value;
+      clearFieldError(inputType);
+    }
+
+    setFormData(newData);
+  };
+
   const handleUserScoreObj = (newUserScoreObj) => {
     setUserScoreObj(newUserScoreObj);
     if (!newUserScoreObj.modifiedScore || newUserScoreObj.modifiedScore === 'none' || 
@@ -334,8 +350,10 @@ const ExperimentalCuration = ({
         'clinvarVariantId': data.clinvarVariantId ? data.clinvarVariantId : null,
         'clinvarVariantTitle': data.clinvarVariantTitle ? data.clinvarVariantTitle : null,
         'carId': data.carId ? data.carId : null,
+        'cacnId': data.cacnId ? data.cacnId : null,
         'canonicalTranscriptTitle': data.canonicalTranscriptTitle ? data.canonicalTranscriptTitle : null,
         'maneTranscriptTitle': data.maneTranscriptTitle ? data.maneTranscriptTitle : null,
+        'overlappingGenes': data.overlappingGenes ? data.overlappingGenes : null,
         'hgvsNames': data.hgvsNames ? data.hgvsNames : null,
         'preferredTitle' : data.preferredTitle ? data.preferredTitle : null,
         'PK': data.PK
@@ -345,12 +363,48 @@ const ExperimentalCuration = ({
     }
   };
 
+  /**
+   * Most of the time, all letters in an HUGO Gene Nomenclature Committee (HGNC)
+   * symbol should be uppercase. The exception to this is symbols containing
+   * "orf". "orf" should be lowercase. See the below GitHub issue for more
+   * background on this.
+   *
+   * https://github.com/ClinGen/gene-and-variant-curation-tools/issues/248
+   *
+   * @author Liam Mulhall
+   * @param {String} symbol - HGNC symbol
+   * @return {String} - HGNC symbol where "orf" is lowercase
+   */
+  const toLowercaseORF = symbol => {
+    // If (somehow) the "ORF" portion of the HGNC symbol was, for example,
+    // "oRF", we'd want to replace "oRF" with "orf".
+    const orfRegEx = /[oO][rR][fF]/g;
+    return symbol.replaceAll(orfRegEx, 'orf');
+  };
+
+  /**
+   * This function makes "orf" lowercase in every HGNC symbol in the provided
+   * array of HGNC symbols.
+   *
+   * @author Liam Mulhall
+   * @param {String[]} symbols - HGNC symbols
+   * @return {String[]} - HGNC symbols where "orf" is lowercase
+   */
+  const symbolsToLowercaseORF = symbols => {
+    const lowercaseORFSymbols = [];
+    for(const symbol of symbols) {
+      lowercaseORFSymbols.push(toLowercaseORF(symbol));
+    }
+    return lowercaseORFSymbols;
+  }
+
   const validateGenes = (geneSymbols) => {
     let valid = true;
     return new Promise((resolve, reject) => {
       if (geneSymbols && geneSymbols.length) {
         let i = 0;
         geneSymbols.forEach(symbol => {
+          symbol = toLowercaseORF(symbol);
           requestRecycler.capture(API.get(API_NAME, '/genes/' + symbol))
           .then(() => {
             i++;
@@ -542,6 +596,13 @@ const ExperimentalCuration = ({
       : formData.submittedBy && formData.submittedBy.PK;
     newExperimental.modified_by = lodashGet(auth, "PK", null);
     newExperimental.item_type = 'experimental';
+
+    const interactingGenes = newExperimental?.proteinInteractions?.interactingGenes;
+    if(interactingGenes && interactingGenes.length > 0) {
+      // Make sure the HGNC symbols have proper case. Any instances of "orf" in
+      // an HGNC symbol should be lowercase.
+      newExperimental.proteinInteractions.interactingGenes = symbolsToLowercaseORF(interactingGenes);
+    }
 
     const url = isNewExperimental
       ? '/experimental'
@@ -906,7 +967,7 @@ const ExperimentalCuration = ({
             savedExperimental = experimentalObj;
             saveToAnnotation(savedExperimental).then(() => {
               saveToGdm().then(() => {
-                updateScoreWithExperimental(savedExperimental).then((results) => {
+                updateScoreWithExperimental(savedExperimental).then(() => {
                   const redirectUrl = (editExperimentalData && editExperimentalData.PK)
                     ? `/curation-central/${gdm.PK}/annotation/${annotation.PK}`
                     : (savedExperimental && savedExperimental.PK
@@ -993,6 +1054,8 @@ const ExperimentalCuration = ({
   const experimentalSubtype = getExperimentalSubtype(formData, true);
   const experimentalEvidenceType = getExperimentalEvidenceType(formData && formData.experimentalType, experimentalSubtype);
 
+  const ownerError = !isOwnedByCurrentCuratingEntity(gdm, auth);
+
   return (
     <>
       <div className="viewer-titles">
@@ -1010,6 +1073,7 @@ const ExperimentalCuration = ({
       <Row className="experimental-curation-content">
         <Col sm="12">
           <form onSubmit={submitForm} className="form-horizontal mt-5">
+            {renderNotOwnerMessage(ownerError)}
             <CardPanel>
               <Input
                 type="select"
@@ -1133,6 +1197,7 @@ const ExperimentalCuration = ({
                 formData={formData}
                 formErrors={formErrors}
                 handleChange={handleChange}
+                handleSelectChange={handleSelectChange}
               />
             }
             {formData && formData.experimentalType === 'Rescue' && experimentalNameVisible &&
@@ -1140,6 +1205,7 @@ const ExperimentalCuration = ({
                 formData={formData}
                 formErrors={formErrors}
                 handleChange={handleChange}
+                handleSelectChange={handleSelectChange}
               />
             }
             {formData && ((formData.experimentalType === 'Expression' && formData.experimentalSubtype && formData.experimentalSubtype.charAt(0) !== 'A')
@@ -1182,6 +1248,7 @@ const ExperimentalCuration = ({
                 />
               </>
             }
+            {renderNotOwnerMessage(ownerError)}
             <Row>
               <Col>
                 {formData && formData.experimentalType && formData.experimentalType !== 'none' && experimentalNameVisible &&
@@ -1192,6 +1259,7 @@ const ExperimentalCuration = ({
                     text="Save"
                     textWhenLoading="Submitting"
                     isLoading={isSubmitting}
+                    disabled={ownerError}
                   />
                 }
                 {gdm &&
@@ -1208,7 +1276,8 @@ const ExperimentalCuration = ({
                     gdm={gdm}
                     parent={annotation}
                     item={editExperimentalData}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || ownerError}
+                    ownerError={ownerError}
                   />
                 }
                 <div className={`submit-err float-right ${errorDisplay}`}>Please fix errors on the form and resubmit.</div>

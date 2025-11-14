@@ -82,7 +82,7 @@ def deserialize(xml):
     publication_data = publication_data + '(' + issue_el.text + ')' if issue_el is not None else publication_data
     
     pagination_el = article_el.find('.//MedlineCitation/Article/Pagination/MedlinePgn')
-    publication_data = publication_data + ':' + pagination_el.text if pagination_el is not None else publication_date
+    publication_data = publication_data + ':' + pagination_el.text if pagination_el is not None else publication_data
     
     if len(publication_data) > 0:
       article['date'] = article['date'] + ';' + publication_data + '.'
@@ -103,6 +103,8 @@ def deserialize(xml):
     article['abstract'] = abstract_text_el.text
   else:
     article['abstract'] = ''
+
+  article['is_preprint'] = is_preprint(article_el)
 
   return article
 
@@ -165,3 +167,19 @@ def _deserialize_date_published(pub_date_el):
     return ' '.join(comps)
   else:
     return None
+
+
+def is_preprint(article_el) -> bool:
+    """Check whether a PubMed article is from a pre-print server.
+
+    As of December 2023, NLM is piloting assigning PubMed IDs to
+    preprint articles. Using preprint articles (e.g. articles from
+    bioRxiv or medRxiv) is problematic for a variety of reasons.
+
+    Args:
+        article_el: The PubmedArticle ElementTree element.
+    """
+    title = article_el.find(".//MedlineCitation/Article/Journal/Title")
+    if title is not None:
+        return "bioRxiv" in title.text or "medRxiv" in title.text
+    return False

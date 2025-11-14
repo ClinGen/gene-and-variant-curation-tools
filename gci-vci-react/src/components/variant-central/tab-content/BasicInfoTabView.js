@@ -11,6 +11,7 @@ import {
     VariantGenomicContext,
     BrcaLink,
     CivicLink,
+    LitVarLink,
     BasicInfoLovdTableView,
 } from "./BasicInfoTables";
 import CardPanel from "../../common/CardPanel";
@@ -20,7 +21,6 @@ import { Link } from "react-router-dom";
 import { EXTERNAL_API_MAP } from "../../../constants/externalApis";
 import { renderDataCredit } from "../helpers/credit";
 import { StatusTooltipExplanationIcon } from "../../common/StatusTooltipExplanationIcon";
-import { ExternalLink } from "../../common/ExternalLink";
 
 
 const RichEnsemblVEPTitle = (props) => {
@@ -120,10 +120,7 @@ export const BasicInfoTabView = ({
                           <tr>
                             <td>Clinical Interpretation of Variants in Cancer (CIViC)</td>
                             <td>
-                              <CivicLink
-                                civicData={props.civicData}
-                                loadingCivic={props.isLoadingCivic}
-                              />
+                              <CivicLink carId={props.carId}/>
                             </td>
                           </tr>
                           <tr>
@@ -133,6 +130,15 @@ export const BasicInfoTabView = ({
                                 hasBrcaData={props.hasBrcaData}
                                 carId={props.carId}
                                 loadingBrca={props.isLoadingBrca}
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>LitVar</td>
+                            <td>
+                              <LitVarLink 
+                                loadingLitVar={props.isLoadingLitVar}
+                                litVarData={props.litVarData}
                               />
                             </td>
                           </tr>

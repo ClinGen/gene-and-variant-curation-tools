@@ -9,11 +9,12 @@ import Col from 'react-bootstrap/Col';
 
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from '../../../common/ExternalLink';
-import { renderVariantLabelAndTitle } from '../common/commonFunc';
+import { renderVariantLabelAndTitle, renderVariantOverlappingGenes } from '../common/commonFunc';
 import CardPanel from '../../../common/CardPanel';
 
 import ScoreViewer from '../../score/ScoreViewer';
 import { getAffiliationScore } from '../../score/helpers/getAffiliationScore';
+import {PhenotypeObservedLabel} from "./utils";
 
 
 const ExperimentalView = ({
@@ -440,7 +441,7 @@ const ExperimentalView = ({
                     <dd>{experimentalData.modelSystems.descriptionOfGeneAlteration}</dd>
                   </div>
                   <div>
-                    <dt className="text-nowrap align-top">Phenotype(s) observed in model system (HPO or MP)</dt>
+                    <dt className="text-nowrap align-top"><PhenotypeObservedLabel needsColon={false}/></dt>
                     <dd>
                       {msPhenotypeHpoObserved && msPhenotypeHpoObserved.map((hpo, i) => {
                         if (hpo.indexOf('HP') > -1) {
@@ -642,7 +643,26 @@ const ExperimentalView = ({
                           </dd>
                         </div>
                       }
+                      {variant.cacnId &&
+                        <div>
+                          <dt className="text-nowrap align-top">ClinGen Allele Registry Copy Number ID</dt>
+                          <dd>
+                            <ExternalLink
+                              href={`${EXTERNAL_API_MAP['CARcopy-number']}${variant.cacnId}`}
+                              title={`ClinGen Allele Registry entry for ${variant.cacnId} in new tab`}
+                            >
+                              {variant.cacnId}
+                            </ExternalLink>
+                          </dd>
+                        </div>
+                      }
                       {renderVariantLabelAndTitle(variant)}
+                      {variant.cacnId && 
+                        <div>
+                          <span><strong>Overlapping Genes:</strong></span>
+                          {renderVariantOverlappingGenes(variant)}
+                        </div>
+                      }
                       {variant.otherDescription &&
                         <div>
                           <dt className="text-nowrap align-top">Other description</dt>

@@ -18,6 +18,7 @@ from src.clients.car_client import ClientError as CarClientError
 from src.helpers.variant_helpers.hgvs_notation import get_hgvs_notation
 from src.helpers.variant_helpers.variant_title import preferred_title_for
 from src.helpers.variant_helpers.lovd import get_lovd
+from src.helpers.variant_helpers.litvar import get_litvar
 from src.parsers.variant_xml_clinvar_interpretation_parser import from_xml as parse_clinvar_interpretations
 
 
@@ -34,10 +35,13 @@ def handle(event):
       response = find(event['pathParameters']['pk'])
     
     elif event['queryStringParameters'] is not None and 'clinvarVariantId' in event['queryStringParameters']:
-      response = find_by_clinvar_variant_id(event['queryStringParameters']['clinvarVariantId'])
+      response = find_by_clinvar(event['queryStringParameters']['clinvarVariantId'])
     
     elif event['queryStringParameters'] is not None and 'carId' in event['queryStringParameters']:
-      response = find_by_car_id(event['queryStringParameters']['carId'])
+      response = find_by_allele(event['queryStringParameters']['carId'])
+    
+    elif event['queryStringParameters'] is not None and 'cacnId' in event['queryStringParameters']:
+      response = find_by_allele(event['queryStringParameters']['cacnId'], type="cacn")
     
     elif event['queryStringParameters'] is not None and 'basicInfo' in event['queryStringParameters'] and (
       'variantSource' in event['queryStringParameters'] and
@@ -49,6 +53,8 @@ def handle(event):
       'variantOnGenome' in event['queryStringParameters']
     ):
       response = get_lovd_link(event['queryStringParameters']['geneName'], event['queryStringParameters']['variantOnGenome'])
+    elif event['queryStringParameters'] is not None and 'litvar' in event['queryStringParameters'] and 'rsId' in event['queryStringParameters']:
+      response = get_litvar_link(event['queryStringParameters']['rsId'])
     else:
       response = { 'statusCode': 400, 'body': json.dumps({ 'error': 'Unrecognized request ' + httpMethod + ' for /variants' }) }
 
@@ -72,14 +78,18 @@ def handle(event):
 
   return response
 
-def find_by_clinvar_variant_id(variant_id, car_variant=None):
+def find_by_clinvar(variant_id, car_variant=None):
   """Queries ClinVar for a Variant with the given ClinVar ID
 
-  Queries the ClinVar service for a Variant with the given ClinVar ID. If found,
-  returns the response as Variant. Otherwise, returns a 404.
+  Queries the ClinVar service for a Variant with the given ClinVar ID.
+  If no result from ClinVar service, returns a 404.
+  If ClinVar result is returned and car_variant is provided, merge car_variant to ClinVar variant and set preferredTitle again.
+  If ClinVar result is returned and a CAR ID is in result, query Allele registry by calling find_by_allele() with ClinVar result.  If no CAR result is returned, remove CAR ID from ClinVar variant; else use returned result.
+  If no CAR ID is found in ClinVar variant, query Allele registry by calling find_by_allele() using ClinVar ID and with ClinVar result.  If CAR result is returned then use returned result else use ClinVar variant.
+  If no car_variant, no CAR result is found in ClinVar variant, use ClinVar variant
 
   #### Parameters
-  :param dict car_variant: (optional) if supplied, will merge car_variant into response, but with clinvar variant attributes prioritized.
+  :param dict car_variant: (optional) if supplied, will merge car_variant into response, but with clinvar variant attributes prioritized except preferredTitle.
   """
   
   try:
@@ -87,51 +97,80 @@ def find_by_clinvar_variant_id(variant_id, car_variant=None):
   except ClinVarClientError as e:
     response = { 'statusCode': 500, 'body': json.dumps({ "error": e.message + ' ' + str(e.status_code) }) }
   else:
-    if variant is not None:
-
-      # if CAR variant provided, merge with it so we have both Clinvar and CAR data
-      if car_variant and isinstance(car_variant, dict) and isinstance(variant, dict):
-        variant = {
-          **car_variant,
-          **variant, # clinvar variant takes priority when merging
-        }
-      response = { 'statusCode': 200, 'body': json.dumps(variant) }
-    else :
+    if variant is None:
       response = { 'statusCode': 404, 'body': json.dumps({}) }
+    elif car_variant and isinstance(car_variant, dict) and isinstance(variant, dict):
+      # if CAR variant is provided, merge with ClinVar variant so we have both Clinvar and CAR data
+      variant = {
+        **car_variant,
+        **variant, # clinvar variant takes priority when merging
+      }
+      # Compute preferred title since variant is merged
+      # if CAR variant has communityStandardTitle, it should be the preferred title
+      variant['preferredTitle'] = preferred_title_for(variant)
+      response = { 'statusCode': 200, 'body': json.dumps(variant) }
+    elif 'carId' in variant and variant['carId'] is not None:
+      # If clinVar variant response has a CAR Id, try to get and merge CAR data to clinVar variant
+      response = find_by_allele(variant['carId'], clinvar_variant=variant)
+      # If no CAR variant result, use ClinVar variant but remove CAR Id
+      if response['statusCode'] == 404:
+        print('No valid CAR data returned for %s %s, removed CAR ID' %(variant_id, variant['carId']))
+        del variant['carId']
+        response = { 'statusCode': 200, 'body': json.dumps(variant) }
+    else:
+      # if no car_variant data or carId in clinVar variant, try to query Allele Registry with clinvar Id.
+      response = find_by_allele(variant_id, type="clinvar", clinvar_variant=variant)
+      # If no CAR variant result, use ClinVar variant but remove CAR Id
+      if response['statusCode'] == 404:
+        print('No valid CAR data returned for ClinVar Id %s' %(variant_id ))
+        response = { 'statusCode': 200, 'body': json.dumps(variant) }
 
   return response
 
-def find_by_car_id(car_id):
-  """Queries the CAR registry for a Variant with the given CAR ID
+def find_by_allele(id, type="car", clinvar_variant=None):
+  """Queries the Allele registry for a Variant with the given ID
 
-  Queries the CAR registry for a Variant with the given CAR ID. If found will
-  check first if a ClinVar Variation ID exists. If one does this action will
-  instead return the result of a ClinVar query. Otherwise, it resturns the result
-  from CAR.
+  Queries the Allele registry for a Variant with the given ID.
+  If no result from Allele registry, returns a 404.
+  If CAR result is returned and clinvar_variant is provided, merge data to clinvar_variant and set preferredTitle again
+  If CAR result is returned and a ClinVar Variation ID is in result, query ClinVar service by calling find_by_clinvar() with CAR result.  If no ClinVar result is returned, remove ClinVar ID from CAR variant; else use returned result.
+  If no clinvar_variant and no ClinVar Variant ID is found in CAR variant, return CAR variant.
+
+  #### Parameters
+  :param dict clinvar_variant: (optional) if supplied, will merge CAR response into clinvar_variant, with clinvar_variant attributes prioritized except preferredTitle.
   """
 
   try:
     # Query the CAR for the variant given the CAR ID.
-    variant = car_client.find(car_id)
+    variant = car_client.find(id, compute_preferred_title=True, type=type)
   except CarClientError as e:
     response = { 'statusCode': 400, 'body': json.dumps({ "error": e.message + ' ' + str(e.status_code) }) }
   else:
-    # If this response has a ClinVar Id we should use the ClinVar data and
-    # if it doesn't, use the CAR response.
     if variant is None:
       response = { 'statusCode': 404, 'body': json.dumps({}) }
+    elif clinvar_variant and isinstance(clinvar_variant, dict) and isinstance(variant, dict):
+      # If there's clinvar_variant data, should use the ClinVar data except preferredTitle
+      variant = {
+        **variant,
+        **clinvar_variant, # clinvar variant takes priority when merging
+      }
+      # Compute preferred title since variant is merged
+      # if CAR variant has communityStandardTitle, it should be the preferred title
+      variant['preferredTitle'] = preferred_title_for(variant)
+      response = { 'statusCode': 200, 'body': json.dumps(variant) }
     elif 'clinvarVariantId' in variant and variant['clinvarVariantId'] is not None:
-      response = find_by_clinvar_variant_id(variant['clinvarVariantId'], car_variant=variant)
+      # If CAR response has a ClinVar Id, try to get and merge ClinVar data to CAR variant except preferredTitle
+      response = find_by_clinvar(variant['clinvarVariantId'], car_variant=variant)
+      # If no ClinVar variant result, use CAR variant but remove ClinVar Id
       if response['statusCode'] == 404:
         print('No valid ClinVar data returned for %s %s, removed ClinVar ID' %(car_id, variant['clinvarVariantId']))
         del variant['clinvarVariantId']
         response = { 'statusCode': 200, 'body': json.dumps(variant) }
     else:
+      # if no clinvar_variant data or clinvarVariantId, use the CAR response.
       response = { 'statusCode': 200, 'body': json.dumps(variant) }
     
   return response
-
- 
 
 def find_by_basic_info(variant_source, variant_id):
   """
@@ -166,6 +205,7 @@ def find_by_basic_info(variant_source, variant_id):
 
   # Retrieve transcripts from Ensembl VEP 
   hgvs_notation = get_hgvs_notation(variant, 'GRCh38', True)
+
   variant_effects = {}
   try:
     variant_effects = ensembl_vep_client.find(hgvs_notation)
@@ -203,6 +243,18 @@ def get_lovd_link(gene_name, variant_on_genome):
   else:
     if lovd is not None:
       response = { 'statusCode': 200, 'body': json.dumps(lovd) }
+    else:
+      response = { 'statusCode': 404, 'body': json.dumps({}) }
+  return response
+
+def get_litvar_link(rs_id):
+  try:
+    litvar = get_litvar(rs_id)
+  except Exception as e:
+    response = { 'statusCode': 422, 'body': json.dumps({ 'error': '%s' %e }) }
+  else:
+    if litvar is not None:
+      response = { 'statusCode': 200, 'body': json.dumps(litvar) }
     else:
       response = { 'statusCode': 404, 'body': json.dumps({}) }
   return response
@@ -272,9 +324,22 @@ def create_or_update(variant):
           if len(variants) > 0:
             print(f'INFO: Variant create or update found existing variant by carId.')
             source_variant = variants[0]
+
+      if source_variant is None and 'cacnId' in variant:
+        try:
+          variants = db.query_by_item_type('variant', filters={
+            'cacnId': variant['cacnId'],
+            'status!': 'deleted'
+          })
+        except Exception as e:
+          return { 'statusCode': 422, 'body': json.dumps({ 'error': '%s' %e }) }
+        else:
+          if len(variants) > 0:
+            print(f'INFO: Variant create or update found existing variant by cacnId.')
+            source_variant = variants[0]
       
       if source_variant is not None:
-        # We have a variant with the same ClinVar or CAR ID. Treat this request as an update.
+        # We have a variant with the same ClinVar, CACN, or CAR ID. Treat this request as an update.
         response = update(source_variant['PK'], variant)
       else:
         # Creating a new variant.
@@ -366,65 +431,48 @@ def get_preferred_title_for_migrated_variant(migrated_variant):
   since it handles both Clinvar and CAR API failure.
   
   Normally, the UI will hit GET /variants beforehand and obtain preferred title there from Clinvar and Car client, 
-  where Clinvar/CAR/EnsemblVEP data are available in one place, and are used to generate preferred title.
+  where Clinvar/CAR data are available in one place, and are used to generate preferred title.
 
-  Calling this function will make extra calls to Clinvar, Car and Ensembl VEP.
+  Calling this function will make extra calls to Clinvar and CAR.
   After migration is complete, this function can be removed.
   """
 
-  # if migrated variant already has maneTranscriptTitle computed, 
-  # just use it and no need to compute preferred title
-  maneTranscriptTitle = migrated_variant.get('maneTranscriptTitle')
-  if maneTranscriptTitle:
-    return maneTranscriptTitle
-  
   # note that both id may be unavailable
   clinvarVariantId = migrated_variant.get('clinvarVariantId')
   carId = migrated_variant.get('carId')
 
-  # Ensembl VEP transcripts requires CAR or Clinvar client working in order to be processed
-  # When `effective_vep_transcripts` is a list, will skip Ensembl API request in Clinvar or CAR client;
-  # otherwise, if `effective_vep_transcripts=None`, will attempt request Ensembl API in Clinvar or CAR client
-  effective_vep_transcripts = None
-  if clinvarVariantId or carId:
-    # set `raise_external_api_exception=False` to continue processing preferred title even if Ensembl VEP API not available (may be temporarily not responding, or not found given the hgvs notation)
-    # i.e., fall back, only consider Clinvar title and GRCh37/38, etc
-    effective_vep_transcripts = ensembl_vep_client.get_effective_vep_transcripts_by_variant(migrated_variant, raise_external_api_exception=False)
-  
   # note that we cannot compute perferred title right away here, because we still need gene information from Clinvar or CAR API, and variant object does not store gene info. Therefore, we have to go through Clinvar and CAR client, and let them compute the perferred title
-  variant = {}
+  variant = None
+  car_variant = None
 
   # process as a Clinvar variant
   if clinvarVariantId:
     try:
-      variant = clinvar_client.find(clinvarVariantId, ensembl_vep_transcripts=effective_vep_transcripts)
+      variant = clinvar_client.find(clinvarVariantId)
     except ClinVarClientError as error:
       # in case Clinvar API failed, we may try carId next
       print(f'WARNING: queried variant by clinvarVariantId {clinvarVariantId} but ClinvarClient reported error: {error.message}. An existing clinvarVariantId means the data should be available on Clinvar API, but it could be the API temporary unavailable. Will try to query CAR instead. Note that Clinvar is favored over CAR data.')
 
   # process as a CAR variant
-  if not variant and carId:
+  if carId:
     try:
-      variant = car_client.find(carId, ensembl_vep_transcripts=effective_vep_transcripts)
+      car_variant = car_client.find(carId)
+      # use CAR variant if no ClinVar variant
+      if variant is None and car_variant:
+        variant = car_variant
+      elif variant and car_variant and isinstance(variant, dict) and isinstance(car_variant, dict):
+        # if there's ClinVar variant data, merge ClinVar and CAR data
+        variant = {
+          **car_variant,
+          **variant, # clinvar variant takes priority when merging
+        }
     except CarClientError as error:
       # even if CAR failed, still try to continue
       print(f'WARNING: queried variant by CAR id {carId} but CARClient reported error: {error.message}. Will try to continue computing preferred title with the migrated variant data. You may want to re-try later since the CAR API may be temparorily unavailable.')
-  
+
   # in case both Clinvar and CAR API failed or not found (i.e. `variant` is None), we don't have gene info,
   # still try to compute preferred title (may be less accurate, e.g., only GRCh38 w/o amino acid info) with the migrated variant data we have
   variant_for_computing_preferred_title = variant if variant and isinstance(variant, dict) else migrated_variant
   
-  preferredTitle = variant_for_computing_preferred_title.get('preferredTitle')
-  if preferredTitle:
-    return preferredTitle
-    
-  # both Clinvar & CAR client failed,
-  # try to get preferred title by just the migrated variant without any external API call
-  clinvarVariantTitle = migrated_variant.get('clinvarVariantTitle')
-  if clinvarVariantTitle:
-    return clinvarVariantTitle
-  canonicalTranscriptTitle = migrated_variant.get('canonicalTranscriptTitle')
-  if canonicalTranscriptTitle:
-    return canonicalTranscriptTitle
-
-  return preferred_title_for(variant_for_computing_preferred_title, effective_ensembl_vep_transcripts=None)
+  # compute preferred title by standard logic
+  return preferred_title_for(variant_for_computing_preferred_title)

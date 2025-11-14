@@ -120,6 +120,7 @@ ITEM_TYPE_TO_MODEL = {
   'article': BaseModel,
   'assessment': BaseModel,
   'caseControl': BaseModel,
+  'clinvar-submission-batch': BaseModel,
   'computational': BaseModel,
   'curated-evidence': BaseModel,
   'disease': BaseModel,
@@ -143,6 +144,7 @@ ITEM_TYPE_TO_MODEL = {
   'vp_save': BaseModel,
   'vp_export': BaseModel,
   'variantScore': BaseModel,
+  'cspec': BaseModel
 }
 
 ITEM_TYPE_TO_MODEL_INSTANCE = {}

@@ -237,6 +237,14 @@ dl.dl-horizontal {
     line-height: 50px;
 }
 
+.publication-alert {
+  filter: brightness(105%);
+}
+
+.publication-text {
+  padding: 15px 0 15px 0;
+}
+
 //Default Hyperlink, even without href value
 a:not([href]) {
     color:$brand-primary;
@@ -299,6 +307,24 @@ a.no-external-link:after {
         left:0;
         z-index:2;
     }
+}
+
+// Used to show the user we're really serious about something.
+.serious-text {
+    color: red;
+    font-weight: bold;
+}
+
+// Styling for diff utility functions
+.diff-added {
+  background-color: #d4f7dc;
+  color: #228b22;
+}
+
+.diff-removed {
+  background-color: #f7d4d4;
+  color: #b22222;
+  text-decoration: line-through;
 }
 
 #non-prod-banner {

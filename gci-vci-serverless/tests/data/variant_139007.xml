@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClinVarResult-Set>
+  <VariationArchive RecordType="classified" VariationID="139007"
+    VariationName="NM_001040142.2(SCN2A):c.2389-18A>C" VariationType="single nucleotide variant"
+    Accession="VCV000139007" Version="6" NumberOfSubmissions="2" NumberOfSubmitters="2"
+    DateLastUpdated="2023-08-06" DateCreated="2016-05-29" MostRecentSubmission="2023-02-07">
+    <RecordStatus>current</RecordStatus>
+    <Species>Homo sapiens</Species>
+    <ClassifiedRecord>
+      <SimpleAllele AlleleID="142710" VariationID="139007">
+        <GeneList>
+          <Gene Symbol="SCN2A" FullName="sodium voltage-gated channel alpha subunit 2" GeneID="6326"
+            HGNC_ID="HGNC:10588" Source="submitted" RelationshipType="within single gene">
+            <Location>
+              <CytogeneticLocation>2q24.3</CytogeneticLocation>
+              <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38"
+                AssemblyStatus="current" Chr="2" Accession="NC_000002.12" start="165239414"
+                stop="165392304" display_start="165239414" display_stop="165392304" Strand="+" />
+              <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25"
+                AssemblyStatus="previous" Chr="2" Accession="NC_000002.11" start="166095911"
+                stop="166248819" display_start="166095911" display_stop="166248819" Strand="+" />
+            </Location>
+            <OMIM>182390</OMIM>
+            <Haploinsufficiency last_evaluated="2020-04-22"
+              ClinGen="https://www.ncbi.nlm.nih.gov/projects/dbvar/ISCA/isca_gene.cgi?sym=SCN2A">Sufficient
+              evidence for dosage pathogenicity</Haploinsufficiency>
+            <Triplosensitivity last_evaluated="2020-04-22"
+              ClinGen="https://www.ncbi.nlm.nih.gov/projects/dbvar/ISCA/isca_gene.cgi?sym=SCN2A">No
+              evidence available</Triplosensitivity>
+          </Gene>
+        </GeneList>
+        <Name>NM_001040142.2(SCN2A):c.2389-18A>C</Name>
+        <CanonicalSPDI>NC_000002.12:165342277:A:C</CanonicalSPDI>
+        <VariantType>single nucleotide variant</VariantType>
+        <Location>
+          <CytogeneticLocation>2q24.3</CytogeneticLocation>
+          <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38"
+            forDisplay="true" AssemblyStatus="current" Chr="2" Accession="NC_000002.12"
+            start="165342278" stop="165342278" display_start="165342278" display_stop="165342278"
+            variantLength="1" positionVCF="165342278" referenceAlleleVCF="A" alternateAlleleVCF="C" />
+          <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25"
+            AssemblyStatus="previous" Chr="2" Accession="NC_000002.11" start="166198788"
+            stop="166198788" display_start="166198788" display_stop="166198788" variantLength="1"
+            positionVCF="166198788" referenceAlleleVCF="A" alternateAlleleVCF="C" />
+        </Location>
+        <HGVSlist>
+          <HGVS Assembly="GRCh37" Type="genomic, top-level">
+            <NucleotideExpression sequenceAccessionVersion="NC_000002.11"
+              sequenceAccession="NC_000002" sequenceVersion="11" change="g.166198788A>C"
+              Assembly="GRCh37">
+              <Expression>NC_000002.11:g.166198788A>C</Expression>
+            </NucleotideExpression>
+          </HGVS>
+          <HGVS Assembly="GRCh38" Type="genomic, top-level">
+            <NucleotideExpression sequenceAccessionVersion="NC_000002.12"
+              sequenceAccession="NC_000002" sequenceVersion="12" change="g.165342278A>C"
+              Assembly="GRCh38">
+              <Expression>NC_000002.12:g.165342278A>C</Expression>
+            </NucleotideExpression>
+          </HGVS>
+          <HGVS Type="genomic">
+            <NucleotideExpression sequenceAccessionVersion="NG_008143.1"
+              sequenceAccession="NG_008143" sequenceVersion="1" change="g.107877A>C">
+              <Expression>NG_008143.1:g.107877A>C</Expression>
+            </NucleotideExpression>
+          </HGVS>
+          <HGVS Type="coding">
+            <NucleotideExpression sequenceAccessionVersion="NM_001040143.2"
+              sequenceAccession="NM_001040143" sequenceVersion="2" change="c.2389-18A>C">
+              <Expression>NM_001040143.2:c.2389-18A>C</Expression>
+            </NucleotideExpression>
+            <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO" />
+          </HGVS>
+          <HGVS Type="coding">
+            <NucleotideExpression sequenceAccessionVersion="NM_001371246.1"
+              sequenceAccession="NM_001371246" sequenceVersion="1" change="c.2389-18A>C"
+              MANEPlusClinical="true">
+              <Expression>NM_001371246.1:c.2389-18A>C</Expression>
+            </NucleotideExpression>
+            <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO" />
+          </HGVS>
+          <HGVS Type="coding">
+            <NucleotideExpression sequenceAccessionVersion="NM_001040142.2"
+              sequenceAccession="NM_001040142" sequenceVersion="2" change="c.2389-18A>C"
+              MANESelect="true">
+              <Expression>NM_001040142.2:c.2389-18A>C</Expression>
+            </NucleotideExpression>
+            <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO" />
+          </HGVS>
+          <HGVS Type="coding">
+            <NucleotideExpression sequenceAccessionVersion="NM_001371247.1"
+              sequenceAccession="NM_001371247" sequenceVersion="1" change="c.2389-18A>C">
+              <Expression>NM_001371247.1:c.2389-18A>C</Expression>
+            </NucleotideExpression>
+            <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO" />
+          </HGVS>
+          <HGVS Type="coding">
+            <NucleotideExpression sequenceAccessionVersion="NM_021007.3"
+              sequenceAccession="NM_021007" sequenceVersion="3" change="c.2389-18A>C">
+              <Expression>NM_021007.3:c.2389-18A>C</Expression>
+            </NucleotideExpression>
+            <MolecularConsequence ID="SO:0001627" Type="intron variant" DB="SO" />
+          </HGVS>
+        </HGVSlist>
+        <XRefList>
+          <XRef ID="CA293234" DB="ClinGen" />
+          <XRef Type="rs" ID="376273827" DB="dbSNP" />
+        </XRefList>
+        <AlleleFrequencyList>
+          <AlleleFrequency Value="0.00063" Source="The Genome Aggregation Database (gnomAD)" />
+          <AlleleFrequency Value="0.00085" Source="Trans-Omics for Precision Medicine (TOPMed)" />
+          <AlleleFrequency Value="0.00016" Source="The Genome Aggregation Database (gnomAD), exomes" />
+          <AlleleFrequency Value="0.00075" Source="Trans-Omics for Precision Medicine (TOPMed)" />
+          <AlleleFrequency Value="0.00021" Source="Exome Aggregation Consortium (ExAC)" />
+          <AlleleFrequency Value="0.00108"
+            Source="NHLBI Exome Sequencing Project (ESP) Exome Variant Server" />
+          <AlleleFrequency Value="0.00080" Source="The Genome Aggregation Database (gnomAD)" />
+        </AlleleFrequencyList>
+      </SimpleAllele>
+      <RCVList>
+        <RCVAccession Title="NM_001040142.2(SCN2A):c.2389-18A>C AND not specified"
+          Accession="RCV000127916" Version="3">
+          <ClassifiedConditionList TraitSetID="9590">
+            <ClassifiedCondition DB="MedGen" ID="CN169374">not specified</ClassifiedCondition>
+          </ClassifiedConditionList>
+          <RCVClassifications>
+            <GermlineClassification>
+              <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+              <Description DateLastEvaluated="2013-07-11" SubmissionCount="1">Benign</Description>
+            </GermlineClassification>
+          </RCVClassifications>
+        </RCVAccession>
+        <RCVAccession Title="NM_001040142.2(SCN2A):c.2389-18A>C AND multiple conditions"
+          Accession="RCV002055792" Version="4">
+          <ClassifiedConditionList TraitSetID="10464">
+            <ClassifiedCondition DB="MedGen" ID="C3150987">Developmental and epileptic
+              encephalopathy, 11</ClassifiedCondition>
+            <ClassifiedCondition DB="MedGen" ID="C1843140">Seizures, benign familial infantile, 3</ClassifiedCondition>
+          </ClassifiedConditionList>
+          <RCVClassifications>
+            <GermlineClassification>
+              <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+              <Description DateLastEvaluated="2022-10-27" SubmissionCount="1">Benign</Description>
+            </GermlineClassification>
+          </RCVClassifications>
+        </RCVAccession>
+      </RCVList>
+      <Classifications>
+        <GermlineClassification DateLastEvaluated="2022-10-27" NumberOfSubmissions="2"
+          NumberOfSubmitters="2" DateCreated="2016-05-29" MostRecentSubmission="2023-02-07">
+          <ReviewStatus>criteria provided, multiple submitters, no conflicts</ReviewStatus>
+          <Description>Benign</Description>
+          <ConditionList>
+            <TraitSet ID="10464" Type="Disease" ContributesToAggregateClassification="true">
+              <Trait ID="1007" Type="Disease">
+                <Name>
+                  <ElementValue Type="Alternate">CONVULSIONS, BENIGN FAMILIAL INFANTILE, 3</ElementValue>
+                  <XRef Type="MIM" ID="607745" DB="OMIM" />
+                </Name>
+                <Name>
+                  <ElementValue Type="Preferred">Seizures, benign familial infantile, 3</ElementValue>
+                  <XRef ID="MONDO:0011904" DB="MONDO" />
+                </Name>
+                <Name>
+                  <ElementValue Type="Alternate">Familial neonatal seizures</ElementValue>
+                  <XRef ID="279953009" DB="SNOMED CT" />
+                </Name>
+                <Symbol>
+                  <ElementValue Type="Alternate">BFNIS</ElementValue>
+                  <XRef Type="MIM" ID="607745" DB="OMIM" />
+                </Symbol>
+                <Symbol>
+                  <ElementValue Type="Alternate">BFIC3</ElementValue>
+                  <XRef Type="MIM" ID="607745" DB="OMIM" />
+                </Symbol>
+                <Symbol>
+                  <ElementValue Type="Preferred">BFIS3</ElementValue>
+                  <XRef Type="MIM" ID="607745" DB="OMIM" />
+                </Symbol>
+                <Citation Type="general" Abbrev="EFNS, 2010">
+                  <ID Source="PubMed">20298421</ID>
+                </Citation>
+                <XRef ID="140927" DB="Orphanet" />
+                <XRef ID="306" DB="Orphanet" />
+                <XRef ID="C1843140" DB="MedGen" />
+                <XRef ID="MONDO:0011904" DB="MONDO" />
+                <XRef Type="MIM" ID="607745" DB="OMIM" />
+              </Trait>
+              <Trait ID="15766" Type="Disease">
+                <Name>
+                  <ElementValue Type="Alternate">Early infantile epileptic encephalopathy 11</ElementValue>
+                  <XRef ID="Epileptic+encephalopathy%2C+early+infantile%2C+11/8339"
+                    DB="Genetic Alliance" />
+                </Name>
+                <Name>
+                  <ElementValue Type="Preferred">Developmental and epileptic encephalopathy, 11</ElementValue>
+                  <XRef ID="MONDO:0013388" DB="MONDO" />
+                </Name>
+                <Symbol>
+                  <ElementValue Type="Preferred">DEE11</ElementValue>
+                  <XRef Type="MIM" ID="613721" DB="OMIM" />
+                </Symbol>
+                <XRef ID="1934" DB="Orphanet" />
+                <XRef ID="C3150987" DB="MedGen" />
+                <XRef ID="MONDO:0013388" DB="MONDO" />
+                <XRef Type="MIM" ID="613721" DB="OMIM" />
+              </Trait>
+            </TraitSet>
+            <TraitSet ID="9590" Type="Disease" ContributesToAggregateClassification="true">
+              <Trait ID="16789" Type="Disease">
+                <Name>
+                  <ElementValue Type="Alternate">AllHighlyPenetrant</ElementValue>
+                </Name>
+                <Name>
+                  <ElementValue Type="Preferred">not specified</ElementValue>
+                </Name>
+                <AttributeSet>
+                  <Attribute Type="public definition">The term 'not specified' was created for use
+                    in ClinVar so that submitters can convey the concept that a variant is benign,
+                    likely benign, or of uncertain significance for an unspecified set of disorders.
+                    This usage was introduced in 2014 to replace AllHighlyPenetrant.</Attribute>
+                </AttributeSet>
+                <XRef ID="CN169374" DB="MedGen" />
+              </Trait>
+            </TraitSet>
+          </ConditionList>
+        </GermlineClassification>
+      </Classifications>
+      <ClinicalAssertionList>
+        <ClinicalAssertion ID="295492" SubmissionDate="2018-03-26" DateLastUpdated="2016-05-29"
+          DateCreated="2014-06-23">
+          <ClinVarSubmissionID localKey="GDX:55801|Not Provided" submittedAssembly="GRCh37" />
+          <ClinVarAccession Accession="SCV000171502" DateUpdated="2016-05-29"
+            DateCreated="2014-06-23" Type="SCV" Version="12" SubmitterName="GeneDx" OrgID="26957"
+            OrganizationCategory="laboratory" />
+          <RecordStatus>current</RecordStatus>
+          <Classification DateLastEvaluated="2013-07-11">
+            <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+            <GermlineClassification>Benign</GermlineClassification>
+            <Comment>This variant is considered likely benign or benign based on one or more of the
+              following criteria: it is a conservative change, it occurs at a poorly conserved
+              position in the protein, it is predicted to be benign by multiple in silico
+              algorithms, and/or has population frequency not consistent with disease.</Comment>
+          </Classification>
+          <Assertion>variation to disease</Assertion>
+          <AttributeSet>
+            <Attribute Type="AssertionMethod">GeneDx Variant Classification (06012015)</Attribute>
+            <Citation>
+              <URL>
+                https://submit.ncbi.nlm.nih.gov/ft/byid/dhtz9flo/genedx_interprules_final_061215.pdf</URL>
+            </Citation>
+          </AttributeSet>
+          <ObservedInList>
+            <ObservedIn>
+              <Sample>
+                <Origin>germline</Origin>
+                <Species TaxonomyId="9606">human</Species>
+                <AffectedStatus>yes</AffectedStatus>
+              </Sample>
+              <Method>
+                <MethodType>clinical testing</MethodType>
+              </Method>
+              <ObservedData>
+                <Attribute Type="Description">not provided</Attribute>
+              </ObservedData>
+            </ObservedIn>
+          </ObservedInList>
+          <SimpleAllele>
+            <GeneList>
+              <Gene Symbol="SCN2A" />
+            </GeneList>
+            <VariantType>Variation</VariantType>
+            <Location>
+              <SequenceLocation Assembly="GRCh37" Chr="2" alternateAllele="C" referenceAllele="A"
+                start="166198788" stop="166198788" variantLength="1" />
+            </Location>
+            <AttributeSet>
+              <Attribute Type="HGVS">NM_021007.2:c.2389-18A>C</Attribute>
+            </AttributeSet>
+          </SimpleAllele>
+          <TraitSet Type="Disease">
+            <Trait Type="Disease">
+              <Name>
+                <ElementValue Type="Preferred">not specified</ElementValue>
+              </Name>
+            </Trait>
+          </TraitSet>
+          <SubmissionNameList>
+            <SubmissionName>SUB3839901</SubmissionName>
+          </SubmissionNameList>
+        </ClinicalAssertion>
+        <ClinicalAssertion ID="4600463" SubmissionDate="2023-01-10" DateLastUpdated="2023-02-07"
+          DateCreated="2022-04-08">
+          <ClinVarSubmissionID localKey="26622|MedGen:C1843140;C3150987" submittedAssembly="GRCh37" />
+          <ClinVarAccession Accession="SCV002372488" DateUpdated="2023-02-07"
+            DateCreated="2022-04-08" Type="SCV" Version="2" SubmitterName="Invitae" OrgID="500031"
+            OrganizationCategory="laboratory" />
+          <RecordStatus>current</RecordStatus>
+          <Classification DateLastEvaluated="2022-10-27">
+            <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+            <GermlineClassification>Benign</GermlineClassification>
+          </Classification>
+          <Assertion>variation to disease</Assertion>
+          <AttributeSet>
+            <Attribute Type="AssertionMethod">Invitae Variant Classification Sherloc (09022015)</Attribute>
+            <Citation>
+              <ID Source="PubMed">28492532</ID>
+            </Citation>
+          </AttributeSet>
+          <ObservedInList>
+            <ObservedIn>
+              <Sample>
+                <Origin>germline</Origin>
+                <Species TaxonomyId="9606">human</Species>
+                <AffectedStatus>unknown</AffectedStatus>
+              </Sample>
+              <Method>
+                <MethodType>clinical testing</MethodType>
+              </Method>
+              <ObservedData>
+                <Attribute Type="Description">not provided</Attribute>
+              </ObservedData>
+            </ObservedIn>
+          </ObservedInList>
+          <SimpleAllele>
+            <GeneList>
+              <Gene Symbol="SCN2A" />
+            </GeneList>
+            <VariantType>Variation</VariantType>
+            <AttributeSet>
+              <Attribute Type="HGVS">NC_000002.11:g.166198788A>C</Attribute>
+            </AttributeSet>
+          </SimpleAllele>
+          <TraitSet Type="Disease">
+            <Trait Type="Disease">
+              <XRef DB="MedGen" ID="C1843140" Type="CUI" />
+            </Trait>
+            <Trait Type="Disease">
+              <XRef DB="MedGen" ID="C3150987" Type="CUI" />
+            </Trait>
+          </TraitSet>
+          <SubmissionNameList>
+            <SubmissionName>SUB11172999</SubmissionName>
+            <SubmissionName>SUB12507860</SubmissionName>
+          </SubmissionNameList>
+        </ClinicalAssertion>
+      </ClinicalAssertionList>
+      <TraitMappingList>
+        <TraitMapping ClinicalAssertionID="4600463" TraitType="Disease" MappingType="XRef"
+          MappingValue="C3150987" MappingRef="MedGen">
+          <MedGen CUI="C3150987" Name="Developmental and epileptic encephalopathy, 11" />
+        </TraitMapping>
+        <TraitMapping ClinicalAssertionID="4600463" TraitType="Disease" MappingType="XRef"
+          MappingValue="C1843140" MappingRef="MedGen">
+          <MedGen CUI="C1843140" Name="Seizures, benign familial infantile, 3" />
+        </TraitMapping>
+        <TraitMapping ClinicalAssertionID="295492" TraitType="Disease" MappingType="Name"
+          MappingValue="not specified" MappingRef="Preferred">
+          <MedGen CUI="CN169374" Name="not specified" />
+        </TraitMapping>
+      </TraitMappingList>
+    </ClassifiedRecord>
+  </VariationArchive>
+</ClinVarResult-Set>

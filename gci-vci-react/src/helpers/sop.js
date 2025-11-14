@@ -1,15 +1,15 @@
 
-export const sopVersions = ['8', '7', '6', '5', '4', '3', '2', '1'];
+export const sopVersions = ['11', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
 const sopCurrentVersion = sopVersions[0];
 
 /**
  * Method to determine the ClinGen SOP version of the provided evidence scoring (from a classification)
  * @param {object} classificationPoints - Object containing a classification's evidence scoring
  */
-export function sopVersionByScoring(classificationPoints) {
-    // Add check for SOPv8 as current version
+export function sopDataVersionByScoring(classificationPoints) {
+    // SOPv8 is current data model version
     if (classificationPoints && classificationPoints.autosomalRecessiveDisorder && 'probandWithOtherVariantType' in classificationPoints.autosomalRecessiveDisorder) {
-      return sopCurrentVersion;
+      return '8';
     } else if (classificationPoints && classificationPoints.segregation && 'evidenceCountExome' in classificationPoints.segregation) {
         return '7';
     } else {
@@ -22,7 +22,7 @@ export function sopVersionByScoring(classificationPoints) {
  * @param {object} classificationPoints - Object containing a classification's evidence scoring
  */
 export function isScoringForCurrentSOP(classificationPoints) {
-    if (sopVersionByScoring(classificationPoints) === sopCurrentVersion) {
+    if (sopDataVersionByScoring(classificationPoints) === '8') {
         return true;
     } else {
         return false;
@@ -35,8 +35,8 @@ export function isScoringForCurrentSOP(classificationPoints) {
  * @param {object} classificationPoints - Object containing a classification's evidence scoring
  */
 export function isScoringForSupportedSOP(classificationPoints) {
-    const sopVersion = sopVersionByScoring(classificationPoints);
-    if (sopVersion === sopCurrentVersion || sopVersion === '7') {
+    const sopVersion = sopDataVersionByScoring(classificationPoints);
+    if (sopVersion === '8' || sopVersion === '7') {
         return true;
     } else {
         return false;
@@ -50,7 +50,7 @@ export function isScoringForSupportedSOP(classificationPoints) {
  */
 export function snapshotHasApprovalPreviewDate(classificationPoints) {
     // Any SOP versions after SOP5 can have approval review date
-    const sopVersion = sopVersionByScoring(classificationPoints);
+    const sopVersion = sopDataVersionByScoring(classificationPoints);
     if (sopVersion !== '5') {
         return true;
     } else {
@@ -72,8 +72,14 @@ export function determineSOPVersion(provisional) {
                 return sopCurrentVersion;
             }
         } else {
-            // For classifications saved before users could select an SOP version, use existing determination logic
-            return sopVersionByScoring(provisional.classificationPoints);
+            // For classifications saved before users could select an SOP version, get version from data version
+            // If dataVersion is 7, should be SOPv6 because SOPv7 would be saved in provisional.sopVersion
+            const dataVersion = sopDataVersionByScoring(provisional.classificationPoints);
+            if (dataVersion === '7') {
+                return '6';
+            } else {
+                return dataVersion;
+            }
         }
     }
 }

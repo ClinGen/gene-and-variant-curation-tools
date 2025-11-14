@@ -12,13 +12,15 @@ import { renderInterpretationStatus } from './recordStatus/interpretationStatus'
 import exportCSV from '../helpers/export_csv';
 import StatusBadge from './common/StatusBadge';
 import { getFormattedDateTime } from '../utilities/dateTimeUtilities';
+import { displayObsoleteDiseaseIcon } from '../utilities/diseaseUtilities';
+
 
 function Table(props) {
     // table row data will be stored in filteredData state.
     // we can modify data variable on input to table.
     let { headers, data, isLoading } = props
     const [filteredData, setFilteredData] = useState([]);
-    const [statusFilters, setstatusFilters] = useState([]);
+    const [statusFilters, setStatusFilters] = useState([]);
 
     const statusFilterOptions = [
         { value: "in progress", label: "In Progress" },
@@ -26,6 +28,10 @@ function Table(props) {
         { value: "approved", label: "Approved" },
         { value: "published", label: "Published"}
     ]
+
+    useEffect(() => {
+        setStatusFilters([]);
+    }, [isLoading])
 
     // filters data based on currently selected interpretation filters. If no filter, just returns normal data.
     const filterData = useCallback(() => {
@@ -120,7 +126,7 @@ function Table(props) {
                 Header: item.text,
                 accessor: item.key, // accessor is the "key" in the data
                 disableSortBy: true,
-                Cell: e => <Link to={`/variant-central/${e.row.original.variantPK}/interpretation/${e.row.original.interpretationPK}`}>{e.value}</Link>
+                Cell: e => <Link to={`/variant-central/${e.row.original.variantPK}/interpretation/${e.row.original.interpretationPK}`} target="_blank" rel="noopener noreferrer">{e.value}</Link>
             }
         }
         else if (item.key === 'gene') {
@@ -129,7 +135,7 @@ function Table(props) {
                 accessor: item.key,
                 style: { minWidth: 80 },
                 disableSortBy: true,
-                Cell: e => <Link to={`/curation-central/${e.row.original.gdmPK}`}>{e.value}</Link>
+                Cell: e => <Link to={`/curation-central/${e.row.original.gdmPK}`} target="_blank" rel="noopener noreferrer">{e.value}</Link>
             }
         }
         else if (!props.isAllTable && item.key === 'status') {
@@ -182,6 +188,22 @@ function Table(props) {
                 return <>{getFormattedDateTime(e.row.original.last_modified, 'LLL', true)}</>;
               }
               return null;
+            }
+          };
+        }
+        else if ( item.key === 'disease_modeInheritance') {
+          return {
+            Header: item.text,
+            accessor: item.key,
+            disableSortBy: true,
+            Cell: e => {
+              const type = e.row.original.gdmPK ? "gdm" : "interpretation";
+              return (
+                <>
+                  {displayObsoleteDiseaseIcon(e.row.original.disease_modeInheritance, type)}
+                  {e.row.original.disease_modeInheritance}
+                </>
+              );
             }
           };
         } else {
@@ -241,14 +263,24 @@ function Table(props) {
         usePagination
     )
 
-    /**
-     * Generates data format for CSV export based on filteredData and triggers a download of the CSV
-     * This function is specific to exporting a CSV for interpretations/gdms
-     */
+    const createUrlForCSV = (row) => {
+      let url = '';
+      if (row.variant) {
+        url = `${window.location.origin}/variant-central/${row.variantPK}/interpretation/${row.interpretationPK}`;
+      } else if (row.gene) {
+        url = `${window.location.origin}/curation-central/${row.gdmPK}`;
+      }
+
+      return url;
+    };
+
+    const formatDate = (date) => date ? moment(date).format('YYYY-MM-DD h:mm:ssa') : '';
+
     const handleDownload = () => {
       const formattedRecords = [];
-      if (filteredData.length) {
-        filteredData.forEach(row => {
+      if (rows.length) {
+        rows.forEach(rowElement => {
+          let row = rowElement.original;
           let snapshotStatuses = [];
           if (Array.isArray(row.snapshot)) {
             row.snapshot.forEach(item => {
@@ -258,32 +290,43 @@ function Table(props) {
               }
             });
           }
+          const csvUrl = createUrlForCSV(row);
           if (!props.isAllTable && row.variant) {
             formattedRecords.push({
               'Variant': row.variant ? row.variant : '',
-              'Disease/Mode of Inheritance': row.disease_modeInheritance ? row.disease_modeInheritance : '--/--',
+              'Variant ID(s)': row.variantId ? `"${row.variantId}"` : '',
+              'Disease/Mode of Inheritance': row.disease_modeInheritance ? `"${row.disease_modeInheritance}"` : '--/--',
               'Status': snapshotStatuses && snapshotStatuses.length ? _.uniq(snapshotStatuses).join(' ') : row.snapshot.status,
               'Classification': row.pathogenicity ? row.pathogenicity : '--',
               'Criteria': row.criteria ? `"${row.criteria}"` : '',
-              'Date Created': row.date_created ? moment(row.date_created).format('YYYY-MM-DD h:mm:ssa') : '',
-              'Last Modified': row.last_modified ? moment(row.last_modified).format('YYYY-MM-DD h:mm:ssa') : ''
+              'Date Created': row.date_created ? formatDate(row.date_created) : '',
+              'Last Modified': row.last_modified ? formatDate(row.last_modified) : '',
+              'URL': csvUrl ? csvUrl : ''
             });
           // Temporary differentiation between All and My Interp tables until we include statuses again in All table
           } else if (props.isAllTable && row.variant) {
             formattedRecords.push({
               'Variant': row.variant ? row.variant : '',
-              'Disease/Mode of Inheritance': row.disease_modeInheritance ? row.disease_modeInheritance : '--/--',
-              // 'Status': row.snapshot[0] ? row.snapshot[0].status : row.snapshot.status,
-              'Date Created': row.date_created ? moment(row.date_created).format('YYYY-MM-DD h:mm:ssa') : ''
+              'Disease/Mode of Inheritance': row.disease_modeInheritance ? `"${row.disease_modeInheritance}"` : '--/--',
+              'Date Created': row.date_created ? formatDate(row.date_created) : '',
+              'URL': csvUrl ? csvUrl : ''
             });
           } else if (!props.isAllTable && row.gene) {
             formattedRecords.push({
               'Gene': row.gene ? row.gene : '',
-              'Disease/Mode of Inheritance': row.disease_modeInheritance ? row.disease_modeInheritance : '',
+              'Disease/Mode of Inheritance': row.disease_modeInheritance ? `"${row.disease_modeInheritance}"`: '',
               'Status': snapshotStatuses && snapshotStatuses.length ? _.uniq(snapshotStatuses).join(' ') : row.snapshot.status,
               'Classification': row.classification ? row.classification : '--',
-              'Date Created': row.date_created ? moment(row.date_created).format('YYYY-MM-DD h:mm:ssa') : '',
-              'Last Modified': row.last_modified ? moment(row.last_modified).format('YYYY-MM-DD h:mm:ssa') : ''
+              'Date Created': row.date_created ? formatDate(row.date_created) : '',
+              'Last Modified': row.last_modified ? formatDate(row.last_modified) : '',
+              'URL': csvUrl ? csvUrl : ''
+            });
+          } else if (props.isAllTable && row.gene) {
+            formattedRecords.push({
+              'Gene': row.gene ? row.gene : '',
+              'Disease/Mode of Inheritance': row.disease_modeInheritance ? `"${row.disease_modeInheritance}"` : '',
+              'Date Created': row.date_created ? formatDate(row.date_created) : '',
+              'URL': csvUrl ? csvUrl : ''
             });
           }
         });
@@ -345,7 +388,7 @@ function Table(props) {
             let status = e[i]
             statuses.push(status.value)
         }
-        setstatusFilters(statuses)
+        setStatusFilters(statuses)
     }
 }
 
@@ -355,4 +398,3 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(mapDispatchToProps)(Table);
-// export default TestTable;

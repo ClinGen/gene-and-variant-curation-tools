@@ -6,11 +6,12 @@ import { cloneDeep, isEmpty, get as lodashGet } from "lodash";
 import { useHistory, Link } from "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBriefcase, faChevronRight, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBriefcase, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../../../../utils';
 import { gdmParticipantReducer } from '../../../../utilities/gdmUtilities';
 import { getEvidenceByPKFromActiveAnnotation } from "../../../../utilities/gdmEvidenceUtilities";
+import { isOwnedByCurrentCuratingEntity } from '../../../../utilities/ownershipUtilities';
 import { setGdmAction } from "../../../../actions/gdmActions";
 import { updateAnnotationAction } from "../../../../actions/annotationActions";
 import CardPanel from "../../../common/CardPanel";
@@ -18,21 +19,34 @@ import Input from "../../../common/Input";
 import Alert from '../../../common/Alert';
 import LoadingSpinner from '../../../common/LoadingSpinner';
 import { LoadingButton } from "../../../common/LoadingButton";
-import Popover from "../../../common/Popover";
 import { COUNTRY_CODES } from '../../../../constants/countryCodes';
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
-import { renderLabelNote, renderDiseaseList, renderPhenotype, renderLabelPhenoTerms, renderParentEvidence, getPmidsFromList } from '../common/commonFunc';
+import {
+  renderLabelNote,
+  renderDiseaseList,
+  renderPhenotype,
+  renderLabelPhenoTerms,
+  renderParentEvidence,
+  getPmidsFromList,
+  getInvalidPmidsFromList,
+  renderNotOwnerMessage,
+  addPhenotypeNote,
+  renderPmidsErrorMessage,
+  isSemiOrSMo,
+  isAutoRec,
+  isAutoDom,
+  isXLinked
+} from '../common/commonFunc';
 import { HpoTermModal } from '../common/HpoTermModal';
 import { MethodsPanel, createMethod } from '../common/Methods';
 import { DeleteCurationModal } from '../common/DeleteCurationModal';
 import { VariantDisplay } from '../common/VariantDisplay';
 import { SelectVariantModal } from '../common/SelectVariantModal';
-import { RetiredVariantTable } from '../common/RetiredVariantTable';
-
 
 import { FamilyDisease } from '../disease/FamilyDisease';
 import { FamilyProbandDisease } from '../disease/FamilyProbandDisease';
+import { displayObsoleteDiseaseIcon } from '../../../../utilities/diseaseUtilities';
 
 import { useAmplifyAPIRequestRecycler } from '../../../../utilities/fetchUtilities';
 
@@ -90,12 +104,13 @@ export const FamilyCuration = ({
   const [ variantAlert, setVariantAlert ] = useState({});
   const [ formSegData, setFormSegData ] = useState({});
   const [ badPmids, setBadPmids ] = useState([]);
+  const [ preprintPmids, setPreprintPmids ] = useState([]);
 
   const [ variantCount, setVariantCount ] = useState(0);
   const [ variantInfo, setVariantInfo ] = useState([]);
   const [ probandIndividual, setProbandIndividual ] = useState(null);
   const [ individualRequired, setIndividualRequired ] = useState(false);
-  const [ isSemidominant, setIsSemidominant ] = useState(null);
+  const [ isFamilySDSM, setIsFamilySDSM ] = useState(null);
   const [ genotyping2Disabled, setGenotyping2Disabled ] = useState(true);
   const [ isTwoTrans, setIsTwoTrans ] = useState(false);
   const [ isHomozygous, setIsHomozygous ] = useState(false);
@@ -128,13 +143,13 @@ export const FamilyCuration = ({
   const calculateEstimatedLOD = (lodCalculatedMode, numAffected=0, numUnaffected=0, numSegregation=0, currentSegData) => {
     let estimatedLodScore = null;
     if (lodCalculatedMode === 'ADX') {
-      // LOD scoring if GDM is Autosomal dominant or X-Linked
+      // LOD scoring if GDM has Autosomal dominant or X-Linked MOI
       if (numSegregation !== '') {
         numSegregation = parseInt(numSegregation);
         estimatedLodScore = Math.log(1 / Math.pow(0.5, numSegregation)) / Math.log(10);
       }
     } else if (lodCalculatedMode === 'AR') {
-      // LOD scoring if GDM is Autosomal recessive
+      // LOD scoring if GDM has Autosomal recessive MOI
       if (numAffected !== '' && numUnaffected !== '') {
         numAffected = parseInt(numAffected);
         numUnaffected = parseInt(numUnaffected);
@@ -170,12 +185,12 @@ export const FamilyCuration = ({
     }
 
     // Used in LOD Score panel 
-    // Set LOD locked and calculation modes based on GDM
-    if (gdm && gdm.modeInheritance) {
-      if (gdm.modeInheritance.indexOf('Autosomal dominant') > -1 || gdm.modeInheritance.indexOf('X-linked inheritance') > -1) {
+    // Set LOD locked and calculation modes based on GDM's MOI
+    if (gdm?.modeInheritance) {
+      if (isAutoDom(gdm) || isXLinked(gdm)) {
         setLodLocked(true);
         setLodCalcMode('ADX');
-      } else if (gdm.modeInheritance.indexOf('Autosomal recessive') > -1) {
+      } else if (isAutoRec(gdm)) {
         setLodLocked(true);
         setLodCalcMode('AR');
       } else {
@@ -183,22 +198,26 @@ export const FamilyCuration = ({
       }
     }
 
-    // Update LOD locked and calculation modes based on family moi question for semidom
-    if (family && family.segregation && family.segregation.moiDisplayedForFamily) {
+    // Update LOD locked and calculation modes based on family moi
+    if (family?.segregation?.moiDisplayedForFamily) {
       if (family.segregation.moiDisplayedForFamily.indexOf('Autosomal dominant/X-linked') > -1) {
+        // Family moi is AD or XLinked
         segData.SEGmoiDisplayedForFamily = family.segregation.moiDisplayedForFamily;
         setLodLocked(true);
         setLodCalcMode('ADX');
-        setIsSemidominant(false);
+        setIsFamilySDSM(false);
       } else if (family.segregation.moiDisplayedForFamily.indexOf('Autosomal recessive') > -1) {
+        // Family moi is AR
         segData.SEGmoiDisplayedForFamily = family.segregation.moiDisplayedForFamily;
         setLodLocked(true);
         setLodCalcMode('AR');
-        setIsSemidominant(false);
-      } else if (family.segregation.moiDisplayedForFamily.indexOf('Semidominant') > -1) {
+        setIsFamilySDSM(false);
+      } else if ((family.segregation.moiDisplayedForFamily.indexOf('Semidominant') > -1) ||
+        (family.segregation.moiDisplayedForFamily.indexOf('Typified by somatic mosaicism') > -1)) {
+        // Family moi is SD or SM
         segData.SEGmoiDisplayedForFamily = family.segregation.moiDisplayedForFamily;
         setLodLocked(false);
-        setIsSemidominant(true);
+        setIsFamilySDSM(true);
         if (family.segregation.lodRequirements) {
           if (family.segregation.lodRequirements === 'Yes - autosomal dominant/X-linked') {
             setLodLocked(true);
@@ -217,7 +236,7 @@ export const FamilyCuration = ({
       } else {
         segData.SEGmoiDisplayedForFamily = "none";
         setLodLocked(true);
-        setIsSemidominant(true);
+        setIsFamilySDSM(true);
       }
     }
 
@@ -337,8 +356,10 @@ export const FamilyCuration = ({
               'clinvarVariantTitle': lodashGet(variantScore, "variantScored.clinvarVariantTitle", null),
               'preferredTitle': lodashGet(variantScore, "variantScored.preferredTitle", null),
               'carId': lodashGet(variantScore, "variantScored.carId", null),
+              'cacnId': lodashGet(variantScore, "variantScored.cacnId", null),
               'canonicalTranscriptTitle': lodashGet(variantScore, "variantScored.canonicalTranscriptTitle", null),
               'maneTranscriptTitle': lodashGet(variantScore, "variantScored.maneTranscriptTitle", null),
+              'overlappingGenes': lodashGet(variantScore, "variantScored.overlappingGenes", null),
               'hgvsNames': lodashGet(variantScore, "variantScored.hgvsNames", null),
               'PK': lodashGet(variantScore, "variantScored.PK", null)
             };
@@ -369,7 +390,7 @@ export const FamilyCuration = ({
 
   // Handle value changes in genotyping method 1
   const handleChange = (e) => {
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
+    const isSDSM = isSemiOrSMo(gdm);
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
     // Clear variant related alert
@@ -380,6 +401,7 @@ export const FamilyCuration = ({
 
     if (fieldName === "otherpmids") {
       setBadPmids([]);
+      setPreprintPmids([]);
     }
 
     // Set basic form and segregation form data
@@ -406,7 +428,7 @@ export const FamilyCuration = ({
       }
       newSegData['SEGlodPublished'] = fieldValue;
       if (fieldValue === 'Yes') {
-        if (semiDom) {
+        if (isSDSM) {
           newSegData['SEGnumberOfUnaffectedWithoutBiallelicGenotype'] = '';
           newSegData['SEGnumberOfAffectedWithGenotype'] = '';
           newSegData['SEGnumberOfSegregationsForThisFamily'] = '';
@@ -418,7 +440,7 @@ export const FamilyCuration = ({
           newSegData['SEGincludeLodScoreInAggregateCalculation'] = 'none';
         }
       } else if (fieldValue === 'No') {
-        if (semiDom) {
+        if (isSDSM) {
           const familyMoiDisplayed = newSegData['SEGmoiDisplayedForFamily'];
           const familyLodLocked = familyMoiDisplayed === 'Autosomal dominant/X-linked' || familyMoiDisplayed === 'Autosomal recessive';
           newSegData['SEGpublishedLodScore'] = '';
@@ -448,7 +470,7 @@ export const FamilyCuration = ({
     }
 
     if (fieldName === 'SEGmoiDisplayedForFamily') {
-      let familyMoiDisplayed = fieldValue;
+      const familyMoiDisplayed = fieldValue;
       if (familyMoiDisplayed === 'Autosomal dominant/X-linked') {
         if (newSegData.SEGlodPublished !== 'Yes') {
           newSegData.SEGnumberOfUnaffectedWithoutBiallelicGenotype = '';
@@ -459,7 +481,7 @@ export const FamilyCuration = ({
         }
         setLodLocked(true);
         setLodCalcMode('ADX');
-        setIsSemidominant(false);
+        setIsFamilySDSM(false);
         newSegData.SEGlodRequirements = "none";
       } else if (familyMoiDisplayed === 'Autosomal recessive') {
         if (newSegData.SEGlodPublished !== 'Yes') {
@@ -471,9 +493,10 @@ export const FamilyCuration = ({
         }
         setLodLocked(true);
         setLodCalcMode('AR');
-        setIsSemidominant(false);
+        setIsFamilySDSM(false);
         newSegData.SEGlodRequirements = "none";
-      } else if (familyMoiDisplayed === 'Semidominant') {
+      } else if ((familyMoiDisplayed === 'Semidominant') ||
+        (familyMoiDisplayed === 'Typified by somatic mosaicism')) {
         if (newSegData.lodPublished !== 'Yes') {
           newSegData['SEGnumberOfUnaffectedWithoutBiallelicGenotype'] = '';
           newSegData['SEGnumberOfAffectedWithGenotype'] = '';
@@ -481,17 +504,17 @@ export const FamilyCuration = ({
         }
         setLodLocked(false);
         setLodCalcMode(null);
-        setIsSemidominant(true);
+        setIsFamilySDSM(true);
       } else {
         setLodLocked(false);
         setLodCalcMode(null);
-        setIsSemidominant(false);
+        setIsFamilySDSM(false);
         newSegData.SEGlodRequirements = "none";
       }
     } 
 
     if (fieldName === 'SEGlodRequirements') {
-      // Handle LOD score based on semidominant family requirements question
+      // Handle LOD score based on SD or SM family requirements question
       newSegData['SEGlodRequirements'] = fieldValue;
       if (fieldValue === 'Yes - autosomal dominant/X-linked') {
         setLodLocked(true);
@@ -540,7 +563,7 @@ export const FamilyCuration = ({
 
     if (fieldName === 'SEGprobandIs') {
       if (fieldValue === "Biallelic homozygous" && variantInfo && variantCount > 1) {
-        // SOP8 - For semiDom, only one variantScore is allowed if probandIs set to "Biallelic homozygous"
+        // For SD or SM, only one variantScore is allowed if probandIs set to "Biallelic homozygous"
         alert("Please clear one of the variant(s) before changing proband is to Biallelic homozygous");
         setVariantAlert({
           type: "danger",
@@ -549,7 +572,7 @@ export const FamilyCuration = ({
         // reset to old value
         newSegData['SEGprobandIs'] = formSegData['SEGprobandIs']; 
       } else if (fieldValue === "Biallelic homozygous") {
-        // SOP8 - For semiDom, if probandIs set to "Biallelic homozygous", force Homozygous to be checked
+        // For SD or SM, if probandIs set to "Biallelic homozygous", force Homozygous to be checked
          if (!isHomozygous) {
           newData['recessiveZygosity'] = 'Homozygous';
           setIsTwoTrans(false);
@@ -561,7 +584,7 @@ export const FamilyCuration = ({
     }
 
     // Only either homozygous or hemizygous should be checked
-    // SOP8 - For SD/AR, either 2 variants both trans or homozygous should be checked
+    // For SD/SM/AR, either 2 variants both trans or homozygous should be checked
     if (fieldName === 'zygosityHomozygous') {
       // If selecting Homozygous and has more than 1 variantInfo, cannot change
       if (isHomozygous && (variantInfo && variantCount > 0)) {
@@ -654,7 +677,7 @@ export const FamilyCuration = ({
     if (group) {
       // Only has the most one associated group
       if (group.hpoIdInDiagnosis && group.hpoIdInDiagnosis.length) {
-        const hpoIds = group.hpoIdInDiagnosis.map((hpoid, i) => {
+        const hpoIds = group.hpoIdInDiagnosis.map(hpoid => {
           return hpoid;
         });
         setHpoWithTerms(hpoIds);
@@ -674,7 +697,7 @@ export const FamilyCuration = ({
 
     if (group) {
       if (group.hpoIdInElimination && group.hpoIdInElimination.length) {
-        const hpoIds = group.hpoIdInElimination.map((hpoid, i) => {
+        const hpoIds = group.hpoIdInElimination.map(hpoid => {
           return hpoid;
         });
         setHpoElimWithTerms(hpoIds);
@@ -790,21 +813,9 @@ export const FamilyCuration = ({
   };
 
   const renderPmidsError = () => {
-    if (formErrors["otherpmids"]) {
-      return (
-        <>
-        {formErrors["otherpmids"]}
-        </>
-      );
-    } else if (badPmids.length > 0) {
-      return (
-        <>
-        <span>{badPmids.join(', ')} not found</span>
-        </>
-      );
-    } else {
-      return null;
-    }
+    return (
+      renderPmidsErrorMessage(formErrors["otherpmids"], badPmids, preprintPmids)
+    );
   };
 
   const saveArticle = async (article) => {
@@ -828,39 +839,55 @@ export const FamilyCuration = ({
     // At least one pmid entered; search the DB for them.
     return new Promise((resolve, reject) => {
       if (pmids && pmids.length) {
+        // Keep track of checked PMIDs count, only update when data has been processed
         let i = 0;
         pmids.forEach(pmid => {
-          requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid))
-          .then(article => {
-            i++;
-            if (!article.PK) {
-              saveArticle(article);
-            }
-            if (i === pmids.length) {
-              if (valid) {
-                resolve(valid);
+          if (pmid.length) {
+            requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid)).then(article => {
+              // If article is a preprint then cannot be added, add to error list
+              if(article?.is_preprint) {
+                setPreprintPmids(preprintPmids => [...preprintPmids, pmid]);
+                valid = false;
               } else {
+                // If article is valid but has no PK, save article to DB
+                if (!article.PK) {
+                  saveArticle(article);
+                }
+              }
+              i++;
+              // If all pmids have been checked, return
+              if (i === pmids.length) {
+                if (valid) {
+                  resolve(valid);
+                } else {
+                  reject(valid);
+                }
+              }
+            }).catch(() => {
+              // No article is found by this pmid, add to error list
+              setBadPmids(badPmids => [...badPmids, pmid]);
+              valid = false;
+              i++;
+              // If all pmids have been checked, return
+              if (i === pmids.length) {
                 reject(valid);
               }
-            }
-          }).catch(err => {
+            });
+          } else {
+            // Empty pmid
             i++;
-            setBadPmids(badPmids => [...badPmids, pmid]);
-            valid = false;
-            if (i === pmids.length) {
-              reject(valid);
-            }
-          });
+          }
         })
       } else {
+        // No pmid
         resolve(valid);
       }
     });
   };
 
   const validateFormFields = () => {
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-    const lodPublished = semiDom && formSegData.SEGlodPublished === 'Yes';
+    const isSDSM = isSemiOrSMo(gdm);
+    const lodPublished = isSDSM && formSegData.SEGlodPublished === 'Yes';
 
     const errors = {};
 
@@ -870,15 +897,15 @@ export const FamilyCuration = ({
       errors["familyname"] = "A Family name is required";
     }
 
-    if (!lodPublished && !isSemidominant && formSegData['SEGnumberOfAffectedWithGenotype'] === '') {
+    if (!lodPublished && !isFamilySDSM && formSegData['SEGnumberOfAffectedWithGenotype'] === '') {
       errors["SEGnumberOfAffectedWithGenotype"] = "A number is required";
     }
 
     // Validate pmids have the proper format (will check for existence later)
-    const pmids = getPmidsFromList(formData["otherpmids"]);
-    if (pmids && pmids.length && pmids.includes(null)) {
-      // PMID list is bad
-      errors["otherpmids"] = "Use PubMed IDs (e.g. 12345678) separated by commas";
+    const badPmids = getInvalidPmidsFromList(formData["otherpmids"]);
+    if (badPmids?.length) {
+      // Display error for invalid PMID list
+      errors["otherpmids"] = `Not valid PubMed ID(s): "${badPmids.join(', ')}".  Use PubMed IDs (e.g. 12345678) separated by commas`;
     }
 
     /**
@@ -903,7 +930,7 @@ export const FamilyCuration = ({
         }
       }
     }
-    if (semiDom) {
+    if (isSDSM) {
       if ((formData["individualName"] || !isEmpty(probandDiseaseObj)) && formSegData["SEGprobandIs"] === "none") {
         errors["SEGprobandIs"] = "Required for proband";
       }
@@ -950,14 +977,14 @@ export const FamilyCuration = ({
 
   // Create segregation object based on the form values
   const createSegregation = (newFamily) => {
-    // SD, AR, AD, XL
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-    const autoRec = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1 : false;
+    // SD, SM, AR, AD, XL
+    const isSDSM = isSemiOrSMo(gdm);
+    const isAR = isAutoRec(gdm);
     const noProbandIs = formSegData["SEGprobandIs"] === "none";
     const biallelicHetOrHom = formSegData["SEGprobandIs"].indexOf('Biallelic') > -1 ? true : false;
     const biallelicHomozygous = formSegData["SEGprobandIs"].indexOf('Biallelic homozygous') > -1 ? true : false;
     let maxVariants = 2;
-    if (semiDom) {
+    if (isSDSM) {
       if (noProbandIs) {
         maxVariants = 0;
       } else {
@@ -970,7 +997,7 @@ export const FamilyCuration = ({
         }
       }
     }
-    if (autoRec) {
+    if (isAR) {
       maxVariants = isTwoTrans ? 2 : (isHomozygous ? 1 : 0);
     }
 
@@ -997,8 +1024,8 @@ export const FamilyCuration = ({
     if (value) {
       newSegregation[formMapSegregation['SEGexplanationForInconsistent']] = value;
     }
-    // Fields only available on GDMs with Semidominant MOI
-    if (semiDom) {
+    // Fields only available on GDMs has Semidominant or Typified by somatic mosaicism MOI
+    if (isSDSM) {
       value = formSegData['SEGmoiDisplayedForFamily'];
       if (value !== 'none') {
         newSegregation[formMapSegregation['SEGmoiDisplayedForFamily']] = value;
@@ -1405,13 +1432,13 @@ export const FamilyCuration = ({
     /* Need to capture zygosity data and     */
     /* pass into the individual object       */
     /*****************************************/
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-    const autoRec = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1 : false;
+    const isSDSM = isSemiOrSMo(gdm);
+    const isAR = isAutoRec(gdm);
     const noProbandIs = formSegData["SEGprobandIs"] === "none";
     const biallelicHetOrHom = formSegData["SEGprobandIs"].indexOf('Biallelic') > -1 ? true : false;
     const biallelicHomozygous = formSegData["SEGprobandIs"].indexOf('Biallelic homozygous') > -1 ? true : false;
     let maxVariants = 2;
-    if (semiDom) {
+    if (isSDSM) {
       if (noProbandIs) {
         maxVariants = 0;
       } else {
@@ -1424,22 +1451,22 @@ export const FamilyCuration = ({
         }
       }
     }
-    if (autoRec) {
+    if (isAR) {
       maxVariants = isTwoTrans ? 2 : (isHomozygous ? 1 : 0);
     }
 
     const familyVariants = getFamilyVariants(maxVariants);
     let probandIs = null;
 
-    // Retrieve value of "The proband is" form field (should only be available when GDM has Semidominant MOI)
-    if (semiDom) {
+    // Retrieve value of "The proband is" form field (should only be available when GDM has Semidominant or Typified by somatic mosaicism MOI)
+    if (isSDSM) {
       if (formSegData["SEGprobandIs"] !== 'none') {
         probandIs = formSegData["SEGprobandIs"];
       }
     }
 
-    if (!badPmids.length && validateFormFields()) {
-      validatePmids().then(res => {
+    if (!badPmids?.length && !preprintPmids?.length && validateFormFields()) {
+      validatePmids().then(() => {
         // If adding a family proband individual
         if (!probandIndividual && individualRequired && formData["individualName"] && !isEmpty(probandDiseaseObj)) {
           // Save variantScore objects to DB
@@ -1450,7 +1477,7 @@ export const FamilyCuration = ({
             // Update variantScore objects to associated individual object
             savedIndividual = individualResult;
             return updateVariantScoresWithIndividual(savedIndividual);
-          }).then(results => {
+          }).then(() => {
             // Return created proband individual object
             return Promise.resolve(savedIndividual);
           }).catch(err => {
@@ -1460,7 +1487,7 @@ export const FamilyCuration = ({
           // Not adding a family proband individual
           return Promise.resolve(null);
         }
-      }).then(result => {
+      }).then(() => {
         // assessments - keep existing assessments as is
 
         // Make a new family object based on form fields.
@@ -1479,7 +1506,7 @@ export const FamilyCuration = ({
       }).then(familyObj => {
         savedFamily = familyObj;
         // SOP8 - Update associatedParent in individual object with associated family 
-        updateIndividiualWithFamily(savedIndividual, savedFamily).then(result => {
+        updateIndividiualWithFamily(savedIndividual, savedFamily).then(() => {
           // Navigate to Curation Central or Family Submit page, depending on previous page
           const redirectUrl = savedFamily && savedFamily.PK
             ? `/curation-central/${gdm.PK}/annotation/${annotation.PK}/family-curation/${savedFamily.PK}/submit` + (hadVar ? '?hadvar' : '') + (group ? (hadVar ? '&' : '?') : '') + (group ? `parentTypeCuration=group-curation&parentEvidencePK=${group.PK}` : '')
@@ -1529,8 +1556,10 @@ export const FamilyCuration = ({
         'clinvarVariantId': data.clinvarVariantId ? data.clinvarVariantId : null,
         'clinvarVariantTitle': data.clinvarVariantTitle ? data.clinvarVariantTitle : null,
         'carId': data.carId ? data.carId : null,
+        'cacnId': data.cacnId ? data.cacnId : null,
         'canonicalTranscriptTitle': data.canonicalTranscriptTitle ? data.canonicalTranscriptTitle : null,
         'maneTranscriptTitle': data.maneTranscriptTitle ? data.maneTranscriptTitle : null,
+        'overlappingGenes': data.overlappingGenes ? data.overlappingGenes : null,
         'hgvsNames': data.hgvsNames ? data.hgvsNames : null,
         'preferredTitle' : data.preferredTitle ? data.preferredTitle : null,
         'PK': data.PK
@@ -1623,7 +1652,7 @@ export const FamilyCuration = ({
           </span>
         </Col>
         <Col sm="7" className="form-group hpo-term-container">
-          {hpoWithTerms.length ?
+          {hpoWithTerms?.length ?
             <ul>
               {hpoWithTerms.map((term, i) => {
                 return (
@@ -1652,8 +1681,8 @@ export const FamilyCuration = ({
           <Button className="gdm-orphanet-copy btn-copy btn-last" onClick={e=>handleCopyGroupPhenotypes(e)} >Copy all Phenotype(s) from Associated Group</Button>
         </Col>
       : null}
-      <Col sm={{ span: 7, offset: 5 }}> 
-        <p>Enter <em>phenotypes that are NOT present in Family</em> if they are specifically noted in the paper.</p>
+      <Col sm={{ span: 7, offset: 5 }}>
+        {addPhenotypeNote('Family')}
       </Col>
       {group && ((group.hpoIdInElimination && group.hpoIdInElimination.length) || group.termsInElimination)
         ? renderPhenotype([group], 'Family', 'nothpo', 'Group')
@@ -1661,12 +1690,12 @@ export const FamilyCuration = ({
       <Row className="mb-3">
         <Col sm="5" className="control-label">
           <span>
-            <label className="">NOT Phenotype(s)&nbsp;</label>
+            <label className=""><span className="serious-text">NOT Phenotype(s)</span>&nbsp;</label>
             <span className="normal">(<ExternalLink href={EXTERNAL_API_MAP['HPOBrowser']} title="Open HPO Browser in a new tab">HPO</ExternalLink> ID(s))</span>:
           </span>
         </Col>
         <Col sm="7" className="form-group hpo-term-container">
-          {hpoElimWithTerms.length ?
+          {hpoElimWithTerms?.length ?
             <ul>
               {hpoElimWithTerms.map((term, i) => {
                 return (
@@ -1770,20 +1799,21 @@ export const FamilyCuration = ({
   };
 
   const renderFamilySegregation = () => {
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
+    const isSDSM = isSemiOrSMo(gdm);
     let isADX = false;
     let isAR = false;
     let lodReqNone, lodReqADX, lodReqAR;
     const lodRequirements = formSegData.SEGlodRequirements;
 
     // Creates boolean values for conditional disabling of inputs
-    const lodPublished = semiDom && formSegData.SEGlodPublished === 'Yes';
-    if (semiDom) {
+    const lodPublished = isSDSM && formSegData.SEGlodPublished === 'Yes';
+    if (isSDSM) {
       if (formSegData.SEGmoiDisplayedForFamily === 'Autosomal dominant/X-linked') {
         isADX = true;
       } else if (formSegData.SEGmoiDisplayedForFamily === 'Autosomal recessive') {
         isAR = true;
-      } else if (formSegData.SEGmoiDisplayedForFamily === 'Semidominant') {
+      } else if ((formSegData.SEGmoiDisplayedForFamily === 'Semidominant') ||
+        (formSegData.SEGmoiDisplayedForFamily === 'Typified by somatic mosaicism')) {
         if (lodRequirements === 'Yes - autosomal dominant/X-linked') {
           lodReqADX = true;
         } else if (lodRequirements === 'Yes - autosomal recessive') {
@@ -1801,7 +1831,7 @@ export const FamilyCuration = ({
       <div className="mb-3 section section-family-segregation">
         <h3><FontAwesomeIcon icon={faChevronRight}/> Tested Individuals</h3>
       </div>
-      {semiDom ?
+      {isSDSM ?
         <>
         <Input type="select" name="SEGlodPublished" label="Published LOD score?:" groupClassName="row mb-3"
           value={formSegData['SEGlodPublished']} onChange={handleChange}
@@ -1822,8 +1852,9 @@ export const FamilyCuration = ({
           <option value="Autosomal dominant/X-linked">Autosomal dominant/X-linked</option>
           <option value="Autosomal recessive">Autosomal recessive</option>
           <option value="Semidominant">Semidominant</option>
+          <option value="Typified by somatic mosaicism">Typified by somatic mosaicism</option>
         </Input>
-        {formSegData.SEGlodPublished === 'No' && isSemidominant ? 
+        {formSegData.SEGlodPublished === 'No' && isFamilySDSM ?
           <Input type="select" name="SEGlodRequirements"
             label="Does the family meet requirements for estimating LOD score for EITHER autosomal dominant/X-linked or autosomal recessive?:"
             groupClassName="row mb-3" value={formSegData['SEGlodRequirements']} onChange={handleChange}
@@ -1839,21 +1870,27 @@ export const FamilyCuration = ({
         </>
       : null}
       <Input type="number" name="SEGnumberOfAffectedWithGenotype" groupClassName="row mb-3"
-        disabled={lodReqNone || lodPublished} required={!lodPublished && !isSemidominant}
-        label={<span>For Dominant AND Recessive inheritance:<br/>Number of AFFECTED individuals <i>WITH</i> genotype?</span>}
+        disabled={lodReqNone || lodPublished} required={!lodPublished && !isFamilySDSM}
+        label={<span>Number of AFFECTED individuals <i>WITH</i> genotype?</span>}
         value={formSegData["SEGnumberOfAffectedWithGenotype"]}
         onChange={handleChange} error={formErrors["SEGnumberOfAffectedWithGenotype"] || null}
         labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7"
         placeholder="Number only"/>
       <Input type="number" name="SEGnumberOfUnaffectedWithoutBiallelicGenotype"
-        disabled={lodPublished || isADX || lodReqNone || (isSemidominant && lodReqADX)}
-        label={<span>For Recessive inheritance only:<br/>Number of UNAFFECTED individuals <i>WITHOUT</i> the biallelic genotype? (required for Recessive inheritance)</span>}
+        disabled={lodPublished || isADX || lodReqNone || (isFamilySDSM && lodReqADX)}
+        label={
+          <span>
+            Number of UNAFFECTED individuals <i>WITHOUT</i> the biallelic
+            genotype? <span className="serious-text">(required for recessive
+            inheritance)</span>
+          </span>
+        }
         value={formSegData["SEGnumberOfUnaffectedWithoutBiallelicGenotype"]}
         onChange={handleChange} error={formErrors['SEGnumberOfUnaffectedWithoutBiallelicGenotype']}
         labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3"
         placeholder="Number only" />
       <Input type="number" name="SEGnumberOfSegregationsForThisFamily"
-        disabled={lodPublished || isAR || lodReqNone || (isSemidominant && lodReqAR)}
+        disabled={lodPublished || isAR || lodReqNone || (isFamilySDSM && lodReqAR)}
         label={<span>Number of segregations reported for this Family:<br/>(required for calculating an estimated LOD score for Dominant or X-linked inheritance)</span>}
         value={formSegData['SEGnumberOfSegregationsForThisFamily']}
         onChange={handleChange} error={formErrors['SEGnumberOfSegregationsForThisFamily']}
@@ -1890,7 +1927,7 @@ export const FamilyCuration = ({
       <div className="mb-3 section section-family-segregation">
         <h3><FontAwesomeIcon icon={faChevronRight}/> LOD Score (select one to include as score):</h3>
       </div>
-      {!semiDom ? 
+      {!isSDSM ?
         <Input type="select" name="SEGlodPublished" label="Published LOD score?:"
           value={formSegData['SEGlodPublished']}
           onChange={handleChange} labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3">
@@ -1946,40 +1983,14 @@ export const FamilyCuration = ({
       : null}
       <Input type="textarea" name="SEGreasonExplanation" label="Explain reasoning:" rows="5"
         value={formSegData['SEGreasonExplanation']}
-        disabled={(isSemidominant === true && formSegData['SEGlodPublished'] === "Yes")}
+        disabled={(isFamilySDSM === true && formSegData['SEGlodPublished'] === "Yes")}
         onChange={handleChange} labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3" />
       <Input type="textarea" name="SEGaddedsegregationinfo" label="Additional Segregation Information:" rows="5"
         value={formSegData['SEGaddedsegregationinfo']}
-        disabled={(isSemidominant === true && formSegData['SEGlodPublished'] === "Yes")}
+        disabled={(isFamilySDSM === true && formSegData['SEGlodPublished'] === "Yes")}
         onChange={handleChange} labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3" />
       </>
     );
-  };
-
-  const renderFamilyOldVariant = () => {
-    const infoText = 'The variant(s) and score() shown in this table was added in a format that has now been retired...';
-    const infoPopover = <Popover
-      triggerComponent={<FontAwesomeIcon className="text-info" icon={faInfoCircle}/>}
-      content={infoText}
-      placement="top"
-    />
-
-    if (family && family.segregation && family.segregation.variants && family.segregation.variants.length > 0) {
-      const show = probandIndividual && probandIndividual.variantScores && probandIndividual.variantScores.length ? false : true;
-
-      return (
-        <>
-        <CardPanel title={<span>Previously added variant(s) - Retired Format - {infoPopover}</span>} accordion={true} open={show}>
-          <RetiredVariantTable
-            variants={family.segregation.variants}
-            score={null}
-          />
-        </CardPanel>
-        </>
-      );
-    } else { 
-      return null;
-    }
   };
 
   const renderFamilyVariant = () => {
@@ -1987,15 +1998,15 @@ export const FamilyCuration = ({
     const diseaseName = diseaseObj && diseaseObj.term && !diseaseObj.freetext
       ? (diseaseObj.term + (diseaseObj.PK ? ` (${diseaseObj.PK})` : ''))
       : (diseaseObj.term ? diseaseObj.term : '');
-    // SD, AR, AD, XL
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-    const autoRec = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1 : false;
+    // SD, SM, AR, AD, XL
+    const isSDSM = isSemiOrSMo(gdm);
+    const isAR = isAutoRec(gdm);
     const noProbandIs = formSegData["SEGprobandIs"] === "none";
     const biallelicHetOrHom = formSegData["SEGprobandIs"].indexOf('Biallelic') > -1 ? true : false;
     const biallelicHomozygous = formSegData["SEGprobandIs"].indexOf('Biallelic homozygous') > -1 ? true : false;
     // SOP8 - cannot have 3 variants anymore
     let maxVariants = 2;
-    if (semiDom) {
+    if (isSDSM) {
       if (noProbandIs) {
         maxVariants = 0;
       } else {
@@ -2008,7 +2019,7 @@ export const FamilyCuration = ({
         }
       }
     }
-    if (autoRec) {
+    if (isAR) {
       maxVariants = isTwoTrans ? 2 : (isHomozygous ? 1 : 0);
     }
 
@@ -2033,11 +2044,11 @@ export const FamilyCuration = ({
                 error={formErrors['individualName']} maxLength="60"
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3" required={individualRequired} />
               <Row className="mb-3"><Col sm={{ span: 7, offset: 5 }}>
-                Note: Do not enter real names in this field. {renderLabelNote('Individual')}
+                {renderLabelNote('Individual')}
               </Col></Row>
               <Row className="mb-3">
                 <Col sm="5"><label className="control-label float-right">Disease term associated with Family:</label></Col>
-                <Col sm="7"><strong>{diseaseName}</strong></Col>
+                <Col sm="7">{displayObsoleteDiseaseIcon(lodashGet(diseaseObj, "term"), "gdm")}<strong>{diseaseName}</strong></Col>
               </Row>
               <FamilyProbandDisease gdm={gdm} group={group} family={family} updateFamilyProbandDiseaseObj={updateFamilyProbandDiseaseObj}
                 probandDiseaseObj={probandDiseaseObj} error={probandDiseaseError} clearErrorInParent={clearErrorInParent}
@@ -2047,7 +2058,7 @@ export const FamilyCuration = ({
                   {probandDiseaseError}</Col>
               : null}
             </div>
-            {semiDom ?
+            {isSDSM ?
               <div>
                 <Input type="select" label="The proband is:" name="SEGprobandIs" onChange={handleChange}
                   value={formSegData['SEGprobandIs']} error={formErrors['SEGprobandIs']}
@@ -2067,7 +2078,7 @@ export const FamilyCuration = ({
               <Alert value={variantAlert.message} type={variantAlert.type} dismissible className="mt-3"/>
               : "")}
 
-            {autoRec || (semiDom && biallelicHetOrHom) ?
+            {isAR || (isSDSM && biallelicHetOrHom) ?
               <>
               <Row className="mb-3">
                 <Col sm="5" className="control-label">
@@ -2092,7 +2103,7 @@ export const FamilyCuration = ({
               </>
               :
               <>
-              {semiDom && noProbandIs
+              {isSDSM && noProbandIs
                 ? null
                 :
                   <Row className="mb-3">
@@ -2108,7 +2119,6 @@ export const FamilyCuration = ({
                   </Row>
               }
               </>
-            }
           }
           {_.range(maxVariants).map(i => {
             return (
@@ -2188,7 +2198,9 @@ export const FamilyCuration = ({
   const viewGroupLink = (lodashGet(gdm, "PK", null) && lodashGet(annotation, "PK", null))
     ? `/curation-central/${gdm.PK}/annotation/${annotation.PK}/group-curation/`
     : null;
-  const submitErrClass = 'submit-err float-right' + (!isEmpty(formErrors) || badPmids.length > 0 ? '' : ' hidden');
+  const submitErrClass = 'submit-err float-right' +
+    (!isEmpty(formErrors) || badPmids?.length || preprintPmids?.length ? '' : ' hidden');
+  const ownerError = !isOwnedByCurrentCuratingEntity(gdm, auth);
 
   return (gdmIsLoading || annotationIsLoading || dataIsLoading) ? (
     <LoadingSpinner className="mt-4" />
@@ -2207,6 +2219,7 @@ export const FamilyCuration = ({
     <Row className="group-curation-content">
       <Col sm="12">
         <form onSubmit={submitForm} className="form-horizontal mt-5 curation-panel">
+          {renderNotOwnerMessage(ownerError)}
           <CardPanel>
             {renderFamilyName(false)}
           </CardPanel>
@@ -2223,12 +2236,12 @@ export const FamilyCuration = ({
             {renderFamilySegregation()}
           </CardPanel>
           <CardPanel title="Family — Variant(s) Segregating with Proband">
-            {renderFamilyOldVariant()}
             {renderFamilyVariant()}
           </CardPanel>
           <CardPanel title="Family Additional Information">
             {renderFamilyAdditional()}
           </CardPanel>
+          {renderNotOwnerMessage(ownerError)}
           <Row>
             <Col>
               <LoadingButton
@@ -2238,6 +2251,7 @@ export const FamilyCuration = ({
                 text="Save"
                 textWhenLoading="Submitting"
                 isLoading={isSubmitting}
+                disabled={ownerError}
               />
               {gdm ?
                 <Button variant="secondary" className="float-right align-self-end mb-2 ml-2" onClick={() => handleCancel()} disabled={isSubmitting}>Cancel</Button>
@@ -2247,7 +2261,8 @@ export const FamilyCuration = ({
                   gdm={gdm}
                   parent={group ? group : annotation}
                   item={family}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || ownerError}
+                  ownerError={ownerError}
                 />
               : null}
               <div className={submitErrClass}>Please fix errors on the form and resubmit.</div>

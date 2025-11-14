@@ -94,7 +94,7 @@ export function renderPublishStatus(snapshots, resourceType, stringOnly = false)
   }
 }
 
-function renderPublishedWarningMessage() {
+export function renderPublishedWarningMessage() {
   return (
     <span className="publish-warning" data-toggle="tooltip" data-placement="top"
       data-tooltip="The current approved Classification is more recent than this published Classification.">

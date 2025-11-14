@@ -23,7 +23,21 @@ module.exports = {
     'react',
   ],
   rules: {
-    "react/prop-types": 0,
-    'react/display-name': 'off'
+    // React ESLint
+    "react/display-name": "off",
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+
+    // Default ESLint
+    "no-unused-vars": "warn",
+    "no-prototype-builtins": "warn",
+    "no-extra-semi": "warn",
+    "no-dupe-class-members": "warn",
+    "no-unreachable": "warn",
+    "no-case-declarations": "warn",
+    "no-useless-escape": "warn",
+    "no-mixed-spaces-and-tabs": "warn",
+    "no-irregular-whitespace": "warn",
+    "no-useless-catch": "warn"
   },
 };

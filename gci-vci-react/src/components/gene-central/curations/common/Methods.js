@@ -107,18 +107,26 @@ export const MethodsPanel = ({
     />
     {hasParentMethods ? renderParentEvidence('Answer to Genome-Wide Analysis Methods Question Associated with ' + parentName + ':',
       (lodashGet(parentMethod, "genomeWideStudy", null) === true ? 'Yes' : (lodashGet(parentMethod, "genomeWideStudy", null) === false ? 'No' : ''))) : null}
-    <Input type="select"
-      label="Were genome-wide analysis methods used to identify the variant(s) described in this publication?:"
-      name={prefix ? prefix + 'genomewide' : 'genomewide'} 
-      value={formData[`${prefix ? prefix + 'genomewide' : 'genomewide'}`]}
-      onChange={handleChange}
-      labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3"
-    >
-      <option value="none">No Selection</option>
-      <option disabled="disabled"></option>
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </Input>
+      {
+        // Only display this input if evidence type is not family, per request
+        // in the issue linked below:
+        // https://github.com/ClinGen/gene-and-variant-curation-tools/issues/325
+        isFamily ?
+            null
+          :
+            <Input type="select"
+                   label="Were genome-wide analysis methods used to identify the variant(s) described in this publication?:"
+                   name={prefix ? prefix + 'genomewide' : 'genomewide'}
+                   value={formData[`${prefix ? prefix + 'genomewide' : 'genomewide'}`]}
+                   onChange={handleChange}
+                   labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3"
+            >
+              <option value="none">No Selection</option>
+              <option disabled="disabled"></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </Input>
+      }
     <Row className="mb-3">
       <Col sm={{ span: 7, offset: 5 }}>
         <h4>Genotyping Method</h4>

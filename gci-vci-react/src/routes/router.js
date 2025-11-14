@@ -10,11 +10,13 @@ import CreateGeneDisease from '../pages/createGeneDisease';
 import InterpretationAll from '../pages/interpretationAll';
 import GDMAll from '../pages/GDMAll';
 import SnapshotSummary from '../components/SnapshotSummary';
+import PublishEditHistory from '../pages/PublishEditHistory';
 import AwaitingActivation from '../components/AwaitingActivation';
 import AccessDenied from '../components/AccessDenied';
 import UserTable from '../pages/UserTable';
 import TermsOfUse from '../pages/TermsOfUse';
 import VariantPrioritizationTool from '../pages/VariantPrioritizationTool';
+import ClinVarBatchSubmission from "../pages/ClinVarBatchSubmission";
 import { TransferCuration } from '../components/admin/TransferCuration';
 import { gciRoutePaths, GCICurationRouterSwitch } from './GdmRoutes';
 
@@ -35,6 +37,7 @@ function AppRouter() {
             <AuthRoute exact path='/interpretation-all' component={InterpretationAll} />
             <AuthRoute exact path='/gdm-all' component={GDMAll} />
             <AuthRoute exact path="/snapshot-summary*" component={SnapshotSummary} />
+            <AuthRoute exact path="/edit-history/:snapshotPK" component={PublishEditHistory} />
             <AuthRoute exact path="/users" component={UserTable} />
             <AuthRoute exact path="/vp*" component={VariantPrioritizationTool} />
             
@@ -42,7 +45,7 @@ function AppRouter() {
             <AuthRoute exact path='/select-variant' component={SelectVariant} />
             <AuthRoute exact path="/variant-central/:rid" component={VariantCentralItem} />
             <AuthRoute exact path="/variant-central/:rid/interpretation/:interpretationPK" component={VariantCentralItem} />
-
+            <AuthRoute exact path='/clinvar-batch-submit' component={ClinVarBatchSubmission} />
             {/* GCI Routes */}
             <AuthRoute exact path='/create-gene-disease' component={CreateGeneDisease} />
             <AuthRoute exact path={gciRoutePaths} component={GCICurationRouterSwitch} />

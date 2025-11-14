@@ -18,7 +18,7 @@ def test_parses_variant_title():
   xml_s = load_variant_xml('12000')
   
   act_obj = test_parser.from_xml(xml_s)
-  assert 'NM_000151.4(G6PC):c.1039C>T (p.Gln347Ter)' == act_obj['clinvarVariantTitle']
+  assert 'NM_000151.4(G6PC1):c.1039C>T (p.Gln347Ter)' == act_obj['clinvarVariantTitle']
 
 def test_parses_variant_car_id():
   xml_s = load_variant_xml('12000')
@@ -31,14 +31,14 @@ def test_parses_hgvs_names():
 
   exp_hgvs_names = {
     "others": [
+      "NG_011808.1:g.15594C>T",
       "NM_000151.4:c.1039C>T",
       "NP_000142.2:p.Gln347Ter",
       "NM_001270397.2:c.*431C>T",
+      "NP_000142.1:p.Gln347Ter",
       "LRG_147t1:c.1039C>T",
       "LRG_147p1:p.Gln347Ter",
-      "NG_011808.1:g.15594C>T",
-      "LRG_147:g.15594C>T",
-      "NP_000142.1:p.Gln347Ter"
+      "LRG_147:g.15594C>T"
     ],
     "GRCh37": "NC_000017.10:g.41063408C>T",
     "GRCh38": "NC_000017.11:g.42911391C>T"

@@ -71,18 +71,18 @@ export const EvidenceModalManager = ({
   const getSourceData = () => {
     let source = {};
     // If current evidence has sourceInfo data, set as default
-    if (evidenceData && evidenceData.sourceInfo) {
+    if (lodashGet(evidenceData, "sourceInfo.metadata", null)) {
       source = cloneDeep(evidenceData.sourceInfo);
       if (lodashGet(source, "metadata['_kind_key']", '') === 'PMID') {
         // If pmid is not set in sourceInfo metadata, use current evidence articles array if exists
-        const selectedPmid = evidenceData.articles && evidenceData.articles.length > 0 ? evidenceData.articles[0].pmid : '';
-        if (source.metadata.pmid === undefined) {
-          source.metadata.pmid = selectedPmid;
-        } else {
+        const selectedPmid = lodashGet(evidenceData, "articles[0].pmid", null) ? evidenceData.articles[0].pmid : '';
+        if (lodashGet(source, "metadata.pmid", null)) {
           // If pmid in metadata is not same as evidence articles[0], reset since that's the correct pmid
-          if (source.metadata.pmid !== selectedPmid) {
+          if (selectedPmid !== '' && lodashGet(source, "metadata.pmid") !== selectedPmid) {
             source.metadata.pmid = selectedPmid;
           }
+        } else {
+          source.metadata.pmid = selectedPmid;
         }
       }
     }
@@ -172,7 +172,7 @@ export const EvidenceModalManager = ({
       const candidates = (
         interpretationCaseSegEvidences || []
       )
-        .filter(o => identifierCol in o.sourceInfo.metadata &&
+        .filter(o => o.sourceInfo && o.sourceInfo.metadata && identifierCol in o.sourceInfo.metadata &&
           o.sourceInfo.metadata[identifierCol] === metadata[identifierCol]);
 
       if (candidates.length > 0) {
@@ -220,7 +220,7 @@ export const EvidenceModalManager = ({
       const candidate = matchExistingEvidence(metadata);
       let newData = cloneDeep(getSourceData());
       if (isNewEvidence) {
-        if (candidate) {
+        if (candidate && lodashGet(candidate, "sourceInfo.metadata", null)) {
           // Editing a piece of evidence initially input in a different panel
           Object.assign(candidate.sourceInfo.metadata, metadata);
           Object.assign(newData, candidate.sourceInfo);
@@ -237,10 +237,14 @@ export const EvidenceModalManager = ({
 
       // If source is PMID and new evidence, check if Pubmed article needs to be added to DB.
       if (metadata._kind_key === 'PMID' && metadata.pmid) {
-        if (isNewEvidence) {
-          if (candidate) {
+        // Load in article data if new evidence or article object is missing
+        if (isNewEvidence || !lodashGet(evidenceData, "articles[0]", null)) {
+          // If article data exists in candidate, use it
+          if (candidate && lodashGet(candidate, "articles[0]", null)) {
             setTempArticle(candidate.articles[0]);
           } else {
+            // TODO: need to redo logic to track error if article cannot be saved and prevent user to continue to next step
+            // Get article data from DB
             const retrieveArticleRequest = API.get(API_NAME, "/articles/" + metadata.pmid);
             ongoingRequests.add(retrieveArticleRequest);
             try {
@@ -266,9 +270,12 @@ export const EvidenceModalManager = ({
           }
         } else {
           // If not new, save article object for saving existing evidence
-          const article = evidenceData.articles && evidenceData.articles.length > 0 ? evidenceData.articles[0] : {};
+          const article = lodashGet(evidenceData, "articles[0]", null) ? evidenceData.articles[0] : {};
           setTempArticle(article);
         }
+      } else {
+        // If not literature evidence, clear article object
+        setTempArticle(null);
       }
 
       if (loadNextErrorMessage) {
@@ -337,6 +344,14 @@ export const EvidenceModalManager = ({
   const submitCuratedEvidence = async (data) => {
     if (data === null) {
       // No change is needed
+    } else if ((lodashGet(sourceData, "metadata['_kind_key']", '') === 'PMID') &&
+      (lodashGet(sourceData, "metadata.pmid", '') === '' ||
+       (lodashGet(sourceData, "metadata.pmid", '') !== lodashGet(tempArticle, "pmid", '')))) {
+      // Error if no selected article, or no saved article object, or selected article doesn't match with saved article object
+      handleSubmitError(
+        new Error("Article was not saved correctly.")
+      );
+      return;
     } else {
       setIsSubmitting(true);
       setSubmitErrorMessage(null);
@@ -348,6 +363,12 @@ export const EvidenceModalManager = ({
         }
         return object
       }, {})
+
+      // Set article object only for PMID evidence
+      let articleObj = null;
+      if (lodashGet(sourceData, "metadata['_kind_key']", '') === 'PMID') {
+        articleObj = tempArticle;
+      }
 
       // Combine the changes with existing data
       // need to use old sourceInfo with new metadata
@@ -363,7 +384,7 @@ export const EvidenceModalManager = ({
         category: 'case-segregation',
         subcategory: getSubcategory(),
         modified_by: lodashGet(auth, "PK", null),
-        articles: [tempArticle],      
+        articles: articleObj ? [articleObj] : null,
         evidenceCriteria: '',    // criteria has no value because it is not used for case segregation
         evidenceDescription: '', // has no value because it is not used for case segregation
         sourceInfo: newData      // data object for case segregation curated evidence

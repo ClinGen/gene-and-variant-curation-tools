@@ -10,10 +10,10 @@ import { API } from 'aws-amplify';
 
 import { API_NAME } from '../utils';
 import LoadingSpinner from '../components/common/LoadingSpinner'
+import Alert from '../components/common/Alert'
 import { useAmplifyAPIRequestRecycler } from '../utilities/fetchUtilities';
 import { gdmAnnotationIsEarliestPublication } from '../utilities/gdmUtilities';
 import { EXTERNAL_API_MAP } from '../constants/externalApis';
-import CASE_INFO_TYPES from '../helpers/case_info_types';
 import { isScoringForCurrentSOP } from '../helpers/sop';
 import CaseLevelEvidencePanelSop7 from '../components/gene-disease-summary/CaseLevelEvidencePanelSop7';
 import CaseLevelEvidenceProbandVariantsPanel from '../components/gene-disease-summary/CaseLevelEvidenceProbandVariantsPanel';
@@ -25,6 +25,8 @@ import NonscorableEvidencePanel from '../components/gene-disease-summary/Nonscor
 import GeneDiseaseEvidenceSummaryHeader from '../components/gene-disease-summary/GeneDiseaseEvidenceSummaryHeader';
 import GeneDiseaseEvidenceSummaryClassificationMatrix from '../components/gene-disease-summary/classification_matrix';
 import VARIANT_SCORE_VARIANT_TYPES from '../components/gene-central/score/constants/variantScoreTypes';
+import VARIANT_PHASE_STATUSES from '../components/gene-central/score/constants/variantPhaseStatuses';
+import CASE_INFO_TYPES from '../components/gene-central/score/constants/caseInfoTypes';
 import { getModeInheritanceType, getScoreMOIString, getScoreUpperLimit } from '../components/gene-central/score/helpers/getDefaultScore';
 import isHomozygousScore from '../components/gene-central/score/helpers/isHomozygousScore';
 
@@ -173,7 +175,7 @@ const GeneDiseaseEvidenceSummary = ({
       parseExperimentalEvidence(annotationsData, curatorUserPK, curatorAffiliationPK);
       parseNonscorableEvidence(annotationsData);
       // parsing of case-level, segregation, and case-control return hpoIds to be fetched separately
-      const caseLevelHpoIds = parseCaseLevelEvidence(annotationsData, curatorUserPK, curatorAffiliationPK);
+      const caseLevelHpoIds = parseCaseLevelEvidence(annotationsData, curatorUserPK);
       const segregationHpoIds = parseCaseLevelSegregationEvidence(annotationsData, curatorUserPK, curatorAffiliationPK);
       const caseControlHpoIds = parseCaseControlEvidence(annotationsData, curatorUserPK, curatorAffiliationPK);
       const hpoIdsMap = {
@@ -298,12 +300,13 @@ const GeneDiseaseEvidenceSummary = ({
     const promises = Object.values(uniqueHpoIds).map(async id => {
       const checkedId = id.match(/HP:\d{7}/g);
       const url = EXTERNAL_API_MAP['HPOApi'] + checkedId;
-      return axios.get(url).then((result) => {
-        if (result && result.data && result.data.details) {
-          const { name } = result.data.details;
+      return axios.get(url).then(result => {
+        if (result?.data?.name) {
+          const name = result.data.name;
           return { id, name };
         }
-        return id;
+        // No HPO term
+        return { id };
       }).catch(() => {
         return { id };
       });
@@ -314,7 +317,11 @@ const GeneDiseaseEvidenceSummary = ({
         const resultsMap = {};
         results.forEach(result => {
           const { id, name } = result;
-          resultsMap[id] = name ? name : id + ' (note: term not found)';
+          // Display name if exist.
+          // If no name, check if "term not found" is not added to id then add it (for old HPO id).
+          resultsMap[id] = name ? name
+            : id.includes('term not found') ? id
+              : `${id} (note: term not found)`;
         });
         setHpoTermsCollection(resultsMap);
       }
@@ -340,7 +347,7 @@ const GeneDiseaseEvidenceSummary = ({
             if (individual.proband === true && (individual.variantScores && individual.variantScores.length)) {
               individualMatched.push(individual);
             }
-	  } else {
+          } else {
             if (individual.proband === true && (individual.scores && individual.scores.length)) {
               individualMatched.push(individual);
             }
@@ -470,9 +477,8 @@ const GeneDiseaseEvidenceSummary = ({
    * by the currently logged-in user or simply just scored by this user
    * @param {array} annotationsList - a list of annotations in a given gdm
    * @param {string} userPK - logged in user PK
-   * @param {string} curatorAffiliationPK - logged in user's associated affiliation PK
    */
-  const parseCaseLevelEvidence = (annotationsList, userPK, curatorAffiliationPK) => {
+  const parseCaseLevelEvidence = (annotationsList, userPK) => {
     let hpoIds = [];
     // Check SOP version
     // If not from snapshot, latest SOP version
@@ -547,6 +553,33 @@ const GeneDiseaseEvidenceSummary = ({
     return hpoIds;
   };
 
+  const getAnnotationSourceYear = (annotation) => {
+    let pubYear = "";
+    if (annotation.article?.date) {
+      const pubDate = (/^([\d]{4})(.*?)$/).exec(annotation.article.date);
+      pubYear = pubDate && pubDate[1];
+    } else if (annotation.scv?.date) {
+      pubYear = annotation.scv.date.substring(0,4);
+    }
+
+    return pubYear;
+  };
+
+  const setEvidenceReferenceData = (annotation, evidence) => {
+    const pubYear = getAnnotationSourceYear(annotation);
+
+    // Gather article info if annotation has article
+    evidence['pmid'] = annotation.article?.pmid;
+    evidence['pubYear'] = pubYear;
+    evidence['authors'] = annotation.article?.authors;
+    // Gather VCV, SCV info if annotation has ClinVar accession
+    evidence['vcvId'] = annotation.scv?.vcvId;
+    evidence['scvId'] = annotation.scv?.scvId;
+    evidence['submitter'] = annotation.scv?.submitter;
+
+    return evidence;
+  };
+
   /**
    * Method to find the scored case level (proband) evidence entries both created
    * by the currently logged-in affiliation or simply just scored affiliation
@@ -590,8 +623,7 @@ const GeneDiseaseEvidenceSummary = ({
           // in `familyScraper` we made sure `proband.associatedFamilies` is embeded family object(s)
           associatedFamily = proband.associatedFamilies[0];
         }
-        const pubDate = associatedAnnotation.article && (/^([\d]{4})(.*?)$/).exec(associatedAnnotation.article.date);
-        const segregation = associatedFamily && associatedFamily.segregation ? associatedFamily.segregation : null;
+        const segregation = lodashGet(associatedFamily, "segregation", null);
         const earliestPub = gdmAnnotationIsEarliestPublication(lodashGet(currentGdm, "earliestPublications", null), associatedAnnotation.PK);
         // Check each variantScore and add to evidence if valid
         proband.variantScores.forEach(variantScore => {
@@ -606,12 +638,12 @@ const GeneDiseaseEvidenceSummary = ({
               // Define object key/value pairs
               evidence['label'] = proband.label ? proband.label : '';
               evidence['earliestPub'] = earliestPub;
-              evidence['pmid'] = associatedAnnotation.article && associatedAnnotation.article.pmid;
-              evidence['pubYear'] = pubDate && pubDate[1];
-              evidence['authors'] = associatedAnnotation.article && associatedAnnotation.article.authors;
+              // Gather reference data
+              evidence = setEvidenceReferenceData(associatedAnnotation, evidence);
+              // Gather individual data
               evidence['sex'] = proband.sex ? proband.sex : '';
               evidence['ageType'] = proband.ageType ? proband.ageType : '';
-              evidence['ageValue'] = proband.ageValue ? proband.ageValue : null;
+              evidence['ageValue'] = proband.ageValue >= 0 ? proband.ageValue : null;
               evidence['ageUnit'] = proband.ageUnit && proband.ageUnit.length ? proband.ageUnit : '';
               evidence['probandIs'] = proband.probandIs ? proband.probandIs : '';
               evidence['ethnicity'] = proband.ethnicity && proband.ethnicity.length ? proband.ethnicity : '';
@@ -637,6 +669,8 @@ const GeneDiseaseEvidenceSummary = ({
               evidence['includeLodScoreInAggregateCalculation'] = segregation && has(segregation, 'includeLodScoreInAggregateCalculation') && segregation.includeLodScoreInAggregateCalculation;
               evidence['sequencingMethod'] = segregation && segregation.sequencingMethod
                 ? segregation.sequencingMethod : null;
+              evidence['phaseStatus'] = proband.phaseStatus
+                ? VARIANT_PHASE_STATUSES[proband.phaseStatus] : "N/A";
               // SOP8 - new score data
               evidence['variantType'] = VARIANT_SCORE_VARIANT_TYPES[variantScore.variantType];
               evidence['variant'] = variantScore.variantScored;
@@ -654,6 +688,7 @@ const GeneDiseaseEvidenceSummary = ({
               evidence['scoreCounted'] = probandScoreCounted;
               evidence['scoreExplanation'] = variantScore.scoreExplanation && variantScore.scoreExplanation.length
                 ? variantScore.scoreExplanation : '';
+              evidence['probandLink'] = isPreview ? `/curation-central/${currentGdm.PK}/annotation/${associatedAnnotation.PK}/individual-curation/${proband.PK}/edit` : null;
 
               caseLevelEvidenceList.push(evidence);
               setCaseLevelEvidence(caseLevelEvidenceList);
@@ -671,9 +706,8 @@ const GeneDiseaseEvidenceSummary = ({
             ? `${familyLabel} (${proband.label})`
             : `(${proband.label})`;
           segEvidence['earliestPub'] = earliestPub;
-          segEvidence['pmid'] = associatedAnnotation.article && associatedAnnotation.article.pmid;
-          segEvidence['pubYear'] = pubDate && pubDate[1];
-          segEvidence['authors'] = associatedAnnotation.article && associatedAnnotation.article.authors;
+          // Gather reference data
+          segEvidence = setEvidenceReferenceData(associatedAnnotation, segEvidence);
           // Get associatedFamily data
           segEvidence['ethnicity'] = associatedFamily.ethnicity && associatedFamily.ethnicity.length ? associatedFamily.ethnicity : '';
           segEvidence['hpoIdInDiagnosis'] = associatedFamily.hpoIdInDiagnosis && associatedFamily.hpoIdInDiagnosis.length
@@ -693,6 +727,7 @@ const GeneDiseaseEvidenceSummary = ({
           segEvidence['includeLodScoreInAggregateCalculation'] = segregation && has(segregation, 'includeLodScoreInAggregateCalculation') && segregation.includeLodScoreInAggregateCalculation;
           segEvidence['sequencingMethod'] = segregation && segregation.sequencingMethod
             ? segregation.sequencingMethod : null;
+          segEvidence['familyLink'] = isPreview ? `/curation-central/${currentGdm.PK}/annotation/${associatedAnnotation.PK}/family-curation/${associatedFamily.PK}/edit` : null;
           caseLevelEvidenceSegregationList.push(segEvidence);
           setCaseLevelEvidenceSegregation(caseLevelEvidenceSegregationList);
           hpoIds = hpoIds.concat(segEvidence.hpoIdInDiagnosis);
@@ -730,18 +765,18 @@ const GeneDiseaseEvidenceSummary = ({
                 // in `familyScraper` we made sure `proband.associatedFamilies` is embeded family object(s)
                 associatedFamily = proband.associatedFamilies[0];
               }
-              const pubDate = associatedAnnotation.article && (/^([\d]{4})(.*?)$/).exec(associatedAnnotation.article.date);
-              const segregation = associatedFamily && associatedFamily.segregation ? associatedFamily.segregation : null;
+              const pubDate = associatedAnnotation.article?.date && (/^([\d]{4})(.*?)$/).exec(associatedAnnotation.article.date);
+              const segregation = lodashGet(associatedFamily, "segregation", null);
               // Define object key/value pairs
               caseLevelEvidence['variantType'] = score.caseInfoType && score.caseInfoType.length ? mapVariantType(score.caseInfoType) : '';
               caseLevelEvidence['variants'] = proband.variants && proband.variants.length ? proband.variants : [];
-              caseLevelEvidence['authors'] = associatedAnnotation.article && associatedAnnotation.article.authors;
-              caseLevelEvidence['pmid'] = associatedAnnotation.article && associatedAnnotation.article.pmid;
+              caseLevelEvidence['authors'] = associatedAnnotation.article?.authors;
+              caseLevelEvidence['pmid'] = associatedAnnotation.article?.pmid;
               caseLevelEvidence['pubYear'] = pubDate && pubDate[1];
               caseLevelEvidence['label'] = proband.label ? proband.label : '';
               caseLevelEvidence['sex'] = proband.sex ? proband.sex : '';
               caseLevelEvidence['ageType'] = proband.ageType ? proband.ageType : '';
-              caseLevelEvidence['ageValue'] = proband.ageValue ? proband.ageValue : null;
+              caseLevelEvidence['ageValue'] = proband.ageValue >= 0 ? proband.ageValue : null;
               caseLevelEvidence['ageUnit'] = proband.ageUnit && proband.ageUnit.length ? proband.ageUnit : '';
               caseLevelEvidence['probandIs'] = proband.probandIs ? proband.probandIs : '';
               caseLevelEvidence['ethnicity'] = proband.ethnicity && proband.ethnicity.length ? proband.ethnicity : '';
@@ -771,6 +806,8 @@ const GeneDiseaseEvidenceSummary = ({
               caseLevelEvidence['includeLodScoreInAggregateCalculation'] = segregation && has(segregation, 'includeLodScoreInAggregateCalculation') && segregation.includeLodScoreInAggregateCalculation;
               caseLevelEvidence['sequencingMethod'] = segregation && segregation.sequencingMethod
                 ? segregation.sequencingMethod : null;
+              caseLevelEvidence['probandLink'] = isPreview ? `/curation-central/${currentGdm.PK}/annotation/${associatedAnnotation.PK}/individual-curation/${proband.PK}/edit` : null;
+
               // Put object into array
               caseLevelEvidenceList.push(caseLevelEvidence);
               setCaseLevelEvidence(caseLevelEvidenceList);
@@ -843,34 +880,30 @@ const GeneDiseaseEvidenceSummary = ({
 
     if (filteredSegregationTotal.length) {
       filteredSegregationTotal.forEach(family => {
-        const segregation = family.segregation ? family.segregation : null;
-        const segregationEvidence = {};
+        const segregation = lodashGet(family, "segregation", null);
+        let segregationEvidence = {};
         const associatedAnnotation = family.associatedAnnotation || {};
-        const pubDate = associatedAnnotation.article && (/^([\d]{4})(.*?)$/).exec(associatedAnnotation.article.date);
         // Define object key/value pairs
         segregationEvidence['earliestPub'] = gdmAnnotationIsEarliestPublication(lodashGet(currentGdm, "earliestPublications", null), associatedAnnotation.PK);
-        segregationEvidence['authors'] = associatedAnnotation.article && associatedAnnotation.article.authors;
-        segregationEvidence['pmid'] = associatedAnnotation.article && associatedAnnotation.article.pmid;
-        segregationEvidence['pubYear'] = pubDate && pubDate[1];
+        // Gather reference data
+        segregationEvidence = setEvidenceReferenceData(associatedAnnotation, segregationEvidence);
+        // Gather family info
         segregationEvidence['label'] = family.label ? family.label : '';
         segregationEvidence['ethnicity'] = family.ethnicity ? family.ethnicity : '';
-        segregationEvidence['moiDisplayedForFamily'] = segregation && segregation.moiDisplayedForFamily
+        segregationEvidence['moiDisplayedForFamily'] = segregation?.moiDisplayedForFamily
           ? segregation.moiDisplayedForFamily : '';
         segregationEvidence['hpoIdInDiagnosis'] = family.hpoIdInDiagnosis && family.hpoIdInDiagnosis.length
           ? family.hpoIdInDiagnosis : [];
         segregationEvidence['termsInDiagnosis'] = family.termsInDiagnosis && family.termsInDiagnosis.length
           ? family.termsInDiagnosis : '';
-        segregationEvidence['segregationNumAffected'] = segregation && segregation.numberOfAffectedWithGenotype
-          ? segregation.numberOfAffectedWithGenotype : null;
-        segregationEvidence['segregationNumUnaffected'] = segregation && segregation.numberOfUnaffectedWithoutBiallelicGenotype
-          ? segregation.numberOfUnaffectedWithoutBiallelicGenotype : null;
-        segregationEvidence['segregationPublishedLodScore'] = segregation && segregation.publishedLodScore
-          ? segregation.publishedLodScore : null;
-        segregationEvidence['segregationEstimatedLodScore'] = segregation && segregation.estimatedLodScore
-          ? segregation.estimatedLodScore : null;
+        segregationEvidence['segregationNumAffected'] = lodashGet(segregation, "numberOfAffectedWithGenotype", null);
+        segregationEvidence['segregationNumUnaffected'] = lodashGet(segregation, "numberOfUnaffectedWithoutBiallelicGenotype", null);
+        segregationEvidence['segregationPublishedLodScore'] = lodashGet(segregation, "publishedLodScore", null);
+        segregationEvidence['segregationEstimatedLodScore'] = lodashGet(segregation, "estimatedLodScore", null);
         segregationEvidence['includeLodScoreInAggregateCalculation'] = segregation && has(segregation, 'includeLodScoreInAggregateCalculation') && segregation.includeLodScoreInAggregateCalculation;
-        segregationEvidence['sequencingMethod'] = segregation && segregation.sequencingMethod
-          ? segregation.sequencingMethod : null;
+        segregationEvidence['sequencingMethod'] = lodashGet(segregation, "sequencingMethod", null);
+        segregationEvidence['familyLink'] = isPreview ? `/curation-central/${currentGdm.PK}/annotation/${associatedAnnotation.PK}/family-curation/${family.PK}/edit` : null;
+
         // Put object into array
         segregationEvidenceList.push(segregationEvidence);
         setSegregationEvidence(segregationEvidenceList);
@@ -907,15 +940,18 @@ const GeneDiseaseEvidenceSummary = ({
                 // Only interested in the logged-in user's scores and their associated evidence
                 if ((score.affiliation && curatorAffiliationPK && score.affiliation === curatorAffiliationPK)
                   || (!score.affiliation && !curatorAffiliationPK && score.submitted_by.PK === userPK)) {
-                  if ('score' in score && score.score !== 'none') {
-                    const caseControlEvidence = {};
+                  // caseControl scores has 2 versions
+                  // Old score object only has score point which by default has "Score" status
+                  // New score object has scoreStatus, ScoreExplanation, and score
+                  if (('score' in score && score.score !== 'none') ||
+                    ('scoreStatus' in score && (score.scoreStatus !== 'none' || score.scoreStatus !== ''))) {
 
-                    const pubDate = annotation.article && (/^([\d]{4})(.*?)$/).exec(annotation.article.date);
+                    let caseControlEvidence = {};
                     // Define object key/value pairs
                     caseControlEvidence['earliestPub'] = gdmAnnotationIsEarliestPublication(lodashGet(currentGdm, "earliestPublications", null), annotation.PK);
-                    caseControlEvidence['authors'] = annotation.article && annotation.article.authors;
-                    caseControlEvidence['pmid'] = annotation.article && annotation.article.pmid;
-                    caseControlEvidence['pubYear'] = pubDate && pubDate[1];
+                    // Gather reference data
+                    caseControlEvidence = setEvidenceReferenceData(annotation, caseControlEvidence);
+                    // Gather case control info
                     caseControlEvidence['label'] = caseControl.label ? caseControl.label : '';
                     caseControlEvidence['studyType'] = caseControl.studyType ? caseControl.studyType : '';
                     caseControlEvidence['detectionMethod'] = caseControl.caseCohort && caseControl.caseCohort.method
@@ -940,13 +976,28 @@ const GeneDiseaseEvidenceSummary = ({
                     caseControlEvidence['pValue'] = caseControl.pValue ? caseControl.pValue : null;
                     caseControlEvidence['confidenceIntervalFrom'] = caseControl.confidenceIntervalFrom ? caseControl.confidenceIntervalFrom : null;
                     caseControlEvidence['confidenceIntervalTo'] = caseControl.confidenceIntervalTo ? caseControl.confidenceIntervalTo : null;
-                    caseControlEvidence['score'] = has(score, 'score') ? score.score : null;
+                    // caseControl scores has 2 versions
+                    // Old score object only has score point which by default has "Score" status
+                    // New score object has scoreStatus, ScoreExplanation, and score
+                    if ('scoreStatus' in score) {
+                      // New score object
+                      caseControlEvidence['scoreStatus'] = score.scoreStatus;
+                      caseControlEvidence['score'] = 'score' in score ? score.score : null;
+                      caseControlEvidence['scoreExplanation'] = score.scoreExplanation && score.scoreExplanation.length
+                        ? score.scoreExplanation : ''
+                    } else {
+                      // Old score object
+                      caseControlEvidence['scoreStatus'] = 'Score';
+                      caseControlEvidence['score'] = 'score' in score ? score.score : null;
+                      caseControlEvidence['scoreExplanation'] = ''
+                    }
                     if (caseControl.caseCohort && caseControl.caseCohort.commonDiagnosis && caseControl.caseCohort.commonDiagnosis.length) {
                       const disease = caseControl.caseCohort.commonDiagnosis[0];
-                      caseControlEvidence['diseaseId'] = disease.diseaseId ? disease.diseaseId : null;
+                      caseControlEvidence['diseaseId'] = disease.PK ? disease.PK : null;
                       caseControlEvidence['diseaseTerm'] = disease.term ? disease.term : '';
                       caseControlEvidence['diseaseFreetext'] = has(disease, 'freetext') ? disease.freetext : false;
                       caseControlEvidence['diseasePhenotypes'] = disease.phenotypes && disease.phenotypes.length ? disease.phenotypes : [];
+                      caseControlEvidence['ccLink'] = isPreview ? `/curation-central/${currentGdm.PK}/annotation/${annotation.PK}/case-control-curation/${caseControl.PK}/edit` : null;
                       // Put object into array
                       caseControlEvidenceList.push(caseControlEvidence);
                       setCaseControlEvidence(caseControlEvidenceList);
@@ -959,6 +1010,7 @@ const GeneDiseaseEvidenceSummary = ({
                         ? caseControl.caseCohort.termsInDiagnosis : '';
                       caseControlEvidence['hpoIdInDiagnosis'] = caseControl.caseCohort && caseControl.caseCohort.hpoIdInDiagnosis && caseControl.caseCohort.hpoIdInDiagnosis.length
                         ? caseControl.caseCohort.hpoIdInDiagnosis : [];
+                      caseControlEvidence['ccLink'] = isPreview ? `/curation-central/${currentGdm.PK}/annotation/${annotation.PK}/case-control-curation/${caseControl.PK}/edit` : null;
                       // Put object into array
                       caseControlEvidenceList.push(caseControlEvidence);
                       setCaseControlEvidence(caseControlEvidenceList);
@@ -994,26 +1046,27 @@ const GeneDiseaseEvidenceSummary = ({
           // Loop through scores, if any
           if (experimental.scores && experimental.scores.length) {
             experimental.scores.forEach(score => {
-              const experimentalEvidence = {};
+              let experimentalEvidence = {};
               // Only interested in the logged-in user's scores and their associated evidence
               if ((score.affiliation && curatorAffiliationPK && score.affiliation === curatorAffiliationPK)
                 || (!score.affiliation && !curatorAffiliationPK && score.submitted_by.PK === userPK)) {
                 if ('scoreStatus' in score && (score.scoreStatus !== 'none' || score.scoreStatus !== '')) {
-                  const pubDate = (/^([\d]{4})(.*?)$/).exec(annotation.article.date);
                   // Define object key/value pairs
                   experimentalEvidence['label'] = experimental.label ? experimental.label : '';
                   experimentalEvidence['evidenceType'] = experimental.evidenceType;
                   experimentalEvidence['evidenceSubtype'] = mapEvidenceSubtype(experimental);
                   experimentalEvidence['earliestPub'] = gdmAnnotationIsEarliestPublication(lodashGet(currentGdm, "earliestPublications", null), annotation.PK);
-                  experimentalEvidence['pmid'] = annotation.article.pmid;
-                  experimentalEvidence['pubYear'] = pubDate[1];
-                  experimentalEvidence['authors'] = annotation.article.authors;
+                  // Gather reference data
+                  experimentalEvidence = setEvidenceReferenceData(annotation, experimentalEvidence);
+                  // Gather experimental info
                   experimentalEvidence['explanation'] = mapExperimentalEvidenceExplanation(experimental);
                   experimentalEvidence['scoreStatus'] = score.scoreStatus;
                   experimentalEvidence['defaultScore'] = score.calculatedScore;
                   experimentalEvidence['modifiedScore'] = has(score, 'score') ? score.score : null;
                   experimentalEvidence['scoreExplanation'] = score.scoreExplanation && score.scoreExplanation.length
                     ? score.scoreExplanation : '';
+                  // Set experimental link
+                  experimentalEvidence['expLink'] = isPreview ? `/curation-central/${currentGdm.PK}/annotation/${annotation.PK}/experimental-curation/${experimental.PK}/edit` : null;
                   // Put object into array
                   experimentalEvidenceList.push(experimentalEvidence);
                   setExperimentalEvidence(experimentalEvidenceList);
@@ -1036,11 +1089,13 @@ const GeneDiseaseEvidenceSummary = ({
 
     if (annotationsList.length) {
       annotationsList.forEach(annotation => {
-        if (annotation.articleNotes && annotation.articleNotes.nonscorable.checked) {
+        if (annotation.articleNotes?.nonscorable?.checked) {
           nonscorableEvidenceList.push({
             article: annotation.article,
+            scv: annotation.scv,
             articleNotes: annotation.articleNotes,
-            earliestPub: gdmAnnotationIsEarliestPublication(lodashGet(currentGdm, "earliestPublications", null), annotation.PK)
+            earliestPub: gdmAnnotationIsEarliestPublication(lodashGet(currentGdm, "earliestPublications", null), annotation.PK),
+            annoLink: isPreview ? `/curation-central/${currentGdm.PK}/annotation/${annotation.PK}` : null
           });
         }
       });
@@ -1137,6 +1192,14 @@ const GeneDiseaseEvidenceSummary = ({
           Print PDF
         </Button>
       </div>
+      {isPreview
+        ? <Alert
+            name="preview-only-banner"
+            className="mb-0"
+            type="warning"
+            value={`<strong>Note:</strong> This is a static table.  Please refresh this page if you want to update it to display any changes you have made to this record.`} />
+        : null
+      }
     </div>
   );
 };

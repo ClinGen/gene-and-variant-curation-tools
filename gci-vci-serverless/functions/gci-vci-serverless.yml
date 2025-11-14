@@ -4,9 +4,12 @@ gci-vci-serverless:
   handler: src/app.handler
   environment:
     CLIN_VAR_EUTILS_VCV_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?api_key=&db=clinvar&rettype=vcv&is_variationid&from_esearch=true&id='
+    CLIN_VAR_EUTILS_EFETCH_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
     CAR_ALLELE_ENDPOINT: 'https://reg.genome.network/allele/'
+    CLIN_VAR_ALLELES_ENDPOINT: 'https://reg.genome.network/alleles?ClinVar.variationId='
     ENSEMBL_VEP_HGVS_ENDPOINT: 'https://rest.ensembl.org/vep/human/hgvs/'
     CLIN_VAR_ESEARCH_ENDPOINT: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?api_key=&db=clinvar&term='
+    GENE_TRACKER_ENDPOINT: ''
     DB_TABLE_NAME: ${self:custom.resources.gci-vci-table-name}
     DB_VPT_TABLE_NAME: ${self:custom.resources.vpt-table-name}
     DB_VPFILTER_TABLE_NAME: ${self:custom.resources.vpf-table-name}
@@ -16,12 +19,19 @@ gci-vci-serverless:
     SNAPSHOT_BUCKET: ${self:custom.resources.snapshot-bucket-name}
     VP_BUCKET: ${self:custom.resources.vp-bucket-name}
     APP_STAGE: ${self:provider.stage}
-    MIGRATION: ${opt:migration}
+    # MIGRATION: ${opt:migration}
     # Temporary - move to Secrets Manager (dynamic reference)?
     KAFKA_CERT_PW: ''
+    KAFKA_KEY: ''
+    KAFKA_SECRET: ''
+    GENE_TRACKER_TOKEN: ''
     # Temporary - locate elsewhere or use other data/services
     LOCAL_FILE_DIR: 'local-files'
     #ES_DOMAIN_ENDPOINT: !GetAtt ElasticsearchDomain.DomainEndpoint
+    AFFILS_ENDPOINT_PROD: 
+    AFFILS_API_KEY_PROD: ''
+    AFFILS_ENDPOINT_DEV: 
+    AFFILS_API_KEY_DEV: ''
   events:
     - schedule:
         name: warmer-schedule-${self:provider.stage}
@@ -399,7 +409,7 @@ gci-vci-serverless:
         #reqValidatorName: ApiValidation
         documentation:
           summary: "Retrive a PubMed article metadata based on the given PubMed Id."
-          descriont: >-
+          description: >-
             Returns the PubMed with the given PubMed Id which is a required query parameter.
           pathParams:
             -
@@ -424,6 +434,7 @@ gci-vci-serverless:
         path: /articles
         method: post
         cors: true
+        # authorizer: aws_iam
         documentation:
           summary: "Create a new article item."
           description: >-
@@ -505,6 +516,7 @@ gci-vci-serverless:
         path: /curated-evidences
         method: get
         cors: true
+        # authorizer: aws_iam
         documentation:
           summary: "Get a list of curated evidences."
           description: "Queries for a list of curated evidences."
@@ -787,6 +799,7 @@ gci-vci-serverless:
         path: /genes
         method: get
         cors: true
+        # authorizer: aws_iam
         documentation:
           summary: "Get a list of genes."
           description: "Queries for a list of all genes."
@@ -807,6 +820,7 @@ gci-vci-serverless:
         path: /genes/{pk}
         method: get
         cors: true
+        # authorizer: aws_iam
         documentation:
           summary: "Retrieve an existing gene based on the given gene symbol."
           description: >-
@@ -886,6 +900,7 @@ gci-vci-serverless:
         path: /gdms
         method: get
         cors: true
+        # authorizer: aws_iam
         documentation:
           summary: "Get a list of gdms."
           description: "Queries for a list of all gdms."
@@ -934,6 +949,7 @@ gci-vci-serverless:
         path: /gdms/{pk}
         method: get
         cors: true
+        # authorizer: aws_iam
         documentation:
           summary: "Get an existing gdm"
           description: >-
@@ -2720,7 +2736,7 @@ gci-vci-serverless:
         method: post
         cors: true
         authorizer: aws_iam
-        reqValidatorName: ApiValidation
+        # reqValidatorName: ApiValidation
         documentation:
           summary: "Perform a messaging action using provided data."
           description: >-
@@ -3005,14 +3021,14 @@ gci-vci-serverless:
         method: get
         cors: true
         authorizer: aws_iam
-        pathParameters:
-          - name: "getids"
-            description: "The chunkids of the vp search results." 
         #reqValidatorName: ApiValidation
         documentation:
           summary: "Get variant data through gene search"
           description: >-
             Returns variant data via gene search
+          pathParameters:
+            - name: "getids"
+              description: "The chunkids of the vp search results." 
           queryParams:
             -
               name: "geneSymbol"
@@ -3284,3 +3300,215 @@ gci-vci-serverless:
                 description: "An error describing what went wrong during the query."
               # responseModels:
               #   "application/json": "ErrorResponse"
+    - http:
+        path: /clinvar-submission-batch/{action}/{id}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Perform a ClinVar submission batch action using specified data."
+          description: >-
+            After retrieving one or more batches with the given ID (PK or affiliation),
+            perform the requested ClinVar submission batch action using that data.
+          pathParameters:
+            -
+              name: "action"
+              description: "The ClinVar submission batch action (fetch, find or generate) to perform."
+            -
+              name: "id"
+              description: "The ID (PK or affiliation) of the batch or batches to use."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The requested batch data."
+            -
+              statusCode: "404"
+              responseBody:
+                description: "An error describing what data was not found."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+    - http:
+        path: /clinvar-submission-batch/{action}/{id}/{input}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Perform a ClinVar submission batch action using specified data."
+          description: >-
+            After retrieving one or more batches with the given ID (PK or affiliation) and status,
+            perform the requested ClinVar submission batch action using that data.
+          pathParameters:
+            -
+              name: "action"
+              description: "The ClinVar submission batch action (fetch, find or generate) to perform."
+            -
+              name: "id"
+              description: "The ID (PK or affiliation) of the batch or batches to use."
+            -
+              name: "input"
+              description: "The status of the batch or batches to use."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The requested batch data."
+            -
+              statusCode: "404"
+              responseBody:
+                description: "An error describing what data was not found."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+    - http:
+        path: /clinvar-submission-batch/{action}/{id}
+        method: post
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Perform a ClinVar submission batch action using specified data."
+          description: >-
+            Using data provided, either in the URL or the request body,
+            perform the requested ClinVar submission batch action.
+          pathParameters:
+            -
+              name: "action"
+              description: "The ClinVar submission batch action (generate) to perform."
+            -
+              name: "id"
+              description: "The PK the batch to use."
+          requestBody:
+            description: "List of snapshots."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The generated ClinVar submission data."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error in the request body."
+    - http:
+        path: /clinvar-submission-batch/{action}/{id}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Perform a ClinVar submission batch action using provided data."
+          description: >-
+            Using data provided, either in the URL or the request body,
+            perform the requested ClinVar submission batch action.
+          pathParameters:
+            -
+              name: "action"
+              description: "The ClinVar submission batch action (add, remove, replace, or update) to perform."
+            -
+              name: "id"
+              description: "The ID (PK or affiliation) of the batch to use."
+          requestBody:
+            description: "Updated ClinVar submission batch data (optional)."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The ClinVar submission batch data."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error in the request body."
+    - http:
+        path: /clinvar-submission-batch/{action}/{id}/{input}
+        method: put
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Perform a ClinVar submission batch action using provided data."
+          description: >-
+            Using data provided, either in the URL or the request body,
+            perform the requested ClinVar submission batch action.
+          pathParameters:
+            -
+              name: "action"
+              description: "The ClinVar submission batch action (add, remove, replace, or update) to perform."
+            -
+              name: "id"
+              description: "The ID (PK or affiliation) of the batch to use."
+            -
+              name: "input"
+              description: "The PK of the interpretation to use."
+          requestBody:
+            description: "Updated ClinVar submission batch data (optional)."
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The ClinVar submission batch data."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+            -
+              statusCode: "422"
+              responseBody:
+                description: "An error in the request body."
+    - http:
+        path: /precurations/{pk}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        #reqValidatorName: ApiValidation
+        documentation:
+          summary: "Retrive a precuration based on given Id."
+          description: >-
+            Returns the precuration data with the given Id which is a required query parameter.
+          pathParams:
+            -
+              name: 'pk'
+              description: >-
+                The Id of the requested precuration.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The precuration matching the given Id."
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."
+    - http:
+        path: /clinvar-vcv/{vcv}/{scv}
+        method: get
+        cors: true
+        authorizer: aws_iam
+        documentation:
+          summary: "Retrieve ClinVar submission SCV evidence data."
+          description: >-
+            Returns the ClinVar SCV data which required parameters VCV and SCV ids.
+          methodResponses:
+            -
+              statusCode: "200"
+              responseBody:
+                description: "The SCV info for the given VCV/SCV combo."
+            -
+              statusCode: "404"
+              responseBody:
+                description: "Empty JSON object."
+            -
+              statusCode: "400"
+              responseBody:
+                description: "An error describing what went wrong during the request."

@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
 import { get as lodashGet, isEmpty } from 'lodash';
-
 import moment from 'moment';
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../../utils';
 import { connect } from 'react-redux';
 
-import { getAffiliationName } from '../../helpers/get_affiliation_name';
+import { AffilsContext, getAffiliationName } from '../../helpers/affiliationsHelpers';
 import { getApproverNames, getContributorNames } from '../../helpers/get_approver_names';
 import { getUserName } from '../../helpers/getUserName';
 
+import { CurationReasonsForm } from '../common/CurationReasonsForm';
 import LoadingSpinner from '../common/LoadingSpinner';
 import Alert from '../common/Alert';
 import { gdmPutParticipantsAndSetState } from '../../utilities/gdmUtilities';
 import { AmplifyAPIRequestRecycler } from '../../utilities/fetchUtilities';
 import { setGdmAction } from '../../actions/gdmActions';
+import hasDisease from "../../helpers/has_disease";
 
 class PublishApproval extends Component {
+    static contextType = AffilsContext;
 
     constructor(props) {
         super(props);
@@ -24,6 +26,7 @@ class PublishApproval extends Component {
 
         // Determine which type of resource (GCI GDM or VCI interpretation) is being published
         const selectedResourceType = props.gdm && props.gdm.PK ? 'gdm' : props.interpretation && props.interpretation.PK ? 'interpretation' : null;
+        const curationReasonsChecked = new Array(9).fill(false);
 
         // If both the data to identify a "selected" snapshot (props.selectedSnapshotUUID and props[selectedResourceType].PK) and a list of
         // snapshots to search (props.snapshots) exist, then try to find the specified snapshot
@@ -60,6 +63,9 @@ class PublishApproval extends Component {
             publishComment: undefined,
             publishSubmitter: undefined,
             publishAffiliation: undefined,
+            curationReasons: [],
+            curationReasonsChecked: curationReasonsChecked,
+            reasonsFormErrors: null,
             isPublishPreview: false,
             showAlertMessage: false,
             alertType: null,
@@ -89,6 +95,18 @@ class PublishApproval extends Component {
         const selectedResourceType = this.state.selectedResourceType;
         const affiliation = this.props.affiliation;
 
+        if (selectedResourceType === 'interpretation') {
+          const specifiedGene = lodashGet(this.props.interpretation, 'cspec.specifiedGene', '');
+          if (!specifiedGene || specifiedGene.trim() === '') {
+              this.showAlert(
+                  'danger',
+                  'publish-error',
+                  'There is no specified gene saved to the record. Please select a specified gene via the Specification Document modal and resave the document to the interpretation.'
+              );
+              return;
+          }
+        }
+
         // Set variables based on the (parent) resource type
         if (selectedResourceType === 'gdm') {
             affiliationSubgroup = 'gcep';
@@ -96,20 +114,32 @@ class PublishApproval extends Component {
             affiliationSubgroup = 'vcep';
         }
 
-        const publishAffiliation = affiliation && affiliation.subgroups && affiliation.subgroups[affiliationSubgroup] &&
+        let formErrors;
+        if (this.state.selectedProvisional && !this.state.selectedProvisional.publishClassification) {
+          formErrors = this.validateCurationReasons();
+        }
+
+        if (isEmpty(formErrors)) {
+          const publishAffiliation = affiliation && affiliation.subgroups && affiliation.subgroups[affiliationSubgroup] &&
             affiliation.subgroups[affiliationSubgroup].id ? affiliation.subgroups[affiliationSubgroup].id : undefined;
-        this.setState({
-            publishSubmitter: getUserName(this.props.auth),
-            publishAffiliation: publishAffiliation,
-            isPublishPreview: true
-        });
+          this.setState({
+              publishSubmitter: getUserName(this.props.auth),
+              publishAffiliation: publishAffiliation,
+              isPublishPreview: true
+          });
+        } else {
+          this.setState({ reasonsFormErrors: formErrors })
+        }
     }
 
     /**
      * Method to handle resetting the publish form data
      */
     handleCancelPublish = () => {
+        const resetCurationReasonsChecked = this.state.curationReasonsChecked.fill(false);
         this.setState({
+            curationReasons: [],
+            curationReasonsChecked: resetCurationReasonsChecked,
             publishSubmitter: undefined,
             publishAffiliation: undefined,
             publishComment: undefined,
@@ -146,6 +176,58 @@ class PublishApproval extends Component {
      */
     hideAlert = () => {
         this.setState({ showAlertMessage: false });
+    }
+
+    setCurationReasons = (curationReasons) => {
+      this.setState({ curationReasons });
+    }
+
+    setCheckboxState = (updatedCheckedState) => {
+      this.setState({ curationReasonsChecked: updatedCheckedState });
+    }
+
+    validateCurationReasons = () => {
+      const curationReasons = this.state.curationReasons ? this.state.curationReasons : [];
+      let reasonsFormError = {};
+      // Check for empty or missing values before moving to preview Publish
+      if (!curationReasons || curationReasons.length < 1) {
+        reasonsFormError['error'] = "Please choose a reason for publishing before continuing";
+      }
+      return reasonsFormError;
+    }
+
+    clearCurationReasonsErrors = () => {
+      this.setState({ reasonsFormErrors: null })
+    }
+
+    renderCurationReasonsPreview = () => {
+      if (this.state.curationReasons && this.state.curationReasons.length > 0) {
+        return this.state.curationReasons.map((reason, i) => {
+          return (
+            <dl className="inline-dl clearfix" key={i}>
+              <dd>{reason}</dd>
+            </dl>
+          );
+        });
+      }
+    }
+
+    /**
+     * Method to save curation reasons to snapshot before
+     * publishing to data exchange
+     * @param {Array} curationReasons - List of selected reason(s), selected by user in Publish panel
+     * @param {Object} publishProvisional - The resource object within the snapshot
+     * @param {string} selectedResourceType - Either 'gdm' or 'interpretation'
+     * @param {Object} selectedSnapshot - The current snapshot to be updated and published
+     */
+    saveCurationReasonsToSelectedSnapshot = (curationReasons, publishProvisional, selectedResourceType, selectedSnapshot) => {
+      publishProvisional['curationReasons'] = curationReasons;
+      selectedSnapshot.resource = publishProvisional;
+      const params = {body: {selectedSnapshot}}
+      const url = `/snapshots/${selectedSnapshot.PK}?type=${selectedResourceType}`;
+      return API.put(API_NAME, url, params).then(updatedSelectedSnapshot => {
+        return Promise.resolve(updatedSelectedSnapshot);
+      });
     }
 
     /**
@@ -212,7 +294,7 @@ class PublishApproval extends Component {
         let uncData = this.props.setUNCData(provisional, status, publishDate, publishDate, publishSubmitter, contributors);
 
         // Post published/unpublished data to Data Exchange
-        this.props.postTrackData(uncData).then(response => {
+        this.props.postTrackData(uncData).then(() => {
             console.log('Successfully sent %s data to Data Exchange for provisional %s at %s', status, provisional.PK, moment(publishDate).toISOString());
         }).catch(error => {
             console.log('Error sending %s data to Data Exchange for provisional %s at %s - Error: %o', status, provisional.PK, moment(publishDate).toISOString(), error);
@@ -264,6 +346,22 @@ class PublishApproval extends Component {
             let associatedResourceSnapshots, resourceProperName, resourceName;
             const selectedResourceType = this.state.selectedResourceType;
 
+            // If the user is working on an interpretation, make sure it has a
+            // disease associated with it. For background on this, see this
+            // GitHub issue:
+            // https://github.com/ClinGen/gene-and-variant-curation-tools/issues/273
+            if(selectedResourceType === 'interpretation') {
+                if(!hasDisease(this.props.interpretation)) {
+                    const noDiseaseMessage = 'A disease must be'
+                        + ' associated with a classification in order to'
+                        + ' publish to the ClinGen Evidence Repository.';
+                    window.alert(noDiseaseMessage)
+                    this.handleCancelPublish();
+                    this.setState({ submitBusy: false });
+                    return;
+                }
+            }
+
             // Set variables based on the (parent) resource type
             if (selectedResourceType === 'gdm') {
                 associatedResourceSnapshots = 'associatedClassificationSnapshots';
@@ -275,7 +373,11 @@ class PublishApproval extends Component {
                 resourceName = 'interpretation';
             }
 
-            this.publishToDataExchange(this.state.selectedSnapshot['item_type'], this.state.selectedSnapshot['PK']).then(response => {
+            const curationReasons = this.state.curationReasons;
+            let publishProvisional = this.state.selectedProvisional ? this.state.selectedProvisional : {};
+            let selectedSnapshot = this.state.selectedSnapshot;
+            this.saveCurationReasonsToSelectedSnapshot(curationReasons, publishProvisional, selectedResourceType, selectedSnapshot).then(() => {
+              this.publishToDataExchange(this.state.selectedSnapshot['item_type'], this.state.selectedSnapshot['PK']).then(response => {
                 let publishProvisional = this.state.selectedProvisional ? this.state.selectedProvisional : {};
                 let currentProvisional = this.props.provisional ? this.props.provisional : {};
                 const submissionTimestamp = new Date();
@@ -286,6 +388,9 @@ class PublishApproval extends Component {
                 publishProvisional.publishAffiliation = this.state.publishAffiliation;
                 publishProvisional.publishDate = moment(submissionTimestamp).toISOString();
 
+                if (curationReasons && curationReasons.length) {
+                    publishProvisional['curationReasons'] = curationReasons;
+                }
                 if (this.state.publishComment && this.state.publishComment.length) {
                     publishProvisional.publishComment = this.state.publishComment;
                 } else if (publishProvisional.publishComment) {
@@ -303,6 +408,9 @@ class PublishApproval extends Component {
                     currentProvisional.publishAffiliation = this.state.publishAffiliation;
                     currentProvisional.publishDate = moment(submissionTimestamp).toISOString();
 
+                    if (curationReasons && curationReasons.length) {
+                        currentProvisional['curationReasons'] = curationReasons;
+                    }
                     if (this.state.publishComment && this.state.publishComment.length) {
                         currentProvisional.publishComment = this.state.publishComment;
                     } else if (currentProvisional.publishComment) {
@@ -368,6 +476,7 @@ class PublishApproval extends Component {
                                     (previouslyPublishedSnapshot.resource.publishComment ? ' with the following comment: ' +
                                         previouslyPublishedSnapshot.resource.publishComment : '');
                                 previouslyPublishedSnapshot.resource.publishClassification = false;
+                                previouslyPublishedSnapshot.resource.isRepublish = false;
                                 previouslyPublishedSnapshot.resource.publishSubmitter = publishProvisional.publishSubmitter +
                                     ' (automatic due to publication of another ' + resourceName + ')';
                                 previouslyPublishedSnapshot.resource.publishAffiliation = publishProvisional.publishAffiliation;
@@ -536,13 +645,11 @@ class PublishApproval extends Component {
                         console.log('Publishing snapshot error = : %o', error);
                     });
                 }
-                /*
-                }).catch(error => {
-                    console.log('Updating provisional error = : %o', error);
-                });
-                */
+              }).catch(error => {
+                  console.log('%s publication error = : %o', resourceProperName, error);
+              });
             }).catch(error => {
-                console.log('%s publication error = : %o', resourceProperName, error);
+              console.log('Updating selectedSnapshot error = : %o', error);
             });
         } else {
             this.setState({ submitBusy: false });
@@ -558,7 +665,6 @@ class PublishApproval extends Component {
         const additionalApprover = provisional ? provisional.additionalApprover : null;
         const classificationContributors = provisional ? provisional.classificationContributors : null;
         const cspecDocTitle = lodashGet(this.props.cspecDoc, 'ruleSetDoc.cspecInfo.documentName', null);
-        //const classification = this.props.classification;
         const affiliation = provisional.affiliation ? provisional.affiliation : (this.props.affiliation ? this.props.affiliation : null);
         const interpretation = this.props.interpretation;
         const publishEvent = provisional.publishClassification ? 'Unpublish' : 'Publish';
@@ -567,7 +673,8 @@ class PublishApproval extends Component {
         const selectedResourceType = this.state.selectedResourceType;
         const submitBusy = this.state.submitBusy;
         let affiliationSubgroup;
-
+        const { affiliationsData } = this.context;
+        
         // Set variables based on the (parent) resource type
         if (selectedResourceType === 'gdm') {
             affiliationSubgroup = 'gcep';
@@ -582,12 +689,12 @@ class PublishApproval extends Component {
                         <>
                             <div className="row">
                                 <div className="col-sm-4">
-                                        <h5><strong>ClinGen Affiliation:</strong> {affiliation ? getAffiliationName(affiliation, affiliationSubgroup) : null}</h5>
-                                        <h5><strong>Classification Approver:</strong> {additionalApprover ? getApproverNames(additionalApprover) : null}</h5>
+                                        <h5><strong>ClinGen Affiliation:</strong> {affiliation ? getAffiliationName(affiliation, affiliationsData, affiliationSubgroup) : null}</h5>
+                                        <h5><strong>Classification Approver:</strong> {additionalApprover ? getApproverNames(additionalApprover, affiliationsData) : null}</h5>
 
                                         <dl className="inline-dl clearfix">
                                             <dt><span>Classification Contributor(s):</span></dt>
-                                            <dd>{classificationContributors ? getContributorNames(classificationContributors).join(', ') : null}</dd>
+                                            <dd>{classificationContributors ? getContributorNames(classificationContributors, affiliationsData).join(', ') : null}</dd>
                                         </dl>
                                     <div className="publish-submitter">
                                         <dl className="inline-dl clearfix">
@@ -599,19 +706,33 @@ class PublishApproval extends Component {
                                 <div className="col-sm-4">
                                     <h5><strong>Date {publishEventLower}: {publishDate}</strong></h5>
                                     {interpretation ?
-                                      <h5>
-                                        <strong>Specification Document: </strong>
-                                        {cspecDocTitle ? cspecDocTitle : ''}
-                                      </h5>
+                                      <>
+                                        <h5>
+                                          <strong>Specification Document: </strong>
+                                          {cspecDocTitle ? cspecDocTitle : ''}
+                                        </h5>
+                                        <h5>
+                                          <strong>Specified Gene: </strong>
+                                          {lodashGet(interpretation, 'cspec.specifiedGene', 'None Selected')}
+                                        </h5>
+                                      </>
                                       : null}
                                 </div>
                                 <div className="col-sm-4">
                                     <dl className="inline-dl clearfix preview-publish-comment text-pre-wrap">
-                                        <h5><span className="text-pre-wrap"><strong>Additional comments:</strong></span></h5>
+                                        <h5><span className="text-pre-wrap"><strong>Comments about publishing reasons (optional, for internal use only):</strong></span></h5>
                                         {publishComment ? publishComment : null}
                                     </dl>
                                 </div>
                             </div>
+                            {publishEvent === "Publish" ?
+                              <div className="row">
+                                <div className="col-sm-6">
+                                  <h4>Reason(s) for Publishing Classification</h4>
+                                  {this.renderCurationReasonsPreview()}
+                                </div>
+                              </div>
+                              : null}
                             <div className="alert alert-warning publish-preview-note">
                                 <i className="icon icon-exclamation-circle"></i> This is a Preview only; you must still {publishEvent} this
                                 {interpretation ? ' Interpretation' : ' Classification'}.
@@ -621,19 +742,19 @@ class PublishApproval extends Component {
                         <div className="publish-edit">
                             <div className="row">
                                 <div className="col-sm-6">
-                                    <h5><strong>ClinGen Affiliation:</strong> 
-                                        {affiliation ? getAffiliationName(affiliation, affiliationSubgroup) : null}
+                                    <h5><strong>ClinGen Affiliation: </strong> 
+                                        {affiliation ? getAffiliationName(affiliation, affiliationsData, affiliationSubgroup) : null}
                                     </h5>
-                                    <h5><strong>Entered by:</strong>
+                                    <h5><strong>Entered by: </strong>
                                         <span className="text-muted">Current curator's name will be entered upon {publicationEventLower}</span>
                                     </h5>
-                                    <h5><strong>Date {publishEventLower}:</strong> 
+                                    <h5><strong>Date {publishEventLower}: </strong> 
                                         <span className="text-muted">Current date and time will be entered upon {publicationEventLower}</span>
                                     </h5>
                                 </div>
                                 <div className="col-sm-6">
                                     <div className="publish-comments">
-                                        <h5><strong>Additional comments:</strong></h5>
+                                        <h5><strong>Comments about publishing reasons (optional, for internal use only):</strong></h5>
                                         <textarea placeholder="Enter additional comments..."
                                             value={this.state.publishComment} rows="5"
                                             onChange={e => this.handleCommentsChange(e.currentTarget.value)}
@@ -641,6 +762,20 @@ class PublishApproval extends Component {
                                         />
                                     </div>
                                 </div>
+                                {publishEvent === "Publish" ?
+                                  <div className="col-sm-6">
+                                    <CurationReasonsForm curationReasons={this.state.curationReasons} checkedState={this.state.curationReasonsChecked} setCurationReasons={this.setCurationReasons}
+                                      setCheckedState={this.setCheckboxState} selectedResourceType={selectedResourceType} reasonsFormErrors={this.state.reasonsFormErrors} clearErrors={this.clearCurationReasonsErrors}
+                                    />
+                                  </div>
+                                  : null}
+                                  {this.state.showAlertMessage && (
+                                    <Alert type={this.state.alertType} 
+                                      value={this.state.alertMsg}
+                                      className={this.state.alertClass}
+                                      dismissible
+                                    />
+                                  )}
                             </div>
                         </div>
                     }
@@ -662,10 +797,10 @@ class PublishApproval extends Component {
 
                                 {this.state.showAlert && (
                                     <Alert type={this.state.alertType} 
-                                    value={this.state.alertMsg}
-                                    className={this.state.alertClass}
-                                    dismissible
-                                />
+                                      value={this.state.alertMsg}
+                                      className={this.state.alertClass}
+                                      dismissible
+                                    />
                                 )}
            
                             </div>
@@ -690,6 +825,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     setGdmAction: gdm => dispatch(setGdmAction(gdm)),
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishApproval);

@@ -1,7 +1,9 @@
 console.log('Loading function');
 
-const AWS = require('aws-sdk');
-const docClient = new AWS.DynamoDB.DocumentClient();
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
+const docClient = DynamoDBDocument.from(new DynamoDB());
 const HISTORY_TABLE = process.env['HISTORY_TABLE'];
 
 function shouldRecordRecord(/* record */) {
@@ -59,7 +61,7 @@ async function writeHistoryItems(items) {
         };
     });
     //console.log(params.RequestItems.ClingenTest2History[0].PutRequest.Item);
-    await docClient.batchWrite(params).promise();
+    await docClient.batchWrite(params);
     console.log('History written successfully');
 }
 
@@ -95,6 +97,6 @@ exports.handler = async (event, context) => {
         console.log(record.eventName);
         console.log('DynamoDB Record: %j', record.dynamodb);
     }
-    items.length && await writeHistoryItems(items);
+    items.length && (await writeHistoryItems(items));
     return `Successfully processed ${event.Records.length} records.`;
 };

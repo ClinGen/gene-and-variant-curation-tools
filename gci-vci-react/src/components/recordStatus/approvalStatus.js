@@ -66,7 +66,7 @@ export function renderApprovalStatus(snapshots, resourceType, affiliationId, use
  * @param {string} userId - The user's UUID
  * @param {string?} gdmPK - The PK of the current GDM. Only required when resourceType is 'classification'.
  */
-function renderApprovalLink(snapshot, resourceType, affiliationId, userId, gdmPK) {
+export function renderApprovalLink(snapshot, resourceType, affiliationId, userId, gdmPK) {
     let url, param = new URLSearchParams([]), summary_uri = '';
     const snapshotPK = snapshot.uuid || snapshot.PK;
     if (!snapshotPK || typeof snapshotPK !== 'string') {

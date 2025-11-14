@@ -6,18 +6,18 @@ Parameters:
   KafkaBootstrapServers:
     Type: String
     Description: Kafka bootstrap servers
-    Default: pkc-4yyd6.us-east1.gcp.confluent.cloud:9092
+    Default: 
   LambdaFunctionName:
     Type: String
     Description: Lambda function name (not ARN) to call
   KafkaTopicName:
     Type: String
     Description: Kafka topic name
-    Default: cspec-ruleset
+    Default: 
   KafkaGroupId:
     Type: String
     Description: Kafka group id. In testing, only this groupid can be used on the topic, otherwise topic reads will be denied
-    Default: stanford_dev_cspec_14
+    Default: 
   SsmParameter:
     Type: String
     Description: Jaas Config SSM Parameter store parameter name

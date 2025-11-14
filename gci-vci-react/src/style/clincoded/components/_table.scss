@@ -41,3 +41,64 @@
 .vertical-align-center {
   vertical-align: middle !important;
 }
+
+table.clingen-predictors {
+  height: 100%;
+  margin-bottom: 0;
+
+  td {
+    border-right: 1px solid #dee2e6;
+    vertical-align: middle;
+
+    &.pred-expand {
+      text-align: right;
+    }
+
+    &.pred-score {
+      white-space: nowrap;
+    }
+
+    &.pred-scores-columns {
+      padding: 0;
+
+      table.clingen-predictors {
+        tbody:first-of-type tr:first-of-type td {
+          border-top: 0;
+        }
+
+        tbody + tbody {
+          border-top: 0;
+        }
+      }
+    }
+
+    &.pred-transcript td {
+      padding: 0;
+      white-space: nowrap;
+
+      &.pred-transcript-id {
+        border-right: 0;
+      }
+
+      &.pred-transcript-mane {
+        text-align: right;
+
+        span {
+          background-color: #ffc107;
+          border-radius: 0.25rem;
+          font-weight: bold;
+          margin-left: 20px;
+          padding: 0 3px;
+        }
+      }
+    }
+
+    &:last-of-type {
+      border-right: 0;
+    }
+
+    span.pred-source-type {
+      white-space: nowrap;
+    }
+  }
+}

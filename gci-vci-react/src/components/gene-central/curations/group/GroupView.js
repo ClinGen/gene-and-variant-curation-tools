@@ -12,6 +12,7 @@ import { ExternalLink } from "../../../common/ExternalLink";
 import LoadingSpinner from '../../../common/LoadingSpinner';
 import { renderPMIDList, renderHPOList } from '../common/commonFunc';
 import { useAmplifyAPIRequestRecycler } from '../../../../utilities/fetchUtilities';
+import { convertDiseasePKToMondoId, displayObsoleteDiseaseIcon } from '../../../../utilities/diseaseUtilities';
 import { Link } from 'react-router-dom';
 
 
@@ -69,7 +70,7 @@ export const GroupView = ({
               <div>
                 <dt>Common Diagnosis</dt>
                 <dd>{lodashGet(group, "commonDiagnosis", null)  && group.commonDiagnosis.length > 0 && group.commonDiagnosis.map((disease, i) => {
-                  return <span key={lodashGet(disease, "PK", '')}>{i > 0 ? ', ' : ''}{lodashGet(disease, "term", '')} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{disease.PK.replace('_', ':')}</ExternalLink> : null}</span>;
+                  return <span key={lodashGet(disease, "PK", '')}>{i > 0 ? ', ' : ''}{displayObsoleteDiseaseIcon(lodashGet(disease, "term"), "gdm")}{lodashGet(disease, "term", '')} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{convertDiseasePKToMondoId(disease.PK)}</ExternalLink> : null}</span>;
                 })}</dd>
               </div>
 

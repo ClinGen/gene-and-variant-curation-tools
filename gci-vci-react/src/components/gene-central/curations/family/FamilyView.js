@@ -9,8 +9,15 @@ import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import LoadingSpinner from '../../../common/LoadingSpinner';
 import { getEvidenceByPKFromActiveAnnotation } from "../../../../utilities/gdmEvidenceUtilities";
+import { convertDiseasePKToMondoId, displayObsoleteDiseaseIcon } from '../../../../utilities/diseaseUtilities';
 import { getUserName } from "../../../../helpers/getUserName";
-import { renderHPOList, renderPMIDList, renderVariantLabelAndTitle } from '../common/commonFunc';
+import {
+  renderHPOList,
+  renderPMIDList,
+  renderVariantLabelAndTitle,
+  renderVariantOverlappingGenes,
+  isSemiOrSMo
+} from '../common/commonFunc';
 import { Link } from 'react-router-dom';
 
 export const FamilyView = ({
@@ -55,8 +62,7 @@ export const FamilyView = ({
     ? assessments.filter(assessment => assessment.value !== 'Not Assessed')
     : [];
 
-  const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-
+  const isSDSM = isSemiOrSMo(gdm);
 
   return (gdmIsLoading || annotationIsLoading) ? (
     <LoadingSpinner className="mt-4" />
@@ -80,7 +86,7 @@ export const FamilyView = ({
               <div>
                 <dt>Common Diagnosis</dt>
                 <dd>{family.commonDiagnosis && family.commonDiagnosis.length && family.commonDiagnosis.map((disease, i) => {
-                  return <span key={disease.PK}>{i > 0 ? ', ' : ''}{disease.term} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{disease.PK.replace('_', ':')}</ExternalLink> : null}</span>;
+                  return <span key={disease.PK}>{i > 0 ? ', ' : ''}{displayObsoleteDiseaseIcon(disease.term, "gdm")}{disease.term} {!disease.freetext ? <ExternalLink href={EXTERNAL_API_MAP['MondoSearch'] + disease.PK}>{convertDiseasePKToMondoId(disease.PK)}</ExternalLink> : null}</span>;
                 })}</dd>
               </div>
 
@@ -211,7 +217,7 @@ export const FamilyView = ({
                   const indivObj = getEvidenceByPKFromActiveAnnotation(annotations, indivPK);
                   return (
                     <div key={index}>
-                      {semiDom ?
+                      {isSDSM ?
                         <dl className="dl-horizontal">
                           <dt>The proband is</dt>
                           <dd>{indivObj.probandIs}</dd>
@@ -247,11 +253,23 @@ export const FamilyView = ({
                           <dd><ExternalLink href={`${EXTERNAL_API_MAP['CARallele']}${variant.carId}.html`} title={`ClinGen Allele Registry entry for ${variant.carId} in new tab`}>{variant.carId}</ExternalLink></dd>
                         </div>
                         : null }
+                      {lodashGet(variant, "cacnId", null) ?
+                        <div>
+                          <dt>ClinGen Allele Registry Copy Number ID</dt>
+                          <dd><ExternalLink href={`${EXTERNAL_API_MAP['CARcopy-number']}${variant.cacnId}`} title={`ClinGen Allele Registry entry for ${variant.cacnId} in new tab`}>{variant.cacnId}</ExternalLink></dd>
+                        </div>
+                        : null }
                       {renderVariantLabelAndTitle(variant)}
+                      {lodashGet(variant, "cacnId", null) ? 
+                        <div>
+                          <span><strong>Overlapping Genes:</strong></span>
+                          {renderVariantOverlappingGenes(variant)}
+                        </div>
+                        : null}
                       {lodashGet(variant, "otherDescription", null) ?
                         <div>
                           <dt>Other description</dt>
-                          <dd>variant.otherDescription}</dd>
+                          <dd>{variant.otherDescription}</dd>
                         </div>
                         : null }
                     </dl>

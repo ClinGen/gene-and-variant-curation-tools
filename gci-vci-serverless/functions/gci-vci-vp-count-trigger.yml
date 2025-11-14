@@ -6,7 +6,7 @@ gci-vci-vp-count-trigger:
       - '**'
     include:
       - 'ddb_stream_interp_count/**'
-  runtime: python3.8
+  runtime: python3.11
   environment:
     GENE_VARIANT_CURATION_TABLE: !Ref ClinGenTable
     VP_TABLE: !Ref ClinGenVPTTable

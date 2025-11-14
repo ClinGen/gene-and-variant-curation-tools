@@ -1,6 +1,9 @@
 {
   "@context": "http://reg.genome.network/schema/allele.jsonld",
   "@id": "http://reg.genome.network/allele/CA501058",
+  "communityStandardTitle": [
+    "NM_001184727.2(GPRASP1):c.262T>C (p.Phe88Leu)"
+  ],
   "externalRecords": {
     "ExAC": [
       {
@@ -102,6 +105,152 @@
     }
   ],
   "transcriptAlleles": [
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 993,
+          "referenceAllele": "T",
+          "start": 992
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
+      "hgvs": [
+        "ENST00000537097.2:c.262T>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000445683.1:p.Phe88Leu",
+        "hgvsWellDefined": "ENSP00000445683.1:p.Phe88Leu"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS759516",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000537097.2:c.262T>C"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001184727.2:c.262T>C"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000445683.1:p.Phe88Leu"
+          },
+          "RefSeq": {
+            "hgvs": "NP_001171656.1:p.Phe88Leu"
+          }
+        }
+      }
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 1559,
+          "referenceAllele": "T",
+          "start": 1558
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
+      "hgvs": [
+        "ENST00000652542.1:c.262T>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000498934.1:p.Phe88Leu",
+        "hgvsWellDefined": "ENSP00000498934.1:p.Phe88Leu"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS772265"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 1063,
+          "referenceAllele": "T",
+          "start": 1062
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
+      "hgvs": [
+        "ENST00000361600.9:c.262T>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000355146.4:p.Phe88Leu",
+        "hgvsWellDefined": "ENSP00000355146.4:p.Phe88Leu"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS265563"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 972,
+          "referenceAllele": "T",
+          "start": 971
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
+      "hgvs": [
+        "ENST00000415986.5:c.262T>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000393691.1:p.Phe88Leu",
+        "hgvsWellDefined": "ENSP00000393691.1:p.Phe88Leu"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS284254"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 904,
+          "referenceAllele": "T",
+          "start": 903
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
+      "hgvs": [
+        "ENST00000444152.5:c.262T>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000409420.1:p.Phe88Leu",
+        "hgvsWellDefined": "ENSP00000409420.1:p.Phe88Leu"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS297674"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "C",
+          "end": 1075,
+          "referenceAllele": "T",
+          "start": 1074
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
+      "hgvs": [
+        "ENST00000537097.1:c.262T>C"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000445683.1:p.Phe88Leu",
+        "hgvsWellDefined": "ENSP00000445683.1:p.Phe88Leu"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS360601"
+    },
     {
       "coordinates": [
         {
@@ -274,7 +423,27 @@
         "hgvs": "NP_001171656.1:p.Phe88Leu",
         "hgvsWellDefined": "NP_001171656.1:p.Phe88Leu"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS663924"
+      "referenceSequence": "http://reg.genome.network/refseq/RS663924",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000537097.2:c.262T>C"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001184727.2:c.262T>C"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000445683.1:p.Phe88Leu"
+          },
+          "RefSeq": {
+            "hgvs": "NP_001171656.1:p.Phe88Leu"
+          }
+        }
+      }
     },
     {
       "coordinates": [
@@ -346,73 +515,64 @@
       "coordinates": [
         {
           "allele": "C",
-          "end": 1063,
+          "end": 855,
           "referenceAllele": "T",
-          "start": 1062
+          "start": 854
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
       "hgvs": [
-        "ENST00000361600.9:c.262T>C"
+        "NM_001099410.2:c.262T>C"
       ],
       "proteinEffect": {
-        "hgvs": "ENSP00000355146.4:p.Phe88Leu",
-        "hgvsWellDefined": "ENSP00000355146.4:p.Phe88Leu"
+        "hgvs": "NP_001092880.1:p.Phe88Leu",
+        "hgvsWellDefined": "NP_001092880.1:p.Phe88Leu"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS265563"
+      "referenceSequence": "http://reg.genome.network/refseq/RS711960"
     },
     {
       "coordinates": [
         {
           "allele": "C",
-          "end": 972,
+          "end": 787,
           "referenceAllele": "T",
-          "start": 971
+          "start": 786
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN024834",
+      "geneNCBI_id": 9737,
+      "geneSymbol": "GPRASP1",
       "hgvs": [
-        "ENST00000415986.5:c.262T>C"
+        "NM_001099411.2:c.262T>C"
       ],
       "proteinEffect": {
-        "hgvs": "ENSP00000393691.1:p.Phe88Leu",
-        "hgvsWellDefined": "ENSP00000393691.1:p.Phe88Leu"
+        "hgvs": "NP_001092881.1:p.Phe88Leu",
+        "hgvsWellDefined": "NP_001092881.1:p.Phe88Leu"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS284254"
+      "referenceSequence": "http://reg.genome.network/refseq/RS711961"
     },
     {
       "coordinates": [
         {
           "allele": "C",
-          "end": 904,
+          "end": 649,
+          "endIntronDirection": "+",
+          "endIntronOffset": 48522,
           "referenceAllele": "T",
-          "start": 903
+          "start": 649,
+          "startIntronDirection": "+",
+          "startIntronOffset": 48521
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN042000",
+      "geneNCBI_id": 100528062,
+      "geneSymbol": "ARMCX5-GPRASP2",
       "hgvs": [
-        "ENST00000444152.5:c.262T>C"
+        "NR_146584.3:n.649+48522T>C"
       ],
-      "proteinEffect": {
-        "hgvs": "ENSP00000409420.1:p.Phe88Leu",
-        "hgvsWellDefined": "ENSP00000409420.1:p.Phe88Leu"
-      },
-      "referenceSequence": "http://reg.genome.network/refseq/RS297674"
-    },
-    {
-      "coordinates": [
-        {
-          "allele": "C",
-          "end": 1075,
-          "referenceAllele": "T",
-          "start": 1074
-        }
-      ],
-      "hgvs": [
-        "ENST00000537097.1:c.262T>C"
-      ],
-      "proteinEffect": {
-        "hgvs": "ENSP00000445683.1:p.Phe88Leu",
-        "hgvsWellDefined": "ENSP00000445683.1:p.Phe88Leu"
-      },
-      "referenceSequence": "http://reg.genome.network/refseq/RS360601"
+      "referenceSequence": "http://reg.genome.network/refseq/RS731261"
     }
   ],
   "type": "nucleotide"

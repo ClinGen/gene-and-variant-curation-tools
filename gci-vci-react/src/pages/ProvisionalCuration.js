@@ -3,9 +3,9 @@ import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../utils';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import lodashGet from 'lodash/get';
+import { isEmpty, get as lodashGet } from 'lodash';
 import Input from "../components/common/Input";
-import { Button, Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import MDEditor from "@uiw/react-md-editor";
 import CardPanel from "../components/common/CardPanel";
 import { GdmHeader } from '../components/gene-central/GdmHeader';
@@ -13,7 +13,7 @@ import { LoadingButton } from "../components/common/LoadingButton";
 import Snapshots from '../components/provisional-classification/snapshots';
 import { setGdmAction } from '../actions/gdmActions';
 import { sortListByDate } from '../helpers/sort';
-import { isScoringForCurrentSOP } from '../helpers/sop';
+import { sopVersions, isScoringForCurrentSOP } from '../helpers/sop';
 import { ContextualHelp } from '../helpers/contextual_help';
 import { allowPublishGlobal } from '../helpers/allow_publish';
 import { familyScraper, individualScraper } from '../helpers/provisional_helpers';
@@ -22,9 +22,16 @@ import { renderEarliestPublications } from '../helpers/renderEarliestPublication
 import { getClassificationSavedDate } from "../utilities/classificationUtilities";
 import { gdmParticipantReducer } from '../utilities/gdmUtilities';
 import { AmplifyAPIRequestRecycler, getDetailErrorMessageFromServerless } from '../utilities/fetchUtilities';
-import { GdmClassificationRecords } from '../components/gene-central/GdmClassificationRecords';
-import { AUTOSOMAL_RECESSIVE, SEMIDOMINANT } from '../components/gene-central/score/constants/evidenceTypes';
-import { getModeInheritanceType, getScoreMOIString, getScoreUpperLimit } from '../components/gene-central/score/helpers/getDefaultScore';
+import {
+  AUTOSOMAL_RECESSIVE,
+  SEMIDOMINANT,
+  SOMATIC_MOSAICISM
+} from '../components/gene-central/score/constants/evidenceTypes';
+import {
+  getModeInheritanceType,
+  getScoreMOIString,
+  getScoreUpperLimit
+} from '../components/gene-central/score/helpers/getDefaultScore';
 import isHomozygousScore from '../components/gene-central/score/helpers/isHomozygousScore';
 
 
@@ -34,7 +41,7 @@ class ProvisionalCuration extends Component {
     this.state = {
       user: null, // login user uuid
       gdm: null, // current gdm object, must be null initially.
-      allowEdit: true, // current gdm object can be edited by current logged in user
+      allowEdit: false, // current gdm object can be edited by current logged in user
       provisional: {}, // login user's existing provisional object, must be null initially.
       //assessments: null,  // list of all assessments, must be nul initially.
       totalScore: null,
@@ -45,6 +52,7 @@ class ProvisionalCuration extends Component {
       classificationStatus: 'In progress',
       classificationSnapshots: [],
       evidenceSummary: '',
+      provisionalUpdated: false,
       isSubmitting: false,
       formErrors: {},
       contradictingEvidence: {
@@ -99,12 +107,15 @@ class ProvisionalCuration extends Component {
     }
     this.loadData = this.loadData.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.getClassificationSnapshots = this.getClassificationSnapshots.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSummaryChange = this.handleSummaryChange.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.setFormErrors = this.setFormErrors.bind(this);
     this.handleReplicatedOverTime = this.handleReplicatedOverTime.bind(this);
     this.calculateClassifications = this.calculateClassifications.bind(this);
+    this.calculateScoreTable = this.calculateScoreTable.bind(this);
+    this.addProvisional = this.addProvisional.bind(this);
     this.requestRecycler = new AmplifyAPIRequestRecycler();
   }
 
@@ -158,7 +169,11 @@ class ProvisionalCuration extends Component {
               return item.PK === gdm.earliestPublications[i]
             });
             if (found && found.length) {
-              earliestPubs.push(found[0].article);
+              if (found[0].article) {
+                earliestPubs.push(found[0].article);
+              } else if (found[0].scv) {
+                earliestPubs.push(found[0].scv);
+              }
             }
           }
           this.setState({ earliestPubList: earliestPubs.length ? earliestPubs : null });
@@ -176,6 +191,8 @@ class ProvisionalCuration extends Component {
         return provisionalClassifications;
       }
 
+      // Get all provisionalClassifications for this GDM
+      // ??? TODO: As of 2022, there should only be one provisionalClassification for each GDM so no need to do this
       const provisionalClassifications = await getProvisionalClassifications();
 
       let stateObj = {};
@@ -194,6 +211,7 @@ class ProvisionalCuration extends Component {
             stateObj.reasons = stateObj.provisional.reasons;
             stateObj.classificationStatus = stateObj.provisional.classificationStatus ? stateObj.provisional.classificationStatus : 'In progress';
             stateObj.evidenceSummary = stateObj.provisional.evidenceSummary ? stateObj.provisional.evidenceSummary : '';
+            stateObj.provisionalUpdated = true;
           }
         }
         this.setState(stateObj);
@@ -201,16 +219,41 @@ class ProvisionalCuration extends Component {
           this.getClassificationSnapshots(stateObj.provisional);
         }
       }
-      // Set if current curator cannot edit this gdm
-      if ((gdmAffiliation && curatorAffiliation && gdmAffiliation !== curatorAffiliation.affiliation_id) || (!gdmAffiliation && !curatorAffiliation && gdm.submitted_by.PK !== stateObj.user)) {
-        this.setState({ allowEdit: false });
+      // Set if current curator can edit this GDM.  GDM needs to associated with a GCEP and user has to login as same GCEP in order to act on the GDM.
+      if (gdmAffiliation && curatorAffiliation && gdmAffiliation === curatorAffiliation.affiliation_id) {
+        this.setState({ allowEdit: true });
       }
     }
-    this.calculateScoreTable();
+    // If user navigates away from component but not GCI route, props stay the same (from redux) but scoreTableValues state is lost
+    // Recalculate score table if it has not been calculated previously. Check totalScore avoids doubling of scores
+    if (!isEmpty(this.props.annotations.byPK) && !this.state.totalScore) {
+      this.calculateScoreTable();
+    }
   }
 
   componentDidMount() {
     this.loadData();
+  }
+
+  componentDidUpdate(prevProps) {
+    // annotation props come in empty on first render due to unresolved promise in gdmUtilites, wait for component update and then calculate score table
+    if (this.props.annotations !== prevProps.annotations) {
+      this.calculateScoreTable();
+    }
+
+    // When current classification data from GDM is set,
+    // need to recalculate classification in case replicatedOverTime is set
+    if (this.state.provisionalUpdated) {
+      this.calculateClassifications(
+        this.state.totalScore,
+        this.state.scoreTableValues['geneticEvidenceTotalPoints'],
+        this.state.contradictingEvidence,
+        this.state.replicatedOverTime
+      );
+
+      // Reset flag so won't go into loop
+      this.setState({ provisionalUpdated: false });
+    }
   }
 
   componentWillUnmount() {
@@ -306,9 +349,25 @@ class ProvisionalCuration extends Component {
         annotation.caseControlStudies.forEach(caseControl => {
           if (caseControl.scores && caseControl.scores.length) {
             caseControl.scores.forEach(score => {
+              // only care about scores made by current user/affiliation
               if ((score.affiliation && curatorAffiliation && score.affiliation === curatorAffiliation)
                 || (!score.affiliation && !curatorAffiliation && score.submitted_by.PK === this.state.user)) {
-                if ('score' in score && score.score !== 'none') {
+                // caseControl scores has 2 versions
+                // Old score object only has score point which by default has "Score" status
+                // New score object has scoreStatus, ScoreExplanation, and score
+                if ('scoreStatus' in score) {
+                  // New score object
+                  if (score.scoreStatus === 'Score') {
+                    if ('score' in score && score.score !== 'none') {
+                      scoreTableValues['caseControlCount'] += 1;
+                      scoreTableValues['caseControlPoints'] += parseFloat(score.score);
+                    }
+                  } else if (score.scoreStatus === 'Contradicts') {
+                    // Set flag if a contradicting case control evidence is found
+                    contradictingEvidence.caseControl = true;
+                  }
+                } else if ('score' in score && score.score !== 'none') {
+                  // Old score object
                   scoreTableValues['caseControlCount'] += 1;
                   scoreTableValues['caseControlPoints'] += parseFloat(score.score);
                 }
@@ -396,17 +455,17 @@ class ProvisionalCuration extends Component {
     });
 
     const moiType = this.state.gdm && this.state.gdm.modeInheritance ? getModeInheritanceType(this.state.gdm.modeInheritance) : '';
-    const autoRec = moiType === AUTOSOMAL_RECESSIVE;
-    const semiDom = moiType === SEMIDOMINANT;
+    const isAR = moiType === AUTOSOMAL_RECESSIVE;
+    const isSDSM = moiType === SEMIDOMINANT || moiType === SOMATIC_MOSAICISM;
     // scan probands
     probandTotal.forEach(proband => {
-      // For semiDom, if probandIs is "Monoallelic heterozygous" or "Hemizygous" then AUTOSOMAL_DOMINANT
+      // For SD or SM,
+      // If probandIs is "Monoallelic heterozygous" or "Hemizygous" then AUTOSOMAL_DOMINANT
       // If "Biallelic homozygous" or "Biallelic compound heterozygous" then AUTOSOMAL_RECESSIVE
-      const fieldPrefix = autoRec || (semiDom && proband.probandIs.indexOf("Biallelic") > -1) ? "autoRec_" : "";
-      // If autoRec and homozygous or if semiDom and probandIs = Biallelic .. => AR, and Homozygous, variant is counted twice
+      const fieldPrefix = isAR || (isSDSM && proband.probandIs.indexOf("Biallelic") > -1) ? "autoRec_" : "";
       // If autoRec and homozygous or
-      // if semiDom and probandIs = Biallelic homozygous => autoRec and homozygous or
-      // if semiDom and probandIs = Biallelic compound heterozygous => autoRec and homozygous is checked
+      // for SD or SM, if probandIs = Biallelic homozygous => autoRec and homozygous or
+      // for SD or SM, if probandIs = Biallelic compound heterozygous => autoRec and homozygous is checked
       // then variant is counted/shown twice
       const doubleCount = isHomozygousScore(moiType, proband.recessiveZygosity, proband.probandIs);
       // If has more than 1 score, check if total of both scores has limit
@@ -537,29 +596,41 @@ class ProvisionalCuration extends Component {
     scoreTableValues['probandPointsCounted'] =
       scoreTableValues['probandPredictedOrProvenNullPointsCounted'] +
       scoreTableValues['probandOtherVariantTypePointsCounted'] < MAX_SCORE_CONSTANTS.CASE_LEVEL
-      ? scoreTableValues['probandPredictedOrProvenNullPointsCounted'] + scoreTableValues['probandOtherVariantTypePointsCounted']
+      ? this.classificationMathRound(scoreTableValues['probandPredictedOrProvenNullPointsCounted'] + scoreTableValues['probandOtherVariantTypePointsCounted'], 2)
       : MAX_SCORE_CONSTANTS.CASE_LEVEL;
 
     scoreTableValues['autoRec_probandPredictedOrProvenNullPoints'] = this.classificationMathRound(scoreTableValues['autoRec_probandPredictedOrProvenNullPoints'], 2);
     scoreTableValues['autoRec_probandOtherVariantTypePoints'] = this.classificationMathRound(scoreTableValues['autoRec_probandOtherVariantTypePoints'], 2);
-    scoreTableValues['autosomalRecessivePoints'] = scoreTableValues['autoRec_probandPredictedOrProvenNullPoints'] + scoreTableValues['autoRec_probandOtherVariantTypePoints'];
+    scoreTableValues['autosomalRecessivePoints'] = this.classificationMathRound(scoreTableValues['autoRec_probandPredictedOrProvenNullPoints'] + scoreTableValues['autoRec_probandOtherVariantTypePoints'], 2);
     scoreTableValues['autosomalRecessivePointsCounted'] =
       scoreTableValues['autoRec_probandPredictedOrProvenNullPointsCounted'] +
       scoreTableValues['autoRec_probandOtherVariantTypePointsCounted'] < MAX_SCORE_CONSTANTS.CASE_LEVEL
-      ? scoreTableValues['autoRec_probandPredictedOrProvenNullPointsCounted'] + scoreTableValues['autoRec_probandOtherVariantTypePointsCounted']
+      ? this.classificationMathRound(scoreTableValues['autoRec_probandPredictedOrProvenNullPointsCounted'] + scoreTableValues['autoRec_probandOtherVariantTypePointsCounted'], 2)
       : MAX_SCORE_CONSTANTS.CASE_LEVEL;
 
+    scoreTableValues['caseControlPoints'] = this.classificationMathRound(scoreTableValues['caseControlPoints'], 2);
     scoreTableValues['caseControlPointsCounted'] = scoreTableValues['caseControlPoints'] < MAX_SCORE_CONSTANTS.CASE_CONTROL ? scoreTableValues['caseControlPoints'] : MAX_SCORE_CONSTANTS.CASE_CONTROL;
 
+    scoreTableValues['biochemicalFunctionPoints'] = this.classificationMathRound(scoreTableValues['biochemicalFunctionPoints'], 2);
+    scoreTableValues['proteinInteractionsPoints']  = this.classificationMathRound(scoreTableValues['proteinInteractionsPoints'], 2);
+    scoreTableValues['expressionPoints'] = this.classificationMathRound(scoreTableValues['expressionPoints'], 2);
     tempPoints = scoreTableValues['biochemicalFunctionPoints'] + scoreTableValues['proteinInteractionsPoints'] + scoreTableValues['expressionPoints'];
-    scoreTableValues['functionalPointsCounted'] = tempPoints < MAX_SCORE_CONSTANTS.FUNCTIONAL ? tempPoints : MAX_SCORE_CONSTANTS.FUNCTIONAL;
+    scoreTableValues['functionalPointsCounted'] = tempPoints < MAX_SCORE_CONSTANTS.FUNCTIONAL ? this.classificationMathRound(tempPoints, 2) : MAX_SCORE_CONSTANTS.FUNCTIONAL;
 
+    scoreTableValues['patientCellsPoints'] = this.classificationMathRound(scoreTableValues['patientCellsPoints'], 2);
+    scoreTableValues['nonPatientCellsPoints'] = this.classificationMathRound(scoreTableValues['nonPatientCellsPoints'], 2);
     tempPoints = scoreTableValues['patientCellsPoints'] + scoreTableValues['nonPatientCellsPoints'];
-    scoreTableValues['functionalAlterationPointsCounted'] = tempPoints < MAX_SCORE_CONSTANTS.FUNCTIONAL_ALTERATION ? tempPoints : MAX_SCORE_CONSTANTS.FUNCTIONAL_ALTERATION;
+    scoreTableValues['functionalAlterationPointsCounted'] = tempPoints < MAX_SCORE_CONSTANTS.FUNCTIONAL_ALTERATION ? this.classificationMathRound(tempPoints, 2) : MAX_SCORE_CONSTANTS.FUNCTIONAL_ALTERATION;
 
+    scoreTableValues['nonHumanModelPoints'] = this.classificationMathRound(scoreTableValues['nonHumanModelPoints'], 2);
+    scoreTableValues['cellCulturePoints'] = this.classificationMathRound(scoreTableValues['cellCulturePoints'], 2);
+    scoreTableValues['rescueHumanModelPoints'] = this.classificationMathRound(scoreTableValues['rescueHumanModelPoints'], 2);
+    scoreTableValues['rescueNonHumanModelPoints'] = this.classificationMathRound(scoreTableValues['rescueNonHumanModelPoints'], 2);
+    scoreTableValues['rescueCellCulturePoints'] = this.classificationMathRound(scoreTableValues['rescueCellCulturePoints'], 2);
+    scoreTableValues['rescuePatientCellsPoints'] = this.classificationMathRound(scoreTableValues['rescuePatientCellsPoints'], 2);
     tempPoints = scoreTableValues['nonHumanModelPoints'] + scoreTableValues['cellCulturePoints'] + scoreTableValues['rescueHumanModelPoints'] + scoreTableValues['rescueNonHumanModelPoints']
       + scoreTableValues['rescueCellCulturePoints'] + scoreTableValues['rescuePatientCellsPoints'];
-    scoreTableValues['modelsRescuePointsCounted'] = tempPoints < MAX_SCORE_CONSTANTS.MODELS_RESCUE ? tempPoints : MAX_SCORE_CONSTANTS.MODELS_RESCUE;
+    scoreTableValues['modelsRescuePointsCounted'] = tempPoints < MAX_SCORE_CONSTANTS.MODELS_RESCUE ? this.classificationMathRound(tempPoints, 2) : MAX_SCORE_CONSTANTS.MODELS_RESCUE;
 
     tempPoints = scoreTableValues['probandPointsCounted'] +
       scoreTableValues['autosomalRecessivePointsCounted'] +
@@ -720,6 +791,7 @@ class ProvisionalCuration extends Component {
     newProvisional.reasons = this.state.reasons || null;
     newProvisional.replicatedOverTime = this.state.replicatedOverTime;
     newProvisional.contradictingEvidence = this.state.contradictingEvidence;
+    newProvisional.earliestArticles = this.state.earliestPubList;
     newProvisional.classificationStatus = 'In progress';
     newProvisional.classificationDate = moment().toISOString();
     newProvisional.provisionedClassification = false;
@@ -741,13 +813,17 @@ class ProvisionalCuration extends Component {
     if (newProvisional.approvalReviewDate) newProvisional.approvalReviewDate = null;
     if (newProvisional.approvalComment) newProvisional.approvalComment = null;
     if (newProvisional.contributorComment) newProvisional.contributorComment = null;
-    newProvisional.sopVersion = '';
+    // Always reset to latest SOP verion
+    newProvisional.sopVersion = sopVersions[0];
     newProvisional.publishClassification = false;
     if (newProvisional.publishSubmitter) newProvisional.publishSubmitter = null;
     if (newProvisional.publishAffiliation) newProvisional.publishAffiliation = null;
     if (newProvisional.publishDate) newProvisional.publishDate = null;
     if (newProvisional.publishComment) newProvisional.publishComment = null;
+    if (newProvisional.publishEditHistory) newProvisional.publishEditHistory = null;
+    if (newProvisional.isRepublish) newProvisional.isRepublish = null;
     newProvisional.evidenceSummary = this.state.evidenceSummary || null;
+    newProvisional.curationReasons = [];
     // Total points and points counted for all evidence
     let classificationPoints = {}, scoreTableValues = this.state.scoreTableValues;
     // Autosomal Dominant OR X-linked Disorder case-level evidence
@@ -944,10 +1020,7 @@ class ProvisionalCuration extends Component {
 
     return (
       <div>
-        <GdmHeader isSummary={true} />
-        <Container fluid>
-          <GdmClassificationRecords className="mx-2" />
-        </Container>
+        <GdmHeader showClassification={true} isSummary={true} />
         <div className="container summary-provisional-classification-wrapper">
           {this.state.allowEdit ?
           <>
@@ -1154,7 +1227,7 @@ class ProvisionalCuration extends Component {
                         <td colSpan="2" className="header large">Contradictory Evidence?</td>
                         <td colSpan="3">
                           Proband: <strong>{this.state.contradictingEvidence.proband ? <span className='emphasis'>Yes</span> : 'No'}</strong>&nbsp;&nbsp;&nbsp;
-                            {/*Case-control: <strong>{this.state.contradictingEvidence.caseControl ? <span className='emphasis'>Yes</span> : 'No'}</strong>&nbsp;&nbsp;&nbsp;*/}
+                            Case-Control: <strong>{this.state.contradictingEvidence.caseControl ? <span className='emphasis'>Yes</span> : 'No'}</strong>&nbsp;&nbsp;&nbsp;
                             Experimental: <strong>{this.state.contradictingEvidence.experimental ? <span className='emphasis'>Yes</span> : 'No'}</strong>&nbsp;&nbsp;&nbsp;
                         </td>
                       </tr>
@@ -1279,7 +1352,6 @@ class ProvisionalCuration extends Component {
                   snapshots={sortedSnapshotList}
                   gdm={gdm}
                   classificationStatus={classificationStatus}
-                  allowEdit={this.state.allowEdit}
                   allowPublishButton={allowPublishButton}
                   demoVersion={demoVersion}
                   fromProvisionalCuration={true}
@@ -1301,6 +1373,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setGdmAction: gdm => dispatch(setGdmAction(gdm)),
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProvisionalCuration);

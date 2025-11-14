@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Button } from "react-bootstrap";
+import { get as lodashGet } from "lodash";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import DiseaseModal from '../../../common/DiseaseModal';
-import { renderDiseaseData } from './commonFunc';
+import { renderDiseaseData, renderCannotCopyText } from './commonFunc';
+import { isDiseaseObsolete } from '../../../../utilities/diseaseUtilities';
 
 /**
  * Component for adding/copying/deleting disease when creating adding a proband individual
@@ -36,7 +38,6 @@ export const FamilyProbandDisease = ({
     clearErrorInParent('familyProband');
     setShowDiseaseModal(false);
     // Pass data object back to parent
-    // updateDiseaseObj(newDisease);
     updateFamilyProbandDiseaseObj('add', newDisease);
   };
 
@@ -62,7 +63,6 @@ export const FamilyProbandDisease = ({
     setFormError(null);
     clearErrorInParent('familyProband');
 
-    //??? updateDiseaseObj(newDisease);
     updateFamilyProbandDiseaseObj('copy');
   };
 
@@ -79,10 +79,14 @@ export const FamilyProbandDisease = ({
     setDisease(null);
     setFormError('');
     // Pass data object back to parent
-    // ???updateDiseaseObj({});
     updateFamilyProbandDiseaseObj('delete');
     clearErrorInParent('familyProband');
   };
+
+  const familyDiseaseTerm = lodashGet(family, "disease.term", "");
+  const obsoleteFamilyDisease = isDiseaseObsolete(familyDiseaseTerm);
+  const familyDiseaseObjTerm = lodashGet(familyDiseaseObj, "term", "");
+  const obsoleteFamilyDiseaseObj = isDiseaseObsolete(familyDiseaseObjTerm);
 
   return (
     <>
@@ -111,14 +115,16 @@ export const FamilyProbandDisease = ({
           </div>
           :
           <ul className={formError ? "add-disease-button-group float-right" : "add-disease-button-group"}>
-            {(family && family.disease && family.disease.term) || (familyDiseaseObj && familyDiseaseObj.term) ?
-              <li>
-                {renderCopyDiseaseButton()}
-              </li>
-            : null}
-            {(family && family.disease && family.disease.term) || (familyDiseaseObj && familyDiseaseObj.term) ?
-              <li>- or -</li>
-            : null}
+            {(familyDiseaseTerm && !obsoleteFamilyDisease) ||
+             (familyDiseaseObjTerm && !obsoleteFamilyDiseaseObj) ?
+              <>
+                <li>{renderCopyDiseaseButton()}</li>
+                <li>- or -</li>
+              </>
+              : ((familyDiseaseTerm && obsoleteFamilyDisease) || (familyDiseaseObjTerm && obsoleteFamilyDiseaseObj)) ?
+                <li>{renderCannotCopyText()}</li>
+                : null
+            }
             <li>
               <Button variant="primary" onClick={e=>handleDiseaseModal(e)}>Disease <FontAwesomeIcon className="mr-3" icon={faPlusCircle} /></Button> 
             </li>

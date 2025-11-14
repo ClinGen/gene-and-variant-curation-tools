@@ -33,27 +33,27 @@ const HgvsSearch = types.model('HgvsSearch', {
     self.error = boom.badRequest('This search is not supported yet, but it is coming soon!');
     throw self.error;
 
-    if (_.isEmpty(self.input)) {
-      self.error = boom.badRequest('Please provide at least one HGVS expression');
-      throw self.error;
-    }
-    self.processing = true;
-    self.error = undefined;
-    try {
-      // TODO - parse the input into a list of HGVS expressions, remove duplicate and sort them
-      // const result = await getVariationsByHgvs(parsedList);
-      self.runInAction(() => {
-        self.processing = false;
-        // self.searched = parsedList
-      });
-      // return result;
-    } catch (error) {
-      self.runInAction(() => {
-        self.processing = false;
-        self.error = error;
-      });
-      throw error;
-    }
+    // if (_.isEmpty(self.input)) {
+    //   self.error = boom.badRequest('Please provide at least one HGVS expression');
+    //   throw self.error;
+    // }
+    // self.processing = true;
+    // self.error = undefined;
+    // try {
+    //   // TODO - parse the input into a list of HGVS expressions, remove duplicate and sort them
+    //   // const result = await getVariationsByHgvs(parsedList);
+    //   self.runInAction(() => {
+    //     self.processing = false;
+    //     // self.searched = parsedList
+    //   });
+    //   // return result;
+    // } catch (error) {
+    //   self.runInAction(() => {
+    //     self.processing = false;
+    //     self.error = error;
+    //   });
+    //   throw error;
+    // }
   },
 
   setInput: (text) => {

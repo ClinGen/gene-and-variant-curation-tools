@@ -1,7 +1,7 @@
-import React from 'react';
-import { get as lodashGet } from "lodash";
+import React, { useContext } from 'react';
+import { cloneDeep, get as lodashGet } from "lodash";
 import CASE_INFO_TYPES from './constants/caseInfoTypes';
-import { getAffiliationName } from '../../../helpers/get_affiliation_name.js';
+import { AffilsContext, getAffiliationName } from '../../../helpers/affiliationsHelpers.js';
 import { getUserName } from '../../../helpers/getUserName.js';
 
 // Transform the stored Case Information type 'value' into 'description'
@@ -24,19 +24,38 @@ export const renderCaseInfoType = (value) => {
 // Render scores viewer in Gene Curation Interface
 export const ScoreViewer = (props) => {
 
-  const score = lodashGet(props, "score", null) &&
+  let score = lodashGet(props, "score", null) &&
     (lodashGet(props, "score.scoreStatus", null) !== "none" ||
       lodashGet(props, "evidence.item_type", null) === 'caseControl')
-    ? props.score
+    ? cloneDeep(props.score)
     : null;
+  const { affiliationsData } = useContext(AffilsContext);
+
+  // Support case control old and new score object
+  // Old score object only has score point which by default has "Score" status
+  // No old score object if caseControl has no score point
+  // New score object has scoreStatus, ScoreExplanation, and score
+  if (score && lodashGet(props, "evidence.item_type", null) === 'caseControl') {
+    if (lodashGet(score, "scoreStatus", null)) {
+      // New if has scoreStatus, no score to display if scoreStatus is not selected
+      if (lodashGet(score, "scoreStatus", null) === "none") {
+        score = null;
+      }
+    } else {
+      // Old if has no scoreStatus, check if there's valid score point, set scoreStatus to "Score"
+      score.scoreStatus = (("score" in score) && (score.score >= 0)) ? "Score" : "none";
+    }
+  }
+  const scoreLabel = lodashGet(props, "evidence.item_type", null) === 'caseControl' ? "Score" : "Changed Score";
+  const explanationLabel = lodashGet(props, "evidence.item_type", null) === 'caseControl' ? "Explanation" : "Reason(s) for score change";
 
   return (
     <>
       {score ?
             <div className="evidence-score-list-viewer">
-              <h5>Curator: {score.affiliation ? getAffiliationName(score.affiliation) : getUserName(score.submitted_by)}</h5>
+              <h5>Curator: {score.affiliation ? getAffiliationName(score.affiliation, affiliationsData) : getUserName(score.submitted_by)}</h5>
               <dl className="dl-horizontal">
-                {score.scoreStatus && score.scoreStatus !== 'none' && props.evidence['item_type'] !== 'caseControl' ?
+                {score.scoreStatus && score.scoreStatus !== 'none' ?
                   <div>
                     <dt>Score Status</dt>
                     <dd>{score.scoreStatus}</dd>
@@ -50,13 +69,13 @@ export const ScoreViewer = (props) => {
                   : null}
                 {score.score >= 0 ?
                   <div>
-                    <dt>Changed Score</dt>
+                    <dt>{scoreLabel}</dt>
                     <dd>{score.score}</dd>
                   </div>
                   : null}
                 {score.scoreExplanation ?
                   <div>
-                    <dt>Reason(s) for score change</dt>
+                    <dt>{explanationLabel}</dt>
                     <dd>{score.scoreExplanation}</dd>
                   </div>
                   : null}

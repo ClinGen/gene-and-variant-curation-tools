@@ -20,6 +20,8 @@ import { LoadingStatus, AmplifyAPIRequestRecycler, useAmplifyAPIRequestRecycler 
 import { isOwnedByCurrentCuratingEntity } from '../utilities/ownershipUtilities';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import Alert from '../components/common/Alert';
+import { displayObsoleteDiseaseIcon } from '../utilities/diseaseUtilities';
+
 
 const VariantCentralItem = (props) => {
     // Get Variant & Interpretation PK from url params
@@ -38,9 +40,12 @@ const VariantCentralItem = (props) => {
     const [ basicInfoTabExternalAPIErrorMessage, setBasicInfoTabExternalAPIErrorMessage ] = useState('');
     const [ classification, setClassification ] = useState({});
     const [ cspecDoc, setCspecDoc ] = useState({});
+    const [ isLoadingCspecDoc, setIsLoadingCspecDoc ] = useState(false);
     const [ relatedInterpretations, setRelatedInterpretations ] = useState([]);
     const [ relatedInterpretationsSnapshots, setRelatedInterpretationsSnapshots ] = useState([]);
     const [ calculatedPathogenicity, setCalculatedPathogenicity ] = useState('');
+    const [ isCalculatingPathogenicity, setIsCalculatingPathogenicity] = useState(true); // Add to disable view summary and audit trail buttons until auto-calculated classification is calculated and set
+    const [ clinVarSubmissionBatches, setClinVarSubmissionBatches ] = useState([]);
 
     // Retrieve variant and store in redux
 
@@ -68,8 +73,8 @@ const VariantCentralItem = (props) => {
                     const currentInterpretation = variantRelatedInterpretations.find(interpretation => isOwnedByCurrentCuratingEntity(interpretation, auth));
                     if (currentInterpretation) {
                         dispatch(updateInterpretation(currentInterpretation));
+                        fetchClinVarSubmissionBatches(currentInterpretation);
                         setView("Interpretation");
-                        fetchCspecDoc(currentInterpretation);
                     } else {
                         dispatch(updateInterpretation({}));
                         setView("Evidence");
@@ -150,24 +155,46 @@ const VariantCentralItem = (props) => {
       return snapshotArray;
     }
 
-    const fetchCspecDoc = (interpretation) => {
-      const cspecId = interpretation && interpretation.cspec ? interpretation.cspec.cspecId : '';
-      if (cspecId) {
-        API.get(API_NAME, `/cspec/${cspecId}`).then(cspecDoc => {
-          if (cspecDoc) {
-            setCspecDoc(cspecDoc);
-          }
-        }).catch(err => {
-          console.log('CSPEC FETCH ERROR', err);
-        });
-      } else {
-        setCspecDoc({});
-      }
-    }
-
     const handleCspecUpdate = (cspecDoc) => {
       setCspecDoc(cspecDoc);
     }
+
+    const fetchClinVarSubmissionBatches = (interpretation) => {
+      // Get affiliation's ClinVar submission batches by auth.currentAffiliation
+      if (lodashGet(auth, "currentAffiliation.affiliation_id")) {
+        const url = `/clinvar-submission-batch/find/${lodashGet(auth, "currentAffiliation.affiliation_id")}`
+
+        API.get(API_NAME, url).then(batches => {
+          if (batches && batches.length) {
+            // Find batches the current interpretation was added to
+            // Include both open and closed batches
+            const inBatches = [];
+            batches.forEach(batch => {
+              if (batch.batch_members && batch.batch_members.length) {
+                const found = batch.batch_members.filter(member => {
+                  return member.interpretation === interpretation.PK;
+                });
+                if (found && found.length) {
+                  inBatches.push(batch);
+                }
+              }
+            });
+            setClinVarSubmissionBatches(inBatches);
+          } else {
+            setClinVarSubmissionBatches([]);
+          }
+        }).catch(err => {
+          console.log('ClinVar Submission Batches FETCH ERROR', err);
+        });
+      } else {
+        setClinVarSubmissionBatches([]);
+      }
+    }
+
+    const handleClinVarSubmissionBatches = (batches) => {
+      setClinVarSubmissionBatches(batches);
+    }
+
 
     const classificationCallback = (classification) => {
         setClassification(classification);
@@ -175,6 +202,7 @@ const VariantCentralItem = (props) => {
     
     const calculatedPathogenicityCallback = (assertion) => {
         setCalculatedPathogenicity(assertion);
+        setIsCalculatingPathogenicity(false);
     }
     const renderVariantSubtitle = () => {
         if (isLoadingInterpretation) {
@@ -195,12 +223,18 @@ const VariantCentralItem = (props) => {
             if (modeInheritance) {
                 return (
                     <>
-                        <h5>This interpretation is associated with <strong>{(disease && disease.term) || 'no disease'}</strong></h5>
+                        <h5>This interpretation is associated with <strong>
+                            {disease && disease.term && displayObsoleteDiseaseIcon(disease.term, "interpretation")}
+                            {(disease && disease.term) || 'no disease'}</strong></h5>
                         <h5><i>{`${mode} ${adjective ? `(${adjective})` : ''}`}</i></h5>
                     </>
                 );
             } else if (disease && disease.term) {
-                return <h5>This interpretation is associated with <strong>{disease.term}</strong></h5>
+                return (
+                    <h5>This interpretation is associated with <strong>
+                    {displayObsoleteDiseaseIcon(disease.term, "interpretation")}
+                    {disease.term}</strong></h5>
+                );
             } else {
                 return <h5>This interpretation is not yet associated with a disease or mode of inheritance</h5>
             }
@@ -266,13 +300,10 @@ const VariantCentralItem = (props) => {
                             popoverClassName="popover-bg-black"
                             content={
                                 <span className="text-light">
-                                    For ClinVar alleles, this represents the ClinVar 
-                                    Preferred Title. For alleles not in ClinVar, this HGVS is based on 
-                                    the MANE Select transcript. If there is no MANE Select transcript then 
-                                    the HGVS is based on the transcript with the longest translation with no 
-                                    stop codons or, if no translation, the longest non-protein-coding 
-                                    transcript. If a single canonical transcript is not discernible the HGVS 
-                                    is based on the GRCh38 genomic coordinates.
+                                    The HGVS is based on the Community Standard Title provided by the
+                                    ClinGen Allele Registry, if there is no Community Standard Title,
+                                    then the ClinVar Preferred Title is used. If there is no ClinVar
+                                    Preferred Title, then the HGVS is based on the GRCh38 genomic coordinates.
                                 </span>
                             }
                         />
@@ -284,11 +315,11 @@ const VariantCentralItem = (props) => {
                                     ><FontAwesomeIcon icon={faArrowLeft} /> Interpretation</button>)
                             : (
                                 <button className="btn btn-outline-primary float-right audit-trail" onClick={showAuditTrail}
-                                    disabled={variant.status === 'deleted'}>View Audit Trail</button>)
+                                    disabled={variant.status === 'deleted' || isCalculatingPathogenicity || isLoadingCspecDoc}>View Audit Trail</button>)
                         : null}
                     {(view === "Interpretation" || view === "Audit Trail") && isOwnedByCurrentCuratingEntity(interpretation, auth) && (
                         <button className="btn btn-outline-primary float-right" onClick={showSummary}
-                            disabled={variant.status === 'deleted'}
+                            disabled={variant.status === 'deleted' || isCalculatingPathogenicity || isLoadingCspecDoc}
                         >View Summary</button>
                     )}
                     {view === "Summary" && (
@@ -302,8 +333,11 @@ const VariantCentralItem = (props) => {
                     setIsLoadingInterpretation={setIsLoadingInterpretation}
                     onViewUpdate={setView} 
                     cspecDoc={cspecDoc}
+                    isLoadingCspecDoc={isLoadingCspecDoc}
+                    clinVarSubmissionBatches={clinVarSubmissionBatches}
                     classification={classification} 
                     calculatedPathogenicity={calculatedPathogenicity} 
+                    isCalculatingPathogenicity={isCalculatingPathogenicity}
                     relatedInterpretations={relatedInterpretations}
                     handleInterpretationUpdate={handleInterpretationUpdate}
                 />
@@ -331,6 +365,9 @@ const VariantCentralItem = (props) => {
                   view={view}
                   cspecDoc={cspecDoc}
                   handleCspecUpdate={handleCspecUpdate}
+                  setIsLoadingCspecDoc={setIsLoadingCspecDoc}
+                  clinVarSubmissionBatches={clinVarSubmissionBatches}
+                  handleClinVarSubmissionBatches={handleClinVarSubmissionBatches}
                   viewHandler={setView}
                   setClassification={classificationCallback}
                   setCalculatedPathogenicity={calculatedPathogenicityCallback} />

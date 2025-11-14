@@ -6,7 +6,7 @@ gci-vci-elasticsearch-trigger:
       - '**'
     include:
       - 'ddb_stream_to_es/**'
-  runtime: python3.8
+  runtime: python3.11
   environment:
     ES_DOMAIN_ENDPOINT: !GetAtt ElasticsearchDomain.DomainEndpoint
   events:
@@ -15,5 +15,3 @@ gci-vci-elasticsearch-trigger:
         arn: !GetAtt ClinGenTable.StreamArn
         batchWindow: 10
         maximumRetryAttempts: 3
-
-        

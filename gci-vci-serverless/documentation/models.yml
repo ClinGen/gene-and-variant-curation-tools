@@ -139,3 +139,8 @@ models:
       description: 'Post vp export'
       contentType: application/json
       schema: '${file(src/models/vp_export.json)}'
+  -
+      name: CSpec
+      description: 'CSpec Document'
+      contentType: application/json
+      schema: '${file(src/models/cspec.json)}'

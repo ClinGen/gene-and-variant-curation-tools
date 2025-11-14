@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import moment from 'moment';
 import { Container, Jumbotron, Row, Col } from "react-bootstrap";
-import { _, cloneDeep } from "lodash";
+import { cloneDeep, get as lodashGet } from "lodash";
 import { useSelector } from 'react-redux'
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import { API_NAME } from '../../utils';
@@ -9,6 +10,10 @@ import { LoadingButton } from "../common/LoadingButton";
 import { getTransferGdmObjects } from './getTransferGdmObjects';
 import { getTransferInterpretationObjects } from './getTransferInterpretationObjects';
 import { useAmplifyAPIRequestRecycler } from "../../utilities/fetchUtilities";
+import { getUserName } from "../../helpers/getUserName";
+import { AffilsContext, getAffiliationByID } from '../../helpers/affiliationsHelpers.js';
+import { getGDMContributors, getGeneEvidenceData, getPerformedByUserData, postTrackData } from '../../helpers/getGdmMsgData';
+
 
 /**
  *
@@ -57,6 +62,7 @@ export const TransferCuration = () => {
   const [ submitErrorMsg, setSubmitErrorMsg ] = useState('');
   const [ formErrors, setFormErrors ] = useState({});
   const [ isSubmitting, setIsSubmitting ] = useState(false); // REST operation in progress
+  const { affiliationsData } = useContext(AffilsContext);
 
   useEffect(() => {
     setFormData({
@@ -64,7 +70,8 @@ export const TransferCuration = () => {
       selectedPK: '',
       contributorType: 'individual',
       contributors: '',
-      affiliationId: ''
+      affiliationId: '',
+      notes: ''
     });
     setFormErrors({});
   }, []);
@@ -106,6 +113,10 @@ export const TransferCuration = () => {
   const allFormFieldsHaveValue = () => {
     const errors = {};
 
+    // If transfer GDM, can only be from one affiliation
+    if (formData["selectedType"] === 'gdm' && formData["contributorType"] === "affiliation" && formData["contributors"].includes(",")) {
+      errors["contributors"] = "Only one Affiliation ID for GDM transfer";
+    }
     if (formData["selectedPK"] === '') {
       errors["selectedPK"] = "An UUID is required";
     }
@@ -113,11 +124,18 @@ export const TransferCuration = () => {
       if (formData["contributorType"] === "individual") {
         errors["contributors"] = "Contributor email(s) is required";
       } else {
-        errors["contributors"] = "Affiliation ID(s) is required";
+        if (formData["selectedType"] === 'gdm') {
+          errors["contributors"] = "Affiliation ID is required";
+        } else {
+          errors["contributors"] = "Affiliation ID(s) is required";
+        }
       }
     }
     if (formData["affiliationId"] === '') {
       errors["affiliationId"] = "New Affiliation ID is required";
+    }
+    if (formData["selectedType"] === 'gdm' && formData["notes"] === '') {
+      errors["notes"] = "Notes is required";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -131,32 +149,38 @@ export const TransferCuration = () => {
 
   /**
    * Method to validate form content with the GDM/interpretation that needs to be transferred.
-   * @param {object} object - GDM/interpretation object
+   * @param {object} curation - GDM/interpretation object
    * @param {array} contributorPKs - contributor user PKs or affiliation id
    */
-  const validateForm = (object, contributorPKs) => {
+  const validateForm = (curation, contributorPKs) => {
+    const type = formData['selectedType'];
     const affiliationId = formData['affiliationId'];
+    const affiliation = getAffiliationByID(affiliationId, affiliationsData);
+    const hasGCEP = lodashGet(affiliation, "subgroups.gcep");
     const contributorType = formData['contributorType']
     const contributors = contributorPKs.join(',');
     let errorMsg = '';
 
-    if (contributorType === 'affiliation' && contributors === affiliationId) {
-      errorMsg = 'Selected Affiliation Id for transfer should not be the same as new Affiliation Id.';
-    } else if (contributorType === 'individual' && object.affiliation) {
-      errorMsg = 'Cannot transfer curation from an affiliation by selected individual user(s).';
-    } else if (contributorType === 'individual' && !object.affiliation && contributors.indexOf(object.submitted_by.PK) === -1) {
-      errorMsg = 'Cannot transfer curation because it does not belong to any selected individual user(s).';
-    } else if (contributorType === 'affiliation' && !object.affiliation) {
-      errorMsg = 'Cannot transfer curation because it does not belong to any selected affiliation(s).';
-    } else {
-      errorMsg = '';
+    if (contributorType === 'affiliation') {
+      if (!curation.affiliation) {
+        errorMsg = 'Cannot transfer curation because it does not belong to an affiliation.';
+      } else if (contributors === affiliationId) {
+        errorMsg = 'Selected Affiliation Id for transfer should not be the same as new Affiliation Id.';
+      } else if (type === 'gdm' && !hasGCEP) {
+        errorMsg = 'Cannot transfer GDM to an affiliation that does not belong to GCEP.';
+      }
+    }
+
+    if (contributorType === 'individual') {
+      if (curation.affiliation) {
+        errorMsg = 'Cannot transfer curation from an affiliation by individual user(s).';
+      } else if (!curation.affiliation && contributors.indexOf(curation.submitted_by.PK) === -1) {
+        errorMsg = 'Cannot transfer curation because it does not belong to any selected individual user(s).';
+      }
     }
 
     if (errorMsg === '') {
-      return Promise.resolve({
-        obj: object,
-        contributorPKs: contributorPKs
-      });
+      return Promise.resolve(contributorPKs);
     } else {
       return Promise.reject({statusText: `${errorMsg}`});
     }
@@ -204,17 +228,17 @@ export const TransferCuration = () => {
    * Return an array of 'PK' from the gdm, annotations, evidence, scores, variantScores, classifications if GDM object
    * Return an array of 'PK' from the evaluations, provisionalVariant, curated_evidences if Interpretation object
    * @param {string} type - object type - gdm or interpretation
-   * @param {object} object - the gene-disease record data object or interpretation data object
+   * @param {object} curation - the gene-disease record data object or interpretation data object
    * @param {string} contributorType - contributor type - individual user or affiliation
    * @param {array} contributorPKs - contributor PKs or affiliation ids
    * @param {string} affiliationId - transfer to affiliation id
    */
-  const findAllObjects = (type, object, contributorType, contributorPKs, affiliationId) => {
+  const findAllObjects = (type, curation, contributorType, contributorPKs, affiliationId) => {
     let allObjects = null;
     if (type === 'gdm') {
-      allObjects = getTransferGdmObjects(object);
+      allObjects = getTransferGdmObjects(curation);
     } else {
-      allObjects = getTransferInterpretationObjects(object);
+      allObjects = getTransferInterpretationObjects(curation);
     }
 
     let foundObjects = [];
@@ -242,17 +266,17 @@ export const TransferCuration = () => {
     if (type === "interpretation") {
       // interpretation.provisionalVariant is no longer a linked object
       // but interpretation.provisionalVariant.affiliation may exist and need to be updated
-      if (object && object.provisionalVariant) {
+      if (curation && curation.provisionalVariant) {
         // If affiliationId is '0', then set to no associated affiliation 
-        if (affiliationId === '0' && object.provisionalVariant.affiliation) {
+        if (affiliationId === '0' && curation.provisionalVariant.affiliation) {
           // Need to delete but not set to null
-          delete object.provisionalVariant.affiliation;
+          delete curation.provisionalVariant.affiliation;
         } else {
-          object.provisionalVariant.affiliation = affiliationId;
+          curation.provisionalVariant.affiliation = affiliationId;
         }
       }
       const allowed = ['date_created', 'last_modified', 'submitted_by', 'item_type', 'affiliation', 'PK', 'provisionalVariant'];
-      foundObjects.push(filteredObject(object, allowed));
+      foundObjects.push(filteredObject(curation, allowed));
     }
 
     return Promise.resolve(foundObjects);
@@ -404,168 +428,6 @@ export const TransferCuration = () => {
     }
   }
 
-  /** 
-   * Loop through given array of scores and see if duplicated score can be resulted if score will be
-   * transferred from contributorPKs to newAffiliationId
-   * Return true if no duplicate, false if duplicate can be created
-   * @param {array} scores - array of score object
-   * @param {string} contributorType - contributor type - individual user or affiliation
-   * @param {array} contributorPKs - contributor PKs or affiliation ids
-   * @param {string} newAffiliationId - transfer to affiliation id
-   */
-  const noDupScore = (scores, contributorType, contributorPKs, newAffiliationId) => {
-    let noDup = true;
-    let fromScore = [];
-    let toScore = [];
-
-    if (contributorType === 'individual') {
-      // ??? If transfer back to individual, will be ok.
-      // If transfer back to individual, and an user has scored by self and by affiliation(s) then can have duplicated scores
-      // If transfer to affiliation, get can be transferred scores.
-      // ???if (newAffiliationId !== "0") {
-        fromScore = scores.filter(o => { 
-          return (contributorPKs.indexOf(o.submitted_by.PK) > -1 &&
-            (!o.affiliation || (o.affiliation && o.affiliation !== newAffiliationId)));
-        });
-      // ???}
-    } else {
-      fromScore = scores.filter(o => { 
-        return (contributorPKs.indexOf(o.affiliation) > -1);
-      });
-    }
-
-    if (newAffiliationId === "0") {
-      if (fromScore && fromScore.length > 0) {
-        if (contributorType === 'individual') {
-          // ??? If transfer back to individual by individual and an user has scored by self and by affiliation(s)
-          // then can have duplicated scores
-          // Extract the submitted_by.PK values from fromScore array into a new array
-          const objCreator = fromScore.map(o => {
-            return o.submitted_by.PK;
-          });
-          // Get unique PKs and if count is less then duplicate can exist
-          const uniqueIds = _.uniq(objCreator);
-          if (objCreator.length !== uniqueIds.length) {
-            // ??? Duplicate found 
-            noDup = false;
-          }
-          /* ??? fromScore more than 1
-          fromScore.forEach(scoreObj => {
-            toScore = scores.filter(o => {
-              return (o.submitted_by.PK === scoreObj.submitted_by.PK);
-            });
-          });
-          */
-        } else {
-          // If transfer by affiliation to individual, check if score created by that individual already exist
-          toScore = scores.filter(o => {
-            return (o.submitted_by.PK === fromScore[0].submitted_by.PK && !o.affiliation);
-          });
-        }
-      }
-    } else {
-      toScore  = scores.filter(o => {
-        return (o.affiliation === newAffiliationId);
-      });
-    }
-
-    if (fromScore && ((fromScore.length > 1) || (fromScore.length > 0 && toScore && toScore.length > 0))) {
-      noDup = false;
-    }
-    return noDup;
-  }
-
-  /**
-   * Go through all gdm evidences' score object to check if duplicated scores can be resulted after the transfer
-   * Return true if no duplicate, false if duplicate can be created
-   * @param {object} gdm - gdm object
-   * @param {string} contributorType - contributor type - individual user or affiliation
-   * @param {array} contributorPKs - contributor PKs or affiliation ids
-   * @param {string} newAffiliationId - transfer to affiliation id
-   */
-  // ??? This codes is not being used, need to work on more
-  const checkNoDupScores = (gdm, contributorType, contributorPKs, newAffiliationId) => {
-    let noDuplicate = true;
-
-    // Go through all annotaions and find all evidence scores and check if a score may be duplicated for this transfer
-    if (gdm.annotations && gdm.annotations.length > 0) {
-      gdm.annotations.forEach(annotation => {
-        // Loop through groups
-        if (noDuplicate && annotation.groups && annotation.groups.length) {
-          annotation.groups.forEach(group => {
-            // Loop through families in group evidence
-            if (noDuplicate && group.familyIncluded && group.familyIncluded.length > 0) {
-              group.familyIncluded.forEach(family => {
-                // Loop through individuals within each family of the group
-                if (noDuplicate && family.individualIncluded && family.individualIncluded.length > 0) {
-                  family.individualIncluded.forEach(individual => {
-                    // Loop through group's family's individual scores and check for possible duplicated score
-                    // Stop if any duplicate is found
-                    if (noDuplicate) {
-                      if (individual.scores && individual.scores.length > 1) {
-                        noDuplicate = noDupScore(individual.scores, contributorType, contributorPKs, newAffiliationId);
-                      }
-                    }
-                    // ??? variantScores should only have one
-                  }); // forEach group's family's individual
-                }
-              }); // forEach group's family
-            }
-          }); // forEach group
-        } // if has groups
-
-        // Loop through families
-        if (noDuplicate && annotation.families && annotation.families.length > 0) {
-          annotation.families.forEach(family => {
-            // Loop through individuals with each family
-            if (noDuplicate && family.individualIncluded && family.individualIncluded.length > 0) {
-              family.individualIncluded.forEach(individual => {
-                // Loop through family's individual scores and check for possible duplicated score
-                if (noDuplicate && individual.scores && individual.scores.length > 1) {
-                  noDuplicate = noDupScore(individual.scores, contributorType, contributorPKs, newAffiliationId);
-                }
-                // ??? variantScores should only have one
-              });
-            }
-          });
-        }
-
-        // Loop through individuals
-        if (noDuplicate && annotation.individuals && annotation.individuals.length > 0) {
-          annotation.individuals.forEach(individual => {
-            // Loop through individual scores and check for possible duplicated score
-            if (noDuplicate && individual.scores && individual.scores.length > 1) {
-              noDuplicate = noDupScore(individual.scores, contributorType, contributorPKs, newAffiliationId);
-            }
-            // ??? variantScores should only have one
-          });
-        }
-
-        // Loop through experimentals
-        if (noDuplicate && annotation.experimentalData && annotation.experimentalData.length > 0) {
-          annotation.experimentalData.forEach(experimental => {
-            // Loop through experimental scores and check for possible duplicated score
-            if (noDuplicate && experimental.scores && experimental.scores.length > 1) {
-              noDuplicate = noDupScore(experimental.scores, contributorType, contributorPKs, newAffiliationId);
-            }
-          });
-        }
-
-        // Loop through case-controls
-        if (noDuplicate && annotation.caseControlStudies && annotation.caseControlStudies.length > 0) {
-          annotation.caseControlStudies.forEach(caseControl => {
-            // Loop through case-control scores and check for possible duplicated score
-            if (noDuplicate && caseControl.scores && caseControl.scores.length > 1 ) {
-              noDuplicate = noDupScore(caseControl.scores, contributorType, contributorPKs, newAffiliationId);
-            }
-          });
-        }
-      }); // forEach annotation
-    }
-
-    return noDuplicate;
-  }
-
   /**
    * For gdm, check if duplicated score or duplicated provisionalClassification can be resulted after the transfer
    * For interpretation, check if duplicated interpretation can be resulted after the transfer
@@ -580,9 +442,6 @@ export const TransferCuration = () => {
     return new Promise((resolve, reject) => {
       // Check for transfer gdm
       if (type === "gdm") {
-        // Check if this transfer will cause duplicated scores in GDM evidences.
-        // ??? do not check for now
-        // ??? if (checkNoDupScores(curation, contributorType, contributorPKs, newAffiliationId)) {
           // Check if transfer from contributor(s) and to affiliation both already have provisionalClassification in this GDM
           if (curation.provisionalClassifications && curation.provisionalClassifications.length > 0) {
             // Get provisionalClassification that belongs to contributor(s)
@@ -626,20 +485,11 @@ export const TransferCuration = () => {
             if (fromProvisional && ((fromProvisional.length > 1) || (fromProvisional.length > 0 && toProvisional && toProvisional.length > 0))) {
               reject({statusText: `Duplicated classification associated with new Affiliation ID are found.`});
             } else {
-              resolve({
-                obj: curation,
-                contributorPKs: contributorPKs
-              });
+              resolve(contributorPKs);
             }
           } else {
-            resolve({
-              obj: curation,
-              contributorPKs: contributorPKs
-            });
+            resolve(contributorPKs);
           }
-        // ??? } else {
-        // ???   reject({statusText: `Duplicated Scores associated with new Affiliation ID in same evidence(s) are found.`});
-        // ??? }
       } else {
         // Check for transfer interpretation
         if (newAffiliationId === "0") {
@@ -651,17 +501,11 @@ export const TransferCuration = () => {
               setSubmitErrorMsg(`An interpretation associated with transfer from individual already exists for this variant.`);
               reject({statusText: `An interpretation associated with transfer from individual already exists for this variant.`});
             } else {
-              resolve({
-                obj: curation,
-                contributorPKs: contributorPKs
-              });
+              resolve(contributorPKs);
             }
           }).catch(err => {
             setSubmitErrorMsg(`Error in checking for duplicated interpretation. Error: ${err.message}`);
-            resolve({
-              obj: curation,
-              contributorPKs: contributorPKs
-            });
+            resolve(contributorPKs);
           });
         } else {
           // If transfer interpretation to new affiliation
@@ -673,18 +517,12 @@ export const TransferCuration = () => {
               reject({statusText: `An interpretation associated with New Affiliation ID already exists for this variant.`});
             } else {
               // It's ok since to affiliation has no existing interpretation
-              resolve({
-                obj: curation,
-                contributorPKs: contributorPKs
-              });
+              resolve(contributorPKs);
 
             }
           }).catch(err => {
             setSubmitErrorMsg(`Error in checking for duplicated interpretation. Error: ${err.message}`);
-            resolve({
-              obj: curation,
-              contributorPKs: contributorPKs
-            });
+            resolve(contributorPKs);
           });
         }
       }
@@ -697,7 +535,7 @@ export const TransferCuration = () => {
    * @param {array} list - contributor emails
    * @param {object} obj - gdm/interpretation object
    */
-  const getContributorPKs = (list, obj) => {
+  const getContributorPKs = (list) => {
     let newList = [];
 
     return new Promise((resolve, reject) => {
@@ -711,10 +549,7 @@ export const TransferCuration = () => {
               newList.push(user[0].PK);
             }
             if (i === list.length) {
-              resolve({
-                obj: obj,
-                contributorPKs: newList
-              });
+              resolve(newList);
             }
           }).catch(error => {
             console.log(JSON.parse(JSON.stringify(error)));
@@ -727,6 +562,61 @@ export const TransferCuration = () => {
         reject({statusText: "No User email is entered."});
       }
     });
+  }
+
+  /**
+   * Method to create necessary data object to be sent to Data Exchange for UNC tracking
+   * @param {object} gdm - GDM object
+   * @param {string} transferFrom - GDM transferred from affiliation Id
+   * @param {string} transferTo - GDM transferred to affiliation Id
+   * @param {string} notes - notes on this transfer
+   */
+  const setUNCData = (gdm, transferFrom, transferTo, notes) => {
+    const fromAffiliation = getAffiliationByID(transferFrom, affiliationsData);
+    const toAffiliation = getAffiliationByID(transferTo, affiliationsData);
+    const submissionTimestamp = new Date();
+
+    // GDM should only have one classification
+    const provisional = lodashGet(gdm, "provisionalClassifications[0]", null);
+    // Get all contributors
+    const snapshots = lodashGet(provisional, "associatedClassificationSnapshots", null) && provisional.associatedClassificationSnapshots.length ? provisional.associatedClassificationSnapshots : [];
+    const contributors = getGDMContributors(gdm, snapshots, null, affiliationsData);
+
+    // Add current user to contributors list
+    if (auth) {
+      contributors.push({
+        name: getUserName(auth),
+        id: lodashGet(auth, 'PK', ''),
+        email: lodashGet(auth, 'email', ''),
+        roles: ['transfer executor']
+      });
+    }
+
+    return {
+      iri: provisional ? provisional.PK : '',
+      report_id: lodashGet(gdm, "PK", ''),
+      gene_validity_evidence_level: getGeneEvidenceData(gdm, provisional),
+      date: moment(submissionTimestamp).toISOString(),
+      performed_by: getPerformedByUserData(auth),
+      contributors: contributors,
+      content: {
+        event_type: 'transfer',
+        date: moment(submissionTimestamp).toISOString(),
+        transfer_from: {
+          id: lodashGet(fromAffiliation, "affiliation_id", ''),
+          name: lodashGet(fromAffiliation, "affiliation_fullname", ''),
+          gcep_id: lodashGet(fromAffiliation, "subgroups.gcep.id", ''),
+          gcep_name: lodashGet(fromAffiliation, "subgroups.gcep.fullname", '')
+        },
+        transfer_to: {
+          id: lodashGet(toAffiliation, "affiliation_id", ''),
+          name: lodashGet(toAffiliation, "affiliation_fullname", ''),
+          gcep_id: lodashGet(toAffiliation, "subgroups.gcep.id", ''),
+          gcep_name: lodashGet(toAffiliation, "subgroups.gcep.fullname", '')
+        },
+        notes: notes
+      }
+    };
   }
 
   /**
@@ -748,6 +638,7 @@ export const TransferCuration = () => {
       const affiliation = affiliationId === '0' ? 'no affiliation' : affiliationId;
       const errMsg = type === 'gdm' ? 'The Gene-Disease record has been affiliated with '
                               : 'The Interpretation record has been affiliated with ';
+      let curation = null;
 
       // Convert contributor(s) PKs string into array
       const re = /\s*(?:,|$)\s*/;
@@ -755,31 +646,29 @@ export const TransferCuration = () => {
 
       // Load GDM or interpretation object
       loadTypeObject(type, PK).then(obj => {
+        curation = obj;
         // If transfer by individual, get user PK from user email
         if (contributorType === "individual") {
-          return getContributorPKs(origContributorList, obj);
+          return getContributorPKs(origContributorList);
         } else {
           // Just return affiliation IDs
-          return Promise.resolve({
-            obj: obj,
-            contributorPKs: origContributorList
-          });
+          return Promise.resolve(origContributorList);
         }
-      }).then(result => {
+      }).then(contributorPKs  => {
         // Check the entered individual contributor email all can be converted to user PK
-        if (result.contributorPKs && result.contributorPKs.length === origContributorList.length ) {
-          return Promise.resolve(result);
+        if (contributorPKs && contributorPKs.length === origContributorList.length ) {
+          return Promise.resolve(contributorPKs);
         } else {
-          return Promise.reject({statusText: "Some or all user(s) cannot be found by entered email(s)"});
+          return Promise.reject({statusText: "Some or all user(s) cannot be found by entered email(s).  Please check the entered email(s)."});
         }
-      }).then(result => {
-        return checkDuplicate(type, result.obj, contributorType, result.contributorPKs, affiliationId);
-      }).then(result => {
+      }).then(contributorPKs => {
         // Validate form data with to be transferred GDM/interpretation object
-        return validateForm(result.obj, result.contributorPKs);
-      }).then(result => {
+        return validateForm(curation, contributorPKs);
+      }).then(contributorPKs => {
+        return checkDuplicate(type, curation, contributorType, contributorPKs, affiliationId);
+      }).then(contributorPKs => {
         // If form data is validated.  Gather all objects, including the GDM or Interpretation
-        return findAllObjects(type, result.obj, contributorType, result.contributorPKs, affiliationId);
+        return findAllObjects(type, curation, contributorType, contributorPKs, affiliationId);
       }).then(objectList => {
         // console.log('ObjectList(new): ' + JSON.stringify(objectList));
         // Update the objects with new owner
@@ -797,11 +686,27 @@ export const TransferCuration = () => {
         }
       }).then(data => {
         if (data && data.length) {
+          // Gather GDM transfer data to be sent to Data Exchange
+          // Only send message if tranfer from affiliation to another affiliation
+          if (type === 'gdm' && contributorType === 'affiliation') {
+            const transferFrom = origContributorList[0];
+            const transferTo = affiliationId;
+            const uncData = setUNCData(curation, transferFrom, transferTo, formData.notes);
+
+            // Post GDM transfer data to Data Exchange
+            postTrackData(uncData).then(() => {
+              console.log('Successfully sent GDM transfer data to Data Exchange for GDM %s at %s', curation.PK, moment(curation.last_modified).toISOString());
+            }).catch(error => {
+              console.log('Error sending change GDM transfer %s data to Data Exchange for GDM %s at %s - Error: %o', curation.PK, moment(curation.last_modified).toISOString(), error);
+            });
+          }
+
           setIsSubmitting(false);
+          // console.log('saved curation: ' + JSON.stringify(curation));
           // console.log('Result: ' + JSON.stringify(data));
           setSubmitErrorMsg(errMsg + affiliation + '.');
         } else {
-          setSubmitErrorMsg('No data was found and changed. Check console warnings.');
+          setSubmitErrorMsg('No data was found and transferred.');
           setIsSubmitting(false);
         }
       }).catch(err => {
@@ -826,8 +731,17 @@ export const TransferCuration = () => {
 
   const submitErrClass = 'submit-err float-right' + (submitErrorMsg ? '' : ' hidden');
   const pkLabel = formData["selectedType"] === 'gdm' ? 'GDM UUID' : 'Interpretation UUID';
-  const ownerLabel = formData["contributorType"] === 'individual' ? 'Current Contributor email(s) for Transfer' : 'Current Affiliation ID(s) for Transfer';
-  const listHelp = formData["contributorType"] === 'individual' ? 'Separate emails with commas' : 'Separate IDs with commas';
+  const ownerLabel = formData["contributorType"] === 'individual'
+    ? 'Current Contributor email(s) for Transfer'
+    : formData['selectedType'] === 'gdm'
+      ? 'Current Affiliation ID for Transfer'
+      : 'Current Affiliation ID(s) for Transfer';
+  const listHelp = formData["contributorType"] === 'individual'
+    ? 'Separate emails with commas'
+    : formData['selectedType'] === 'interpretation'
+      ? 'Separate IDs with commas'
+      : '';
+  const showNotes = formData['selectedType'] === 'gdm';
   const isAdmin = auth && Array.isArray(auth.groups) && (auth.groups.includes('admin') || auth.groups.includes('powerUser'));
 
   return (
@@ -866,6 +780,12 @@ export const TransferCuration = () => {
                     value={formData["affiliationId"]} onChange={handleChange}
                     error={formErrors["affiliationId"]} groupClassName="row mb-3"
                     labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" required />
+                  {showNotes ?
+                    <Input type="textarea" name="notes" label="Notes"
+                      value={formData["notes"]} rows="4" onChange={handleChange}
+                      error={formErrors["notes"]} groupClassName="row mb-3"
+                      labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" required />
+                    : null}
                   <Row><Col>
                     <LoadingButton
                       type="submit"

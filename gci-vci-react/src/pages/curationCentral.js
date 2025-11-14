@@ -4,9 +4,7 @@ import { Row, Col, Container } from "react-bootstrap";
 
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { GdmHeader } from "../components/gene-central/GdmHeader";
-import { GdmClassificationRecords } from "../components/gene-central/GdmClassificationRecords";
 import { GdmArticleSelectionList } from "../components/gene-central/GdmArticleSelectionList";
-import { GdmArticleCurationPanel } from "../components/gene-central/GdmArticleCurationPanel";
 import { GdmCurationPalette } from "../components/gene-central/GdmCurationPalette";
 import GdmVariantsPanel from "../components/gene-central/GdmVariantsPanel";
 import Alert from "../components/common/Alert";
@@ -26,13 +24,8 @@ export const CurationCentral = () => {
 
   return (
     <>
-      <GdmHeader />
+      <GdmHeader showClassification={true} />
       <Container fluid>
-        <Row>
-          <Col md="12">
-            <GdmClassificationRecords className="mx-2" />
-          </Col>
-        </Row>
         <Row>
           <Col md="12">
           <GdmVariantsPanel className="mr-2 ml-2" />
@@ -61,10 +54,7 @@ export const CurationCentral = () => {
               <Col md="3">
                 <GdmArticleSelectionList activeAnnotation={activeAnnotation} />
               </Col>
-              <Col md="6">
-                <GdmArticleCurationPanel activeAnnotation={activeAnnotation} />
-              </Col>
-              <Col md="3">
+              <Col md="9">
                 {activeAnnotation ? <GdmCurationPalette activeAnnotation={activeAnnotation} /> : null}
               </Col>
             </Row>

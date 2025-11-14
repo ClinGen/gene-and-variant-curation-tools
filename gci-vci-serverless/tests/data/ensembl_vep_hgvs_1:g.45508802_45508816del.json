@@ -56,7 +56,8 @@
       ],
       "given_ref": "TCAGGTGTGTGCATA",
       "conservation": 0.416,
-      "mane": "NM_181697.3",
+      "mane": ["MANE_Select"],
+      "mane_select": "NM_181697.3",
       "variant_allele": "-",
       "gene_symbol_source": "HGNC",
       "strand": -1,
@@ -127,7 +128,8 @@
           "db": "CDD"
         }
       ],
-      "mane": "NM_015506.3",
+      "mane_select": "NM_015506.3",
+      "mane": ["MANE_Select"],
       "refseq_transcript_ids": [
         "NM_015506.3"
       ],

@@ -17,30 +17,22 @@ import { sortListByDate } from '../../helpers/sort';
 import { isScoringForSupportedSOP, isScoringForCurrentSOP } from '../../helpers/sop';
 import { ContextualHelp } from '../../helpers/contextual_help';
 import { allowPublishGlobal } from '../../helpers/allow_publish';
-import { getApproverNames } from '../../helpers/get_approver_names';
-import { getAffiliationName } from '../../helpers/get_affiliation_name.js';
 import { renderAnimalOnlyTag } from '../../helpers/render_classification_animal_only_tag';
 import GeneDiseaseClassificationMatrix from '../../helpers/gene_disease_classification_matrix';
 import GeneDiseaseClassificationMatrixSOPv7 from '../../helpers/gene_disease_classification_matrix_sop_v7';
-import { getUserName } from "../../helpers/getUserName";
 import { renderEarliestPublications } from '../../helpers/renderEarliestPublications';
+import { getGDMContributors, getGeneEvidenceData, getPerformedByUserData, postTrackData } from '../../helpers/getGdmMsgData';
 import { getClassificationSavedDate } from '../../utilities/classificationUtilities';
-import { Container } from 'react-bootstrap';
-import { GdmClassificationRecords } from '../gene-central/GdmClassificationRecords';
-
+import { isDiseaseObsolete } from '../../utilities/diseaseUtilities';
+import { AffilsContext } from '../../helpers/affiliationsHelpers';
 
 class ProvisionalClassification extends Component {
-  // propTypes: {
-  //     href: PropTypes.string,
-  //     session: PropTypes.object,
-  //     affiliation: PropTypes.object,
-  //     demoVersion: PropTypes.bool
-  // },
+  static contextType = AffilsContext
   constructor(props) {
     super(props);
 
     // Set state to indicate user actions/intentions based on URL query string parameters
-    let isApprovalActive, isPublishActive, isUnpublishActive;
+    let isApprovalActive, isPublishActive, isUnpublishActive, isRepublishActive;
 
     if (this.props.location && this.props.location.search) {
       const params = new URLSearchParams(this.props.location.search);
@@ -48,6 +40,7 @@ class ProvisionalClassification extends Component {
       isApprovalActive = params.get('approval');
       isPublishActive = params.get('publish');
       isUnpublishActive = params.get('unpublish');
+      isRepublishActive = params.get('republish');
     }
 
     this.state = {
@@ -60,13 +53,14 @@ class ProvisionalClassification extends Component {
       isApprovalActive: isApprovalActive,
       isPublishActive: isPublishActive,
       isUnpublishActive: isUnpublishActive,
+      isRepublishActive: isRepublishActive,
       showProvisional: false,
       showApproval: false,
       publishProvisionalReady: false,
       publishSnapshotListReady: false,
       publishSnapshotUUID: null,
       showPublish: false,
-      showUnpublish: false
+      showUnpublish: false,
     };
 
     this.updateProvisionalObj = this.updateProvisionalObj.bind(this);
@@ -129,65 +123,6 @@ class ProvisionalClassification extends Component {
   }
 
   /**
-   * Method to post data to /track-data which sends data to Data Exchange for UNC tracking system
-   * @param {object} data - data object
-   */
-  postTrackData(data) {
-    return new Promise((resolve, reject) => {
-      if (data) {
-        const params = { body: {data} };
-        API.post(API_NAME, '/messaging/track-data', params).then(result => {
-          if (result.status === 'Success') {
-            console.log('Post tracking data succeeded: %o', result);
-            resolve(result);
-          } else {
-            console.log('Post tracking data failed: %o', result);
-            reject(result);
-          }
-        }).catch(error => {
-          console.log('Post tracking data internal data retrieval error: %o', error);
-          reject(error);
-        });
-      } else {
-        console.log('Post tracking data Error: Missing expected data');
-        reject({ 'message': 'Missing expected data' });
-      }
-    });
-  }
-
-  /**
-   * Method to get current GDM data that is used for UNC tracking
-   */
-  getGDMData() {
-    const gdm = lodashGet(this, "state.gdm", null);
-    let gdmData = {};
-    if (gdm && gdm.gene && gdm.disease && gdm.modeInheritance) {
-      const start = gdm.modeInheritance.indexOf('(');
-      const end = gdm.modeInheritance.indexOf(')');
-      const hpoNumber = start > -1 && end > -1 ? gdm.modeInheritance.substring(start + 1, end) : gdm.modeInheritance;
-
-      gdmData = {
-        mode_of_inheritance: hpoNumber,
-        condition: gdm.disease.PK ? gdm.disease.PK.replace('_', ':') : '',
-        gene: gdm.gene.hgncId || ''
-      };
-    }
-    return gdmData;
-  }
-
-  /**
-   * Method to get given provisional's gene_validity_evidence_level data that is used for UNC tracking
-   * @param {object} provisional - provisional data object
-   */
-  getGeneEvidenceData(provisional) {
-    return {
-      genetic_condition: this.getGDMData(),
-      evidence_level: provisional && provisional.alteredClassification && provisional.alteredClassification !== 'No Modification' ? provisional.alteredClassification : provisional.autoClassification,
-      gene_validity_sop: provisional && provisional.sopVersion ? 'cg:gene_validity_sop_' + provisional.sopVersion : ''
-    };
-  }
-
-  /**
    * Method to create necessary data object that needs to be sent to Data Exchange for UNC tracking
    * @param {object} provisional - provisional classification object
    * @param {string} status - current classification status
@@ -200,117 +135,21 @@ class ProvisionalClassification extends Component {
     let uncData = {};
 
     if (lodashGet(this, "state.gdm", null) && this.state.gdm.PK) {
-      const affiliation = lodashGet(this, "props.auth.currentAffiliation", null);
       uncData = {
         report_id: this.state.gdm.PK,
         iri: provisional.PK,
-        gene_validity_evidence_level: this.getGeneEvidenceData(provisional),
+        gene_validity_evidence_level: getGeneEvidenceData(this.state.gdm, provisional),
         date: moment(date).toISOString(),
         status: {
           name: status,
           date: moment(statusDate).toISOString()
         },
-        performed_by: {
-          name: getUserName(submitter),
-          id: lodashGet(submitter, "PK", null) || '',
-          email: lodashGet(submitter,"email", null) || '',
-          on_behalf_of: {
-            id: lodashGet(affiliation, "affiliation_id", null) || '',
-            name: lodashGet(affiliation, "affiliation_fullname", null) || ''
-          }
-        },
+        performed_by: getPerformedByUserData(submitter),
         contributors: contributors
       }
     }
 
     return uncData;
-  }
-
-  /**
-   * Method to get list of user who has performed an action in current provisional classification.
-   * But skip the publish/unpublish user in the snapshot with given snapshot id.
-   * @param {string} publishSnapshotId - snapshot id
-   */
-  getActionContributors(publishSnapshotId) {
-    let contributors = [];
-
-    // Add GDM creator
-    if (lodashGet(this, "state.gdm", null)) {
-      const gdm = this.state.gdm;
-      if (gdm.submitted_by) {
-        contributors.push({
-          name: getUserName(gdm.submitted_by),
-          id: lodashGet(gdm, "submitted_by.PK", null) || '',
-          email: lodashGet(gdm, "submitted_by.email", null) || '',
-          roles: ['creator']
-        });
-      }
-    }
-
-    // Get current classification snapshots
-    let snapshots = lodashGet(this, "state.classificationSnapshots", null) && this.state.classificationSnapshots.length ? sortListByDate(this.state.classificationSnapshots, 'date_created') : [];
-
-    // Loop through classification snapshots to get users who performed previous actions
-    if (snapshots && snapshots.length) {
-      snapshots.forEach(snapshot => {
-        if (snapshot && snapshot.resource && snapshot.approvalStatus) {
-          // Snapshot when classification was provisionally approved
-          if (snapshot.approvalStatus === 'Provisioned') {
-            if (snapshot.resource.provisionalSubmitter) {
-              contributors.push({
-                name: snapshot.resource.provisionalSubmitter,
-                roles: ['provisional approver']
-              });
-            }
-          } else if (snapshot.approvalStatus === 'Approved') {
-            // Snapshot when classification was approved
-            // Add approver
-            if (snapshot.resource.approvalSubmitter) {
-              contributors.push({
-                name: snapshot.resource.approvalSubmitter,
-                roles: ['approver']
-              });
-            }
-            // Add curator who approved this classification
-            if (snapshot.resource.classificationApprover) {
-              contributors.push({
-                name: snapshot.resource.classificationApprover,
-                roles: ['secondary approver']
-              });
-            }
-            // Add secondary approver (affiliation)
-            if (snapshot.resource.additionalApprover) {
-              contributors.push({
-                id: snapshot.resource.additionalApprover,
-                name: getApproverNames(snapshot.resource.additionalApprover),
-                roles: ['secondary approver']
-              });
-            }
-            // Add secondary contributors (affiliations)
-            if (snapshot.resource.classificationContributors) {
-              snapshot.resource.classificationContributors.forEach(contributorId => {
-                contributors.push({
-                  id: contributorId,
-                  name: getAffiliationName(contributorId),
-                  roles: ['secondary approver']
-                });
-              });
-            }
-            // Get the publisher/unpublisher data if it's not to be skipped
-            if (snapshot.resource.publishDate) {
-              if (publishSnapshotId === null || publishSnapshotId !== snapshot['@id']) {
-                contributors.push({
-                  name: snapshot.resource.publishSubmitter,
-                  roles: snapshot.resource.publishClassification ? ['publisher'] : ['unpublisher']
-                });
-              }
-            }
-          }
-        }
-      });
-    }
-
-    return contributors;
   }
 
   /**
@@ -320,24 +159,14 @@ class ProvisionalClassification extends Component {
    */
   getContributors(publishSnapshotId = null) {
     let contributors = [];
+    const { affiliationsData } = this.context;
 
     if (lodashGet(this, "state.gdm", null)) {
-      // Get the list of GDM contributors
-      const gdmSubmitters = lodashGet(this, "state.gdm.contributors", null) || [];
+      // Get current classification snapshots
+      let snapshots = lodashGet(this, "state.classificationSnapshots", null) && this.state.classificationSnapshots.length ? this.state.classificationSnapshots : [];
 
-      // Extract submitters to contributors list
-      // No role is set in this case
-      contributors = gdmSubmitters.map(user => {
-        return {
-          name: getUserName(user),
-          id: lodashGet(user, "PK", null) || '',
-          email: lodashGet(user, "email", null) || '',
-          roles: []
-        }
-      });
-      // Add users who have action role to contributors list
-      const actionSubmitters = this.getActionContributors(publishSnapshotId);
-      contributors.push(...actionSubmitters);
+      // Get the list of GDM contributors
+      contributors = getGDMContributors(this.state.gdm, snapshots, publishSnapshotId, affiliationsData);
     }
 
     return contributors;
@@ -384,7 +213,7 @@ class ProvisionalClassification extends Component {
     });
 
     Promise.all(promises).then((results) => {
-      if (results && results.length) {
+      if (this._isMounted && results && results.length) {
         this.setState({ variantPathogenicity: results });
       }
     }).catch((error) => {
@@ -412,7 +241,7 @@ class ProvisionalClassification extends Component {
 
           if ((provisionalAffiliation && curatorAffiliation && provisionalAffiliation === curatorAffiliation.affiliation_id) || (!provisionalAffiliation && !curatorAffiliation && creatorPK === stateObj.user)) {
             stateObj.provisional = provisionalClassification;
-            stateObj.classificationStatus = stateObj.provisional.hasOwnProperty('classificationStatus') ? stateObj.provisional.classificationStatus : 'In progress';
+            stateObj.classificationStatus = lodashGet(stateObj, "provisional.classificationStatus", null) ? stateObj.provisional.classificationStatus : 'In progress';
           }
         }
       }
@@ -430,8 +259,13 @@ class ProvisionalClassification extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.loadData();
     this.handleProvisionalApprovalVisibility();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -507,8 +341,12 @@ class ProvisionalClassification extends Component {
     const isApprovalActive = this.state.isApprovalActive;
     const isPublishActive = this.state.isPublishActive;
     const isUnpublishActive = this.state.isUnpublishActive;
+    const isRepublishActive = this.state.isRepublishActive;
     const provisional = this.state.provisional;
-
+    const gdm = this.state.gdm;
+    const affiliation = this.props.auth ? this.props.auth.currentAffiliation : null;
+    const obsoleteDisease = gdm && isDiseaseObsolete(lodashGet(gdm, "disease.term", ''));
+    const allowEdit = lodashGet(gdm, "affiliation") && lodashGet(affiliation, "affiliation_id") && lodashGet(gdm, "affiliation") === lodashGet(affiliation, "affiliation_id");
     if (classificationStatus === 'In progress' || classificationStatus === 'Provisional') {
       if (isApprovalActive && isApprovalActive === 'yes') {
         this.setState({ showProvisional: false, showApproval: true, showPublish: false, showUnpublish: false });
@@ -516,24 +354,32 @@ class ProvisionalClassification extends Component {
         this.setState({ showProvisional: false, showApproval: false, showPublish: true, showUnpublish: false });
       } else if (isUnpublishActive === 'yes') {
         this.setState({ showProvisional: false, showApproval: false, showPublish: false, showUnpublish: true });
-
+      } else if (isRepublishActive === 'yes') {
+          // User clicked Edit Published Summary button, do not show other panels
+          this.setState({ showProvisional: false, showApproval: false, showPublish: false, showUnpublish: false });
         // Automatic display of the approval panel (system directing user through approval process)
       } else if (classificationStatus === 'Provisional') {
-        this.setState({ isApprovalActive: 'yes', showProvisional: false, showApproval: true, showPublish: false, showUnpublish: false });
-
+        // Check if classification can be approved by current curator
+        const allowApprove = gdm && gdm.disease && !obsoleteDisease && allowEdit;
+        if (allowApprove) {
+          this.setState({ isApprovalActive: 'yes', showProvisional: false, showApproval: true, showPublish: false, showUnpublish: false });
+        } else {
+          // End provisional process if classification is not allowed to be approved
+          this.setState({ classificationStatus: undefined, isApprovalActive: undefined, showProvisional: false, showApproval: false, showPublish: false, showUnpublish: false });
+        }
         // Automatic display of the provisional panel (system directing user through approval process)
       } else {
         this.setState({ showProvisional: true, showApproval: false, showPublish: false, showUnpublish: false });
       }
     } else if (classificationStatus === 'Approved') {
-      const gdm = this.state.gdm;
-      const affiliation = this.props.auth ? this.props.auth.currentAffiliation : null;
-      const allowPublish = gdm && gdm.disease ? allowPublishGlobal(affiliation, 'classification', gdm.modeInheritance, gdm.disease.PK) : false;
       // SOP8 - allow publish both GCI v7 and v8 format classifications
       const supportedSOP = provisional ? isScoringForSupportedSOP(provisional.classificationPoints) : false;
+      // Check if classification can be published by current curator
+      const allowPublish = gdm && gdm.disease && !obsoleteDisease && allowEdit &&
+        allowPublishGlobal(affiliation, 'classification', gdm.modeInheritance, gdm.disease.PK) &&
+        supportedSOP;
 
-      if (allowPublish && supportedSOP) {
-
+      if (allowPublish) {
         // Check if the current classification has been published
         if (!provisional || !provisional.publishClassification) {
           if (isPublishActive === 'yes' || isPublishActive === 'auto') {
@@ -548,11 +394,14 @@ class ProvisionalClassification extends Component {
           }
         } else if (isUnpublishActive === 'yes') {
           this.setState({ showProvisional: false, showApproval: false, showPublish: false, showUnpublish: true });
+        } else if (isRepublishActive === 'yes') {
+          // User clicked Edit Published Summary button, do not show other panels
+          this.setState({ showProvisional: false, showApproval: false, showPublish: false, showUnpublish: false });
         }
 
         // End approval process (for users without publication rights)
       } else {
-        this.setState({ isApprovalActive: undefined, showProvisional: false, showApproval: false, showPublish: false, showUnpublish: false });
+        this.setState({ classificationStatus: undefined, isApprovalActive: undefined, showProvisional: false, showApproval: false, showPublish: false, showUnpublish: false });
       }
     } else {
       this.setState({ showProvisional: false, showApproval: false, showPublish: false, showUnpublish: false });
@@ -596,20 +445,21 @@ class ProvisionalClassification extends Component {
       if (queryKeyValue('snapshot', window.location.href)) {
         window.history.replaceState(window.state, '', editQueryValue(window.location.href, 'snapshot', null));
       }
+      // If republish, clear window location, send to provisional-curation for that GDM
+      if (queryKeyValue('republish', window.location.href)) {
+        window.history.replaceState(window.state, '', editQueryValue(window.location.href, 'republish', null));
+        const gdmId = this.state.gdm ? this.state.gdm.PK : null;
+        window.location.href = `/provisional-curation/${gdmId}`;
+      }
     }
 
     this.setState({
-      isPublishActive: undefined, isUnpublishActive: undefined, publishProvisionalReady: false,
+      isPublishActive: undefined, isUnpublishActive: undefined, isRepublishActive: undefined, publishProvisionalReady: false,
       publishSnapshotListReady: false, publishSnapshotUUID: null, showPublish: false, showUnpublish: false
     });
   }
 
   render() {
-    // this.queryValues.gdmUuid = queryKeyValue('gdm', this.props.href);
-    // let calculate = queryKeyValue('calculate', this.props.href);
-    // let edit = queryKeyValue('edit', this.props.href);
-    // let session = (this.props.session && Object.keys(this.props.session).length) ? this.props.session : null;
-    // const currOmimId = this.state.currOmimId;
     let gdm = this.state.gdm ? this.state.gdm : null;
     const annotations = this.props.annotations && !isEmpty(this.props.annotations.byPK)
       ? Object.keys(this.props.annotations.byPK).map(key => this.props.annotations.byPK[key])
@@ -630,6 +480,7 @@ class ProvisionalClassification extends Component {
     const isPublishActive = this.state.isPublishActive;
     const isUnpublishActive = this.state.isUnpublishActive;
     const allowPublishButton = gdm && gdm.disease ? allowPublishGlobal(affiliation, 'classification', gdm.modeInheritance, gdm.disease.PK) : false;
+    const isRepublishActive = this.state.isRepublishActive;
     // SOP8 - allow publish both GCI v7 and v8 format classifications
     const supportedSOP = provisional ? isScoringForSupportedSOP(provisional.classificationPoints) : false;
     const currentSOP = provisional ? isScoringForCurrentSOP(classificationPoints) : false;
@@ -647,10 +498,7 @@ class ProvisionalClassification extends Component {
           :
           (gdm && !isEmpty(provisional) ?
             <div>
-              <GdmHeader isSummary={true} />
-              <Container fluid>
-                <GdmClassificationRecords className="mx-2" />
-              </Container>
+              <GdmHeader showClassification={true} isSummary={true} />
               <div className="container summary-provisional-classification-wrapper">
                 <CardPanel title="Calculated Classification Matrix" panelClassName="panel-data" open>
                   <div className="form-group">
@@ -711,6 +559,7 @@ class ProvisionalClassification extends Component {
                             <td colSpan="2" className="header large">Contradictory Evidence?</td>
                             <td colSpan="3">
                               Proband: <strong>{lodashGet(provisional, "contradictingEvidence.proband" , null) ? <span className='emphasis'>Yes</span> : 'No'}</strong>&nbsp;&nbsp;&nbsp;
+                              Case-Control: <strong>{lodashGet(provisional, "contradictingEvidence.caseControl" , null) ? <span className='emphasis'>Yes</span> : 'No'}</strong>&nbsp;&nbsp;&nbsp;
                               Experimental: <strong>{lodashGet(provisional, "contradictingEvidence.experimental", null) ? <span className='emphasis'>Yes</span> : 'No'}</strong>
                             </td>
                           </tr>
@@ -792,7 +641,7 @@ class ProvisionalClassification extends Component {
                   <div className="container">
                     <p className="alert alert-info">
                       <i className="icon icon-info-circle"></i> Save this Classification as Provisional if you are ready to send it for Review. Once saved as Provisional, the saved Provisional
-                        Classification may not be edited, but it will always be viewable and can be saved as Approved if their are no further changes required. If changes need to be made, existing
+                        Classification may not be edited, but it will always be viewable and can be saved as Approved if there are no further changes required. If changes need to be made, existing
                         evidence can be edited and/or new evidence added to the Gene:Disease Record at any time and a new current Provisional Classification made based on those changes. <em>Note: saving
                         a Classification does not prevent existing evidence from being edited or scored and archived Provisional Classifications are always viewable</em>.
                     </p>
@@ -808,7 +657,7 @@ class ProvisionalClassification extends Component {
                         provisional={provisional}
                         updateSnapshotList={this.updateSnapshotList}
                         updateProvisionalObj={this.updateProvisionalObj}
-                        postTrackData={this.postTrackData}
+                        postTrackData={postTrackData}
                         getContributors={this.getContributors}
                         setUNCData={this.setUNCData}
                       />
@@ -837,7 +686,7 @@ class ProvisionalClassification extends Component {
                         affiliation={affiliation}
                         updateSnapshotList={this.updateSnapshotList}
                         updateProvisionalObj={this.updateProvisionalObj}
-                        postTrackData={this.postTrackData}
+                        postTrackData={postTrackData}
                         getContributors={this.getContributors}
                         setUNCData={this.setUNCData}
                         snapshots={sortedSnapshotList}
@@ -871,7 +720,7 @@ class ProvisionalClassification extends Component {
                         selectedSnapshotUUID={snapshotUUID}
                         updateSnapshotList={this.updateSnapshotList}
                         updateProvisionalObj={this.updateProvisionalObj}
-                        postTrackData={this.postTrackData}
+                        postTrackData={postTrackData}
                         getContributors={this.getContributors}
                         setUNCData={this.setUNCData}
                         clearPublishState={this.clearPublishState}
@@ -899,9 +748,12 @@ class ProvisionalClassification extends Component {
                       addPublishState={this.addPublishState}
                       isApprovalActive={isApprovalActive}
                       isPublishEventActive={isPublishActive || isUnpublishActive ? true : false}
+                      isRepublishActive={isRepublishActive}
                       classificationStatus={classificationStatus}
                       demoVersion={demoVersion}
-                      allowPublishButton={allowPublishButton} />
+                      allowPublishButton={allowPublishButton}
+                      clearPublishState={this.clearPublishState}
+                      updateProvisionalObj={this.updateProvisionalObj}/>
                   </CardPanel>
                 </div>
                 : null}
@@ -921,10 +773,4 @@ const mapStateToProps = state => ({
   annotations: state.annotations
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   setGdmAction: gdm => dispatch(setGdmAction(gdm)),
-// })
-
-// export default connect(mapStateToProps, mapDispatchToProps)(ProvisionalClassification);
 export default connect(mapStateToProps)(ProvisionalClassification);
-// export default ProvisionalClassification;

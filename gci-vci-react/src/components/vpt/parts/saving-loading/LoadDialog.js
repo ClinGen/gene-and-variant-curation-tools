@@ -58,7 +58,7 @@ class LoadDialog extends React.Component {
 
   reset() {
     this.selectedSaveId = '';
-  };
+  }
 
   getSearchSession() {
     return this.props.searchSession;

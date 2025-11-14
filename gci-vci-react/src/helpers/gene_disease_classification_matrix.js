@@ -30,7 +30,7 @@ class GeneDiseaseClassificationMatrix extends Component {
               <td>Points Counted</td>
             </tr>
             <tr>
-              <td rowSpan="10" className="header"><div className="rotate-text"><div>Genetic Evidence</div></div></td>
+              <td rowSpan="11" className="header"><div className="rotate-text"><div>Genetic Evidence</div></div></td>
               <td rowSpan="8" className="header"><div className="rotate-text"><div>Case-Level</div></div></td>
               <td rowSpan="4" className="header"><div className="rotate-text"><div>Variant</div></div></td>
               <td rowSpan="2" className="header">Autosomal Dominant OR X-linked Disorder</td>
@@ -82,7 +82,11 @@ class GeneDiseaseClassificationMatrix extends Component {
               <td colSpan="2" className="bg-gray"><span></span></td>
             </tr>
             <tr>
-              <td colSpan="5" className="header">Case-Control</td>
+              <td rowSpan="2" colSpan="5" className="header">Case-Control</td>
+              <td colSpan="2" className="header">Case-Control Cohort</td>
+              <td colSpan="2" className="bg-gray"><span></span></td>
+            </tr>
+            <tr>
               <td colSpan="2">{classificationPoints['caseControl']['evidenceCount']}</td>
               <td>{classificationPoints['caseControl']['totalPointsGiven']}</td>
               <td>{classificationPoints['caseControl']['pointsCounted']}</td>

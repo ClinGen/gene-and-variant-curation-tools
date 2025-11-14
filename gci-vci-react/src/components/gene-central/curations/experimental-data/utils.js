@@ -105,7 +105,16 @@ export const InteractingGenesLabel = () => (
   </span>
 );
 
-export const PhenotypeObservedLabel = () => (
+/**
+ * Some places where this label is used show a colon via styling (???) rather
+ * than text, so we provide the user of this component the option of having the
+ * colon at the end.
+ *
+ * @param {Boolean} needsColon - whether to show the colon at the end; defaults to true
+ * @return {JSX.Element}
+ * @constructor
+ */
+export const PhenotypeObservedLabel = ({needsColon = true}) => (
   <span>
     {'Phenotype(s) observed in model system '}
     <span className="normal">(
@@ -116,8 +125,16 @@ export const PhenotypeObservedLabel = () => (
         title="Open HPO Browser in a new tab"
       >
         HPO
-      </a> or MP ID)
-    </span>:
+      </a> or&nbsp;
+      <a
+        href='https://www.informatics.jax.org/vocab/mp_ontology'
+        target='_blank'
+        rel="noopener noreferrer"
+        title='Open Mammalian Phenotype Browser in a new tab'
+      >
+        MP ID
+      </a>)
+    </span>{needsColon ? ':' : <></>}
   </span>
 );
 
@@ -633,8 +650,8 @@ export const calculateDefaultScore = (experimentalEvidenceType, loggedInUserScor
 export const calculateScoreRange = (experimentalEvidenceType, defaultScore) => {
   let calcScoreRange = [];
 
-  if (getScoreRange(null, null, experimentalEvidenceType, defaultScore).length) {
-    calcScoreRange = getScoreRange(null, null, experimentalEvidenceType, defaultScore);
+  if (getScoreRange(null, null, false, experimentalEvidenceType, defaultScore).length) {
+    calcScoreRange = getScoreRange(null, null, false, experimentalEvidenceType, defaultScore);
   }
 
   return calcScoreRange;

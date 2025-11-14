@@ -6,38 +6,60 @@ import traceback
 import src.clients.ldh as ldh
 from src.helpers.variant_helpers.variant_title import preferred_title_for
 from src.helpers.variant_helpers.hgvs_notation import get_hgvs_notation
-from src.clients import ensembl_vep_client, clinvar_client
 
-def find(id, compute_preferred_title=True, ensembl_vep_transcripts=None):
-  """Queries the CAR registry for a Variant object with the given CAR ID
+def find(id, compute_preferred_title=True, type="car"):
+  """Queries the CAR registry for a Variant object with the given ID
+  The ID can be a CAR ID or ClinVar ID, depends on the given type
 
-  This function queries the CAR registry for a Varaint with the given CAR ID. If found,
+  This function queries the CAR registry for a Varaint with the given ID. If found,
   it decodes the response into a Variant dictionary and returgene_listreturns
   None.
 
   #### Parameters
   :param bool compute_preferred_title: if true, compute variant preferred title and include it in variant object
-  :param list ensembl_vep_transcripts: optional, transcripts fetched from Ensembl VEP API. If not supplied (or supplied with None), this method will try to fetch via Ensembl VEP API. Note that supplying empty array will skip fetching, eventually letting preferred title skip MANE and Canonical title.
+  :param string type: if "car", given ID is a CAR ID.  If "clinvar", ClinVar ID is given
   """
 
-  res = requests.get(os.environ['CAR_ALLELE_ENDPOINT'] + id)
+  if type == "clinvar":
+    res = requests.get(os.environ['CLIN_VAR_ALLELES_ENDPOINT'] + id)
+  elif type == "cacn":
+    res = requests.get(os.environ['CAR_ALLELE_ENDPOINT'] + id + '?overlappingGenes=true')
+  else:
+    res = requests.get(os.environ['CAR_ALLELE_ENDPOINT'] + id)
+
   if res.status_code == requests.codes['ok']:
-    car_data = json.loads(res.text)
-    try:
-      variant = decode_response_obj(car_data)
-    except Exception as e:
-      traceback.print_exc()
-      raise ClientError(f'CARClientParseError: cannot parse data from CAR API, error message: {e}. See detail error stack at log.', 500)
+    # When request by clinvar id, an array of data is returned, take the first one
+    if type == "clinvar":
+      list = json.loads(res.text)
+      if list and list[0]:
+        car_data = list[0]
+      else:
+        return None
+    elif type == "cacn":
+      list = json.loads(res.text)
+      if list and list[0]:
+        car_data = list[0]
+      else:
+        return None
+    else:
+      car_data = json.loads(res.text)
+    
+    if type == "cacn":
+      try:
+        variant = decode_cacn_response_obj(car_data)
+      except Exception as e:
+        traceback.print_exc()
+        raise ClientError(f'CARClientParseError: cannot parse CACN data from CAR API, error message: {e}. See detail error stack at log.', 500)
+    else:
+      try:
+        variant = decode_response_obj(car_data)
+      except Exception as e:
+        traceback.print_exc()
+        raise ClientError(f'CARClientParseError: cannot parse data from CAR API, error message: {e}. See detail error stack at log.', 500)
 
     # compute preferred title
     if compute_preferred_title:
-      effective_vep_transcripts = ensembl_vep_transcripts
-      if effective_vep_transcripts == None:
-        # set `raise_external_api_exception=False` to continue processing preferred title even if Ensembl VEP API not available (may be temporarily not responding, or not found given the hgvs notation)
-        # i.e., fall back, only consider Clinvar title and GRCh37/38
-        effective_vep_transcripts = ensembl_vep_client.get_effective_vep_transcripts_by_variant(variant, raise_external_api_exception=False)
-
-      variant['preferredTitle'] = preferred_title_for(variant, effective_vep_transcripts, car_data=car_data)
+      variant['preferredTitle'] = preferred_title_for(variant)
 
     return variant
   elif res.status_code == requests.codes['not_found']:
@@ -73,9 +95,53 @@ def decode_response_obj(car_obj):
 
   if hgvs_names:
     variant['hgvsNames'] = hgvs_names
-  
+
+  # Parse and set CAR communityStandardTitle
+  if 'communityStandardTitle' in car_obj and car_obj['communityStandardTitle'] and car_obj['communityStandardTitle'][0]:
+    variant['communityStandardTitle'] = car_obj['communityStandardTitle'][0]
+
   return variant
 
+def decode_cacn_response_obj(car_obj):
+  """Parses a CAR registry response body and return a Variant object for a CACN ID"""
+
+  variant = {}
+  
+  # Parse and set CACN ID, when available
+  if 'CACNid' in car_obj:
+    variant['cacnId'] = car_obj['CACNid']
+
+  # Parse External Records
+  if 'externalRecords' in car_obj:
+    external_records = car_obj['externalRecords']
+    
+    # Parse and set the ClinVar Variant ID
+    if 'ClinVarVariations' in external_records and len(external_records['ClinVarVariations']) > 0:
+      clinvar_variations = external_records['ClinVarVariations'][0]
+      variant['clinvarVariantId'] = str(clinvar_variations['variationId'])
+
+    # Parse and set dbSNP IDs
+    if 'dbSNP' in external_records and len(external_records['dbSNP']) > 0:
+      variant['dbSNPIds'] = [str(dbsnp_item['rs']) for dbsnp_item in external_records['dbSNP']]
+
+  # Parse and set HGVS names
+  hgvs_names = __decode_hgvs_names(car_obj)
+
+  if hgvs_names:
+    variant['hgvsNames'] = hgvs_names
+
+  # Parse and set CAR communityStandardTitle
+  if 'communityStandardTitle' in car_obj and type(car_obj['communityStandardTitle']) == str:
+    variant['communityStandardTitle'] = car_obj['communityStandardTitle']
+
+  if 'overlappingGenes' in car_obj:
+    variant['overlappingGenes'] = []
+
+    for gene in car_obj['overlappingGenes']:
+      if 'symbol' in gene:
+        variant['overlappingGenes'].append(gene['symbol'])
+
+  return variant
 
 def __decode_hgvs_names(car_obj):
   hgvs_names = {}
@@ -144,4 +210,4 @@ class ClientError(Error):
   def __init__(self, message, status_code):
     self.message = message
     self.status_code = status_code
-    
+

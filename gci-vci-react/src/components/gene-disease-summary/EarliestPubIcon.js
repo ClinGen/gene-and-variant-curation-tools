@@ -6,7 +6,7 @@ import Popover from "../common/Popover";
 const EarliestPubIcon = () => (
   <Popover
     triggerComponent={<FontAwesomeIcon className="text-info" icon={faCheckSquare} color="blue"/>}
-    content='This article is selected as earliest report of a variant in the gene causing the disease of interest in a human'
+    content='This evidence source is selected as earliest report of a variant in the gene causing the disease of interest in a human'
     placement="top"
   />
 )

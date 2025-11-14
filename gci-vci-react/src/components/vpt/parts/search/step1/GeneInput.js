@@ -6,7 +6,7 @@ import React from 'react';
 import { decorate, action } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Input, Form, Button, Container, Header, Label, Dimmer, Loader, Segment, Message } from 'semantic-ui-react';
+import { Input, Form, Button, Header, Label, Dimmer, Loader, Segment, Message } from 'semantic-ui-react';
 
 import { EXTERNAL_API_MAP } from "../../../../../constants/externalApis";
 import { ExternalLink } from "../../../../common/ExternalLink";
@@ -41,9 +41,13 @@ class GeneInput extends React.Component {
     <Message info compact>
       <Message.Header>Currently supported genes:</Message.Header>
       <p>
-        APOB, ATM, CDH1, CDKL5, COCH, DDX41, FOXG1, GAA, GATA2, GJB2, GLA, HRAS, 
-        KCNQ4, KRAS, LDLR, MAP2K1, MAP2K2, MECP2, MYH7, MYO6, MYO7A, PAH, PALB2, 
-        PTEN, PTPN11, RAF1, RUNX1, RYR1, SCN5A, SHOC2, SLC26A4, SOS1, TECTA, TP53, and TPM1.
+        ABCC8, ACADVL, ACTC1, ALX4, ANKRD26, APOB, ARSE, BARD1, BLK, BMPR1A, BRCA1, BRCA2, BRIP1,
+        CDH1, CDKL5, CEBPA, CFTR, CHEK2, COCH, CYP1B1, DDX41, DICER1, EPCAM, ERF, ETHE1, ETV6, F8, F9
+        FBN1, FOXG1, GAA, GALNT12, GATA2, GCK, GJB2, GLA, GP1BA, GP1BB, GP9, GREM1, HNF1A, HNF1B, HNF4A,
+        HRAS, IDUA, INS, ITGA2B, ITGB3, KCNJ11, KCNQ4, KLF11, KLLN, KRAS, LDLR, LRRC56, MAP2K1, MAP2K2, MECP2,
+        MLH1, MSH2, MSH3, MSH6, MSX2, MTOR, MUTYH, MYBPC3, MYH7, MYL2, MYL3, MYO7A, MYOC, NTHL1, PAH, PALB2, PAX4, 
+        PCSK9, PDHA1, PIK3CA, PIK3R2, PLN, PMS2, POLD1, POLE, POLG, PTEN, PTPN11, RAD51C, RAD51D, RAF1, RUNX1, RYR1, 
+        SCN5A, SHOC2, SLC26A4, SLC9A6, SMAD4, SMAD6, SOS1, STK11, TECTA, TNNI3, TNNT2, TP53, TPM1, TWIST1, VHL, ZIC1
       </p>
     </Message>
   );

@@ -15,11 +15,29 @@ import Input from "../../../common/Input";
 import { LoadingButton } from "../../../common/LoadingButton";
 import Popover from "../../../common/Popover";
 import { COUNTRY_CODES } from '../../../../constants/countryCodes';
+import VARIANT_PHASE_STATUSES from '../../score/constants/variantPhaseStatuses';
 import { EXTERNAL_API_MAP } from '../../../../constants/externalApis';
 import { ExternalLink } from "../../../common/ExternalLink";
 import LoadingSpinner from '../../../common/LoadingSpinner';
 import Alert from '../../../common/Alert';
-import { renderLabelNote, renderDiseaseList, renderPhenotype, renderLabelPhenoTerms, renderParentEvidence, LabelVariantTitle, LabelClinVarVariant, LabelCARVariant, getPmidsFromList } from '../common/commonFunc';
+import {
+  renderLabelNote,
+  renderDiseaseList,
+  renderPhenotype,
+  renderLabelPhenoTerms,
+  renderParentEvidence,
+  LabelVariantTitle,
+  LabelClinVarVariant,
+  LabelCARVariant,
+  getPmidsFromList,
+  getInvalidPmidsFromList,
+  LabelCACNVariant,
+  renderNotOwnerMessage,
+  addPhenotypeNote,
+  renderPmidsErrorMessage,
+  isSemiOrSMo,
+  isAutoRec
+} from '../common/commonFunc';
 import { HpoTermModal } from '../common/HpoTermModal';
 import { MethodsPanel, createMethod } from '../common/Methods';
 import { DeleteCurationModal } from '../common/DeleteCurationModal';
@@ -36,6 +54,7 @@ import { IndividualScoresTable } from './IndividualScoresTable';
 import { gdmParticipantReducer } from '../../../../utilities/gdmUtilities';
 import { getEvidenceByPKFromActiveAnnotation } from "../../../../utilities/gdmEvidenceUtilities";
 import { useAmplifyAPIRequestRecycler } from '../../../../utilities/fetchUtilities';
+import { isOwnedByCurrentCuratingEntity } from '../../../../utilities/ownershipUtilities';
 
 export const IndividualCuration = ({
   associatedGroup = null,
@@ -91,6 +110,7 @@ export const IndividualCuration = ({
   const [ diseaseError, setDiseaseError ] = useState(null);
 
   const [ badPmids, setBadPmids ] = useState([]);
+  const [ preprintPmids, setPreprintPmids ] = useState([]);
   const [ scoreErrors, setScoreErrors ] = useState([]);
 
   const [ isSubmitting, setIsSubmitting ] = useState(false);
@@ -105,6 +125,7 @@ export const IndividualCuration = ({
 
   const loadData = () => {
     let data = {};
+    let errors = {};
     setDataIsLoading(true);
 
     // SOP8 - new data has associatedParentType and associatedParent but not being used yet
@@ -150,16 +171,10 @@ export const IndividualCuration = ({
     data["ethnicity"] = individual && individual.ethnicity ? individual.ethnicity : 'none';
     data["race"] = individual && individual.race ? individual.race : 'none';
     data["agetype"] = individual && individual.ageType ? individual.ageType : 'none';
-    data["agevalue"] = individual && individual.ageValue ? individual.ageValue : '';
+    data["agevalue"] = individual && individual.ageValue >= 0 ? individual.ageValue : '';
     data["ageunit"] = individual && individual.ageUnit ? individual.ageUnit : 'none';
 
     // Methods
-    /* no longer used
-                "entireGeneSequenced": { "type": "boolean" },
-                "copyNumberAssessed": { "type": "boolean" },
-                "specificMutationsGenotyped": { "type": "boolean" },
-                "specificMutationsGenotypedMethod": { "type": "string" },
-    */
     data["prevtesting"] = individual && individual.method && individual.method.previousTesting === true
       ? "Yes"
       : (individual && individual.method && individual.method.previousTesting === false ? "No" : "none");
@@ -168,79 +183,137 @@ export const IndividualCuration = ({
       ? "Yes"
       : (individual && individual.method && individual.method.genomeWideStudy === false ? "No" : "none");
     data["genotypingmethod1"] = individual && individual.method && individual.method.genotypingMethods && individual.method.genotypingMethods[0] ? individual.method.genotypingMethods[0] : "none";
-    // data["genotypingmethod1"] = lodashGet(individual, "method.genotypingMethods", null)
-    //  ? lodashGet(individual, "method.genotypingMethods[0]", "none") : "none";
     data["genotypingmethod2"] = individual && individual.method && individual.method.genotypingMethods && individual.method.genotypingMethods[1] ? individual.method.genotypingMethods[1] : "none";
     // Based on the loaded method data, see if the second genotyping method drop-down needs to be disabled.
     // Also see if we need to disable the Add Variant button
     setGenotyping2Disabled(!(individual && individual.method && individual.method.genotypingMethods && individual.method.genotypingMethods.length));
     data["specificmutation"] = individual && individual.method && individual.method.specificMutationsGenotypedMethod ? individual.method.specificMutationsGenotypedMethod : '';
 
-    // Associated variants
+    // Recessive Zygosity
     if (individual && individual.recessiveZygosity) {
       data["recessiveZygosity"] = individual.recessiveZygosity;
       if (data["recessiveZygosity"] === "TwoTrans") {
-        setIsTwoTrans(true);
-        setIsHomozygous(false);
-        setIsHemizygous(false);
+        setRecessiveZygosityStates("TwoTrans");
+        data["phaseStatus"] = lodashGet(individual, "phaseStatus", "");
       } else {
         if (data["recessiveZygosity"] === "Homozygous") {
-          setIsHomozygous(true);
-          setIsTwoTrans(false);
-          setIsHemizygous(false);
+          setRecessiveZygosityStates("Homozygous");
+          data["phaseStatus"] = "";
         } else {
-          setIsHemizygous(true);
-          setIsHomozygous(false);
-          setIsTwoTrans(false);
+          setRecessiveZygosityStates("Hemizygous");
+          data["phaseStatus"] = "";
         }
       }
+    } else {
+      // If adding new individual, initialize data
+      data["recessiveZygosity"] = "";
+      setRecessiveZygosityStates("");
+      data["phaseStatus"] = "";
     }
+
+    // Associated variants and scores
     // SOP8 - change to handle family proband individual in individual UI, no need to add/remove variant from family UI
-    // If proband individual then use variantScores else use variants
-    if (individual && individual.proband) {
+    // For Semidominant and Typified by somatic mosaicism MOI,
+    // if probandIs is "Biallelic homozygous" or "Biallelic compound heterozygous"
+    // then treat as AUTOSOMAL_RECESSIVE
+    // Set isSDSM and isAR flags to determinate and handle different cases
+    const isSDSM = isSemiOrSMo(gdm);
+    const isAR = gdm?.modeInheritance
+      ? isAutoRec(gdm) ||
+        (isSDSM && individual?.probandIs &&
+          (individual?.probandIs === "Biallelic homozygous" ||
+           individual?.probandIs === "Biallelic compound heterozygous"))
+      : false;
+
+    // If proband individual, check if has variantScores or variants
+    if (individual?.proband) {
+      // If individual has variantScores
       if (individual.variantScores && individual.variantScores.length) {
-        // This individual is proband and has variantScores, add variantScores[]
+        // This individual is proband and has variantScores, set variantScores[]
         const variantScoresObj = cloneDeep(individual.variantScores);
         setVariantCount(variantScoresObj.length);
         setVariantScores(variantScoresObj);
+        // Phase status is required if recessiveZygosity is TwoTrans (AR).
+        // If phaseStatus is not set then evidence is created before it's required. Set default values.
+        if (data["recessiveZygosity"] === "TwoTrans" && data["phaseStatus"] === "") {
+          // Default to "Proven in trans" so varinatScores will be displayed and user can remove if needed
+          // Set error message to warn user
+          data["phaseStatus"] = "PROVEN_IN_TRANS"
+          errors["phaseStatus"] = "Phase Status is now required.  Please check if selection is correct.";
+        }
       } else if (individual.variants && individual.variants.length) {
-        // This individual is proband and has old variants, initialize variantScores to these variants
-        // Force to select a recessiveZygosity value if none is selected
-        if (individual && !individual.recessiveZygosity) {
-          const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-          const autoRec = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1 : false;
-          if (semiDom || autoRec) {
+        // If individual has variants
+        // If phaseStatus is Unknown then variants[] is valid, set variants to variantInfo[]
+        if (individual.phaseStatus === "UNKNOWN") {
+          addVariantsToVariantInfo(individual.variants);
+        } else if (data["phaseStatus"] === "") {
+          // If phaseStatus is not set then either it's not required (Not AR & TwoTrans).
+          // Or if TwoTrans then evidence is created before phaseStatus is required.
+          // Phase status is only required if recessiveZygosity is TwoTrans (AR).
+          if (data["recessiveZygosity"] === "TwoTrans") {
+            // Set phaseStatus to "Proven in trans" So varinatScores will be displayed and user can remove if needed
+            // Set error message to warn user
+            data["phaseStatus"] = "PROVEN_IN_TRANS";
+            errors["phaseStatus"] = "Phase Status is now required.  Please check if selection is correct.";
+          } else if (!individual.recessiveZygosity) {
+            // If has no recessiveZygosity value then variants were added pre-SOP8
+            // For AR, set default recessiveZygosity value according to number of variants
+            // and set phase status if TwoTrans
+            // Set error message to warn user
+            if (isAR) {
+              // Have 2 variants, set recessiveZygosity to TwoTrans
+              // Set phaseStatus to "Proven in trans" So varinatScores will be displayed and user can remove if needed
+              // Set error message to warn user
+              if (individual.variants.length === 2) {
+                data["recessiveZygosity"] = "TwoTrans";
+                data["phaseStatus"] = "PROVEN_IN_TRANS";
+                setRecessiveZygosityStates("TwoTrans");
+                errors["phaseStatus"] = "Phase Status is now required.  Please check if selection is correct.";
+              } else if (individual.variants.length === 1) {
+                // Have 1 variant, set recessiveZygosity to Homozygous
+                data["recessiveZygosity"] = "Homozygous";
+                setRecessiveZygosityStates("Homozygous");
+              }
+            }
+          }
+          // Initialize individual's variants to variantScores
+          addVariantsToVariantScores(individual.variants);
+        }
+      }
+    } else if (individual && individual.proband === false &&
+      individual.variants && individual.variants.length) {
+      // Individual is not proband and has variants, set to variantInfo[]
+      addVariantsToVariantInfo(individual.variants);
+
+      // Phase status is required if recessiveZygosity is TwoTrans (AR).
+      // If phaseStatus is not set then evidence is created before it's available.
+      if (data["phaseStatus"] === "") {
+        // If TwoTrans then default phaseStatus to unknown.
+        if (individual.recessiveZygosity === "TwoTrans") {
+          // Default to Unknown and set error message to warn user
+          data["phaseStatus"] = "UNKNOWN";
+          errors["phaseStatus"] = "Phase Status is set to default.  Please check if selection is correct.";
+        } else if (!individual.recessiveZygosity) {
+          // If has no recessiveZygosity value then variants were added pre-SOP8
+          // For AR, default recessiveZygosity value according to number of variants
+          // and set phase status if TwoTrans
+          if (isAR) {
+            // Have 2 variants, set recessiveZygosity to TwoTrans
+            // Set phaseStatus to unknown and display variantInfo
+            // Set error message to warn user
             if (individual.variants.length === 2) {
-              data["recessiveZygosity"] = "TwoTrans"
-              setIsTwoTrans(true);
-              setIsHomozygous(false);
-              setIsHemizygous(false);
+              data["recessiveZygosity"] = "TwoTrans";
+              data["phaseStatus"] = "UNKNOWN";
+              setRecessiveZygosityStates("TwoTrans");
+              errors["phaseStatus"] = "Phase Status is now required.  Please check if selection is correct.";
             } else if (individual.variants.length === 1) {
+              // Have 1 variant, set recessiveZygosity to Homozygous
               data["recessiveZygosity"] = "Homozygous";
-              setIsHomozygous(true);
-              setIsTwoTrans(false);
-              setIsHemizygous(false);
+              setRecessiveZygosityStates("Homozygous");
             }
           }
         }
-        let newVariantScores = [];
-        individual.variants.forEach(data => {
-          newVariantScores.push(initializeVariantScore(data));
-        });
-        setVariantScores(newVariantScores);
       }
-    } else if (individual && individual.proband === false && individual.variants && individual.variants.length > 0) {
-      // This individual is not proband and has variants, add variantInfo[]
-      // Go through each variant to determine and set its form fields
-      const variants = individual.variants;
-      let variantList = [];
-      for (let i = 0; i < variants.length; i++) {
-        if (variants[i].clinvarVariantId || variants[i].carId) {
-          variantList[i] = initializeVariantInfo(variants[i]);
-        }
-      }
-      setVariantCount(variantList.length);
-      setVariantInfo(variantList);
     } else {
       // If adding new individual, initialize variant data
       setVariantCount(0);
@@ -248,7 +321,7 @@ export const IndividualCuration = ({
       setVariantScores([]);
     }
 
-    // For SemiDom, if probandIs is "Monoallelic heterozygous" or "Hemizygous" then treat as AUTOSOMAL_DOMINANT
+    // For SD or SM, if probandIs is "Monoallelic heterozygous" or "Hemizygous" then treat as AUTOSOMAL_DOMINANT
     // if "Biallelic homozygous" or "Biallelic compound heterozygous" then treat as AUTOSOMAL_RECESSIVE
     data["probandIs"] = individual && individual.probandIs ? individual.probandIs : "none";
 
@@ -257,27 +330,92 @@ export const IndividualCuration = ({
     data["otherpmids"] = individual && individual.otherPMIDs ? individual.otherPMIDs.map((article) => { return article; }).join(', ') : '';
 
     setFormData(data);
+    setFormErrors(errors);
     setDataIsLoading(false);
   };
 
-  const initializeVariantInfo = (variantData) => {
-    const data = cloneDeep(variantData);
+  /**
+   * Set related states according to given recessive zygosity value
+   * @param {string} zygosity - recessive zygosity value
+   */
+  const setRecessiveZygosityStates = (zygosity="") => {
+    if (zygosity === "TwoTrans") {
+      setIsTwoTrans(true);
+      setIsHomozygous(false);
+      setIsHemizygous(false);
+    } else if (zygosity === "Homozygous") {
+      setIsTwoTrans(false);
+      setIsHomozygous(true);
+      setIsHemizygous(false);
+    } else if (zygosity === "Hemizygous") {
+      setIsTwoTrans(false);
+      setIsHomozygous(false);
+      setIsHemizygous(true);
+    } else {
+      setIsTwoTrans(false);
+      setIsHomozygous(false);
+      setIsHemizygous(false);
+    }
+  };
+
+  /**
+   * Convert givne variants to variantScores list and save
+   * @param {array} variants - variant list
+   */
+  const addVariantsToVariantScores = (variants) => {
+    // Initialize variantScores[] to given variants
+    let newVariantScores = [];
+    variants.forEach(data => {
+      newVariantScores.push(initializeVariantScore(data));
+    });
+    setVariantCount(newVariantScores.length);
+    setVariantScores(newVariantScores);
+  }
+
+  /**
+   * Convert givne variants to  variantInfo list and save
+   * @param {array} variants - variant list
+   */
+  const addVariantsToVariantInfo = (variants) => {
+    // Initialize variantInfo[] to given variants
+    let variantList = [];
+    for (let i = 0; i < variants?.length; i++) {
+      if (variants[i].clinvarVariantId || variants[i].carId || variants[i].cacnId) {
+        variantList[i] = initializeVariantInfo(variants[i]);
+      }
+    }
+    setVariantCount(variantList.length);
+    setVariantInfo(variantList);
+  }
+
+  /**
+   * Set variantInfo with given variant and return it
+   * @param {object} data - variant object
+   */
+  const initializeVariantInfo = (data) => {
+    const variantData = cloneDeep(data);
     return (
       {
         'showEdit': true,
-        'clinvarVariantId': data.clinvarVariantId ? data.clinvarVariantId : null,
-        'clinvarVariantTitle': data.clinvarVariantTitle ? data.clinvarVariantTitle : null,
-        'preferredTitle': data.preferredTitle ? data.preferredTitle : null,
-        'carId': data.carId ? data.carId : null,
-        'canonicalTranscriptTitle': data.canonicalTranscriptTitle ? data.canonicalTranscriptTitle : null,
-        'maneTranscriptTitle': data.maneTranscriptTitle ? data.maneTranscriptTitle : null,
-        'hgvsNames': data.hgvsNames ? data.hgvsNames : null,
-        'PK': data.PK,
-        'associatedPathogenicities': data.associatedPathogenicities && data.associatedPathogenicities.length ? data.associatedPathogenicities : []
+        'clinvarVariantId': variantData.clinvarVariantId ? variantData.clinvarVariantId : null,
+        'clinvarVariantTitle': variantData.clinvarVariantTitle ? variantData.clinvarVariantTitle : null,
+        'preferredTitle': variantData.preferredTitle ? variantData.preferredTitle : null,
+        'carId': variantData.carId ? variantData.carId : null,
+        'cacnId': variantData.cacnId ? variantData.cacnId : null,
+        'canonicalTranscriptTitle': variantData.canonicalTranscriptTitle ? variantData.canonicalTranscriptTitle : null,
+        'maneTranscriptTitle': variantData.maneTranscriptTitle ? variantData.maneTranscriptTitle : null,
+        'overlappingGenes': variantData.overlappingGenes ? variantData.overlappingGenes : null,
+        'hgvsNames': variantData.hgvsNames ? variantData.hgvsNames : null,
+        'PK': variantData.PK,
+        'associatedPathogenicities': variantData.associatedPathogenicities && variantData.associatedPathogenicities.length ? variantData.associatedPathogenicities : []
       }
     );
   };
 
+  /**
+   * Clear error for the given fieldName
+   * @param {string} fieldName - form field name
+   */
   const clearFieldError = (fieldName) => {
     if (formErrors[fieldName]) {
       const errors = Object.keys(formErrors).reduce((obj, key) => {
@@ -289,8 +427,312 @@ export const IndividualCuration = ({
       setFormErrors(errors);
     }
   };
-    
-  // Handle value changes in genotyping method 1
+
+  /**
+   * Handle Proband field value change
+   * @param {object} e - event
+   */
+  const handleProbandChange = (e) => {
+    const fieldValue = e.target.value;
+
+    // Clear variant related alert
+    setVariantAlert({});
+
+    if (fieldValue !== "Yes" && variantScores?.length > 0) {
+      // If any variantScores has been added, cannot change proband to No or No selection
+      alert("Please clear the variant(s) before changing individual to not proband.");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear the variant(s) before changing individual to not proband.",
+      });
+    } else {
+      // Change proband selection
+      let newData = cloneDeep(formData);
+      newData.proband = fieldValue;
+
+      setProbandSelected(fieldValue === "Yes" ? true : false);
+      setDiseaseError(null);
+      // SOP8 - when individual becomes proband
+      if (fieldValue === "Yes") {
+        // If not TwoTrans or is TwoTranswith but phase status is not Unknown,
+        // then tranfer variantInfo to variantScores
+        // otherwise leave as variantInfo because cannot score if phase status is Unknown
+        if (!isTwoTrans || (isTwoTrans && formData?.phaseStatus !== "UNKNOWN")) {
+          if (variantInfo?.length > 0) {
+            addVariantsToVariantScores(variantInfo);
+            setVariantInfo([]);
+          }
+        }
+      }
+      // SOP8 - when individual becomes not proband and has retired variants, tranfer variant to variantInfo
+      if (fieldValue === "No" && individual?.variants?.length > 0) {
+        let newVariantInfo = [];
+        individual?.variants?.forEach(data => {
+          newVariantInfo.push(initializeVariantInfo(data));
+        });
+        setVariantInfo(newVariantInfo);
+      }
+
+      // Set new form data and clear form errors
+      setFormData(newData);
+      setFormErrors({});
+    }
+  };
+
+  /**
+   * Handle ProbandIs field value change
+   * @param {object} e - event
+   */
+  const handleProbandIsChange = (e) => {
+    const fieldValue = e.target.value;
+
+    // Clear variant related alert
+    setVariantAlert({});
+
+    if ((fieldValue === "none") && variantCount > 0) {
+      // If variantInfo or variantScores has been added, cannot change probandIs to No Selection
+      alert("Please clear variant(s) before changing proband is to No Selection");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear variant(s) before changing proband is to No Selection.",
+      });
+    } else if (fieldValue === "Biallelic homozygous" && variantCount > 1) {
+      // For SD and SM, if probandIs is "Biallelic homozygous", only one variantInfo or variantScore is allowed
+      // If 2 variantInfo or variantScores have been added, cannot change probandIs to Biallelic homozygous
+      alert("Please clear one of the variants before changing proband is to Biallelic homozygous");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear one of the variants before changing proband is to Biallelic homozygous.",
+      });
+    } else if (probandSelected && isTwoTrans && formData?.phaseStatus === "UNKNOWN" && variantInfo?.length > 0) {
+      // If is proband, TwoTrans is checked, phase status is Unknown and variantInfo has been added, cannot change probandIs selection to other options because others allow variantScores
+      alert("Please clear variant(s) before changing the proband is selection.");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear variant(s) before changing the proband is selection.",
+      });
+    } else {
+      // Change probandIs selection
+      let newData = cloneDeep(formData);
+      newData.probandIs = fieldValue;
+
+      // Change probandIs to "No selection",
+      // No TwoTrans or Homozygous option, and phase stauts so clear them
+      if (fieldValue === "none") {
+        setRecessiveZygosityStates("");
+        newData.recessiveZygosity = null;
+        newData.phaseStatus = "";
+      }
+
+      // Change probandIs to "Monoallelic heterozygous" or "Hemizygous"
+      // For SD or SM, if probandIs is "Monoallelic heterozygous" or "Hemizygous" then treat as AUTOSOMAL_DOMINANT
+      if (fieldValue === "Monoallelic heterozygous" || fieldValue == "Hemizygous") {
+        // If Homozygous option was selected and score was 0.05,
+        // clear score because 0.05 is only available if homozygous
+        if (isHomozygous && variantScores[0]?.score === 0.05) {
+            let newVariantScores = cloneDeep(variantScores);
+            newVariantScores[0].score = null;
+            newVariantScores[0].scoreExplanation = "";
+            setVariantScores(newVariantScores);
+        }
+        // No TwoTrans or Homozygous option, and phase stauts so clear them
+        setRecessiveZygosityStates("");
+        newData.recessiveZygosity = null;
+        newData.phaseStatus = "";
+      }
+
+      // Change probandIs to "Biallelic homozygous" or "Biallelic compound heterozygous"
+      // For SD or SM, if probandIs is "Biallelic homozygous" or "Biallelic compound heterozygous" then treat as AUTOSOMAL_RECESSIVE
+      if (fieldValue === "Biallelic homozygous" || fieldValue === "Biallelic compound heterozygous")
+      {
+        // SOP8 - If changing probandIs to "Biallelic homozygous", force Homozygous to be checked
+        if (fieldValue === "Biallelic homozygous") {
+          setRecessiveZygosityStates("Homozygous");
+          newData.phaseStatus = "";
+          newData.recessiveZygosity = "Homozygous";
+        } else {
+          // If changing probands to "Biallelic compound heterozygous"
+          // If variantInfo or variantScores has been added, set TwoTrans or Homozygous depends on variant count
+          if (variantCount === 1) {
+            setRecessiveZygosityStates("Homozygous");
+            newData.recessiveZygosity = "Homozygous";
+            newData.phaseStatus = "";
+          } else if (variantCount === 2) {
+            setRecessiveZygosityStates("TwoTrans");
+            newData.recessiveZygosity = "TwoTrans";
+            newData.phaseStatus = "PROVEN_IN_TRANS";
+          }
+        }
+      }
+
+      // Set new form data and clear form errors
+      setFormData(newData);
+      setFormErrors({});
+    }
+  };
+
+  /**
+   * Handle checking/unchecking TwoTrans checkbox
+   * @param {object} e - event
+   */
+  const handleZygosityTwoTransChange = (e) => {
+    const fieldValue = e.target.value;
+
+    // Clear variant related alert
+    setVariantAlert({});
+
+    if (isTwoTrans && variantCount > 0) {
+      // If variants or variantScores has been added, cannot un-select TwoTrans
+      alert("Please clear the variant(s) before unchecking the 2 variants in trans selection.");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear the variant(s) before unchecking the 2 variants in trans selection."
+      });
+    } else if (!isTwoTrans && formData["probandIs"] === "Biallelic homozygous") {
+      // If probandIs is "Biallelic homozygous", cannot select TwoTrans
+      alert("The proband is set to Biallelic homozygous so cannot changed to 2 variants in trans selection.");
+      setVariantAlert({
+        type: "danger",
+        message: "The proband is set to Biallelic homozygous so cannot changed to 2 variants in trans selection."
+      });
+    } else {
+      let newData = cloneDeep(formData);
+      newData.zygosityTwoTrans = fieldValue;
+
+      // Change TwoTrans selection
+      if (!isTwoTrans) {
+        // Select TwoTrans, set necessary data
+        newData.recessiveZygosity = "TwoTrans";
+        setIsHomozygous(false);
+        // If there is variantInfo or variantScores, set phase status to Proven in trans as default
+        if (variantCount > 0) {
+          newData.phaseStatus = "PROVEN_IN_TRANS";
+        }
+        // If there is one variantScores then it's possible added with homozygous,
+        // Check if score is set to 0.05 then clear the score because TwoTrans doesn't support 0.05
+        if (variantScores?.length === 1 && (variantScores[0]?.score === 0.05)) {
+          let newVariantScores = cloneDeep(variantScores);
+          newVariantScores[0].score = null;
+          newVariantScores[0].scoreExplanation = "";
+          setVariantScores(newVariantScores);
+        }
+      } else {
+        // Un-select TwoTrans, clear data
+        newData.recessiveZygosity = null;
+        newData.phaseStatus = "";
+      }
+      // Set new isTwoTrans state
+      setIsTwoTrans(!isTwoTrans);
+
+      // Set new form data and clear form errors
+      setFormData(newData);
+      setFormErrors({});
+    }
+  };
+
+  /**
+   * Handle checking/unchecking Homozygous checkbox
+   * @param {object} e - event
+   */
+  const handleZygosityHomozygousChange = (e) => {
+    const fieldValue = e.target.value;
+
+    // Clear variant related alert
+    setVariantAlert({});
+
+    if (isHomozygous && variantCount > 0) {
+      // If any variantInfo or variantScore has been added, cannot un-select homozygous
+      alert("Please clear the variant selection before unchecking homozygous.");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear the variant selection before unchecking homozygous.",
+      });
+    } else if (isHomozygous && formData["probandIs"] === "Biallelic homozygous") {
+      // If probandIs is Biallelic homozygous, cannot un-select Homozygous
+      alert("The proband is set to Biallelic homozygous so Homozygous has to be selected.");
+      setVariantAlert({
+        type: "danger",
+        message: "The proband is set to Biallelic homozygous so Homozygous has to be selected.",
+      });
+    } else if (!isHomozygous && probandSelected && isTwoTrans &&
+      formData.phaseStatus === "UNKNOWN" && variantInfo?.length > 0) {
+      // If is proband, TwoTrans is checked, phase status is Unknown and variantInfo has been added, cannot select Homozygous
+      alert("Please clear variant selection before checking Homozygous.");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear variant selection before checking Homozygous.",
+      });
+    } else if (!isHomozygous && variantCount === 2) {
+      // If two variantInfo or variantScores have been added, cannot select Homozygous
+      alert("Please clear one of the variant selection before checking Homozygous.");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear one of the variant selection before checking Homozygous.",
+      });
+    } else {
+      // SOP8 - For SD/AR, either TwoTrans or homozygous can be checked
+      // Change Homozygous selection
+      let newData = cloneDeep(formData);
+      newData.zygosityHomozygous = fieldValue;
+      if (!isHomozygous) {
+        // Select Homozygous, set data
+        setRecessiveZygosityStates("Homozygous");
+        newData.recessiveZygosity = "Homozygous";
+        newData.phaseStatus = "";
+        setIsTwoTrans(false);
+      } else {
+        // Un-select Homozygous, set data
+        setRecessiveZygosityStates("");
+        newData.recessiveZygosity = null;
+      }
+
+      // Set new form data and clear form errors
+      setFormData(newData);
+      setFormErrors({});
+    }
+  };
+
+  /**
+   * Handle phase status (radio button) value change
+   * @param {object} e - event
+   */
+  const handlePhaseStatusChange = (e) => {
+    const fieldValue = e.target.value;
+
+    // Clear variant related alert
+    setVariantAlert({});
+
+    if (fieldValue === "UNKNOWN" && variantScores?.length > 0) {
+      // If changing phaseStatus to Unknown and there's variantScores, ask user to clear variants
+      // because cannot score if Unknown
+      alert("Please clear the variant(s) before changing phase status to Unknown.");
+      setVariantAlert({
+        type: "danger",
+        message: "Please clear the variant(s) before changing phase status to Unknown."
+      });
+    } else if (probandSelected && variantInfo?.length > 0 && fieldValue !== "UNKNOWN") {
+      // If is proband, variantInfo has been added and changing phaseStatus to "PROVEN_IN_TRANS" or
+      // "Suspected in Trans", ask user to clear variants
+      const fieldLabel = fieldValue === "PROVEN_IN_TRANS" ? "Proven in trans" : "Suspected in trans";
+      alert(`Please clear the variant(s) before changing phase status to ${fieldLabel}.`);
+      setVariantAlert({
+        type: "danger",
+        message: `Please clear the variant(s) before changing phase status to ${fieldLabel}.`
+      });
+    } else {
+      // Change phaseStatus selection
+      let newData = cloneDeep(formData);
+      newData.phaseStatus = fieldValue;
+      // Set new form data and clear form errors
+      setFormData(newData);
+      setFormErrors({});
+    }
+  };
+
+  /**
+   * Handle general form field value change
+   * @param {object} e - event
+   */
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
@@ -298,151 +740,49 @@ export const IndividualCuration = ({
     // Clear variant related alert
     setVariantAlert({});
 
-    if (fieldName === 'proband' && fieldValue !== "Yes" && variantScores && variantCount > 0) {
-      // user import { Alert as BootstrapAlert } from "react-bootstrap";
-      alert("Please clear the variant(s) before changing individual to not proband.");
-      setVariantAlert({
-        type: "danger",
-        message: 'Please clear the variant selection before changing individual to not proband.',
-      });
-    } else if (fieldName === 'probandIs' && fieldValue === "Biallelic homozygous" && variantScores && variantCount > 1) {
-      // SOP8 - For semiDom, only one variantScore is allowed if probandIs set to "Biallelic homozygous"
-      alert("Please clear one of the variant(s) before changing proband is to Biallelic homozygous");
-      setVariantAlert({
-        type: "danger",
-        message: 'Please clear one of the variant selection before changing proband is to Biallelic homozygous.',
-      });
-    } else {
-      let newData = cloneDeep(formData);
-      newData[fieldName] = fieldValue;
+    // Change given field to selected value
+    let newData = cloneDeep(formData);
+    newData[fieldName] = fieldValue;
 
-      if (fieldName === 'proband') {
-        setProbandSelected(fieldValue === 'Yes' ? true : false);
-        setDiseaseError(null);
-        // SOP8 - when individual becomes proband, tranfer variantInfo to variantScores
-        if (fieldValue === 'Yes' && variantInfo && variantCount > 0) {
-          let newVariantScores = [];
-          variantInfo.forEach(data => {
-            newVariantScores.push(initializeVariantScore(data));
-          });
-          setVariantScores(newVariantScores);
-          setVariantInfo([]);
-        }
-        // SOP8 - when individual becomes not proband and has retired variants, tranfer variant to variantInfo
-        if (fieldValue === 'No' && individual && individual.variants && individual.variants.length > 0) {
-          let newVariantInfo = [];
-          individual.variants.forEach(data => {
-            newVariantInfo.push(initializeVariantInfo(data));
-          });
-          setVariantInfo(newVariantInfo);
-        }
+    // Disable the Genotyping Method 2 if Genotyping Method 1 has no value
+    if (fieldName === "genotypingmethod1") {
+      setGenotyping2Disabled(fieldValue === "none" ? true : false);
+      if (fieldValue === "none") {
+        newData.genotypingmethod2 = "none";
       }
-
-      // SOP8 - For semiDom, if probandIs set to "Biallelic homozygous", force Homozygous to be checked
-      if (fieldName === 'probandIs' && fieldValue === "Biallelic homozygous") {
-        if (!isHomozygous) {
-          newData['recessiveZygosity'] = 'Homozygous';
-          setIsTwoTrans(false);
-          setIsHomozygous(!isHomozygous);
-        } else {
-          newData['recessiveZygosity'] = null;
-        }
-      }
-
-      if (fieldName === "otherpmids") {
-        setBadPmids([]);
-      }
-
-      // Disable the Genotyping Method 2 if Genotyping Method 1 has no value
-      if (fieldName === 'genotypingmethod1') {
-        setGenotyping2Disabled(fieldValue === "none" ? true : false);
-        if (e.target.value === "none") {
-          newData['genotypingmethod2'] = "none";
-        }
-      }
-
-      // SOP8 - For SD/AR,either 2 variants both trans or homozygous should be checked
-      if (fieldName === 'zygosityHomozygous') {
-        // If selecting Homozygous and has more than 1 variant or variantScore, cannot change
-        if (isHomozygous && ((variantInfo && variantCount > 0) || (variantScores && variantCount > 0))) {
-          alert("Please clear the variant selection before unchecking homozygous selection.");
-          setVariantAlert({
-            type: "danger",
-            message: 'Please clear the variant selection before unchecking homozygous selection.',
-          });
-        } else if (isHomozygous && newData["probandIs"] === "Biallelic homozygous") {
-          alert("The proband is set to Biallelic homozygous so Homozygous has to be selected.");
-          setVariantAlert({
-            type: "danger",
-            message: 'The proband is set to Biallelic homozygous so Homozygous has to be selected..',
-          });
-        } else if (!isHomozygous && ((variantInfo && variantCount > 1) || (variantScores && variantCount > 1))) {
-          alert("Please clear one of the variant selection before checking to Homozygous.");
-          setVariantAlert({
-            type: "danger",
-            message: 'Please clear one of the variant selection before changing to Homozygous.',
-          });
-        } else {
-          if (!isHomozygous) {
-            newData['recessiveZygosity'] = 'Homozygous';
-            setIsTwoTrans(false);
-          } else {
-            newData['recessiveZygosity'] = null;
-          }
-          setIsHomozygous(!isHomozygous);
-        }
-      }
-      if (fieldName === 'zygosityTwoTrans') {
-        // If de-select TwoTrans and has variant(s) or variantScore(s), cannot change
-        if (isTwoTrans && ((variantInfo && variantCount > 1) || (variantScores && variantCount > 1))) {
-          alert("Please clear the variant(s) before unchecking this 2 variants in trans selection...");
-          setVariantAlert({
-            type: "danger",
-            message: 'Please clear the variant(s) before unchecking this 2 variants in trans selection...',
-          });
-        } else {
-          // If select TwoTrans and probandIs is "Biallelic homozygous", cannot change
-          if (!isTwoTrans && formData['probandIs'] === "Biallelic homozygous") {
-            alert("The proband is set to Biallelic homozygous so cannot changed to 2 variants...");
-            setVariantAlert({
-              type: "danger",
-              message: 'The proband is set to Biallelic homozygous so cannot changed to 2 variants....',
-            });
-          } else {
-            if (!isTwoTrans) {
-              newData['recessiveZygosity'] = 'TwoTrans';
-              setIsHomozygous(false);
-            } else {
-              newData['recessiveZygosity'] = null;
-            }
-            setIsTwoTrans(!isTwoTrans);
-          }
-        }
-      }
-      if (fieldName === 'zygosityHemizygous') {
-        if (!isHemizygous) {
-          newData['recessiveZygosity'] = 'Hemizygous';
-        } else {
-          newData['recessiveZygosity'] = null;
-        }
-        setIsHemizygous(!isHemizygous);
-      }
-  
-      setFormData(newData);
-      setFormErrors({});
     }
+
+    // Change Hemizygous selection
+    if (fieldName === "zygosityHemizygous") {
+      if (!isHemizygous) {
+        newData.recessiveZygosity = "Hemizygous";
+      } else {
+        newData.recessiveZygosity = null;
+      }
+      setIsHemizygous(!isHemizygous);
+    }
+
+    // Change pmid list, empty bad pmid list
+    if (fieldName === "otherpmids") {
+      setBadPmids([]);
+      setPreprintPmids([]);
+    }
+
+    // Set new form data and clear form errors
+    setFormData(newData);
+    setFormErrors({});
   };
 
   /**
-   * Handle a click on a copy phenotype button
-   * @param {*} e - Event
-   * @param {*} evidence - evidence object
+   * Handle a click on copy phenotype button
+   * @param {object} e - Event
+   * @param {object} evidence - evidence object
    */
   const handleCopyPhenotypes = (e, evidence) => {
     e.preventDefault(); e.stopPropagation();
 
    if (evidence.hpoIdInDiagnosis && evidence.hpoIdInDiagnosis.length) {
-     const hpoIds = evidence.hpoIdInDiagnosis.map((hpoid, i) => {
+     const hpoIds = evidence.hpoIdInDiagnosis.map(hpoid => {
        return hpoid;
      });
      setHpoWithTerms(hpoIds);
@@ -456,11 +796,16 @@ export const IndividualCuration = ({
     }
   };
 
+  /**
+   * Handle a click on copy not phenotype button
+   * @param {object} e - Event
+   * @param {object} evidence - evidence object
+   */
   const handleCopyNotPhenotypes = (e, evidence) => {
     e.preventDefault(); e.stopPropagation();
 
     if (evidence.hpoIdInElimination && evidence.hpoIdInElimination.length) {
-      const hpoIds = evidence.hpoIdInElimination.map((hpoid, i) => {
+      const hpoIds = evidence.hpoIdInElimination.map(hpoid => {
         return hpoid;
       });
       setHpoElimWithTerms(hpoIds);
@@ -474,7 +819,11 @@ export const IndividualCuration = ({
     }
   };
 
-  // Handle a click on a copy demographics button
+  /**
+   * Handle a click on copy demographics button
+   * @param {object} e - Event
+   * @param {object} evidence - evidence object
+   */
   const handleCopyDemographics = (e, evidence) => {
     e.preventDefault(); e.stopPropagation();
     let newData = cloneDeep(formData);
@@ -493,11 +842,14 @@ export const IndividualCuration = ({
     setFormData(newData);
   };
 
-  // For SOP8
-  // Called to update user variantScore obj
+  /**
+   * Method to update a variantScore with given new one
+   * @param {integer} index - index in variantScores array
+   * @param {object} newVariantScoreObj - new variantScore object
+   */
   const updateVariantScoreObj = (index, newVariantScoreObj) => {
     const newVariantScore = cloneDeep(newVariantScoreObj);
-    let newVariantScores = cloneDeep(variantScores); 
+    let newVariantScores = cloneDeep(variantScores);
     newVariantScores[index] = newVariantScore;
     setVariantScores(newVariantScores);
     const newScore = lodashGet(newVariantScoreObj, "score", null);
@@ -575,21 +927,9 @@ export const IndividualCuration = ({
   };
 
   const renderPmidsError = () => {
-    if (formErrors["otherpmids"]) {
-      return (
-        <>
-        {formErrors["otherpmids"]}
-        </>
-      );
-    } else if (badPmids.length > 0) {
-      return (
-        <>
-        <span>{badPmids.join(', ')} not found</span>
-        </>
-      );
-    } else {
-      return null;
-    }
+    return (
+      renderPmidsErrorMessage(formErrors["otherpmids"], badPmids, preprintPmids)
+    );
   };
 
   const saveArticle = async (article) => {
@@ -613,31 +953,47 @@ export const IndividualCuration = ({
     // At least one pmid entered; search the DB for them.
     return new Promise((resolve, reject) => {
       if (pmids && pmids.length > 0) {
+        // Keep track of checked PMIDs count, only update when data has been processed
         let i = 0;
         pmids.forEach(pmid => {
-          requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid))
-          .then(article => {
-            i++;
-            if (!article.PK) {
-              saveArticle(article);
-            }
-            if (i === pmids.length) {
-              if (valid) {
-                resolve(valid);
+          if (pmid.length) {
+            requestRecycler.capture(API.get(API_NAME, '/articles/' + pmid)).then(article => {
+              // If article is a preprint then cannot be added, add to error list
+              if (article?.is_preprint) {
+                setPreprintPmids(preprintPmids => [...preprintPmids, pmid]);
+                valid = false;
               } else {
+                // If article is valid but has no PK, save article to DB
+                if (!article.PK) {
+                  saveArticle(article);
+                }
+              }
+              i++;
+              // If all pmids have been checked, return
+              if (i === pmids.length) {
+                if (valid) {
+                  resolve(valid);
+                } else {
+                  reject(valid);
+                }
+              }
+            }).catch(() => {
+              // No article is found by this pmid, add to error list
+              setBadPmids(badPmids => [...badPmids, pmid]);
+              valid = false;
+              i++;
+              // If all pmids have been checked, return
+              if (i === pmids.length) {
                 reject(valid);
               }
-            }
-          }).catch(err => {
+            });
+          } else {
+            // Empty pmid
             i++;
-            setBadPmids(badPmids => [...badPmids, pmid]);
-            valid = false;
-            if (i === pmids.length) {
-              reject(valid);
-            }
-          });
+          }
         })
       } else {
+        // No pmid
         resolve(valid);
       }
     });
@@ -686,7 +1042,7 @@ export const IndividualCuration = ({
         }
         if (lodashGet(variantScores[i], "functionalDataSupport", null) === 'Yes' &&
           (!lodashHas(variantScores[i], "functionalDataExplanation") ||
-            isEmpty(lodashGet(variantScores[i], "functionalDataExplanation", null)))) { 
+            isEmpty(lodashGet(variantScores[i], "functionalDataExplanation", null)))) {
             errors["functionalDataExplanation"] = "Functional data description is required if there is functional data to support this variant.";
         }
         if (lodashGet(variantScores[i], 'score', null) !== null && variantScores[i].score >= 0 &&
@@ -703,7 +1059,7 @@ export const IndividualCuration = ({
 
   const validateFormFields = () => {
     const errors = {};
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
+    const isSDSM = isSemiOrSMo(gdm);
 
     // Check all required fields have value
     // Check individual name has value
@@ -721,9 +1077,23 @@ export const IndividualCuration = ({
       setDiseaseError("Disease is required for proband");
     }
 
-    // If gdm is with Semidominant MOI and proband individual, "The proband is" field is required
-    if (semiDom && probandSelected && formData["probandIs"] === "none") {
+    // If GDM has Semidominant or Typified by somatic mosaicism MOI and proband individual, "The proband is" field is required
+    if (isSDSM && probandSelected && formData["probandIs"] === "none") {
       errors["probandIs"] = "Selection is required for proband";
+    }
+
+    // If homozygous is selected, require one variant
+    if (isHomozygous && variantCount !== 1) {
+      errors["addVariant"] = "Homozygous is selected, please provide one variant";
+    }
+
+    // If 2 variants in trans option is selected, phase status is required
+    if (isTwoTrans) {
+      if (formData["phaseStatus"] === "") {
+        errors["phaseStatus"] = "Selection is required for phase status";
+      } else if (variantCount < 2) {
+        errors["addVariant"] = "2 Variants in trans is selected, please provide two variants";
+      }
     }
 
     // Individual sex is requried
@@ -732,10 +1102,10 @@ export const IndividualCuration = ({
     }
 
     // Validate pmids have the proper format (will check for existence later)
-    const pmids = getPmidsFromList(formData["otherpmids"]);
-    if (pmids && pmids.length > 0 && pmids.includes(null)) {
-      // PMID list is bad
-      errors["otherpmids"] = "Use PubMed IDs (e.g. 12345678) separated by commas";
+    const badPmids = getInvalidPmidsFromList(formData["otherpmids"]);
+    if (badPmids?.length) {
+      // Display error for invalid PMID list
+      errors["otherpmids"] = `Not valid PubMed ID(s): "${badPmids.join(', ')}".  Use PubMed IDs (e.g. 12345678) separated by commas.`;
     }
 
     const foundErrors = validateVariantScoreFields();
@@ -774,7 +1144,7 @@ export const IndividualCuration = ({
   // SOP8 - proband individual set up variantScore object
   const saveVariantScores = async () => {
     return deleteRemovedVariantScores()
-      .then(result => {
+      .then(() => {
       if (variantScores && !isEmpty(variantScores)) {
       const objPromises = variantScores.map(async obj => {
         // Update or create variantScore object
@@ -804,12 +1174,12 @@ export const IndividualCuration = ({
   };
   
   // For SOP8
-  // Called to update individual data to variantScore obj
+  // Method to update individual data to variantScore obj
   const updateVariantScoresWithIndividual = (individualObj) => {
     if (individualObj.variantScores && !isEmpty(individualObj.variantScores)) {
       const objPromises = individualObj.variantScores.map(async obj => {
         // Update variantScore object if it has no evidenceScored PK 
-        if (!obj.evidenceScored) { 
+        if (!obj.evidenceScored) {
           let newVariantScore = cloneDeep(obj);
           newVariantScore.evidenceScored = individualObj.PK;
           const url = `/variantscore/${newVariantScore.PK}`;
@@ -823,7 +1193,7 @@ export const IndividualCuration = ({
   };
 
   const createIndividual = (individualVariants, individualVariantScores) => {
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
+    const isSDSM = isSemiOrSMo(gdm);
     // If editing individual, copy over old individual data
     let newIndividual = individual ? cloneDeep(individual) : {};
 
@@ -856,8 +1226,8 @@ export const IndividualCuration = ({
     const newMethod = createMethod(formData);
     newIndividual.method = (newMethod && !isEmpty(newMethod)) ? newMethod : {};
 
-    // SOP8 - Field only available on GDMs with Semidominant MOI
-    if (semiDom) {
+    // Field only available on GDM has Semidominant or Typified by somatic mosaicism MOI
+    if (isSDSM) {
       newIndividual.probandIs = formData["probandIs"] !== 'none' ? formData["probandIs"] : null;
     }
 
@@ -874,12 +1244,9 @@ export const IndividualCuration = ({
       newIndividual['otherPMIDs'] = null;
     }
 
-    // SOP8 - If proband individual, save variantScores; otherwise, variants
-    if (newIndividual.proband) {
-      newIndividual.variantScores = individualVariantScores ? individualVariantScores : null;
-    } else {
-      newIndividual.variants = individualVariants ? individualVariants : null;
-    }
+    // If there are variantScores or variants, save them
+    newIndividual.variantScores = individualVariantScores ? individualVariantScores : null;
+    newIndividual.variants = individualVariants ? individualVariants : null;
 
     /*************************************************/
     /* Individual variant form fields.               */
@@ -890,6 +1257,14 @@ export const IndividualCuration = ({
     // because individualVariants is [] when there's no variant
     // And if (Note: if homozygous, enter only 1 variant below) is not checked
     newIndividual.recessiveZygosity = formData['recessiveZygosity'] !== 'none' ? formData['recessiveZygosity'] : null;
+
+    // Set phaseStatus
+    if (newIndividual.recessiveZygosity === "TwoTrans") {
+      newIndividual.phaseStatus = formData["phaseStatus"] !== "" ? formData["phaseStatus"] : null;
+    } else {
+      // Not requried if not TwoTrans
+      newIndividual.phaseStatus = null;
+    }
 
     // Add affiliation if the user is associated with an affiliation
     // and if the data object has no affiliation
@@ -1157,14 +1532,14 @@ export const IndividualCuration = ({
 
   const submitForm = async (e) => {
     e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-    const autoRec = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1 : false;
+    const isSDSM = isSemiOrSMo(gdm);
+    const isAR = isAutoRec(gdm);
     const noProbandIs = formData["probandIs"] === "none";
     const biallelicHetOrHom = formData["probandIs"].indexOf('Biallelic') > -1 ? true : false;
     const biallelicHomozygous = formData["probandIs"].indexOf('Biallelic homozygous') > -1 ? true : false;
     // SOP8 - cannot have 3 variants anymore
     let maxVariants = 2;
-    if (semiDom) {
+    if (isSDSM) {
       if (noProbandIs) {
         maxVariants = 0;
       } else {
@@ -1177,17 +1552,18 @@ export const IndividualCuration = ({
         }
       }
     }
-    if (autoRec) {
+    if (isAR) {
       maxVariants = isTwoTrans ? 2 : (isHomozygous ? 1 : 0);
     }
+
     let individualVariants = [];
     let savedIndividual = null;
 
     setIsSubmitting(true);
-    if (!badPmids.length && validateFormFields()) {
-      validatePmids().then(res => {
+    if (!badPmids?.length && !preprintPmids?.length && validateFormFields()) {
+      validatePmids().then(() => {
         // Get variants if they were added via the modals
-        // SOP8 - if not proband individual, save variants
+        // If has variantInfo[] save as variants
         if (variantInfo && variantInfo.length) {
           for (var i = 0; i < maxVariants; i++) {
             // Grab the values from the variant form panel
@@ -1200,7 +1576,7 @@ export const IndividualCuration = ({
           }
           return Promise.resolve([]);
         } else {
-          // SOP8 - if proband then create or delete or update variantScores in DB
+          // If has variantScores, create or delete or update variantScores in DB
           return saveVariantScores();
         }
       }).then(individualVariantScores => {
@@ -1211,7 +1587,7 @@ export const IndividualCuration = ({
       }).then(individualObj => {
         savedIndividual = individualObj;
         // Add associated individual evidence to variantScore 
-        updateVariantScoresWithIndividual(savedIndividual).then(results => {
+        updateVariantScoresWithIndividual(savedIndividual).then(() => {
           setIsSubmitting(false);
           let redirectUrl = `/curation-central/${gdm.PK}/annotation/${annotation.PK}`;
           if (!editIndividual && (savedIndividual && savedIndividual.PK)) {
@@ -1234,16 +1610,18 @@ export const IndividualCuration = ({
           handleSubmitError("Error in updating variantScore object in DB", error);
         });
       }).catch(error => {
-        console.log('validatePmids : %o', error);
+        // Find invalid PMID
         setIsSubmitting(false);
-        // throw new Error
-        handleSubmitError("Error in saving individual object in DB", error);
       });
     } else {
       setIsSubmitting(false);
     }
   };
 
+  /**
+   * Set variantScore with given variant data and return it
+   * @param {object} data - variant object
+   */
   const initializeVariantScore = (data) => {
     const variantData = cloneDeep(data);
     return (
@@ -1263,15 +1641,22 @@ export const IndividualCuration = ({
     );
   };
 
+  /**
+   * Update variantScores list with given data and fieldNum
+   * @param {object} data - variantScore object if updating one
+   * @param {integer} fieldNum - index of which variantScore to update
+   */
   const updateProbandVariantScores = (data, fieldNum) => {
     let count = variantCount;
     let newVariantScores = cloneDeep(variantScores);
+    // If there's data, update the variantScore
     if (data) {
       // Update the form and display values with new data
       // Set empty variantScore for these old variant in case user wants to add
       newVariantScores[fieldNum] = initializeVariantScore(data);
       count++;
     } else {
+      // If no data is given, remove the variantScore from list
       newVariantScores.splice(fieldNum, 1);
       newVariantScores = newVariantScores.filter(e => e !== undefined && e !== null);
       count--;
@@ -1280,6 +1665,11 @@ export const IndividualCuration = ({
     setVariantCount(count);
   };
 
+  /**
+   * Update variantInfo list with given data and fieldNum
+   * @param {object} data - variantInfo object if updating one
+   * @param {integer} fieldNum - index of which variantInfo to update
+   */
   const updateNotProbandVariants = (data, fieldNum) => {
     let count = variantCount;
     let newVariantInfo = cloneDeep(variantInfo);
@@ -1289,8 +1679,10 @@ export const IndividualCuration = ({
         'clinvarVariantId': data.clinvarVariantId ? data.clinvarVariantId : null,
         'clinvarVariantTitle': data.clinvarVariantTitle ? data.clinvarVariantTitle : null,
         'carId': data.carId ? data.carId : null,
+        'cacnId': data.cacnId ? data.cacnId : null,
         'canonicalTranscriptTitle': data.canonicalTranscriptTitle ? data.canonicalTranscriptTitle : null,
         'maneTranscriptTitle': data.maneTranscriptTitle ? data.maneTranscriptTitle : null,
+        'overlappingGenes': data.overlappingGenes ? data.overlappingGenes : null,
         'hgvsNames': data.hgvsNames ? data.hgvsNames : null,
         'preferredTitle' : data.preferredTitle ? data.preferredTitle : null,
         'associatedPathogenicities': data.associatedPathogenicities && data.associatedPathogenicities.length ? data.associatedPathogenicities : [],
@@ -1306,18 +1698,25 @@ export const IndividualCuration = ({
     setVariantCount(count);
   }
 
-  // SOP8
-  // Update the Variant ID fields upon interaction with the Add Variant modal
-  // If proband individual then update variantScores else update variantInfo
+  /**
+   * Update the Variant ID fields upon interaction with the Add Variant modal
+   * If proband individual and allow scoring then update variantScores else update variantInfo
+   * @param {object} data - varianScore or variantInfo object if updating one
+   * @param {integer} fieldNum - index of which variantScores or variantInfo to update
+   */
   const updateVariantData = (data, fieldNum) => {
-    if (probandSelected) {
-      updateProbandVariantScores(data, fieldNum);
-    } else {
+    // If TwoTrans is selected and phaseStatus is unknown, only allow to add variantInfo (no score)
+    const noScoring = !probandSelected || (isTwoTrans && formData?.phaseStatus === "UNKNOWN");
+    if (noScoring) {
       updateNotProbandVariants(data, fieldNum);
+    } else {
+      updateProbandVariantScores(data, fieldNum);
     }
-    clearFieldError('zygosityTwoTrans');
-    clearFieldError('zygosityHemizygous');
-    clearFieldError('zygosityHomozygous');
+    // Clear related form field errors
+    clearFieldError("zygosityTwoTrans");
+    clearFieldError("zygosityHemizygous");
+    clearFieldError("zygosityHomozygous");
+    clearFieldError("addVariant");
     setProbandSelected(probandSelected);
     // Clear variant alert
     setVariantAlert({});
@@ -1328,15 +1727,6 @@ export const IndividualCuration = ({
     const index = (e.target.name).substring(14);
     updateVariantData(null, index);
   };
-
-  /* ??? TODO
-  // SOP8 - display all the scored evidences for the selected variant
-  const handleViewVariant = (e) => {
-    e.preventDefault(); e.stopPropagation();
-    // ??? const index = (e.target.name).substring(14);
-    // ??? TODO: SOP8 get variant PK and display score page
-  };
-  */
 
   const renderTitle = () => {
     const curationLink = (lodashGet(gdm, "PK", null) && lodashGet(annotation, "PK", null))
@@ -1412,11 +1802,11 @@ export const IndividualCuration = ({
           labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" 
         />
         <Col sm={{ span: 7, offset: 5 }}>
-          <p className="mt-3">Note: Do not enter real names in this field. {renderLabelNote('Individual')}</p>
+          <p className="mt-3">{renderLabelNote('Individual')}</p>
         </Col>
         {!family ?
           <div>
-            <Input type="select" label="Is this Individual a proband:" name="proband" onChange={handleChange}
+            <Input type="select" label="Is this Individual a proband:" name="proband" onChange={handleProbandChange}
               value={formData['proband']} error={formErrors['proband']}
               labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3" required>
                 <option value="none">No Selection</option>
@@ -1482,7 +1872,7 @@ export const IndividualCuration = ({
           </span>
         </Col>
         <Col sm="7" className="form-group hpo-term-container">
-          {hpoWithTerms.length ?
+          {hpoWithTerms?.length ?
             <ul>
               {hpoWithTerms.map((term, i) => {
                 return (
@@ -1492,7 +1882,7 @@ export const IndividualCuration = ({
             </ul>
             : null}
           <HpoTermModal
-            isNew={hpoWithTerms && hpoWithTerms.length ? false : true}
+            isNew={hpoWithTerms?.length ? false : true}
             passHpoToParent={updateHpo}
             savedHpo={hpoWithTerms}
           />
@@ -1512,8 +1902,8 @@ export const IndividualCuration = ({
         </Col>
         : null
       }
-      <Col sm={{ span: 7, offset: 5 }}> 
-        <p>Enter <em>phenotypes that are NOT present in Individual</em> if they are specifically noted in the paper.</p>
+      <Col sm={{ span: 7, offset: 5 }}>
+        {addPhenotypeNote('Individual')}
       </Col>
       {associatedParentObj && ((associatedParentObj.hpoIdInElimination && associatedParentObj.hpoIdInElimination.length) || associatedParentObj.termsInElimination)
         ? renderPhenotype([associatedParentObj], 'Individual', 'nothpo', associatedParentName)
@@ -1522,7 +1912,7 @@ export const IndividualCuration = ({
       <Row className="mb-3">
         <Col sm="5" className="control-label">
           <span>
-            <label className="">NOT Phenotype(s)&nbsp;</label>
+            <label className=""><span className="serious-text">NOT Phenotype(s)</span>&nbsp;</label>
             <span className="normal">(<ExternalLink href={EXTERNAL_API_MAP['HPOBrowser']} title="Open HPO Browser in a new tab">HPO</ExternalLink> ID(s))</span>:
           </span>
         </Col>
@@ -1713,13 +2103,15 @@ export const IndividualCuration = ({
       'clinvarVariantTitle': lodashGet(variantScore, "variantScored.clinvarVariantTitle", null),
       'preferredTitle': lodashGet(variantScore, "variantScored.preferredTitle", null),
       'carId': lodashGet(variantScore, "variantScored.carId", null),
+      'cacnId': lodashGet(variantScore, "variantScored.cacnId", null),
       'canonicalTranscriptTitle': lodashGet(variantScore, "variantScored.canonicalTranscriptTitle", null),
       'maneTranscriptTitle': lodashGet(variantScore, "variantScored.maneTranscriptTitle", null),
+      'overlappingGenes': lodashGet(variantScore, "variantScored.overlappingGenes", null),
       'hgvsNames': lodashGet(variantScore, "variantScored.hgvsNames", null),
       'PK': lodashGet(variantScore, "variantScored.PK", null)
     }
 
-    /* ??? remove for now
+    /* TODO: remove for now
           <Col>
             <VariantEvidencesModal
               gdm={gdm}
@@ -1734,9 +2126,11 @@ export const IndividualCuration = ({
       <>
       <div className="variant-resources">
         <Row>
-          <Col sm="6" className="control-label"><label>{LabelVariantTitle(variantData, true)}</label>{lodashGet(variantData, "preferredTitle", null)}
+          <Col sm="6" className="control-label">
+            <label>{LabelVariantTitle(variantData, true)}</label>
+            <span>&nbsp;{lodashGet(variantData, "preferredTitle", null)}</span>
           </Col>
-          {variantData && variantData.clinvarVariantId ?
+          {variantData && variantData.clinvarVariantId && !variantData.cacnId ?
             <>
             <Col className="text-no-input mb-3">
               <Link to={`/variant-central/${variantData.PK}`} target="_blank" rel="noopener noreferrer">View variant evidence in Variant Curation Interface</Link>
@@ -1760,13 +2154,26 @@ export const IndividualCuration = ({
             </Col>
             </>
           : null}
+          {variantData && variantData.cacnId ?
+            <>
+            <Col sm="4" className="control-label"><label><LabelCACNVariant /> </label>
+              <ExternalLink href={`${EXTERNAL_API_MAP['CARcopy-number']}${variantData.cacnId}`}>{variantData.cacnId}</ExternalLink>
+            </Col>
+            </>
+          : null}
         </Row>
+        {variantData && variantData.overlappingGenes ? 
+            <Row className="variant-data-source mb-4">
+              <Col sm="4" className="control-label"><label>Number of Overlapping Genes: </label></Col>
+              <Col sm="4" className="text-no-input">{variantData.overlappingGenes.length}</Col>
+            </Row>
+          : null}
       </div>
       <IndividualVariantScore
         gdm={gdm}
         index={index}
         variantScore={variantScore}
-        probandSelected={true}
+        isHomozygous={isHomozygous}
         probandIs={formData['probandIs']}
         updateVariantScore={updateVariantScoreObj}
         scoreErrors={scoreErrors}
@@ -1779,6 +2186,9 @@ export const IndividualCuration = ({
   const renderIndividualVariants = (maxVariants) => {
     return (
       <>
+      {formErrors.addVariant &&
+        <Row className="text-danger non-bold-font ml-0">{formErrors.addVariant}</Row>
+      }
       {_.range(maxVariants).map(i => {
         return (
           <div key={`vInfo-${i}`} className="variant-panel">
@@ -1818,18 +2228,18 @@ export const IndividualCuration = ({
   const renderIndividualOldVariantAndScore = () => {
     let title = 'Previously added variant(s) and score - Retired Format - ';
     let infoText = 'The variant(s) and score(s) shown in this table was added in a format that has now been retired...';
-    // Get evidenceScore object for the logged-in user if exists
-    if (individual && individual.variants && individual.variants.length) {
+    // If individual has variants list but no phaseStatus, then may have old format scoring
+    if (individual && !individual.phaseStatus && individual.variants && individual.variants.length) {
       let showTable = true;
-      // SOP8 - for not proband individual, issue with has variants but recessiveZygosity is not set
-      // In case previous varaints has entered required recessiveZygosity use as is;
+       // SOP8 - for not proband individual, issue with has variants but recessiveZygosity is not set
+      // In case previous variants has entered required recessiveZygosity use as is;
       // If not, show as old format
       if (!individual.proband) {
         title = 'Previously added variant(s) - ';
         infoText = 'The variant(s) shown in this table was added before, please select if 2 variants or homozygous and variant(s) will be added again.';
-        const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-        const autoRec = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1 : false;
-        if (semiDom || autoRec) {
+        const isSDSM = isSemiOrSMo(gdm);
+        const isAR = isAutoRec(gdm);
+        if (isSDSM || isAR) {
           if ((individual.recessiveZygosity &&
                individual.recessiveZygosity === "Homozygous" && individual.variants.length === 1) ||
               (individual.recessiveZygosity && 
@@ -1886,7 +2296,8 @@ export const IndividualCuration = ({
         if (variantScores[i]) {
           variantScoreInfo[i] = {
             'clinvarVariantId': lodashGet(variantScores[i], "variantScored.clinvarVariantId", null),
-            'carId': lodashGet(variantScores[i], "variantScored.carId", null)
+            'carId': lodashGet(variantScores[i], "variantScored.carId", null),
+            'cacnId': lodashGet(variantScores[i], "variantScored.cacnId", null)
           }
         }
       }
@@ -1894,6 +2305,9 @@ export const IndividualCuration = ({
 
     return (
       <>
+      {formErrors.addVariant &&
+        <Row className="text-danger non-bold-font ml-0">{formErrors.addVariant}</Row>
+      }
       {_.range(maxVariants).map(i => {
         return (
           <div key={`vScore-${i}`} className="variant-panel">
@@ -1926,15 +2340,19 @@ export const IndividualCuration = ({
   // if proband individual then display variantScores UI
   // if not proband individual then display variants UI
   const renderIndividualAssociatedVariantData = () => {
-    // SD, AR, AD, XL
-    const semiDom = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Semidominant') > -1 : false;
-    const autoRec = gdm && gdm.modeInheritance ? gdm.modeInheritance.indexOf('Autosomal recessive') > -1 : false;
+    const hmzText = "Homozygous variants are scored as 0.1.";
+    // SD, SM, AR, AD, XL
+    const isSDSM = isSemiOrSMo(gdm);
+    const isAR = isAutoRec(gdm);
     const noProbandIs = formData["probandIs"] === "none";
     const biallelicHetOrHom = formData["probandIs"].indexOf('Biallelic') > -1 ? true : false;
     const biallelicHomozygous = formData["probandIs"].indexOf('Biallelic homozygous') > -1 ? true : false;
-    // SOP8 - cannot have 3 variants anymore
+    // If TwoTrans is selected and phaseStatus is unknown, only allow to add variantInfo (no score)
+    const noScoring = !probandSelected || (isTwoTrans && formData["phaseStatus"] === "UNKNOWN");
+
+    // SOP8 - cannot have 3 variants anymore so only can have up to 2 variants
     let maxVariants = 2;
-    if (semiDom) {
+    if (isSDSM) {
       if (noProbandIs) {
         maxVariants = 0;
       } else {
@@ -1942,19 +2360,27 @@ export const IndividualCuration = ({
           if (biallelicHomozygous) {
             maxVariants = 1;
           } else {
-            maxVariants = isTwoTrans ? 2 : (isHomozygous ? 1 : 0);
+            // If Homozygous is selected, only 1 variant
+            // If TwoTrans is selected and phaseStatus has selected value, allow 2 variants else 0
+            maxVariants = isTwoTrans
+              ? (formData?.phaseStatus === "" ? 0 : 2)
+              : (isHomozygous ? 1 : 0);
           }
         }
       }
     }
-    if (autoRec) {
-      maxVariants = isTwoTrans ? 2 : (isHomozygous ? 1 : 0);
+    if (isAR) {
+      // If Homozygous is selected, only 1 variant
+      // If TwoTrans is selected and phaseStatus has selected value, allow 2 variants else 0
+      maxVariants = isTwoTrans
+        ? (formData?.phaseStatus === "" ? 0 : 2)
+        : (isHomozygous ? 1 : 0);
     }
 
     return (
       <div>
-        {semiDom ?
-          <Input type="select" label="The proband is:" name="probandIs" onChange={handleChange}
+        {isSDSM ?
+          <Input type="select" label="The proband is:" name="probandIs" onChange={handleProbandIsChange}
             value={formData["probandIs"]} error={formErrors["probandIs"]}
             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="row mb-3" required={probandSelected}>
             <option value="none">No Selection</option>
@@ -1972,32 +2398,87 @@ export const IndividualCuration = ({
           <Alert value={variantAlert.message} type={variantAlert.type} dismissible className="mt-3"/>
           : "")}
 
-        {autoRec || (semiDom && biallelicHetOrHom) ?
+        {isAR || (isSDSM && biallelicHetOrHom) ?
           <>
             <Row className="mb-3">
               <Col sm="5" className="control-label">
-                <label><span>Check here if there are 2 variants AND they are both located in trans with respect to one another</span></label>
+                <label>
+                  <span>
+                    Check here if there are 2 variants that are proven or suspected to be in trans with respect to one another. If you wish to document information on variants that are not in trans, please add details to the <a href={`/curation-central/${gdm?.PK}/annotation/${annotation?.PK}`}>non-scorable evidence section of the PMID summary</a>.
+                   </span>
+                </label>
+                {isTwoTrans &&
+                  <div>
+                    <Row className="text-right ml-0">Please specify the phase status of the two variants: *</Row>
+                    {formErrors.phaseStatus &&
+                      <Row className="text-danger non-bold-font ml-0">{formErrors.phaseStatus}</Row>
+                    }
+                    <Row className="text-right">
+                      <Col sm="12">
+                        <label className="control-label ml-2 mr-4">{VARIANT_PHASE_STATUSES["PROVEN_IN_TRANS"]}</label>
+                        <input type="radio" name="phaseStatus" value="PROVEN_IN_TRANS"
+                          checked={formData["phaseStatus"] !== "" && formData["phaseStatus"] === "PROVEN_IN_TRANS"}
+                          onChange={handlePhaseStatusChange}
+                        />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="12">
+                        <label className="control-label ml-2 mr-4">{VARIANT_PHASE_STATUSES["SUSPECTED_IN_TRANS"]}</label>
+                        <input
+                          type="radio"
+                          name="phaseStatus"
+                          value="SUSPECTED_IN_TRANS"
+                          checked={formData["phaseStatus"] !== "" && formData["phaseStatus"] === "SUSPECTED_IN_TRANS"}
+                          onChange={handlePhaseStatusChange}
+                        />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="12">
+                        <label className="control-label ml-2 mr-4">{VARIANT_PHASE_STATUSES["UNKNOWN"]}</label>
+                        <input
+                          type="radio"
+                          name="phaseStatus"
+                          value="UNKNOWN"
+                          checked={formData["phasePhaseStatusStatus"] !== "" && formData["phaseStatus"] === "UNKNOWN"}
+                          onChange={handlePhaseStatusChange}
+                        />
+                      </Col>
+                    </Row>
+                  </div >
+                }
               </Col>
               <Col sm="1" className="mt-3">
                 <Input type="checkbox" name="zygosityTwoTrans" 
                   error={formErrors['zygosityTwoTrans']}
-                  onChange={handleChange} checked={isTwoTrans && isTwoTrans === true ? isTwoTrans : false}
+                  onChange={handleZygosityTwoTransChange} checked={isTwoTrans && isTwoTrans === true ? isTwoTrans : false}
                 />
               </Col>
               <Col sm="4" className="control-label">
-                <label><span>Check here if homozygous:<br /><i className="non-bold-font">(Note: if homozygous, enter only 1 variant below)</i></span></label>
+                <label>
+                  <span>
+                    Check here if homozygous
+                    <Popover
+                      triggerComponent={<FontAwesomeIcon className="text-info" icon={faInfoCircle}/>}
+                      content={hmzText}
+                      placement="top"
+                    />
+                    <br /><i className="non-bold-font">(Note: if homozygous, enter only 1 variant below)</i>
+                  </span>
+                </label>
               </Col>
               <Col sm="1" className="mt-3">
                 <Input type="checkbox" name="zygosityHomozygous" 
                   error={formErrors['zygosityHomozygous']}
-                  onChange={handleChange} checked={isHomozygous && isHomozygous === true ? isHomozygous : false}
+                  onChange={handleZygosityHomozygousChange} checked={isHomozygous && isHomozygous === true ? isHomozygous : false}
                 />
               </Col>
             </Row>
           </>
           : (
             <>
-            {semiDom && noProbandIs
+            {isSDSM && noProbandIs
               ? null
               :
                 <Row className="mb-3">
@@ -2015,9 +2496,9 @@ export const IndividualCuration = ({
             </>
           )
         }
-        {probandSelected
-          ? renderProbandIndividualVariantScores(maxVariants)
-          : renderIndividualVariants(maxVariants)
+        {noScoring
+          ? renderIndividualVariants(maxVariants)
+          : renderProbandIndividualVariantScores(maxVariants)
         }
       </div>
     );
@@ -2066,8 +2547,50 @@ export const IndividualCuration = ({
     );
   };
 
+  const renderButtons = () => {
+    const ownerError = !isOwnedByCurrentCuratingEntity(gdm, auth);
+    const submitErrMsg = formErrors?.phaseStatus && formErrors.phaseStatus.includes("if selection is correct")
+      ? "Please check default Phase Status selection is correct."
+      : "Please fix errors on the form and resubmit."
+    const submitErrClass = 'submit-err float-right' +
+      (!isEmpty(formErrors) || hasScoreError(scoreErrors) ||
+       badPmids?.length > 0 || preprintPmids?.length ? '' : ' hidden');
+
+    return (
+      <>
+          <Row>
+            <Col>
+              <LoadingButton
+                type="submit"
+                className="align-self-end mb-2 ml-2 float-right "
+                variant="primary"
+                text="Save"
+                textWhenLoading="Submitting"
+                isLoading={isSubmitting}
+                disabled={ownerError}
+              />
+              {gdm ?
+                <Button variant="secondary" className="float-right align-self-end mb-2 ml-2" onClick={() => handleCancel()} disabled={isSubmitting}>Cancel</Button>
+                : null}
+              {individual ?
+                <DeleteCurationModal
+                  gdm={gdm}
+                  parent={family ? family : (group ? group : annotation)}
+                  item={individual}
+                  disabled={isSubmitting || ownerError}
+                  ownerError={ownerError}
+                />
+                : null}
+              <div className={submitErrClass}>{submitErrMsg}</div>
+              <div className="submit-error float-right">{submitError ? submitError : null}</div>
+            </Col>
+          </Row>
+      </>
+    );
+  };
+
   const variantTitle = (individual && individual.proband) ? <span>Individual<i className="icon icon-proband"></i> – Variant(s) and Score(s) segregating with Proband</span> : <span>Individual — Associated Variant(s)</span>;
-  const submitErrClass = 'submit-err float-right' + (!isEmpty(formErrors) || hasScoreError(scoreErrors) || badPmids.length > 0 ? '' : ' hidden');
+  const ownerError = !isOwnedByCurrentCuratingEntity(gdm, auth);
 
   return (gdmIsLoading || annotationIsLoading || dataIsLoading) ? (
     <LoadingSpinner className="mt-4" />
@@ -2077,6 +2600,7 @@ export const IndividualCuration = ({
     <Row className="group-curation-content">
       <Col sm="12">
         <form onSubmit={submitForm} className="form-horizontal mt-5 curation-panel">
+          {renderNotOwnerMessage(ownerError)}
           <CardPanel className="individual-panel">
             {renderIndividualName()}
           </CardPanel>
@@ -2097,31 +2621,8 @@ export const IndividualCuration = ({
           <CardPanel className="individual-panel" title={getLabelPanelTitle('Additional Information')}>
             {renderIndividualAdditional()}
           </CardPanel>
-          <Row>
-            <Col>
-              <LoadingButton
-                type="submit"
-                className="align-self-end mb-2 ml-2 float-right "
-                variant="primary"
-                text="Save"
-                textWhenLoading="Submitting"
-                isLoading={isSubmitting}
-              />
-              {gdm ?
-                <Button variant="secondary" className="float-right align-self-end mb-2 ml-2" onClick={() => handleCancel()} disabled={isSubmitting}>Cancel</Button>
-                : null}
-              {individual ?
-                <DeleteCurationModal
-                  gdm={gdm}
-                  parent={family ? family : (group ? group : annotation)}
-                  item={individual}
-                  disabled={isSubmitting}
-                />
-                : null}
-              <div className={submitErrClass}>Please fix errors on the form and resubmit.</div>
-              <div className="submit-error float-right">{submitError ? submitError : null}</div>
-            </Col>
-          </Row>
+          {renderNotOwnerMessage(ownerError)}
+          {renderButtons()}
         </form>
       </Col>
     </Row>

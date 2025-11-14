@@ -33,7 +33,7 @@ with open('CA023679.json', 'r') as myfile:
 #for vpt in data:
 #    count = count + 1
     #print (vpt['caid'])
-p.produce('ldh-test', value=json.dumps(data), callback=acked)
+p.produce('', value=json.dumps(data), callback=acked)
 p.poll(0)
 #print ('Total number pushed = %s' %count )
 # flush() is typically called when the producer is done sending messages to wait
@@ -52,7 +52,7 @@ c = Consumer({
     'auto.offset.reset': 'earliest'
 })
 
-c.subscribe(['python-test-topic'])
+c.subscribe([''])
 
 try:
     while True:

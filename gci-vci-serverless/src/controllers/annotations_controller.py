@@ -121,7 +121,11 @@ def get(filters = {}):
   """Queries and returns all annotation objects"""
 
   try:
-    annotations = db.query_by_item_type('annotation', filters, embed=True)
+    annotations = db.query_by_item_type('annotation', {
+        'status!': 'deleted',
+        **(filters if isinstance(filters, dict) else {})
+    }, embed=True)
+
   except (PopulatorException, NormalizerException) as error:
     return { 'statusCode': 500, 'body': json.dumps({ 'error': str(error) }) }
   except Exception as e:

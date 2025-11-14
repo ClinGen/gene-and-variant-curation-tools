@@ -1,27 +1,20 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouteMatch, matchPath, useHistory } from "react-router-dom";
 import isEmpty from 'lodash/isEmpty';
 import { useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Row from'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
-import { API } from 'aws-amplify';
 
-import { API_NAME } from '../../utils';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { useAmplifyAPIRequestRecycler } from '../../utilities/fetchUtilities';
 import CardPanel from '../common/CardPanel';
 // ??? import { VariantEvidencesModal } from './curations/common/VariantEvidencesModal';
 
 const GdmVariantsPanel = ({ className }) => {
   const history = useHistory();
   const match = useRouteMatch();
-  const requestRecycler = useAmplifyAPIRequestRecycler();
   const [isLoading, setIsLoading] = useState(false);
 
-  const auth = useSelector(state => state.auth);
   const gdm = useSelector(state => state.gdm.entity);
   const activeAnnotation = useSelector((state) => {
     if (state.annotations.activePK && state.annotations.byPK[state.annotations.activePK]) {
@@ -88,10 +81,8 @@ const GdmVariantsPanel = ({ className }) => {
         let variants = [];
         if (eachEvidence.item_type === "individual") {
           if (eachEvidence.variantScores) {
-            eachEvidence.variantScores.map(score => {
-              variants = eachEvidence.variantScores && eachEvidence.variantScores.map(score => {
-                return score.variantScored || null;
-              });
+            variants = eachEvidence.variantScores.map(score => {
+              return score.variantScored || null;
             });
           }
           // For now, include previous added variants to list
@@ -119,6 +110,8 @@ const GdmVariantsPanel = ({ className }) => {
         className={className}
         title="Gene-Disease Record Variants"
         subtitle="Click a variant to View it."
+        accordion={true}
+        open={true}
       >
         {isLoading
           ? <LoadingSpinner className="mt-3" />

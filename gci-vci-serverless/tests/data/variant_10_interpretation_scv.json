@@ -1,10 +1,10 @@
 {
   "clinvarInterpretationSummary": {
-    "ReviewStatus": "criteria provided, conflicting interpretations",
-    "ClinicalSignificance": "Conflicting interpretations of pathogenicity, other",
-    "Explanation": "Likely benign(1);Pathogenic(12)",
-    "DateLastEvaluated": "2020-01-01",
-    "SubmissionCount": "19"
+    "ReviewStatus": "criteria provided, multiple submitters, no conflicts",
+    "ClinicalSignificance": "Pathogenic/Pathogenic, low penetrance; other",
+    "Explanation": "",
+    "DateLastEvaluated": "2024-02-06",
+    "SubmissionCount": "45"
   },
   "clinvarInterpretationSCVs": [
     {
@@ -16,18 +16,18 @@
               "id": "C0392514"
             }
           ],
-          "name": "Hereditary Hemochromatosis"
+          "name": "Hereditary hemochromatosis"
         }
       ],
-      "accession": "SCV000461883",
+      "accession": "SCV000206973",
       "version": "2",
-      "submitterName": "Illumina Clinical Services Laboratory,Illumina",
-      "orgID": "504895",
+      "submitterName": "Blueprint Genetics",
+      "orgID": "500188",
       "reviewStatus": "criteria provided, single submitter",
       "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Jun 14, 2016",
-      "assertionMethod": "ICSL Variant Classification 20161018",
-      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/4jQgNGYk/ICSL_Variant_Classification_20161018.pdf"
+      "dateLastEvaluated": "Nov 26, 2015",
+      "assertionMethod": "Variant Classification",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/5yj8a71c/variant_classification_wp_vara41-03.pdf"
     },
     {
       "phenotypeList": [
@@ -63,28 +63,6 @@
           "name": "Hemochromatosis type 1"
         }
       ],
-      "accession": "SCV000678027",
-      "version": "1",
-      "submitterName": "Counsyl",
-      "orgID": "320494",
-      "reviewStatus": "criteria provided, single submitter",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Dec 21, 2015",
-      "assertionMethod": "Counsyl Autosomal and X-linked Recessive Disease Classification criteria (2015)",
-      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/rb7nm21v/ar_xl2015criteria.pdf"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "OMIM",
-              "id": "235200"
-            }
-          ],
-          "name": "Hemochromatosis type 1"
-        }
-      ],
       "accession": "SCV000693430",
       "version": "2",
       "submitterName": "Genetic Services Laboratory, University of Chicago",
@@ -101,42 +79,7 @@
           "identifiers": [
             {
               "db": "MedGen",
-              "id": "C3469186"
-            }
-          ],
-          "name": "HEMOCHROMATOSIS, TYPE 1"
-        }
-      ],
-      "accession": "SCV000020169",
-      "version": "4",
-      "submitterName": "OMIM",
-      "orgID": "3",
-      "reviewStatus": "no assertion criteria provided",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "May 02, 2018"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [],
-          "name": "MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 7"
-        }
-      ],
-      "accession": "SCV000020170",
-      "version": "4",
-      "submitterName": "OMIM",
-      "orgID": "3",
-      "reviewStatus": "no assertion criteria provided",
-      "clinicalSignificance": "risk factor",
-      "dateLastEvaluated": "Sep 01, 2008"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "MedGen",
-              "id": "CN517202"
+              "id": "C3661900"
             }
           ],
           "name": "not provided"
@@ -144,13 +87,13 @@
       ],
       "accession": "SCV000227124",
       "version": "5",
-      "submitterName": "EGL Genetic Diagnostics,Eurofins Clinical Diagnostics",
+      "submitterName": "Eurofins Ntd Llc (ga)",
       "orgID": "500060",
       "reviewStatus": "criteria provided, single submitter",
       "clinicalSignificance": "other",
       "dateLastEvaluated": "Jun 26, 2018",
-      "assertionMethod": "EGL_ClinVar_v180209_classification definitions",
-      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/leconafi/egl_clinvar_v180209_classification_definitions.pdf"
+      "assertionMethod": "EGL ClinVar v180209 classification definitions",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/kvqgb2ud/egl_clinvar_v180209_classification_definitions.pdf"
     },
     {
       "phenotypeList": [
@@ -161,7 +104,7 @@
               "id": "104300"
             }
           ],
-          "name": "Alzheimer disease"
+          "name": "Alzheimer disease type 1"
         },
         {
           "identifiers": [
@@ -197,7 +140,7 @@
               "id": "612635"
             }
           ],
-          "name": "Microvascular complications of diabetes 7"
+          "name": "Microvascular complications of diabetes, susceptibility to, 7"
         },
         {
           "identifiers": [
@@ -211,67 +154,13 @@
       ],
       "accession": "SCV000893709",
       "version": "1",
-      "submitterName": "Fulgent Genetics,Fulgent Genetics",
+      "submitterName": "Fulgent Genetics, Fulgent Genetics",
       "orgID": "500105",
       "reviewStatus": "criteria provided, single submitter",
       "clinicalSignificance": "Pathogenic",
       "dateLastEvaluated": "Oct 31, 2018",
       "assertionMethod": "ACMG Guidelines, 2015",
       "AssertionMethodCitationPubMedID": "25741868"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "MedGen",
-              "id": "C0392514"
-            }
-          ],
-          "name": "Hereditary hemochromatosis"
-        }
-      ],
-      "accession": "SCV000219176",
-      "version": "4",
-      "submitterName": "Invitae",
-      "orgID": "500031",
-      "reviewStatus": "criteria provided, single submitter",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Jan 09, 2019",
-      "assertionMethod": "Invitae Variant Classification Sherloc (09022015)",
-      "AssertionMethodCitationPubMedID": "28492532"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "Orphanet",
-              "id": "ORPHA79230"
-            }
-          ],
-          "name": "Hemochromatosis type 2"
-        }
-      ],
-      "accession": "SCV000198337",
-      "version": "4",
-      "submitterName": "Laboratory for Molecular Medicine, Partners HealthCare Personalized Medicine",
-      "orgID": "21766",
-      "reviewStatus": "criteria provided, single submitter",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Apr 17, 2014",
-      "modeOfInheritance": "Autosomal recessive inheritance",
-      "assertionMethod": "LMM Criteria",
-      "AssertionMethodCitationPubMedID": "24033266"
-    },
-    {
-      "phenotypeList": [],
-      "accession": "SCV000607203",
-      "version": "2",
-      "submitterName": "GenomeConnect, ClinGen",
-      "orgID": "506185",
-      "reviewStatus": "no assertion provided",
-      "clinicalSignificance": "not provided"
     },
     {
       "phenotypeList": [
@@ -309,123 +198,11 @@
       ],
       "accession": "SCV001142520",
       "version": "1",
-      "submitterName": "Center for Computational Genomics and Data Science,University of Alabama",
+      "submitterName": "Center for Computational Genomics and Data Science, University of Alabama",
       "orgID": "507266",
       "reviewStatus": "no assertion criteria provided",
       "clinicalSignificance": "risk factor",
       "dateLastEvaluated": "Apr 01, 2019"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "MedGen",
-              "id": "CN517202"
-            }
-          ],
-          "name": "not provided"
-        }
-      ],
-      "accession": "SCV001154674",
-      "version": "2",
-      "submitterName": "CeGaT Praxis fuer Humangenetik Tuebingen",
-      "orgID": "505870",
-      "reviewStatus": "criteria provided, single submitter",
-      "clinicalSignificance": "Likely benign",
-      "dateLastEvaluated": "Jan 01, 2020",
-      "assertionMethod": "Praxis fuer Humangenetik Tuebingen - Variant Classification Criteria",
-      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/TbQpmFtg/PHGTv1.pdf"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "OMIM",
-              "id": "235200"
-            },
-            {
-              "db": "MedGen",
-              "id": "C3469186"
-            }
-          ],
-          "name": "Hemochromatosis type 1"
-        }
-      ],
-      "accession": "SCV000245789",
-      "version": "1",
-      "submitterName": "GeneReviews",
-      "orgID": "500062",
-      "reviewStatus": "no assertion criteria provided",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Sep 17, 2015"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "MedGen",
-              "id": "C0392514"
-            }
-          ],
-          "name": "Hereditary hemochromatosis"
-        }
-      ],
-      "accession": "SCV000206973",
-      "version": "2",
-      "submitterName": "Blueprint Genetics",
-      "orgID": "500188",
-      "reviewStatus": "criteria provided, single submitter",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Nov 26, 2015",
-      "assertionMethod": "Variant Classification",
-      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/nxpnxkpc/variant_classification_wp_vara41-03.pdf"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "MedGen",
-              "id": "CN517202"
-            }
-          ],
-          "name": "Not Provided"
-        }
-      ],
-      "accession": "SCV000577565",
-      "version": "4",
-      "submitterName": "GeneDx",
-      "orgID": "26957",
-      "reviewStatus": "criteria provided, single submitter",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Oct 15, 2018",
-      "assertionMethod": "GeneDx Variant Classification (06012015)",
-      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/7oynscmk/mdi-5616_26957_genedx_interprules_final_061215.pdf"
-    },
-    {
-      "phenotypeList": [
-        {
-          "identifiers": [
-            {
-              "db": "OMIM",
-              "id": "235200"
-            }
-          ],
-          "name": "Hemochromatosis type 1"
-        }
-      ],
-      "accession": "SCV001194094",
-      "version": "1",
-      "submitterName": "Myriad Women's Health, Inc.",
-      "orgID": "507240",
-      "reviewStatus": "criteria provided, single submitter",
-      "clinicalSignificance": "Pathogenic",
-      "dateLastEvaluated": "Dec 26, 2019",
-      "assertionMethod": "Myriad Women's Health Autosomal Recessive and X-Linked Classification Criteria (2019)",
-      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/vlxza0ea/myriad_women_s_health_autosomal_recessive_and_x-linked_classification_criteria_2019_.pdf"
     },
     {
       "phenotypeList": [
@@ -441,11 +218,742 @@
       ],
       "accession": "SCV001251532",
       "version": "1",
-      "submitterName": "UNC Molecular Genetics  Laboratory,University of North Carolina at Chapel Hill",
+      "submitterName": "UNC Molecular Genetics Laboratory, University of North Carolina at Chapel Hill",
       "orgID": "506663",
       "studyDescription": "The North Carolina Newborn Exome Sequencing for Universal Screening (NC NEXUS) study explored the possible use of genomic sequencing in the context of newborn screening and studied the responses of parents to this new technology.",
       "reviewStatus": "criteria provided, single submitter",
       "clinicalSignificance": "Pathogenic",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "CN169374"
+            }
+          ],
+          "name": "not specified"
+        }
+      ],
+      "accession": "SCV000198337",
+      "version": "5",
+      "submitterName": "Laboratory for Molecular Medicine, Mass General Brigham Personalized Medicine",
+      "orgID": "21766",
+      "reviewStatus": "flagged submission",
+      "clinicalSignificance": "Uncertain significance",
+      "dateLastEvaluated": "Mar 05, 2020",
+      "assertionMethod": "LMM Criteria",
+      "AssertionMethodCitationPubMedID": "24033266"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV001194094",
+      "version": "2",
+      "submitterName": "Myriad Genetics, Inc.",
+      "orgID": "507240",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Dec 26, 2019",
+      "assertionMethod": "Myriad Women's Health Autosomal Recessive and X-Linked Classification Criteria (2019)",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/vlxza0ea/myriad_women_s_health_autosomal_recessive_and_x-linked_classification_criteria_2019_.pdf"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "CN169374"
+            }
+          ],
+          "name": "Not specified"
+        }
+      ],
+      "accession": "SCV001438937",
+      "version": "1",
+      "submitterName": "Pathology and Clinical Laboratory Medicine, King Fahad Medical City",
+      "orgID": "506801",
+      "reviewStatus": "flagged submission",
+      "clinicalSignificance": "Benign",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/ofqy0osx/acmg_guidelines_2015.pdf"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV001368348",
+      "version": "2",
+      "submitterName": "Centre for Mendelian Genomics, University Medical Centre Ljubljana",
+      "orgID": "505952",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Sep 25, 2018",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3469186"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV001519563",
+      "version": "1",
+      "submitterName": "Women's Health and Genetics/Laboratory Corporation of America, LabCorp",
+      "orgID": "500026",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Feb 26, 2021",
+      "assertionMethod": "LabCorp Variant Classification Summary - May 2015",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/rtxspsnt/labcorp_variant_classification_method_-_may_2015.pdf"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "not provided"
+        }
+      ],
+      "accession": "SCV001552099",
+      "version": "1",
+      "submitterName": "Department of Pathology and Laboratory Medicine, Sinai Health System",
+      "orgID": "506152",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic"
+    },
+    {
+      "phenotypeList": [],
+      "accession": "SCV001749317",
+      "version": "1",
+      "submitterName": "GenomeConnect - Invitae Patient Insights Network",
+      "orgID": "508034",
+      "reviewStatus": "no classification provided",
+      "clinicalSignificance": "not provided"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "not provided"
+        }
+      ],
+      "accession": "SCV001740600",
+      "version": "3",
+      "submitterName": "Diagnostic Laboratory, Department of Genetics, University Medical Center Groningen",
+      "orgID": "506382",
+      "studyDescription": "VKGL Data-share Consensus",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic"
+    },
+    {
+      "phenotypeList": [],
+      "accession": "SCV001905582",
+      "version": "1",
+      "submitterName": "Institute of Medical Genetics and Applied Genomics, University Hospital Tübingen",
+      "orgID": "506385",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Sep 15, 2021",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "not provided"
+        }
+      ],
+      "accession": "SCV001927447",
+      "version": "1",
+      "submitterName": "Genome Diagnostics Laboratory, University Medical Center Utrecht",
+      "orgID": "274978",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "not provided"
+        }
+      ],
+      "accession": "SCV001968924",
+      "version": "1",
+      "submitterName": "Clinical Genetics DNA and cytogenetics Diagnostics Lab, Erasmus MC, Erasmus Medical Center",
+      "orgID": "506497",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C0878544"
+            }
+          ],
+          "name": "Cardiomyopathy"
+        }
+      ],
+      "accession": "SCV001984998",
+      "version": "1",
+      "submitterName": "Clinical Genetics Laboratory, Region Ostergotland",
+      "orgID": "506101",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Mar 25, 2021",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV002028310",
+      "version": "1",
+      "submitterName": "Centogene AG - the Rare Disease Company",
+      "orgID": "279559",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Aug 26, 2020",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "not provided"
+        }
+      ],
+      "accession": "SCV002036308",
+      "version": "1",
+      "submitterName": "Laboratory of Diagnostic Genome Analysis, Leiden University Medical Center (LUMC)",
+      "orgID": "506395",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3469186"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV002038504",
+      "version": "1",
+      "submitterName": "Genomic Diagnostic Laboratory, Division of Genomic Diagnostics, Children's Hospital of Philadelphia",
+      "orgID": "165021",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Dec 16, 2021",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV002499222",
+      "version": "1",
+      "submitterName": "Greenwood Genetic Center Diagnostic Laboratories, Greenwood Genetic Center",
+      "orgID": "1019",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Jan 05, 2022",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "Not provided"
+        }
+      ],
+      "accession": "SCV002502480",
+      "version": "1",
+      "submitterName": "AiLife Diagnostics, AiLife Diagnostics",
+      "orgID": "507594",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Mar 25, 2022",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [],
+      "accession": "SCV002506442",
+      "version": "1",
+      "submitterName": "Institute of Human Genetics, University Hospital Muenster",
+      "orgID": "507439",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Dec 10, 2021",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV002576301",
+      "version": "1",
+      "submitterName": "Genomic Medicine Lab, University of California San Francisco",
+      "orgID": "506696",
+      "studyDescription": "CSER P3EGS Study",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Jul 21, 2020",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [],
+      "accession": "SCV002583554",
+      "version": "1",
+      "submitterName": "Foundation for Research in Genetics and Endocrinology, FRIGE's Institute of Human Genetics",
+      "orgID": "505565",
+      "reviewStatus": "flagged submission",
+      "clinicalSignificance": "Uncertain significance",
+      "dateLastEvaluated": "Dec 25, 2021",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "176200"
+            }
+          ],
+          "name": "Variegate porphyria"
+        }
+      ],
+      "accession": "SCV002556586",
+      "version": "2",
+      "submitterName": "Genetics and Molecular Pathology, SA Pathology",
+      "orgID": "506043",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Jan 13, 2020",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868",
+      "modeOfInheritance": "Autosomal recessive inheritance"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV002769510",
+      "version": "1",
+      "submitterName": "Victorian Clinical Genetics Services, Murdoch Childrens Research Institute",
+      "orgID": "500104",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "May 06, 2021",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868",
+      "modeOfInheritance": "Autosomal recessive inheritance"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C0392514"
+            }
+          ],
+          "name": "Hereditary hemochromatosis"
+        }
+      ],
+      "accession": "SCV000219176",
+      "version": "8",
+      "submitterName": "Invitae",
+      "orgID": "500031",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic, low penetrance",
+      "dateLastEvaluated": "Nov 04, 2022",
+      "assertionMethod": "Invitae Variant Classification Sherloc (09022015)",
+      "AssertionMethodCitationPubMedID": "28492532"
+    },
+    {
+      "phenotypeList": [],
+      "accession": "SCV000607203",
+      "version": "5",
+      "submitterName": "GenomeConnect, ClinGen",
+      "orgID": "506185",
+      "reviewStatus": "no classification provided",
+      "clinicalSignificance": "not provided"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "Not Provided"
+        }
+      ],
+      "accession": "SCV000577565",
+      "version": "6",
+      "submitterName": "GeneDx",
+      "orgID": "26957",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Oct 08, 2020",
+      "assertionMethod": "GeneDx Variant Classification Process June 2021",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/fc81e176/genedx_variant_classification_process_june_2021.pdf"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "Not provided"
+        }
+      ],
+      "accession": "SCV001715880",
+      "version": "2",
+      "submitterName": "Mayo Clinic Laboratories, Mayo Clinic",
+      "orgID": "500068",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Jan 25, 2022",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV000461883",
+      "version": "3",
+      "submitterName": "Illumina Laboratory Services, Illumina",
+      "orgID": "504895",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "May 18, 2023",
+      "assertionMethod": "ICSLVariantClassificationCriteria RUGD 01 April 2020",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/api/2.0/files/dy7elfgy/icslvariantclassificationcriteria_rugd_01_april_2020.pdf/?format=attachment"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV004024108",
+      "version": "1",
+      "submitterName": "Genomics And Bioinformatics Analysis Resource, Columbia University",
+      "orgID": "509221",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [],
+          "name": "RECLASSIFIED - HFE POLYMORPHISM"
+        }
+      ],
+      "accession": "SCV000020169",
+      "version": "6",
+      "submitterName": "OMIM",
+      "orgID": "3",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Aug 10, 2023"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV004041642",
+      "version": "1",
+      "submitterName": "Zotz-Klimas Genetics Lab, MVZ Zotz Klimas",
+      "orgID": "507243",
+      "reviewStatus": "no assertion criteria provided",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Oct 09, 2023"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "HP",
+              "id": "HP:0003198"
+            }
+          ],
+          "name": "Myopathy"
+        },
+        {
+          "identifiers": [
+            {
+              "db": "HP",
+              "id": "HP:0008180"
+            }
+          ],
+          "name": "Mildly elevated creatine kinase"
+        }
+      ],
+      "accession": "SCV004045959",
+      "version": "1",
+      "submitterName": "Institute of Human Genetics, Klinikum rechts der Isar",
+      "orgID": "500240",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Dec 27, 2022",
+      "assertionMethod": "Classification criteria August 2017",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/ft/byid/inodbbrd/classification_criteria.pdf",
+      "modeOfInheritance": "Autosomal recessive inheritance"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV000245789",
+      "version": "3",
+      "submitterName": "GeneReviews",
+      "orgID": "500062",
+      "reviewStatus": "no classification provided",
+      "clinicalSignificance": "not provided"
+    },
+    {
+      "phenotypeList": [],
+      "accession": "SCV004046529",
+      "version": "2",
+      "submitterName": "New York Genome Center",
+      "orgID": "507558",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "May 15, 2023",
+      "assertionMethod": "NYGC Assertion Criteria 2020",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/api/2.0/files/hhfhf6ms/nygc_assertion_criteria_2020.pdf/?format=attachment"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV004183355",
+      "version": "1",
+      "submitterName": "Laboratorio de Genetica e Diagnostico Molecular, Hospital Israelita Albert Einstein",
+      "orgID": "508506",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Dec 21, 2021",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "OMIM",
+              "id": "235200"
+            }
+          ],
+          "name": "Hemochromatosis type 1"
+        }
+      ],
+      "accession": "SCV001523197",
+      "version": "4",
+      "submitterName": "Baylor Genetics",
+      "orgID": "1006",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Nov 25, 2023",
+      "assertionMethod": "ACMG Guidelines, 2015",
+      "AssertionMethodCitationPubMedID": "25741868"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "CN517202"
+            }
+          ],
+          "name": "not provided"
+        }
+      ],
+      "accession": "SCV001154674",
+      "version": "17",
+      "submitterName": "CeGaT Center for Human Genetics Tuebingen",
+      "orgID": "505870",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Apr 01, 2023",
+      "assertionMethod": "CeGaT Center For Human Genetics Tuebingen Variant Classification Criteria Version 2",
+      "AssertionMethodCitationURL": "https://submit.ncbi.nlm.nih.gov/api/2.0/files/0ynenhfo/cegat_center_for_human_genetics_tuebingen_-_variant_classification_criteria_-_version_2.pdf/?format=attachment"
+    },
+    {
+      "phenotypeList": [
+        {
+          "identifiers": [
+            {
+              "db": "MedGen",
+              "id": "C3661900"
+            }
+          ],
+          "name": "not provided"
+        }
+      ],
+      "accession": "SCV002568070",
+      "version": "5",
+      "submitterName": "Center for Genomic Medicine, Rigshospitalet, Copenhagen University Hospital",
+      "orgID": "505691",
+      "reviewStatus": "criteria provided, single submitter",
+      "clinicalSignificance": "Pathogenic",
+      "dateLastEvaluated": "Feb 06, 2024",
       "assertionMethod": "ACMG Guidelines, 2015",
       "AssertionMethodCitationPubMedID": "25741868"
     }

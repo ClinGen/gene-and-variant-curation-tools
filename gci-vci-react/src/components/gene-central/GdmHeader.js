@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import moment from "moment";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { RestAPI as API } from "@aws-amplify/api-rest";
 import lodashGet from "lodash/get";
@@ -7,9 +8,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { Jumbotron, Container, Button, Row, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faFileAlt, faTable, faBriefcase } from "@fortawesome/free-solid-svg-icons";
-import { getAffiliationName } from '../../helpers/get_affiliation_name.js';
-
-
+import { AffilsContext, getAffiliationName } from '../../helpers/affiliationsHelpers';
+import { getUserName } from "../../helpers/getUserName";
+import { getGDMContributors, getGeneEvidenceData, getPerformedByUserData, postTrackData } from '../../helpers/getGdmMsgData';
+import { ClassificationRecord } from "./ClassificationRecord";
 import { GdmDetails } from "./GdmDetails";
 import DiseaseModal from "../common/DiseaseModal";
 import { setGdmAction } from "../../actions/gdmActions";
@@ -18,8 +20,7 @@ import { useAmplifyAPIRequestRecycler } from "../../utilities/fetchUtilities";
 import Modal from "../common/Modal";
 import { renderPublishStatus } from '../recordStatus//publishStatus';
 import { isOwnedByCurrentCuratingEntity } from "../../utilities/ownershipUtilities";
-import { getAffiliationName } from '../../helpers/get_affiliation_name.js';
-
+import { convertDiseasePKToMondoId, isDiseaseObsolete, displayObsoleteDiseaseIcon } from '../../utilities/diseaseUtilities';
 
 
 export const GdmHeader = (props) => {
@@ -37,6 +38,7 @@ export const GdmHeader = (props) => {
   const [isDiseaseModalOpen, setIsDiseaseModalOpen] = useState(false);
   const [isDuplicateGdmAlertModalOpen, setIsDuplicateGdmAlertModalOpen] = useState(false);
   const [duplicatedGdm, setDuplicatedGdm] = useState();
+  const { affiliationsData } = useContext(AffilsContext);
 
   // disease modal helpers
 
@@ -47,6 +49,44 @@ export const GdmHeader = (props) => {
   const handleHideDiseaseModal = () => {
     setIsDiseaseModalOpen(false);
   };
+
+  /**
+   * Method to create necessary data object to be sent to Data Exchange for UNC tracking
+   * @param {object} gdm - GDM with new disease object
+   * @param {object} originalDisease - GDM original disease object
+   */
+  const setUNCData = (gdm, originalDisease) => {
+    // GDM should only have one classification
+    const provisional = lodashGet(gdm, "provisionalClassifications[0]", null);
+    // Get all contributors
+    const snapshots = lodashGet(provisional, "associatedClassificationSnapshots", null) && provisional.associatedClassificationSnapshots.length ? provisional.associatedClassificationSnapshots : [];
+    const contributors = getGDMContributors(gdm, snapshots, null, affiliationsData);
+
+    // Add current user as 'disease changer' to contributors list
+    if (auth) {
+      contributors.push({
+        name: getUserName(auth),
+        id: lodashGet(auth, 'PK', ''),
+        email: lodashGet(auth, 'email', ''),
+        roles: ['disease changer']
+      });
+    }
+
+    return {
+      iri: provisional ? provisional.PK : '',
+      report_id: lodashGet(gdm, "PK", ''),
+      gene_validity_evidence_level: getGeneEvidenceData(gdm, provisional),
+      date: moment(lodashGet(gdm, "last_modified", '')).toISOString(),
+      performed_by: getPerformedByUserData(auth),
+      contributors: contributors,
+      content: {
+        event_type: 'disease change',
+        date: moment(lodashGet(gdm, "last_modified", '')).toISOString(),
+        original_disease: lodashGet(originalDisease, "PK", null) ? convertDiseasePKToMondoId(originalDisease.PK) : '',
+        new_disease: lodashGet(gdm, "disease.PK", null) ? convertDiseasePKToMondoId(gdm.disease.PK) : '',
+      }
+    };
+  }
 
   const handleDiseaseModalSaved = async (disease) => {
     if (disease.PK === gdm.disease.PK) {
@@ -72,7 +112,10 @@ export const GdmHeader = (props) => {
       return;
     }
 
-    // PUT parent obj (gdm)
+    // Save original disease to be used in tracking message
+    const originalDisease = gdm.disease;
+
+    // Update gdm object
     const updateGdm = {
       ...gdm,
       disease: disease.PK,
@@ -84,13 +127,23 @@ export const GdmHeader = (props) => {
       putResultGdm = await requestRecycler.capture(API.put(API_NAME, `/gdms/${gdm.PK}`, { body: { updateGdm } }))
     } catch (error) {
       console.log(error);
-      const baseErrorMessage = 'Update gene-disease record for diease failed. ';
+      const baseErrorMessage = 'Update gene-disease record for disease change failed. ';
       return baseErrorMessage + lodashGet(error, 'response.data.error')
     }
 
     if (!putResultGdm) {
-      return `Failed to update gene-disease record, server return empty result!`;
+      return `Failed to update gene-disease record when doing disease change, server return empty result!`;
     }
+
+    // Disease is changed, gather GDM data to be sent to Data Exchange
+    let uncData = setUNCData(putResultGdm, originalDisease);
+
+    // Post GDM changed disease data to Data Exchange
+    postTrackData(uncData).then(() => {
+      console.log('Successfully sent GDM change disease data to Data Exchange for GDM %s at %s', putResultGdm.PK, moment(putResultGdm.last_modified).toISOString());
+    }).catch(error => {
+      console.log('Error sending GDM change disease %s data to Data Exchange for GDM %s at %s - Error: %o', putResultGdm.PK, moment(putResultGdm.last_modified).toISOString(), error);
+    });
 
     // update UI
     dispatch(
@@ -103,7 +156,6 @@ export const GdmHeader = (props) => {
   };
 
   // duplicate GDM alert modal helpers
-
   const handleHideDuplicateGdmAlertModal = () => {
     setIsDuplicateGdmAlertModalOpen(false);
   }
@@ -121,23 +173,26 @@ export const GdmHeader = (props) => {
   const disableEditDiseaseButton = () => {
     let disabled = false;
 
-    // Allow to change disease if all classifications have been unpublished
-    // Go thru the snapshots in all provisional classifications in the GDM to check none of the classification is still published
-    let classifications = gdm.provisionalClassifications && gdm.provisionalClassifications.length ? gdm.provisionalClassifications : [];
+    // If GDM is associated with an obsolete disease, always allow to change disease.
+    // Or allow to change disease if all classifications have been unpublished
+    if (!isDiseaseObsolete(lodashGet(gdm, "disease.term", ""))) {
+      // Go thru the snapshots in all provisional classifications in the GDM to check none of the classification is still published
+      let classifications = gdm.provisionalClassifications && gdm.provisionalClassifications.length ? gdm.provisionalClassifications : [];
 
-    for (let classification of classifications) {
-      const associatedClassificationSnapshots = lodashGet(classification, 'associatedClassificationSnapshots', []);
-      // some associatedClassificationSnapshots may lack of `.resource` data (the full classification object)
-      // for rendering status, so just use the snapshot object itself
-      const snapshots = associatedClassificationSnapshots
-        // make sure the snapshot object is not null or undefined
-        .filter(snapshot => !!snapshot);
+      for (let classification of classifications) {
+        const associatedClassificationSnapshots = lodashGet(classification, 'associatedClassificationSnapshots', []);
+        // some associatedClassificationSnapshots may lack of `.resource` data (the full classification object)
+        // for rendering status, so just use the snapshot object itself
+        const snapshots = associatedClassificationSnapshots
+          // make sure the snapshot object is not null or undefined
+          .filter(snapshot => !!snapshot);
 
-      // If any of snapshot is still published, then cannot change disease
-      if (snapshots && snapshots.length) {
-        if (renderPublishStatus(snapshots, 'classification', true) === 'Published') {
-          disabled = true;
-          break;
+        // If any of snapshot is still published, then cannot change disease
+        if (snapshots && snapshots.length) {
+          if (renderPublishStatus(snapshots, 'classification', true) === 'Published') {
+            disabled = true;
+            break;
+          }
         }
       }
     }
@@ -161,12 +216,12 @@ export const GdmHeader = (props) => {
   }
 
   return (
-    <Jumbotron>
-      <Container>
+    <Jumbotron className="py-2">
+      <Container className="py-2">
         <Row>
           <Link className="d-flex align-items-center text-decoration-none text-dark" to={`/curation-central/${gdm.PK}${annotationPKFromRouter ? `/annotation/${annotationPKFromRouter}` : ''}`}>
             <h2>{gdm.gene.PK}</h2>
-            {gdm.disease && <h3 className="ml-2">- {gdm.disease.term}</h3>}
+            {gdm.disease && <h3 className="ml-2">- {displayObsoleteDiseaseIcon(gdm.disease.term, "gdm")} {gdm.disease.term}</h3>}
           <OverlayTrigger overlay={<Tooltip>Back to main page for this Gene-Disease Record</Tooltip>}>
             <Button variant="link">
               <FontAwesomeIcon icon={faBriefcase} />
@@ -230,6 +285,9 @@ export const GdmHeader = (props) => {
         </Row>
 
         <GdmDetails />
+
+        {props.showClassification && <ClassificationRecord className="mx-2" />}
+
       </Container>
     </Jumbotron>
   );
@@ -238,13 +296,14 @@ GdmHeader.propTypes = {};
 
 
 const DuplicateGdmAlertModalContent = ({ duplicatedGdm }) => {
+  const { affiliationsData } = useContext(AffilsContext);
   // duplicatedGdm object does not have disease object, only disease(string) and diseaseTerm(string)
   return (
     <>
       <h2 className="lead">A curation record already exists for this gene/disease/mode of inheritance:</h2>
       <p><strong>{lodashGet(duplicatedGdm, 'gene')} &#8211; {lodashGet(duplicatedGdm, 'diseaseTerm')} &#8211; {lodashGet(duplicatedGdm, 'modeInheritance')}</strong></p>
       <h2 className="lead">This record currently belongs to:</h2>
-      <p><strong>{lodashGet(duplicatedGdm, 'affiliation') && getAffiliationName(duplicatedGdm.affiliation)}</strong></p>
+      <p><strong>{lodashGet(duplicatedGdm, 'affiliation') && getAffiliationName(duplicatedGdm.affiliation, affiliationsData)}</strong></p>
     </>
   )
 }

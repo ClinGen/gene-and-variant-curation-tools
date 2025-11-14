@@ -1,7 +1,26 @@
 {
   "@context": "http://reg.genome.network/schema/allele.jsonld",
   "@id": "http://reg.genome.network/allele/CA2738256",
+  "communityStandardTitle": [
+    "NM_001009921.3(VPS8):c.3130G>A (p.Val1044Ile)"
+  ],
   "externalRecords": {
+    "ClinVarAlleles": [
+      {
+        "@id": "http://www.ncbi.nlm.nih.gov/clinvar/?term=804998[alleleid]",
+        "alleleId": 804998,
+        "preferredName": "NM_001009921.3(VPS8):c.3130G>A (p.Val1044Ile)"
+      }
+    ],
+    "ClinVarVariations": [
+      {
+        "@id": "http://www.ncbi.nlm.nih.gov/clinvar/variation/816788",
+        "RCV": [
+          "RCV001007776"
+        ],
+        "variationId": 816788
+      }
+    ],
     "ExAC": [
       {
         "@id": "http://exac.broadinstitute.org/variant/3-184675256-G-A",
@@ -88,6 +107,148 @@
     }
   ],
   "transcriptAlleles": [
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3278,
+          "referenceAllele": "G",
+          "start": 3277
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "ENST00000625842.3:c.3130G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000487164.1:p.Val1044Ile",
+        "hgvsWellDefined": "ENSP00000487164.1:p.Val1044Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS762467",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000625842.3:c.3130G>A"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001009921.3:c.3130G>A"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000487164.1:p.Val1044Ile"
+          },
+          "RefSeq": {
+            "hgvs": "NP_001009921.1:p.Val1044Ile"
+          }
+        }
+      }
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3301,
+          "referenceAllele": "G",
+          "start": 3300
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "ENST00000287546.8:c.3130G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000287546.4:p.Val1044Ile",
+        "hgvsWellDefined": "ENSP00000287546.4:p.Val1044Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS253446"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3267,
+          "referenceAllele": "G",
+          "start": 3266
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "ENST00000436792.6:c.3124G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000404704.2:p.Val1042Ile",
+        "hgvsWellDefined": "ENSP00000404704.2:p.Val1042Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS294154"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 2985,
+          "referenceAllele": "G",
+          "start": 2984
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "ENST00000446204.6:c.2854G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000405483.2:p.Val952Ile",
+        "hgvsWellDefined": "ENSP00000405483.2:p.Val952Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS298639"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 1537,
+          "referenceAllele": "G",
+          "start": 1536
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "ENST00000492449.5:n.1537G>A"
+      ],
+      "referenceSequence": "http://reg.genome.network/refseq/RS329828"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3237,
+          "referenceAllele": "G",
+          "start": 3236
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "ENST00000625842.2:c.3130G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "ENSP00000487164.1:p.Val1044Ile",
+        "hgvsWellDefined": "ENSP00000487164.1:p.Val1044Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS406632"
+    },
     {
       "coordinates": [
         {
@@ -571,87 +732,206 @@
       "coordinates": [
         {
           "allele": "A",
-          "end": 3301,
+          "end": 3278,
           "referenceAllele": "G",
-          "start": 3300
+          "start": 3277
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
       "hgvs": [
-        "ENST00000287546.8:c.3130G>A"
+        "NM_001009921.3:c.3130G>A"
       ],
       "proteinEffect": {
-        "hgvs": "ENSP00000287546.4:p.Val1044Ile",
-        "hgvsWellDefined": "ENSP00000287546.4:p.Val1044Ile"
+        "hgvs": "NP_001009921.1:p.Val1044Ile",
+        "hgvsWellDefined": "NP_001009921.1:p.Val1044Ile"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS253446"
+      "referenceSequence": "http://reg.genome.network/refseq/RS711278",
+      "MANE": {
+        "maneVersion": "1.0",
+        "maneStatus": "MANE Select",
+        "nucleotide": {
+          "Ensembl": {
+            "hgvs": "ENST00000625842.3:c.3130G>A"
+          },
+          "RefSeq": {
+            "hgvs": "NM_001009921.3:c.3130G>A"
+          }
+        },
+        "protein": {
+          "Ensembl": {
+            "hgvs": "ENSP00000487164.1:p.Val1044Ile"
+          },
+          "RefSeq": {
+            "hgvs": "NP_001009921.1:p.Val1044Ile"
+          }
+        }
+      }
     },
     {
       "coordinates": [
         {
           "allele": "A",
-          "end": 3267,
+          "end": 3364,
           "referenceAllele": "G",
-          "start": 3266
+          "start": 3363
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
       "hgvs": [
-        "ENST00000436792.6:c.3124G>A"
+        "NM_001349292.2:c.3130G>A"
       ],
       "proteinEffect": {
-        "hgvs": "ENSP00000404704.2:p.Val1042Ile",
-        "hgvsWellDefined": "ENSP00000404704.2:p.Val1042Ile"
+        "hgvs": "NP_001336221.1:p.Val1044Ile",
+        "hgvsWellDefined": "NP_001336221.1:p.Val1044Ile"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS294154"
+      "referenceSequence": "http://reg.genome.network/refseq/RS719272"
     },
     {
       "coordinates": [
         {
           "allele": "A",
-          "end": 2985,
+          "end": 3276,
           "referenceAllele": "G",
-          "start": 2984
+          "start": 3275
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
       "hgvs": [
-        "ENST00000446204.6:c.2854G>A"
+        "NM_001349293.2:c.3130G>A"
       ],
       "proteinEffect": {
-        "hgvs": "ENSP00000405483.2:p.Val952Ile",
-        "hgvsWellDefined": "ENSP00000405483.2:p.Val952Ile"
+        "hgvs": "NP_001336222.1:p.Val1044Ile",
+        "hgvsWellDefined": "NP_001336222.1:p.Val1044Ile"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS298639"
+      "referenceSequence": "http://reg.genome.network/refseq/RS719273"
     },
     {
       "coordinates": [
         {
           "allele": "A",
-          "end": 1537,
+          "end": 3339,
           "referenceAllele": "G",
-          "start": 1536
+          "start": 3338
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
       "hgvs": [
-        "ENST00000492449.5:n.1537G>A"
+        "NM_001349294.2:c.3130G>A"
       ],
-      "referenceSequence": "http://reg.genome.network/refseq/RS329828"
+      "proteinEffect": {
+        "hgvs": "NP_001336223.1:p.Val1044Ile",
+        "hgvsWellDefined": "NP_001336223.1:p.Val1044Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS719274"
     },
     {
       "coordinates": [
         {
           "allele": "A",
-          "end": 3237,
+          "end": 3239,
           "referenceAllele": "G",
-          "start": 3236
+          "start": 3238
         }
       ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
       "hgvs": [
-        "ENST00000625842.2:c.3130G>A"
+        "NM_001349296.2:c.3091G>A"
       ],
       "proteinEffect": {
-        "hgvs": "ENSP00000487164.1:p.Val1044Ile",
-        "hgvsWellDefined": "ENSP00000487164.1:p.Val1044Ile"
+        "hgvs": "NP_001336225.1:p.Val1031Ile",
+        "hgvsWellDefined": "NP_001336225.1:p.Val1031Ile"
       },
-      "referenceSequence": "http://reg.genome.network/refseq/RS406632"
+      "referenceSequence": "http://reg.genome.network/refseq/RS719275"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3425,
+          "referenceAllele": "G",
+          "start": 3424
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "NM_001349297.2:c.1411G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001336226.1:p.Val471Ile",
+        "hgvsWellDefined": "NP_001336226.1:p.Val471Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS719276"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3457,
+          "referenceAllele": "G",
+          "start": 3456
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "NM_001349298.2:c.1330G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_001336227.1:p.Val444Ile",
+        "hgvsWellDefined": "NP_001336227.1:p.Val444Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS719277"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3272,
+          "referenceAllele": "G",
+          "start": 3271
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "NM_015303.4:c.3124G>A"
+      ],
+      "proteinEffect": {
+        "hgvs": "NP_056118.2:p.Val1042Ile",
+        "hgvsWellDefined": "NP_056118.2:p.Val1042Ile"
+      },
+      "referenceSequence": "http://reg.genome.network/refseq/RS728060"
+    },
+    {
+      "coordinates": [
+        {
+          "allele": "A",
+          "end": 3512,
+          "referenceAllele": "G",
+          "start": 3511
+        }
+      ],
+      "gene": "http://reg.genome.network/gene/GN029122",
+      "geneNCBI_id": 23355,
+      "geneSymbol": "VPS8",
+      "hgvs": [
+        "NR_146113.2:n.3512G>A"
+      ],
+      "referenceSequence": "http://reg.genome.network/refseq/RS731203"
     }
   ],
   "type": "nucleotide"

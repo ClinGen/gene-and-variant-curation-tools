@@ -19,10 +19,11 @@ app: gci-vci-serverless-app
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
+frameworkVersion: '3'
 
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.11
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-west-2'}
   timeout: 30
@@ -58,12 +59,11 @@ functions:
 plugins:
   - serverless-dynamodb-local
   #- serverless-dynamodb-autoscaling
+  - "@kakkuk/serverless-aws-apigateway-documentation"
   - serverless-s3-local
   - serverless-offline
   - serverless-wsgi
   - serverless-python-requirements
-  - serverless-aws-documentation
-  - serverless-reqvalidator-plugin
   - serverless-plugin-split-stacks
 
 custom:
@@ -112,7 +112,6 @@ custom:
 resources:
   - ${file(./resources/s3-buckets.yml)}
   - ${file(./resources/cognito.yml)}
-  - ${file(./resources/api-validation.yml)}
   - ${file(./resources/vpt-table.yml)}
   - ${file(./resources/vpf-table.yml)}
   - ${file(./resources/gci-vci-table.yml)}

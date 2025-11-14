@@ -67,6 +67,23 @@ export const SelectVariantModal = ({
     cleanUp();
   };
 
+  // Until CNVs are searchable in CAR by ClinVar ID, we must make an additional check that the CNV
+  // was not added via ClinVar ID for the same evidence, if no ClinVar ID associated with CNV setVariantResult
+  const setCacnIdResults = (d) => {
+    if (d && d.clinvarVariantId) {
+      if (validVariant('CACN ID', d.clinvarVariantId)) {
+        return setVariantResults(d);
+      }
+    } else {
+      return setVariantResults(d);
+    }
+  };
+
+  const getCacnIdResults = () => {
+    const url = '/variants?cacnId=' + variantId;
+    getResults(url, (d) => setCacnIdResults(d));
+  };
+
   const getClinGenResults = () => {
     const url = '/variants?carId=' + variantId;
     getResults(url, (d) => setVariantResults(d));
@@ -88,7 +105,6 @@ export const SelectVariantModal = ({
 
       requestRecycler.capture(API.post(API_NAME, url, params))
       .then(data => {
-        console.log('variant data', data);
         //const updatedVariant = variant;
         //updatedVariant.PK = data.PK;
         setVariantResults(data);
@@ -139,6 +155,14 @@ export const SelectVariantModal = ({
         if (type === 'ClinGen Allele Registry' && variant && variant.carId === id) {
           error = 'This variant has already been associated with this piece of evidence.';
         }
+        if (type === 'CACN ID' && variant && variant.cacnId === id) {
+          error = 'This variant has already been associated with this piece of evidence.';
+        }
+        // Until CNVs are searchable in CAR by ClinVar ID, we must make an additional check that the CNV
+        // was not added via ClinVar ID for the same evidence
+        if (type === 'CACN ID' && variant && variant.clinvarVariantId === id) {
+          error = 'This variant has already been associated with this piece of evidence.';
+        }
       });
     }
     if (error) {
@@ -152,7 +176,8 @@ export const SelectVariantModal = ({
   const getVariantInfo = (e) => {
     e.preventDefault();
     const clinVarIdRegex = new RegExp('^[0-9]+$');
-    const clinGenIdRegex = new RegExp('CA*');
+    const clinGenIdRegex = new RegExp('CA[0-9]');
+    const cacnIdRegex = new RegExp('CACN[0-9]');
 
     setErrorMessage(null);
     setVariantResults(null);
@@ -167,6 +192,12 @@ export const SelectVariantModal = ({
         setVariantIdType('ClinGen Allele Registry');
         getClinGenResults();
       }
+    } else if (cacnIdRegex.test(variantId)) {
+      if (validVariant('CACN ID', variantId)) {
+        setVariantIdType('CACN ID');
+        getCacnIdResults();
+      }
+
     } else {
       setErrorMessage("Invalid Id");
     }
@@ -209,9 +240,28 @@ export const SelectVariantModal = ({
     );
   };
 
+  const renderOverlappingGenes = (overlappingGenesList) => {
+    return (
+      <div>
+        {overlappingGenesList && overlappingGenesList.length > 0 && overlappingGenesList.map((geneSymbol, i) => {
+         return (
+          <span key={i}>
+            <span>
+              <span className="title-ellipsis title-ellipsis-shorter dotted" title="{geneSymbol}">
+                {geneSymbol}
+              </span>
+              <br />
+            </span>
+          </span>
+         );
+        })}
+      </div>
+    );
+  };
 
   const renderVariantResourceResult = () => {
     const caText = 'Below are the data from the ClinGen Allele Registry for the CA ID you submitted. Select "Save" below if it is the correct variant, otherwise revise your search above:';
+    const cacnIdText = 'Below are the data from the ClinGen Allele Registry for the CACN ID you submitted. Select "Save" below if it is the correct variant, otherwise revise your search above:';
     const clinVarText = 'Below are the data from ClinVar for the Variation ID you submitted. Select "Save" below if it is the correct variant, otherwise revise your search above:';
 
     return (
@@ -220,9 +270,18 @@ export const SelectVariantModal = ({
           <>
           {variantIdType === 'ClinVar'
             ? <p>{clinVarText}</p>
-            : <p>{caText}</p>
+            : (variantIdType === 'CACN ID'
+              ? <p>{cacnIdText}</p>
+              : <p>{caText}</p>
+            )
           }
-          <span className="p-break">{variantResults.clinvarVariantTitle}</span>
+          <span className="p-break">{variantResults.preferredTitle || "--"}</span>
+          {variantResults.cacnId ?
+            <Row>
+              <Col sm="4" className="control-label"><label>CACN ID</label></Col>
+              <Col sm="8" className="text-no-input"><ExternalLink href={`${EXTERNAL_API_MAP['CARcopy-number']}${variantResults.cacnId}`}><strong>{variantResults.cacnId}</strong></ExternalLink></Col>
+            </Row>
+          : null}
           {variantResults.carId ?
             <Row>
               <Col sm="4" className="control-label"><label>CA ID</label></Col>
@@ -243,6 +302,21 @@ export const SelectVariantModal = ({
               </Col>
             </Row>
           : null}
+          {variantResults.overlappingGenes ?
+            <Row>
+              <Col sm="4" className="control-label"><label>Overlapping Genes</label></Col>
+              <Col sm="8" className="text-no-input">
+                {renderOverlappingGenes(variantResults.overlappingGenes)}
+              </Col>
+              <Col className="text-no-input">
+                <span>
+                  <strong>Note:</strong> in general you should be scoring copy number variants involving only one gene, 
+                  and should not be scoring multi-gene copy number variants due to the fact that the contributions of the other 
+                  genes cannot be ruled out. If you have any questions please discuss with your expert panel.
+                </span>
+              </Col>
+            </Row>
+          : null}
           </>
         : null}
       </div>
@@ -254,9 +328,10 @@ export const SelectVariantModal = ({
       <>
         <div className="text-muted mb-3 mt-3">
           <p>
-            Enter a ClinVar Variation ID or ClinGen Allele Registry ID (CA ID).
+            Enter a ClinVar Variation ID, ClinGen Allele Registry ID (CA ID), or ClinGen Allele Registry Copy Number ID (CACN ID).
             The Variation ID can be found in the light blue box on a variant page (example: <ExternalLink href={EXTERNAL_API_MAP['ClinVarSearch'] + '139214'}>139214</ExternalLink> for variant.
             The CA ID is returned when you register an allele with the ClinGen Allele Registry (example: <ExternalLink href={`${EXTERNAL_API_MAP['CARallele']}CA003323.html`}>CA003323</ExternalLink>).
+            The CACN ID is the Copy Number ID in the ClinGen Allele Registry (example: <ExternalLink href={`${EXTERNAL_API_MAP['CARcopy-number']}CACN71616141`}>CACN71616141</ExternalLink>).
           </p>
         </div>
       </>
@@ -267,12 +342,12 @@ export const SelectVariantModal = ({
     return (
       <div className="form-group form-horizontal">
         <h3>Search and Select Variant</h3>
-        <label className="control-label">ClinVar Variation ID or ClinGen Allele Registry ID</label>
+        <label className="control-label">ClinVar Variation ID, ClinGen Allele Registry ID, or ClinGen Allele Registry Copy Number ID</label>
         <Input 
           type="text"
           value={variantId} 
           onChange={handleChange} 
-          placeholder="e.g. 139214 or CA003323"
+          placeholder="e.g. 139214, CA003323, or CACN71616141"
           error={errorMessage}
         />
         <Row className="mt-3 md-3"><Col>

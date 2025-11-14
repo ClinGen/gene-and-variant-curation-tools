@@ -19,7 +19,8 @@ export const DeleteCurationModal = ({
   gdm,
   parent,
   item,
-  disabled
+  disabled,
+  ownerError
 }) =>{
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
@@ -168,7 +169,7 @@ export const DeleteCurationModal = ({
     const deletePromises = recurseItem(deletedItem, 0, 'delete');
     // wait for ALL promises to resolve
     return Promise.all(deletePromises)
-    .then(rawData => {
+    .then(()=> {
       if (parent && parent.PK && parentType) {
         let parentUpdate = '';
         let deletedParent = cloneDeep(parent);
@@ -209,15 +210,15 @@ export const DeleteCurationModal = ({
         });
       }
       return Promise.resolve(null);
-    }).then(data => {
+    }).then(() => {
       // successfully deleted selected evidence --
       // GET annotation so that backend can auto-collect the annotation
       // for us when embedding related objects
       return updateAnnotationObject();
-    }).then(res => {
+    }).then(() => {
       // update gdm
       return updateGDMObject();
-    }).then(res => {
+    }).then(() => {
       // forward user to curation central
       let redirectUrl = `/curation-central/${gdm.PK}/annotation/${annotation.PK}`;
       history.push(redirectUrl);
@@ -353,10 +354,13 @@ export const DeleteCurationModal = ({
   };
 
   const renderDisabledButton = () => {
+    const popoverMsg = ownerError
+      ? "This item cannot be deleted because it belongs to another affiliation."
+      : "This item cannot be deleted because it has been assessed by another user."
     const PopoverOverlay = (
       <BSPopover className="notice-div">
         <BSPopover.Content>
-          This item cannot be deleted because it has been assessed by another user.
+          {popoverMsg}
         </BSPopover.Content>
       </BSPopover>
     );

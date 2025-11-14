@@ -93,12 +93,10 @@ export const computationalStatic = {
   },
   clingen: {
       _order: [
-        'revel',
-        'cftr'
+        'revel'
       ],
       _labels: {
-        'revel': 'REVEL',
-        'cftr': 'CFTR'
+        'revel': 'REVEL'
       },
       _type: {
         'revel': ' (meta-predictor)'
@@ -107,8 +105,7 @@ export const computationalStatic = {
         'revel': 'https://sites.google.com/site/revelgenomics/about'
       },
       _pathoThreshold: {
-        'revel': '>0.75',
-        'cftr': '--'
+        'revel': '>0.75'
       }
   }
 };
@@ -194,14 +191,10 @@ export const initialComputationalData = {
     revel: {
       score_range: '0 to 1',
       score: null,
+      mane_scores: [],
+      non_mane_scores: [],
       prediction: 'higher score = higher pathogenicity',
       visible: true
-    },
-    cftr: {
-      score_range: '0 to 1',
-      score: null,
-      prediction: 'higher score = higher pathogenicity',
-      visible: false
     }
   }
 };

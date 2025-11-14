@@ -57,8 +57,8 @@ export const EvaluationScore = (props) => {
           error={formErrors['pValue'] || null} wrapperClassName="col-sm-6" onChange={handleChange}
           labelClassName="col-sm-6 control-label" groupClassName="row mb-3 form-group" placeholder="Number only" />
         <Row>
-          <Col sm="6" className="control-label">
-            <label className="col-sm-6 control-label">Confidence interval (%):</label>
+          <Col sm="6" className="pr-0 control-label">
+            <label className="col-sm-6 control-label">Confidence interval:</label>
           </Col>
           <Col sm="6">
             <Input type="number" name="confidenceIntervalFrom" className="form-control"

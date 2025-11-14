@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import moment from 'moment';
 import { useHistory, Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faRobot } from '@fortawesome/free-solid-svg-icons'
 import { RestAPI as API } from '@aws-amplify/api-rest';
 import isEmpty from 'lodash/isEmpty';
 import lodashGet from "lodash/get";
@@ -13,6 +13,7 @@ import { API_NAME } from '../../utils';
 import { getGenomicLinkouts, setContextLinks } from '../variant-central/helpers/helpers';
 import ExternalResourcesPanel from '../common/ExternalResourcesPanel';
 import { ExternalLink } from "../common/ExternalLink";
+import InfoIcon from '../common/InfoIcon';
 import DiseaseModal from '../common/DiseaseModal';
 import Modal from '../common/Modal';
 import Popover from '../common/Popover';
@@ -20,21 +21,26 @@ import { EXTERNAL_API_MAP } from '../../constants/externalApis';
 import { isOwnedByCurrentCuratingEntity } from '../../utilities/ownershipUtilities';
 import { LoadingSkeleton } from '../common/LoadingSkeleton';
 import { useAmplifyAPIRequestRecycler } from '../../utilities/fetchUtilities';
+import { convertDiseasePKToMondoId, displayObsoleteDiseaseIcon } from '../../utilities/diseaseUtilities';
+import { getOpenBatch, getBatchesByStatus } from './clinvar-submission/helpers';
 
 
 const VariantDetails = (props) => {
     const requestRecycler = useAmplifyAPIRequestRecycler();
-    const mondoUrl = 'https://www.ebi.ac.uk/ols/ontologies/mondo//terms?iri=http://purl.obolibrary.org/obo/';
+    const mondoUrl = 'https://www.ebi.ac.uk/ols4/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/';
     const [showDiseaseModal, setShowDiseaseModal] = useState(false);
     const [showPhiDisclaimerModal, setShowPhiDisclaimerModal] = useState(false);
     const [hypothesisData, setHypothesisData] = useState({});
     const [isLoadingHypothesis, setIsLoadingHypothesis] = useState(false);
+    const [automatedAnnotationTotal, setAutomatedAnnotationTotal] = useState(0);
     const history = useHistory();
     const { 
       variant, 
       interpretation, 
       onViewUpdate, 
       cspecDoc,
+      isLoadingCspecDoc,
+      clinVarSubmissionBatches,
       viewValue, 
       isLoadingInterpretation, 
       setIsLoadingInterpretation, 
@@ -99,19 +105,20 @@ const VariantDetails = (props) => {
       setIsLoadingHypothesis(true);
       const carId = lodashGet(variant, 'carId');
       const clinvarVariantId = lodashGet(variant, 'clinvarVariantId');
-      // We need to make a request using both caId and clinvarVariantId 
-      // because they are mutually exclusive in hypothesis, tags aren't linked though variant is the same
-      const urls = [`https://hypothes.is/api/search?tag=CAID:${carId}`, `https://hypothes.is/api/search?tag=ClinVarID:${clinvarVariantId}`];
+      
+      const urls = [
+        { url: `https://hypothes.is/api/search?tag=CAID:${carId}&limit=200`, tag: `CAID:${carId}` },
+        { url: `https://hypothes.is/api/search?tag=ClinVarID:${clinvarVariantId}&limit=200`, tag: `ClinVarID:${clinvarVariantId}` }
+      ];
+      
       let config = {
         headers: {
           "Authorization": `Bearer ${process.env.REACT_APP_HYPOTHESIS_TOKEN}`
         }
       };
       
-      let requests = urls.map(url => {
-        return axios.get(url, config);
-      });
-
+      let requests = urls.map(item => axios.get(item.url, config).then(response => ({...response, tag: item.tag})));
+    
       Promise.all(requests).then(response => {
         handleHypothesisData(response);
       })
@@ -120,26 +127,34 @@ const VariantDetails = (props) => {
           return;
         }
         setIsLoadingHypothesis(false);
-        console.log('Hypothesis Fetch Error=: %o', err);
+        console.error('Hypothesis Fetch Error=: %o', err);
       });
-    }
-
-    const handleHypothesisData = (response) => {
-      // check if we received valid responses by checking data.total
-      // and pick one that has returned data, if both return data, choose res w/ greatest total
-      response = response.reduce((clinvar, caid) => clinvar.data.total > caid.data.total ? clinvar : caid);
+    };
+    
+    const handleHypothesisData = (responses) => {
+      // Determine the response with the greatest total
+      let response = responses.reduce((max, current) => max.data.total > current.data.total ? max : current);
       if (response.data && response.data.rows[0]) {
-        // grab incontext link, html link will be used in the future
-        const hypothesisLink = response.data.rows[0].links.incontext;
+        // Construct the URL using the tag of the response with the greatest total
+        const hypothesisLink = `https://hypothes.is/search?q=tag:${encodeURIComponent(response.tag)}`;
         const hypothesisTotal = response.data.total;
         let hypothesisData = {
           hypothesisLink,
           hypothesisTotal
-        }
+        };
         setHypothesisData(hypothesisData);
+
+        // Check for automated/ML annotations created by 
+        // see https://github.com/ClinGen/gene-and-variant-curation-tools/issues/386
+        const automatedAnnotations = response.data.rows.filter(
+          row => row.user === ""
+        );
+        if (automatedAnnotations.length > 0) {
+          setAutomatedAnnotationTotal(automatedAnnotations.length);
+        }
         setIsLoadingHypothesis(false);
       }
-    }
+    };
 
     const handleAgreeToDisclaimer = () => {
         updateInterpretations(variant);
@@ -177,9 +192,10 @@ const VariantDetails = (props) => {
                     </span>
                 );
             } else {
-                const formattedDiseaseId = disease.PK.replace('_', ':');
+                const formattedDiseaseId = convertDiseasePKToMondoId(disease.PK);
                 return (
                     <span className="ml-1">
+                        {displayObsoleteDiseaseIcon(disease.term, "interpretation")}
                         {disease.term} (<a href={`${mondoUrl}${disease.PK}`} target="_blank" rel="noopener noreferrer">{formattedDiseaseId}</a>)
                     </span>
                 );
@@ -204,11 +220,13 @@ const VariantDetails = (props) => {
         const { gRCh38, gRCh37 } = getGenomicLinkouts(variant);
         const gRCh38Links = gRCh38 && setContextLinks(gRCh38, 'GRCh38');
         const gRCh37Links = gRCh37 && setContextLinks(gRCh37, 'GRCh37');
-        const cspecHref = cspecDoc && cspecDoc.ruleSetDoc && cspecDoc.ruleSetDoc.cspecInfo
-          ? cspecDoc.ruleSetDoc.cspecInfo.cspecUiLink 
-          : null;
-        const cspecLink = cspecDoc && cspecDoc.ruleSetDoc 
-          ? `${cspecDoc.ruleSetDoc.vcepName} ${cspecDoc.ruleSetDoc.documentVersion}`
+
+        const cspecVersionUiLink = lodashGet(cspecDoc, 'ruleSetDoc.cspecInfo.cspecVersionUiLink', null);
+        const cspecUiLink = lodashGet(cspecDoc, 'ruleSetDoc.cspecInfo.cspecUiLink', null);
+          
+        const cspecHref = cspecVersionUiLink ? cspecVersionUiLink : cspecUiLink;
+        const cspecLink = cspecDoc?.ruleSetDoc?.cspecInfo?.documentName
+          ? cspecDoc.ruleSetDoc.cspecInfo.documentName
           : null;
         
         const modifiedPathogenicity = interpretation && interpretation.provisionalVariant
@@ -221,6 +239,21 @@ const VariantDetails = (props) => {
             : interpretation && interpretation.provisionalVariant
                 ? interpretation.provisionalVariant.autoClassification
                 : null;
+
+        const baselineTotal = hypothesisData.hypothesisTotal - automatedAnnotationTotal;
+        let currentBatch = null;
+        let previousBatches = null;
+        if (clinVarSubmissionBatches && clinVarSubmissionBatches.length) {
+            // clinVarSubmissionBatches has all batches (open & closed) that current interpretation has been added to
+            // Check if current interpretation is included in current affiliation's open batch
+            currentBatch = getOpenBatch(clinVarSubmissionBatches);
+            // Get closed batches current interpretation is associated with and list the names as hoverover/expansion list
+            const closedBatches = getBatchesByStatus(clinVarSubmissionBatches, "closed");
+            previousBatches = closedBatches && closedBatches.length ? closedBatches.map((b) => { return b.batch_name; }).join(', ') : null;
+        }
+
+        //“ERepo” if interpretation status is published else --
+        const publishingStatus = (interpretation.status === "Published") ? "erepo" : "--";
 
         return(
             <div className="card-group mt-3">
@@ -249,7 +282,7 @@ const VariantDetails = (props) => {
                                         href={`http://reg.genome.network/allele/${variant.carId}.html`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        title={`GlinGen Allele Registry page for ${variant.carId} in a new window`}
+                                        title={`ClinGen Allele Registry page for ${variant.carId} in a new window`}
                                     >
                                         <strong> {variant.carId || "--"}</strong>
                                     </a>
@@ -288,16 +321,35 @@ const VariantDetails = (props) => {
                         />
                         {!isLoadingHypothesis && !isEmpty(hypothesisData) ? 
                           <div>
-                            <a 
-                              className="no-external-link" 
-                              title="ClinGen Baseline Annotation" 
-                              href="https://www.clinicalgenome.org/curation-activities/baseline-annotation/"
-                              target="_blank"
-                              rel="noreferrer noopener"
-                            >
-                              <i className="icon c3-icon"></i>
-                            </a>
-                            <ExternalLink href={hypothesisData.hypothesisLink}> {hypothesisData.hypothesisTotal} Baseline Community Annotation(s)</ExternalLink>
+                            {baselineTotal > 0 && (
+                              <div>
+                                <ExternalLink href={hypothesisData.hypothesisLink}>
+                                  {baselineTotal} Baseline Community Annotation(s)
+                                </ExternalLink>
+                                <InfoIcon tooltip={
+                                  `Access the Hypothesis search for this variant via the link.
+                                  Click the annotation and "Visit annotation in context" for more details.
+                                  Note: Requires Hypothes.is login and group access.
+                                  Need help? Contact volunteer@clinicalgenome.org.`
+                                }/>
+                              </div>
+                            )}
+                            {/* Display a separate link if automated/ML variant annotations exist in Hypothesis */}
+                            {automatedAnnotationTotal > 0 && (
+                              <div className="mt-2">
+                                <ExternalLink href={`${hypothesisData.hypothesisLink}&user=`}>
+                                  <FontAwesomeIcon icon={faRobot} className="mr-1" />
+                                  {automatedAnnotationTotal} Automated Annotation(s) in Hypothesis
+                                </ExternalLink>
+                                <InfoIcon tooltip={
+                                    `Access the Hypothesis search for this variant via the link. 
+                                    These annotations are automated via our  user.
+                                    Click the annotation and "Visit annotation in context" for more details. 
+                                    Note: Requires Hypothes.is login and group access. Need help? Contact volunteer@clinicalgenome.org.`
+                                  }
+                                />
+                              </div>
+                            )}
                           </div>
                           : null}
                     </div>
@@ -343,11 +395,48 @@ const VariantDetails = (props) => {
                                     }
                                 </span>
                                 <strong>Classification: </strong>{modifiedPathogenicity || calculatedPathogenicity}<br/>
-                                <strong>Provisional/Approved Status: </strong>{props.interpretation.status}<br/>
-                                <strong>Specification Document: </strong>
-                                {cspecHref && cspecLink ? 
-                                    <ExternalLink href={cspecHref}>{cspecLink}</ExternalLink>
-                                  : null}
+                                <strong>Provisional/Approved Status: </strong>
+                                {props.interpretation.status === "Published" ?
+                                    "Approved"
+                                    : props.interpretation.status}
+                                <br/>
+                                <strong>Publishing Status: </strong>
+                                {publishingStatus ?
+                                    publishingStatus === "erepo" ?
+                                        <span className={'badge badge-published'}>ERepo</span>
+                                        : publishingStatus
+                                    : null
+                                }
+                                {publishingStatus && <><br/></>}
+                                {currentBatch &&
+                                    <Button className="link-button" variant="link"
+                                        onClick={() => history.push('/clinvar-batch-submit')}>{currentBatch.batch_name}
+                                    </Button>
+                                }
+                                {currentBatch && <><br/></>}
+                                {previousBatches &&
+                                    <>
+                                    <Popover
+                                        triggerComponent={<div className="px-1 py-1 my-1 link-button btn-info">Closed Batches</div>}
+                                        content={previousBatches}
+                                        placement="top"
+                                    />
+                                    <span className="ml-1 classification-link-item">
+                                    <Link to={'/clinvar-batch-submit'}>
+                                        <i className="icon icon-link"></i>
+                                    </Link>
+                                    </span>
+                                    </>
+                                }
+                                {previousBatches && <><br/></>}
+                                {isLoadingCspecDoc ? (
+                                  <LoadingSkeleton count={3} />
+                                ) : cspecHref && cspecLink ? (
+                                      <>
+                                        <strong>Specification Document: </strong>
+                                        <ExternalLink href={cspecHref}>{cspecLink}</ExternalLink>
+                                      </>
+                                ) : null}
                                 <br/>
                                 {isCurrentInterpretationMine
                                     ? (viewValue === 'Audit Trail')
@@ -357,7 +446,8 @@ const VariantDetails = (props) => {
                                             </Button>)
                                         : (
                                             <Button className="link-button" variant="link"
-                                                onClick={() => onViewUpdate('Audit Trail')}>View Audit Trail
+                                                onClick={() => onViewUpdate('Audit Trail')}
+                                                disabled={props.isCalculatingPathogenicity}>View Audit Trail
                                             </Button>)
                                     : null}
                                 </>

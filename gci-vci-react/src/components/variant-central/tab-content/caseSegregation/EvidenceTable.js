@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Row from "react-bootstrap/Row";
 import { get as lodashGet } from "lodash";
 import moment from "moment";
@@ -13,7 +13,7 @@ import PmidSummary from "../../../common/article/PmidSummary";
 import Popover from "../../../common/Popover";
 import { ExternalLink } from "../../../common/ExternalLink";
 import { EXTERNAL_API_MAP } from "../../../../constants/externalApis";
-import { getAffiliationName } from "../../../../helpers/get_affiliation_name";
+import { AffilsContext, getAffiliationName } from "../../../../helpers/affiliationsHelpers";
 import { getUserName } from "../../../../helpers/getUserName";
 
 export const EvidenceTable = ({
@@ -24,6 +24,7 @@ export const EvidenceTable = ({
   readOnly,                        // If the page is in read-only mode
   interpretationCaseSegEvidences,  // Case segregation evidences added to current interpretation
 }) => {
+  const { affiliationsData } = useContext(AffilsContext);
 
   /**
    * Check if current user can edit/delete the given evidence
@@ -303,7 +304,7 @@ export const EvidenceTable = ({
           sourceData['_last_modified'] = moment(row['last_modified']).format('YYYY MMM DD, h:mm a');
           sourceData['_submitted_by'] = "";
           if (row.submitted_by) {
-            const affiliation = row.affiliation ? getAffiliationName(row.affiliation) : null;
+            const affiliation = row.affiliation ? getAffiliationName(row.affiliation, affiliationsData) : null;
             sourceData['_submitted_by'] = affiliation ? `${affiliation} (${getUserName(row.submitted_by)})` : `${getUserName(row.submitted_by)}`;
           }
 

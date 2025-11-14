@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { API } from 'aws-amplify';
 import { API_NAME } from '../../utils';
 import cloneDeep from 'lodash/cloneDeep';
+import lodashGet from "lodash/get";
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,7 +12,7 @@ import { faSpinner, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 
 import Modal from './Modal';
 import Input from './Input';
-import { convertDiseasePKToMondoId } from '../../utilities/diseaseUtilities';
+import { convertDiseasePKToMondoId, isDiseaseObsolete, displayObsoleteDiseaseIcon } from '../../utilities/diseaseUtilities';
 import { resolveCallbackReturnValue } from '../../utilities/fetchUtilities';
 
 const DiseaseModal = ({
@@ -90,6 +91,7 @@ const DiseaseModal = ({
       const response = await API.get(API_NAME, url);
       if (response) {
         setRetrievedDisease(response);
+        setDiseaseIdInputError(null);
       } else {
         throw response;
       }
@@ -123,6 +125,17 @@ const DiseaseModal = ({
       });
     }
     setFieldInput(e.target.value);
+  };
+
+  const isValidDisease = () => {
+    if (lodashGet(retrievedDisease, "PK") !== lodashGet(initialDisease, "PK")) {
+      if (isDiseaseObsolete(retrievedDisease.term)) {
+        setDiseaseIdInputError('Given MONDO ID is obsolete, please enter anther one');
+        return false;
+      }
+    }
+    // TODO: check if disease is marked as will be obsolete soon
+    return true;
   };
 
   const isValidHpoList = (list, re) => {
@@ -191,16 +204,20 @@ const DiseaseModal = ({
     setLoadingSave(true);
     if (diseaseInputType === 'search') {
       if (retrievedDisease) {
-        if (parentEndpoint) {
-          addDiseaseToParent(retrievedDisease);
+        if (isValidDisease()) {
+          if (parentEndpoint) {
+            addDiseaseToParent(retrievedDisease);
+          } else {
+            handleCallbacks({
+              updateDisease,
+              updateDiseaseArg: retrievedDisease,
+              setLoadingSave,
+              setSaveError,
+              onHide
+            });
+          }
         } else {
-          handleCallbacks({
-            updateDisease,
-            updateDiseaseArg: retrievedDisease,
-            setLoadingSave,
-            setSaveError,
-            onHide
-          });
+          setLoadingSave(false);
         }
       } else {
         setDiseaseIdInputError('Please enter a MONDO ID');
@@ -250,14 +267,14 @@ const DiseaseModal = ({
       <ol className="instruction-references">
         <li>
           <span>
-            Search for the desired MONDO term using the <a href={'https://www.ebi.ac.uk/ols/ontologies/mondo'} target="_blank" rel="noopener noreferrer">OLS MONDO</a> Search [
+            Search for the desired MONDO term using the <a href={'https://www.ebi.ac.uk/ols4/ontologies/mondo'} target="_blank" rel="noopener noreferrer">OLS MONDO</a> Search [
                 <a href="https://github.com/ClinGen/clincoded/wiki/MONDO-Search-Help" target="_blank" rel="noopener noreferrer">Help</a>].
             </span>
         </li>
         <li>
           <span>
             Once you have selected the term, enter its MONDO ID (the &quot;id&quot; at the bottom of the &quot;Term info&quot; box on the right hand side of the OLS term page
-                (e.g. <a href="https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/MONDO_0016587" target="_blank" rel="noopener noreferrer">MONDO:0016587</a>).
+                (e.g. <a href="https://www.ebi.ac.uk/ols4/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/MONDO_0016587" target="_blank" rel="noopener noreferrer">MONDO:0016587</a>).
             </span>
         </li>
         <Input
@@ -282,7 +299,8 @@ const DiseaseModal = ({
           && (
             <div className="retrieved-disease-section">
               <p>Below is the data from OLS for the ID you submitted. Select &quot;Save&quot; below if it is the correct disease, otherwise revise your search above:</p>
-              <a href={`https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/${retrievedDisease.PK}`} target="_blank" rel="noopener noreferrer"><b>{retrievedDisease.term}</b></a>
+              {displayObsoleteDiseaseIcon(retrievedDisease.term, "gdm")}
+              <a href={`https://www.ebi.ac.uk/ols4/ontologies/mondo/terms?iri=http://purl.obolibrary.org/obo/${retrievedDisease.PK}`} target="_blank" rel="noopener noreferrer"><b>{retrievedDisease.term}</b></a>
             </div>
           )
         }

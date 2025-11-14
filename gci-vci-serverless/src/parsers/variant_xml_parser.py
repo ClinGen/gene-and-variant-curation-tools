@@ -20,16 +20,14 @@ def from_xml(xml, extended=False):
     print({ 'info': message })
     return (None, None) if extended else None
 
-  # We expect either an InterpretedRecord or an IncludedRecord element.
-  # FIXME: If we update to python3.8 this can be written better.
   is_interpreted_record = False
-  if root.find('.//InterpretedRecord') is not None:
-    record_el = root.find('.//InterpretedRecord')
+  if root.find('.//ClassifiedRecord') is not None:
+    record_el = root.find('.//ClassifiedRecord')
     is_interpreted_record = True
   elif root.find('.//IncludedRecord') is not None:
     record_el = root.find('.//IncludedRecord')
   else:
-    message = 'Unable to find InterpretedRecord or IncludedRecord element in variant XML. Expected to find at least one.'
+    message = 'Unable to find ClassifiedRecord or IncludedRecord element in variant XML. Expected to find at least one.'
     print({ 'info': message })
     return (None, None) if extended else None
 

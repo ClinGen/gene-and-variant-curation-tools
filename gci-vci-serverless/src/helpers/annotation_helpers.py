@@ -6,7 +6,8 @@ def build(annotation):
   and combines any fo the given attributes.
   """
 
-  if 'article' not in annotation or len(annotation['article']) <= 0:
+  # Annotation can have either article(PMID) or scv(ClinVar Id)
+  if ('article' not in annotation or len(annotation['article']) <= 0) and ('scv' not in annotation):
     raise ValueError()
 
   # Legacy support to migrate 'rid' to 'pk'

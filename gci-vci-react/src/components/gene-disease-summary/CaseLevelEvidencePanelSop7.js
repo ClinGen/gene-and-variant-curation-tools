@@ -39,7 +39,7 @@ const CaseLevelEvidencePanelSop7 = ({
                 {evidence.variants.map((variant, i) => {
                   return (
                     <div key={i} className="variant-info">
-                      {variant.preferredTitle}
+                      {getVariantTitle(variant)}
                     </div>
                   );
                 })}
@@ -50,18 +50,21 @@ const CaseLevelEvidencePanelSop7 = ({
         },
         {
           Header: 'Reference (PMID)',
-          accessor: d => {
-            if (d.authors && d.authors.length) {
-              return d.authors[0];
-            }
-            return 'reference';
-          },
           // eslint-disable-next-line react/display-name
+          accessor: 'pmid',
           Cell: ({ row }) => {
             const evidence = row.original;
             const authors = getEvidenceAuthors(evidence);
             return (
-              <span>{authors}, <strong>{evidence.pubYear}</strong>, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a></span>
+              evidence.pmid
+                ? <span>
+                    {authors
+                      ? authors
+                      : "No authors listed"}, {evidence.pubYear
+                        ? <strong>{evidence.pubYear}</strong>
+                        : null}, <a href={'https://www.ncbi.nlm.nih.gov/pubmed/' + evidence.pmid} target="_blank" rel="noopener noreferrer">PMID: {evidence.pmid}</a>
+                  </span>
+                : null
             );
           }
         },
@@ -74,7 +77,7 @@ const CaseLevelEvidencePanelSop7 = ({
           Cell: ({ row }) => {
             const evidence = row.original;
             return (
-              evidence.ageValue
+              evidence.ageValue >= 0
                 ? <span>{evidence.ageType
                   ? <strong>Age of {evidence.ageType}: </strong>
                   : null}{evidence.ageValue} {evidence.ageUnit.length
@@ -259,6 +262,41 @@ const CaseLevelEvidencePanelSop7 = ({
     useGroupBy,
     useSortBy
   );
+
+  /**
+   * Copy over from legacy to support SOP5 and SOP7 snapshots which contain variants that do not have
+   * variant preferred title
+   * Method to display the title of a variant.
+   * 1st option is the determined variant preferred title if it's present.
+   * 2nd option is the ClinVar Preferred Title
+   * 3rd alternative is a string constructed with the MANE transcript, gene symbol and protein change.
+   * 4th alternative is a string constructed with the canonical transcript, gene symbol and protein change.
+   * The fallback is the GRCh38 NC_ HGVS name.
+   * @param {object} variant - A variant object
+   */
+  function getVariantTitle(variant) {
+    let variantTitle = '';
+    if (variant) {
+      if (variant.preferredTitle) {
+        variantTitle = variant.preferredTitle;
+      } else if (variant.clinvarVariantId && variant.clinvarVariantTitle) {
+        variantTitle = variant.clinvarVariantTitle;
+      } else if (variant.maneTranscriptTitle) {
+        variantTitle = variant.maneTranscriptTitle;
+      } else if (variant.carId && variant.canonicalTranscriptTitle) {
+        variantTitle = variant.canonicalTranscriptTitle;
+      } else if (variant.hgvsNames && Object.keys(variant.hgvsNames).length && !variantTitle) {
+        if (variant.hgvsNames.GRCh38) {
+          variantTitle = variant.hgvsNames.GRCh38 + ' (GRCh38)';
+        } else if (variant.hgvsNames.GRCh37) {
+          variantTitle = variant.hgvsNames.GRCh37 + ' (GRCh37)';
+        } else {
+          variantTitle = variant.carId ? variant.carId : 'A preferred title is not available';
+        }
+      }
+    }
+    return variantTitle;
+  }
 
   /**
    * Method to get the total score of all scored evidence

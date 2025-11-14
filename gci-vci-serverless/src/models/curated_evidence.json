@@ -14,7 +14,10 @@
           "$schema": "user"
         },
         "date_created": { "type": "string" },
-        "modified_by": { "type": "string" },
+        "modified_by": {
+          "type": "string",
+          "$schema": "user"
+        },
         "last_modified": { "type": "string" },
         "schema_version": { "type": "string" },
         "variant": { "type": "string" },

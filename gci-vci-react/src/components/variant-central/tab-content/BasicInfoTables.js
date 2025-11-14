@@ -9,9 +9,10 @@ import { DataTable } from "../../common/DataTable";
 import { ExternalLink } from "../../common/ExternalLink";
 import { EXTERNAL_API_MAP } from "../../../constants/externalApis";
 import { LoadingStatusValues, LoadingStatus } from "../../../utilities/fetchUtilities";
-import { convertDiseasePKToMondoId, isFreeTextDisease } from "../../../utilities/diseaseUtilities";
+import { convertDiseasePKToMondoId, isFreeTextDisease, displayObsoleteDiseaseIcon } from "../../../utilities/diseaseUtilities";
 import { OwnerTextDisplay } from "../../../utilities/ownershipUtilities";
 import { renderInterpretationStatus } from "../../recordStatus/interpretationStatus";
+import InfoIcon from "../../common/InfoIcon";
 
 
 const headers = [
@@ -32,13 +33,24 @@ const CanonicalBadge = () => {
     )
 };
 
-const MANEBadge = () => {
+const MANESelectBadge = () => {
     return (
         <OverlayTrigger
             placement="top"
-            overlay={<Tooltip>MANE selected transcript</Tooltip>}
+            overlay={<Tooltip>MANE Select transcript</Tooltip>}
         >
             <span className="mane badge badge-warning">MANE Select</span>
+        </OverlayTrigger>
+    )
+};
+
+const MANEPlusClinicalBadge = () => {
+    return (
+        <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>MANE Plus Clinical transcript</Tooltip>}
+        >
+            <span className="mane badge badge-warning">MANE Plus Clinical</span>
         </OverlayTrigger>
     )
 };
@@ -54,7 +66,8 @@ const TranscriptTable = (props) => {
                     {d.hgvsc}
                     {d.gene_symbol && ` (${d.gene_symbol})`}
 
-                    {d.mane && <MANEBadge />}
+                    {d.mane_select && <MANESelectBadge />}
+                    {d.mane_plus_clinical && <MANEPlusClinicalBadge />}
                     {d.canonical && <CanonicalBadge />}
                 </>
             )}
@@ -400,6 +413,7 @@ const VciInterpretationTable = ({ data = [] }) => {
                     <div className="condition-mode-of-inheritance">
                         {interpretation.disease ?
                             <span>
+                                {displayObsoleteDiseaseIcon(interpretation.disease.term, "gdm")}
                                 {interpretation.disease.term}
                                 <span>&nbsp;</span>
                                 {!isFreeTextDisease(interpretation.disease) ? 
@@ -494,7 +508,7 @@ VariantGenomicContext.propTypes = {
 }
 
 export const BrcaLink = ({ carId, hasBrcaData, loadingBrca }) => {
-  const url = carId ? `https://brcaexchange.org/variants?search=${carId}` : null;
+  const url = carId ? `https://brcaexchange.org/variant/${carId}` : null;
   return (
     !loadingBrca && hasBrcaData ? (
       <ExternalLink href={url}>BRCA Exchange Link for variant {carId}</ExternalLink>
@@ -503,20 +517,34 @@ export const BrcaLink = ({ carId, hasBrcaData, loadingBrca }) => {
   );
 };
 
-export const CivicLink = ({ civicData, loadingCivic }) => {
-  let url;
-  const geneId = civicData.gene_id ? civicData.gene_id : null;
-  const variantId = civicData.id ? civicData.id : null;
-  const evidenceCount = civicData.evidence_items ? civicData.evidence_items.length : [];
+/**
+ * A link to the Clinical Interpretations of Variants in Cancer (CIViC)
+ * summary page for a given variant.
+ *
+ * @param {String} carId - The ClinGen Allele Registry (CAR) ID for the variant.
+ * @constructor
+ */
+export const CivicLink = ({ carId }) => {
+    const url = `https://civicdb.org/links?idtype=allele_registry&id=${carId}`;
+    const tooltip = 'Links are available for variants associated with ClinGen Allele Registry IDs in CIViC.';
+    const tooltipId = 'civicLinkTooltip';
+    return (
+        <div>
+            <ExternalLink href={url}>Clinical Interpretations of Variants in Cancer (CIViC)</ExternalLink>
+            <InfoIcon tooltip={tooltip} tooltipId={tooltipId}/>
+        </div>
+    );
+};
 
-  if (geneId && variantId) {
-    url = `https://civicdb.org/events/genes/${geneId}/summary/variants/${variantId}/summary#variant`
-  }
+export const LitVarLink = ({ litVarData, loadingLitVar }) => {
+  const pmidsCount = litVarData.pmids_count ? litVarData.pmids_count : '';
+  const url = litVarData.link ? litVarData.link : '';
+
   return (
-    !loadingCivic && Object.keys(civicData).length > 0 ? (
-      <ExternalLink href={url}>CIViC evidence for variant ({evidenceCount} EIDs found)</ExternalLink>
-    ) : !loadingCivic && Object.keys(civicData).length === 0 ? (
-      'Link is not available for this variant at this genomic location.'
+    !loadingLitVar && Object.keys(litVarData).length > 0 ? (
+      <ExternalLink href={url}>LitVar publications available for this variant ({pmidsCount} found)</ExternalLink>
+    ) : !loadingLitVar && Object.keys(litVarData).length === 0 ? (
+      'LitVar publications not available for this variant.'
     ) : (
       <LoadingSpinner/>
     )

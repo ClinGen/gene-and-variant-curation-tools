@@ -9,9 +9,11 @@ This project has a few initial dependencies that you need to install prior to se
 
 ### NodeJS and npm
 
-This project has been tested with NodeJS v8.16.0 and npm v6.4.1. In order to minimize impact on other projects it's
+This project has been tested with NodeJS v15.14.0 and npm v7.7.6. In order to minimize impact on other projects it's
 suggested that you manage NodeJS versions using [nvm](https://github.com/nvm-sh/nvm). You can follow the instructions for
 installing nvm and the necessary node versions found on the nvm Github page.
+
+The runtime for the history trigger has been updated (12/8/22) to Node 16 due to the deprecation of Node 12 runtimes for AWS Lambda.
 
 ### Python
 
@@ -56,6 +58,11 @@ The first time you run DynamoDB Local you must run the install command. This com
 > serverless dynamodb install
 ```
 
+The above command might yield `Error getting DynamoDb local latest tar.gz location undefined: 403`. This is a known
+issue with the NPM library, and it is tracked [here](https://github.com/99x/serverless-dynamodb-local/issues/294). As
+of June 19th, 2023, the short-term fix described in
+[this comment](https://github.com/99x/serverless-dynamodb-local/issues/294#issuecomment-1462496399) seems to work.
+
 Next (and any subsequent time you want to start DynamoDB Local) start the dynamodb server:
 
 ```
@@ -63,6 +70,16 @@ Next (and any subsequent time you want to start DynamoDB Local) start the dynamo
 ```
 
 This command will look at the dynamodb table definition in the resources block of the serverless.yml file and start a local dynamodb instance.
+
+You need a Java development kit installed for this command to succeed. OpenJDK greater than or equal to version 11.0.1
+should work.
+
+Optionally, if you would like to take a look at the tables in the database using a GUI, you can use a popular tool,
+[dynamodb-admin](https://github.com/aaronshaf/dynamodb-admin). Follow the steps to install dynamodb-admin, then perform
+these steps:
+
+1. Run `DYNAMO_ENDPOINT=http://localhost:8000 npx dynamodb-admin`.
+2. Navigate to `http://localhost:8001` in your browser. You should see four tables (all empty for now).
 
 Next, start serverless offline:
 

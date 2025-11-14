@@ -2,7 +2,7 @@ import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux'
 import { Container, Jumbotron } from "react-bootstrap";
 
-import PmidSummary from "../components/common/article/PmidSummary";
+import { renderAnnotationSourceSummary, } from "../helpers/renderAnnotationSourceSummary";
 
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ExperimentalCuration from './ExperimentalCuration';
@@ -72,12 +72,12 @@ export const GdmEvidenceCuration = (props) => {
     }
     if ((props.match.url).includes('group-curation')) {
       setSelectedCuration('group');
-      loadCurationData('groups').then(result => {
+      loadCurationData('groups').then(() => {
         setEvidenceIsLoading(false);
       });
     } else if ((props.match.url).includes('family-curation')) {
       setSelectedCuration('family');
-      loadCurationData('families').then(result => {
+      loadCurationData('families').then(() => {
         if (loadDataError === null) {
           let params = new URLSearchParams(props.location.search);
           if (params.get("parentTypeCuration") === "group-curation" && params.get("parentEvidencePK") !== "") {
@@ -89,7 +89,7 @@ export const GdmEvidenceCuration = (props) => {
       });
     } else if ((props.match.url).includes('individual-curation')) {
       setSelectedCuration('individual');
-      loadCurationData('individuals').then(result => {
+      loadCurationData('individuals').then(() => {
         if (loadDataError === null) {
           let params = new URLSearchParams(props.location.search);
           if (params.get("parentTypeCuration") === "group-curation" && params.get("parentEvidencePK") !== "") {
@@ -104,7 +104,7 @@ export const GdmEvidenceCuration = (props) => {
       });
     } else if ((props.match.url).includes('case-control-curation')) {
       setSelectedCuration('case-control');
-      loadCurationData('casecontrol').then(result => {
+      loadCurationData('casecontrol').then(() => {
         setEvidenceIsLoading(false);
       });
     } else if ((props.match.url).includes('experimental-curation')) {
@@ -163,14 +163,6 @@ export const GdmEvidenceCuration = (props) => {
 
     setLoadDataError(`Selected add to ${type} object ${evidencePK} is not found`);
     setEvidenceIsLoading(false);
-  };
-
-  const renderPmidSummary = () => {
-    return (
-      <div className="curation-pmid-summary">
-        <PmidSummary article={annotation.article} displayJournal pmidLinkout />
-      </div>
-    );
   };
 
   const renderCurationForm = () => {
@@ -254,7 +246,10 @@ export const GdmEvidenceCuration = (props) => {
       <>
         <GdmHeader />
         <Container>
-          {renderPmidSummary()}
+          <div className="curation-source-summary">
+            {/* params: annotation, displayJournal, displayAllAuthors, linkout, linkoutOnNewLine, showComment */}
+            {renderAnnotationSourceSummary(annotation, true, true, true, false, false)}
+          </div>
           {renderCurationForm()}
         </Container>
       </>

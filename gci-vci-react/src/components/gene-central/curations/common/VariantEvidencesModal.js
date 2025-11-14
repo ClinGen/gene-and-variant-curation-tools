@@ -17,7 +17,6 @@ import CardPanel from '../../../common/CardPanel';
 import LoadingSpinner from '../../../common/LoadingSpinner';
 import { LoadingButton } from '../../../common/LoadingButton';
 import PmidSummary from "../../../common/article/PmidSummary";
-import { GdmHeader } from '../../GdmHeader';
 import { ExternalLink } from '../../../common/ExternalLink';
 import { useAmplifyAPIRequestRecycler } from '../../../../utilities/fetchUtilities';
 import { renderVariantLabelAndTitle } from './commonFunc';

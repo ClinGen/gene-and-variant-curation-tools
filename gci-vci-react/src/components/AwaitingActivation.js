@@ -1,7 +1,7 @@
 import React from 'react';
 import {Jumbotron, Container, Button} from 'react-bootstrap';
 
-function AwaitingActivation(props) {
+function AwaitingActivation() {
 
     return(
         <Jumbotron>

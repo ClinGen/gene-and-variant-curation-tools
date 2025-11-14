@@ -130,7 +130,7 @@ class Table extends React.Component {
         break;
 
       default:
-    };
+    }
   });
 
   onReactTablePageChange = action(() => {

@@ -10,8 +10,8 @@ import { Divider, Header, Button } from 'semantic-ui-react';
 
 import { createLink } from '../../../helpers/routing';
 import GeneInput from './GeneInput';
-import CaInput from './CaInput';
-import HgvsInput from './HgvsInput';
+// import CaInput from './CaInput';
+// import HgvsInput from './HgvsInput';
 
 // expected props
 // - searchWizard (via injection)

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import CardPanel from '../common/CardPanel';
-import { isScoringForCurrentSOP, sopVersionByScoring } from '../../helpers/sop';
+import { isScoringForCurrentSOP, sopDataVersionByScoring } from '../../helpers/sop';
 import GeneDiseaseClassificationMatrix from '../../helpers/gene_disease_classification_matrix';
 import GeneDiseaseClassificationMatrixSOPv7 from '../../helpers/gene_disease_classification_matrix_sop_v7';
 import GeneDiseaseClassificationMatrixSOPv5 from '../../helpers/gene_disease_classification_matrix_sop_v5';
@@ -23,7 +23,7 @@ class ClassificationMatrix extends Component {
             <CardPanel title="Calculated Classification Matrix">
               {isScoringForCurrentSOP(classificationPoints)
                 ? <GeneDiseaseClassificationMatrix classificationPoints={classificationPoints} />
-                : (sopVersionByScoring(classificationPoints) === '7'
+                : (sopDataVersionByScoring(classificationPoints) === '7'
                   ? <GeneDiseaseClassificationMatrixSOPv7 classificationPoints={classificationPoints} />
                   : <GeneDiseaseClassificationMatrixSOPv5 classificationPoints={classificationPoints} />
                 )
@@ -36,7 +36,7 @@ class ClassificationMatrix extends Component {
               </div>
               {isScoringForCurrentSOP(classificationPoints)
                 ? <GeneDiseaseClassificationMatrix classificationPoints={classificationPoints} />
-                : (sopVersionByScoring(classificationPoints) === '7'
+                : (sopDataVersionByScoring(classificationPoints) === '7'
                   ? <GeneDiseaseClassificationMatrixSOPv7 classificationPoints={classificationPoints} />
                   : <GeneDiseaseClassificationMatrixSOPv5 classificationPoints={classificationPoints} />
                 )

@@ -22,7 +22,7 @@ for vpt in data:
         post_data = json.dumps(post_data)
         url = 'http://0.0.0.0:3000/vpt/'
         #print ('Count and Post data size %s %s' %(count,len(post_data)))
-        #url = "https://7guo11x2kh.execute-api.us-west-2.amazonaws.com/vpt/vpt"
+        #url = ""
         #x = requests.post(url, auth=auth, data = post_data)
         x = requests.post(url, data = post_data)
         if count%3000==0:

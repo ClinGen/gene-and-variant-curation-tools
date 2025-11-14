@@ -67,7 +67,7 @@ class AddCuratedEvidenceTableComponent extends Component {
     const hasInterpretation = !!lodashGet(this.props.interpretation, 'PK');
 
     return (
-      <section mb="5">
+      <section className="mb-5">
         <CardPanel mb="5" key={this.props.tableName} title={this.props.tableName}>
           <div>
             {!this.props.readOnly && isMyInterpretation ? 
