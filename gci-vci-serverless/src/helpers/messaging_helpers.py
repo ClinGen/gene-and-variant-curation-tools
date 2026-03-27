@@ -1288,6 +1288,7 @@ def add_animal_model_only(data, template):
   autoClassification = get_data_by_path(data, ['resource', 'autoClassification'], '')
   alteredClassification = get_data_by_path(data, ['resource', 'alteredClassification'], 'No Modification')
   classificationPoints = get_data_by_path(data, ['resource', 'classificationPoints'], {})
+  alteredClassification = get_data_by_path(data, ['resource', 'alteredClassification'], 'No Modification')
 
   # Check if final classification is automatically calculated to "No Known Disease Relationship" (no altered classification)
   # and only non-human points are scored in experimental evidence, then Animal Model Only tag is Yes
